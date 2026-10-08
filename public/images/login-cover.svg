@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000" fill="none">
+  <rect width="800" height="1000" fill="#171717"/>
+  <g stroke="#fafafa" stroke-opacity="0.14" stroke-width="1">
+    <path d="M-40 1040 840-40"/>
+    <path d="M-40 960 840-120"/>
+    <path d="M-40 880 840-200"/>
+    <path d="M-40 800 840-280"/>
+    <path d="M-40 720 840-360"/>
+    <path d="M-40 640 840-440"/>
+    <path d="M-40 560 840-520"/>
+    <path d="M-40 480 840-600"/>
+    <path d="M-40 400 840-680"/>
+    <path d="M-40 320 840-760"/>
+    <path d="M-40 240 840-840"/>
+    <path d="M-40 160 840-920"/>
+  </g>
+</svg>
