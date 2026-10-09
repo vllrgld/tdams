@@ -1,18 +1,9 @@
-import { usePage } from '@inertiajs/react';
-
-import AppLogoIcon from '@/components/app-logo-icon';
-
 export default function AppLogo() {
-    const { name } = usePage().props;
-
     return (
-        <>
-            <AppLogoIcon className="size-8 shrink-0 object-contain" alt="" />
-            <div className="ml-1 grid flex-1 text-left text-sm">
-                <span className="mb-0.5 truncate leading-tight font-semibold">
-                    {name}
-                </span>
-            </div>
-        </>
+        <img
+            src="/tdamsblue.png"
+            alt="TDAMS"
+            className="h-8 w-auto max-w-40 shrink-0 object-contain group-data-[collapsible=icon]:size-8 dark:bg-white dark:p-1"
+        />
     );
 }

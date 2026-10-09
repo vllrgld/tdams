@@ -2,14 +2,14 @@ import type { ImgHTMLAttributes } from 'react';
 
 export default function AppLogoIcon({
     className,
-    alt = 'Ilocos Norte',
+    alt = 'TDAMS',
     ...props
 }: ImgHTMLAttributes<HTMLImageElement>) {
     return (
         <img
-            src="/logo.png"
+            src="/tdams%20no%20logo.png"
             alt={alt}
-            className={className}
+            className={`object-contain ${className ?? ''}`}
             {...props}
         />
     );

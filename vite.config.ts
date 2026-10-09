@@ -1,3 +1,4 @@
+import { networkInterfaces } from 'node:os';
 import inertia from '@inertiajs/vite';
 import { wayfinder } from '@laravel/vite-plugin-wayfinder';
 import babel from '@rolldown/plugin-babel';
@@ -6,6 +7,14 @@ import react, { reactCompilerPreset } from '@vitejs/plugin-react';
 import laravel from 'laravel-vite-plugin';
 import { bunny } from 'laravel-vite-plugin/fonts';
 import { defineConfig, lazyPlugins } from 'vite-plus';
+
+const devServerHost =
+    process.env.VITE_DEV_SERVER_HOST ??
+    Object.values(networkInterfaces())
+        .flat()
+        .find((address) => address?.family === 'IPv4' && !address.internal)
+        ?.address ??
+    '127.0.0.1';
 
 export default defineConfig({
     plugins: lazyPlugins(() => [
@@ -29,6 +38,16 @@ export default defineConfig({
         }),
     ]),
     server: {
+        host: '0.0.0.0',
+        port: 5173,
+        strictPort: true,
+        origin: `http://${devServerHost}:5173`,
+        cors: {
+            origin: [`http://${devServerHost}`, 'http://dtms.test'],
+        },
+        hmr: {
+            host: devServerHost,
+        },
         watch: {
             ignored: [
                 '**/.agents/**',
