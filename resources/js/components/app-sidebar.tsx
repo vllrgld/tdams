@@ -1,6 +1,12 @@
 import { Link } from '@inertiajs/react';
-import { LayoutGrid, Palette, Shield, UserRound } from 'lucide-react';
-import AppLogo from '@/components/app-logo';
+import {
+    FileSearch,
+    LayoutGrid,
+    Palette,
+    Shield,
+    UserRound,
+} from 'lucide-react';
+import AppLogoIcon from '@/components/app-logo-icon';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import {
@@ -24,6 +30,11 @@ const mainNavItems: NavItem[] = [
         title: 'Dashboard',
         href: dashboard(),
         icon: LayoutGrid,
+    },
+    {
+        title: 'Documents',
+        href: '/documents',
+        icon: FileSearch,
     },
 ];
 
@@ -56,7 +67,7 @@ export function AppSidebar() {
                             className="rounded-none"
                             render={<Link href={dashboard()} prefetch />}
                         >
-                            <AppLogo />
+                            <AppLogoIcon className="h-8 w-auto max-w-40 shrink-0 group-data-[collapsible=icon]:size-8 dark:bg-white dark:p-1" />
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>
