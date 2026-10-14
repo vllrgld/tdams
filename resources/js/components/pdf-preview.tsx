@@ -8,6 +8,7 @@ import {
 import { useEffect, useRef, useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
     'pdfjs-dist/build/pdf.worker.min.mjs',
@@ -51,6 +52,57 @@ export default function PdfPreview({ url, title }: PdfPreviewProps) {
         setLoadError(null);
     }, [url]);
 
+    useEffect(() => {
+        const viewer = viewerRef.current;
+
+        if (!viewer || pageCount === 0) {
+            return;
+        }
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                const visiblePage = entries
+                    .filter((entry) => entry.isIntersecting)
+                    .sort(
+                        (first, second) =>
+                            second.intersectionRatio - first.intersectionRatio,
+                    )[0]
+                    ?.target.getAttribute('data-page-number');
+
+                if (visiblePage) {
+                    setPageNumber(Number(visiblePage));
+                }
+            },
+            {
+                root: viewer,
+                threshold: [0, 0.25, 0.5, 0.75, 1],
+            },
+        );
+
+        viewer
+            .querySelectorAll('.react-pdf__Page[data-page-number]')
+            .forEach((page) => observer.observe(page));
+
+        return () => observer.disconnect();
+    }, [pageCount]);
+
+    function goToPage(nextPage: number) {
+        const targetPage = Math.max(1, Math.min(pageCount, nextPage));
+        const viewer = viewerRef.current;
+        const page = viewer?.querySelector<HTMLElement>(
+            `.react-pdf__Page[data-page-number="${targetPage}"]`,
+        );
+
+        setPageNumber(targetPage);
+
+        if (viewer && page) {
+            const viewerBounds = viewer.getBoundingClientRect();
+            const pageBounds = page.getBoundingClientRect();
+
+            viewer.scrollTop += pageBounds.top - viewerBounds.top - 8;
+        }
+    }
+
     const pageWidth = Math.max(240, Math.floor((viewerWidth - 40) * zoom));
 
     return (
@@ -67,17 +119,37 @@ export default function PdfPreview({ url, title }: PdfPreviewProps) {
                         aria-label="Previous page"
                         title="Previous page"
                         disabled={pageNumber <= 1 || pageCount === 0}
-                        onClick={() =>
-                            setPageNumber((current) => Math.max(1, current - 1))
-                        }
+                        onClick={() => goToPage(Math.max(1, pageNumber - 1))}
                         className="size-8 rounded-none"
                     >
                         <ChevronLeft aria-hidden="true" />
                     </Button>
                     <span className="min-w-20 px-1 text-center text-xs text-slate-700 tabular-nums dark:text-slate-300">
-                        {pageCount > 0
-                            ? `${pageNumber} / ${pageCount}`
-                            : '— / —'}
+                        <Input
+                            aria-label="Current PDF page"
+                            type="number"
+                            min={1}
+                            max={pageCount}
+                            value={pageNumber}
+                            disabled={pageCount === 0}
+                            onChange={(event) => {
+                                const requestedPage = Number(
+                                    event.target.value,
+                                );
+
+                                if (
+                                    Number.isInteger(requestedPage) &&
+                                    requestedPage >= 1 &&
+                                    requestedPage <= pageCount
+                                ) {
+                                    goToPage(requestedPage);
+                                }
+                            }}
+                            className="mr-1 inline-flex h-8 w-12 rounded-none px-1 text-center text-xs tabular-nums"
+                        />
+                        <span aria-live="polite">
+                            / {pageCount > 0 ? pageCount : '—'}
+                        </span>
                     </span>
                     <Button
                         type="button"
@@ -87,9 +159,7 @@ export default function PdfPreview({ url, title }: PdfPreviewProps) {
                         title="Next page"
                         disabled={pageNumber >= pageCount || pageCount === 0}
                         onClick={() =>
-                            setPageNumber((current) =>
-                                Math.min(pageCount, current + 1),
-                            )
+                            goToPage(Math.min(pageCount, pageNumber + 1))
                         }
                         className="size-8 rounded-none"
                     >
@@ -161,6 +231,7 @@ export default function PdfPreview({ url, title }: PdfPreviewProps) {
             >
                 <Document
                     file={url}
+                    suspense={false}
                     onLoadSuccess={({ numPages }) => {
                         setPageCount(numPages);
                         setPageNumber(1);
@@ -182,28 +253,41 @@ export default function PdfPreview({ url, title }: PdfPreviewProps) {
                                 : 'Could not load this PDF.'}
                         </p>
                     }
-                    className="flex w-max min-w-full justify-center"
+                    className="flex w-full flex-col items-center gap-4"
                 >
-                    <Page
-                        pageNumber={pageNumber}
-                        width={pageWidth}
-                        renderTextLayer={false}
-                        renderAnnotationLayer={false}
-                        loading={
-                            <p className="p-6 text-center text-sm text-slate-600 dark:text-slate-300">
-                                Rendering page…
-                            </p>
-                        }
-                        error={
-                            <p
-                                role="alert"
-                                className="p-6 text-center text-sm text-red-800 dark:text-red-300"
-                            >
-                                Could not render this page.
-                            </p>
-                        }
-                        className="shadow-lg"
-                    />
+                    {Array.from(
+                        { length: pageCount },
+                        (_, index) => index + 1,
+                    ).map((page) => (
+                        <Page
+                            key={page}
+                            pageNumber={page}
+                            width={pageWidth}
+                            suspense={false}
+                            renderTextLayer={false}
+                            renderAnnotationLayer={false}
+                            onLoadError={(error) => setLoadError(error.message)}
+                            onRenderError={(error) =>
+                                setLoadError(error.message)
+                            }
+                            loading={
+                                <p className="p-6 text-center text-sm text-slate-600 dark:text-slate-300">
+                                    Rendering page {page}…
+                                </p>
+                            }
+                            error={
+                                <p
+                                    role="alert"
+                                    className="max-w-lg p-6 text-center text-sm text-red-800 dark:text-red-300"
+                                >
+                                    {loadError
+                                        ? `Could not render page ${page}: ${loadError}`
+                                        : `Could not render page ${page}.`}
+                                </p>
+                            }
+                            className="scroll-m-2 shadow-lg [&_canvas]:block"
+                        />
+                    ))}
                 </Document>
             </div>
             <span className="sr-only">{title}</span>

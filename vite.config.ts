@@ -43,7 +43,11 @@ export default defineConfig({
         strictPort: true,
         origin: `http://${devServerHost}:5173`,
         cors: {
-            origin: [`http://${devServerHost}`, 'http://dtms.test'],
+            origin: [
+                `http://${devServerHost}`,
+                `http://${devServerHost}:8000`,
+                'http://dtms.test',
+            ],
         },
         hmr: {
             host: devServerHost,

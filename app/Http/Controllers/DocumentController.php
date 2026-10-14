@@ -93,9 +93,27 @@ class DocumentController extends Controller
 
         try {
             DB::transaction(function () use ($request, $file, $validated, &$storagePath): void {
-                $storagePath = $file->store('documents', 'local');
+                $temporaryPath = $file->getPathname();
 
-                if (! is_string($storagePath)) {
+                if ($temporaryPath === '' || ! is_file($temporaryPath) || ! is_readable($temporaryPath)) {
+                    throw new RuntimeException('The uploaded document temporary file is unavailable.');
+                }
+
+                $stream = fopen($temporaryPath, 'rb');
+
+                if ($stream === false) {
+                    throw new RuntimeException('The uploaded document temporary file could not be opened.');
+                }
+
+                $storagePath = 'documents/'.$file->hashName();
+
+                try {
+                    $stored = Storage::disk('local')->put($storagePath, $stream);
+                } finally {
+                    fclose($stream);
+                }
+
+                if (! $stored) {
                     throw new RuntimeException('The document could not be saved to private storage.');
                 }
 
