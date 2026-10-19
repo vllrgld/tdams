@@ -22,11 +22,13 @@ class DocumentUploadTest extends TestCase
         $response = $this->actingAs($user)->post(route('documents.store'), [
             'file' => UploadedFile::fake()->create('declaration.pdf', 1024, 'application/pdf'),
             'tax_declaration_number' => 'TD-2026-00481',
+            'declaration_date' => '2026-03-15',
             'lot_number' => 'LOT-0182',
             'registered_owner' => 'Sample Owner',
             'municipality' => 'Laoag City',
             'barangay' => 'Barangay 1',
             'previous_tax_declaration_number' => 'TD-2020-00123',
+            'previous_declaration_date' => '2020-06-01',
             'title_number' => 'T-12345',
             'property_location_street' => 'Rizal Street',
             'property_location_barangay' => 'Barangay 2',
@@ -51,9 +53,11 @@ class DocumentUploadTest extends TestCase
         $document = Document::query()->sole();
 
         $this->assertSame('TD-2026-00481', $document->tax_declaration_number);
+        $this->assertSame('2026-03-15', $document->declaration_date?->toDateString());
         $this->assertSame('LOT-0182', $document->lot_number);
         $this->assertSame('Sample Owner', $document->registered_owner);
         $this->assertSame('TD-2020-00123', $document->previous_tax_declaration_number);
+        $this->assertSame('2020-06-01', $document->previous_declaration_date?->toDateString());
         $this->assertSame('T-12345', $document->title_number);
         $this->assertSame('Rizal Street', $document->property_location_street);
         $this->assertSame('Barangay 2', $document->property_location_barangay);

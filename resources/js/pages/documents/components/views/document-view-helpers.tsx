@@ -33,16 +33,32 @@ export function DocumentFileName({
 export function DocumentCardField({
     label,
     value,
+    tone = 'default',
 }: {
     label: string;
     value: string | null;
+    tone?: 'default' | 'on-image';
 }) {
+    const onImage = tone === 'on-image';
+
     return (
         <div>
-            <dt className="text-xs font-medium text-slate-500 dark:text-slate-400">
+            <dt
+                className={
+                    onImage
+                        ? 'text-[10px] font-medium tracking-wide text-blue-100/80 uppercase'
+                        : 'text-xs font-medium text-slate-500 dark:text-slate-400'
+                }
+            >
                 {label}
             </dt>
-            <dd className="mt-0.5 break-words text-slate-900 dark:text-slate-100">
+            <dd
+                className={
+                    onImage
+                        ? 'mt-0.5 truncate font-semibold text-white'
+                        : 'mt-0.5 break-words text-slate-900 dark:text-slate-100'
+                }
+            >
                 {value ?? '—'}
             </dd>
         </div>

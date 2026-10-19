@@ -7,7 +7,13 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
     import.meta.url,
 ).toString();
 
-export default function PdfThumbnail({ url }: { url: string }) {
+export default function PdfThumbnail({
+    url,
+    fit = 'contain',
+}: {
+    url: string;
+    fit?: 'contain' | 'cover';
+}) {
     const containerRef = useRef<HTMLDivElement>(null);
     const [width, setWidth] = useState(0);
     const [height, setHeight] = useState(0);
@@ -64,7 +70,11 @@ export default function PdfThumbnail({ url }: { url: string }) {
     return (
         <div
             ref={containerRef}
-            className="flex h-full w-full items-center justify-center overflow-hidden"
+            className={`h-full w-full overflow-hidden ${
+                fit === 'cover'
+                    ? 'relative'
+                    : 'flex items-center justify-center'
+            }`}
         >
             {!isVisible ? (
                 <FileText
@@ -94,17 +104,27 @@ export default function PdfThumbnail({ url }: { url: string }) {
                         </span>
                     }
                     error={null}
-                    className="flex h-full w-full items-center justify-center"
+                    className={
+                        fit === 'cover'
+                            ? 'absolute inset-0 h-full w-full'
+                            : 'flex h-full w-full items-center justify-center'
+                    }
                 >
                     {width > 0 && height > 0 && pageWidthRatio !== null && (
                         <Page
                             pageNumber={1}
                             width={Math.floor(
-                                Math.min(width, height * pageWidthRatio),
+                                fit === 'cover'
+                                    ? Math.max(width, height * pageWidthRatio)
+                                    : Math.min(width, height * pageWidthRatio),
                             )}
                             renderTextLayer={false}
                             renderAnnotationLayer={false}
-                            className="max-w-full shadow-md [&_canvas]:h-auto [&_canvas]:max-w-full"
+                            className={
+                                fit === 'cover'
+                                    ? '!absolute !inset-0 !h-full !w-full [&_canvas]:!h-full [&_canvas]:!w-full [&_canvas]:max-w-none [&_canvas]:object-cover [&_canvas]:object-top'
+                                    : 'max-w-full shadow-md [&_canvas]:h-auto [&_canvas]:max-w-full'
+                            }
                         />
                     )}
                 </Document>

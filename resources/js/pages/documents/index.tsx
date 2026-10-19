@@ -5,7 +5,6 @@ import { toast } from 'sonner';
 import DocumentInfo from './components/document-info';
 import DocumentUploadDialog from './components/document-upload-dialog';
 import DocumentViewerDialog from './components/document-viewer-dialog';
-import { dashboard } from '@/routes';
 import type { ArchivedDocument, DocumentsPageProps, UploadForm } from './types';
 
 export default function Documents({ documents }: DocumentsPageProps) {
@@ -17,9 +16,11 @@ export default function Documents({ documents }: DocumentsPageProps) {
     const form = useForm<UploadForm>({
         file: null,
         tax_declaration_number: '',
+        declaration_date: '',
         lot_number: '',
         registered_owner: '',
         previous_tax_declaration_number: '',
+        previous_declaration_date: '',
         title_number: '',
         property_location_street: '',
         property_location_barangay: '',
@@ -97,10 +98,6 @@ export default function Documents({ documents }: DocumentsPageProps) {
 
 Documents.layout = {
     breadcrumbs: [
-        {
-            title: 'Dashboard',
-            href: dashboard(),
-        },
         {
             title: 'Documents',
             href: '/documents',

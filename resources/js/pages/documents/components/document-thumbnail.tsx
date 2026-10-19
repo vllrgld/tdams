@@ -7,19 +7,29 @@ type DocumentThumbnailProps = {
     mimeType: string;
     url: string;
     title: string;
+    className?: string;
+    fit?: 'contain' | 'cover';
 };
 
 export default function DocumentThumbnail({
     mimeType,
     url,
     title,
+    className,
+    fit = 'contain',
 }: DocumentThumbnailProps) {
     const [imageError, setImageError] = useState(false);
     const isImage = mimeType.startsWith('image/');
     const TypeIcon = isImage ? FileImage : FileText;
 
     return (
-        <div className="relative flex h-48 w-full items-center justify-center overflow-hidden bg-slate-100 dark:bg-slate-900">
+        <div
+            className={`relative w-full overflow-hidden bg-slate-100 dark:bg-slate-900 ${
+                fit === 'cover'
+                    ? 'h-full'
+                    : 'flex h-48 items-center justify-center'
+            } ${className ?? ''}`}
+        >
             {mimeType === 'application/pdf' ? (
                 <Suspense
                     fallback={
@@ -31,7 +41,7 @@ export default function DocumentThumbnail({
                         </div>
                     }
                 >
-                    <PdfThumbnail url={url} />
+                    <PdfThumbnail url={url} fit={fit} />
                 </Suspense>
             ) : isImage && !imageError ? (
                 <img
@@ -39,7 +49,11 @@ export default function DocumentThumbnail({
                     alt={`First page preview of ${title}`}
                     loading="lazy"
                     onError={() => setImageError(true)}
-                    className="h-full w-full object-contain p-1.5"
+                    className={
+                        fit === 'cover'
+                            ? 'h-full w-full object-cover'
+                            : 'h-full w-full object-contain p-1.5'
+                    }
                 />
             ) : (
                 <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-slate-400">

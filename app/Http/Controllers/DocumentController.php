@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Document;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 use RuntimeException;
@@ -20,39 +22,7 @@ class DocumentController extends Controller
         $documents = Document::query()
             ->latest()
             ->paginate(20)
-            ->through(fn (Document $document): array => [
-                'id' => $document->id,
-                'taxDeclarationNumber' => $document->tax_declaration_number,
-                'lotNumber' => $document->lot_number,
-                'registeredOwner' => $document->registered_owner,
-                'municipality' => $document->municipality,
-                'barangay' => $document->barangay,
-                'previousTaxDeclarationNumber' => $document->previous_tax_declaration_number,
-                'titleNumber' => $document->title_number,
-                'propertyLocationStreet' => $document->property_location_street,
-                'propertyLocationBarangay' => $document->property_location_barangay,
-                'propertyLocationDistrict' => $document->property_location_district,
-                'propertyLocationMunicipality' => $document->property_location_municipality,
-                'ownerAddressStreet' => $document->owner_address_street,
-                'ownerAddressBarangay' => $document->owner_address_barangay,
-                'ownerAddressDistrict' => $document->owner_address_district,
-                'ownerAddressCityMunicipality' => $document->owner_address_city_municipality,
-                'province' => $document->province,
-                'pin' => $document->pin,
-                'boundaryNorth' => $document->boundary_north,
-                'boundarySouth' => $document->boundary_south,
-                'boundaryEast' => $document->boundary_east,
-                'boundaryWest' => $document->boundary_west,
-                'area' => $document->area === null
-                    ? null
-                    : number_format((float) $document->area, 4, '.', ''),
-                'remarks' => $document->remarks,
-                'originalFilename' => $document->original_filename,
-                'mimeType' => $document->mime_type,
-                'fileSize' => $document->file_size,
-                'createdAt' => $document->created_at?->toIso8601String(),
-                'viewUrl' => route('documents.view', $document),
-            ]);
+            ->through(fn (Document $document): array => $document->toArchiveArray());
 
         return Inertia::render('documents/index', [
             'documents' => $documents,
@@ -64,11 +34,13 @@ class DocumentController extends Controller
         $validated = $request->validate([
             'file' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png,tif,tiff', 'max:51200'],
             'tax_declaration_number' => ['nullable', 'string', 'max:100'],
+            'declaration_date' => ['nullable', 'date'],
             'lot_number' => ['nullable', 'string', 'max:100'],
             'registered_owner' => ['nullable', 'string', 'max:255'],
             'municipality' => ['nullable', 'string', 'max:150'],
             'barangay' => ['nullable', 'string', 'max:150'],
             'previous_tax_declaration_number' => ['nullable', 'string', 'max:100'],
+            'previous_declaration_date' => ['nullable', 'date'],
             'title_number' => ['nullable', 'string', 'max:100'],
             'property_location_street' => ['nullable', 'string', 'max:255'],
             'property_location_barangay' => ['nullable', 'string', 'max:150'],
@@ -87,6 +59,11 @@ class DocumentController extends Controller
             'area' => ['nullable', 'numeric', 'min:0', 'max:9999999999.9999'],
             'remarks' => ['nullable', 'string', 'max:10000'],
         ]);
+
+        $this->assertPreviousDeclarationIsNotSelf(
+            $validated['previous_tax_declaration_number'] ?? null,
+            $validated['tax_declaration_number'] ?? null,
+        );
 
         $file = $validated['file'];
         $storagePath = null;
@@ -119,11 +96,13 @@ class DocumentController extends Controller
 
                 Document::query()->create([
                     'tax_declaration_number' => $validated['tax_declaration_number'] ?? null,
+                    'declaration_date' => $validated['declaration_date'] ?? null,
                     'lot_number' => $validated['lot_number'] ?? null,
                     'registered_owner' => $validated['registered_owner'] ?? null,
                     'municipality' => $validated['municipality'] ?? null,
                     'barangay' => $validated['barangay'] ?? null,
                     'previous_tax_declaration_number' => $validated['previous_tax_declaration_number'] ?? null,
+                    'previous_declaration_date' => $validated['previous_declaration_date'] ?? null,
                     'title_number' => $validated['title_number'] ?? null,
                     'property_location_street' => $validated['property_location_street'] ?? null,
                     'property_location_barangay' => $validated['property_location_barangay'] ?? null,
@@ -159,6 +138,84 @@ class DocumentController extends Controller
         return to_route('documents.index');
     }
 
+    public function declarationNumbers(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'q' => ['required', 'string', 'min:1', 'max:100'],
+            'exclude' => ['nullable', 'integer', 'exists:documents,id'],
+        ]);
+
+        $term = '%'.addcslashes(mb_strtolower($validated['q']), '%_\\').'%';
+
+        $documents = Document::query()
+            ->whereNotNull('tax_declaration_number')
+            ->where('tax_declaration_number', '!=', '')
+            ->whereRaw('LOWER(tax_declaration_number) LIKE ?', [$term])
+            ->when(
+                isset($validated['exclude']),
+                fn ($query) => $query->where('id', '!=', (int) $validated['exclude']),
+            )
+            ->latest('id')
+            ->limit(15)
+            ->get([
+                'id',
+                'tax_declaration_number',
+                'registered_owner',
+                'lot_number',
+                'municipality',
+                'declaration_date',
+                'created_at',
+            ]);
+
+        return response()->json($documents->map(fn (Document $document): array => [
+            'id' => $document->id,
+            'taxDeclarationNumber' => $document->tax_declaration_number,
+            'registeredOwner' => $document->registered_owner,
+            'lotNumber' => $document->lot_number,
+            'municipality' => $document->municipality,
+            'declarationDate' => $document->declaration_date?->toDateString(),
+            'createdAt' => $document->created_at?->toIso8601String(),
+        ])->values());
+    }
+
+    public function history(Document $document): JsonResponse
+    {
+        return response()->json($document->previousDeclarationChain());
+    }
+
+    public function chain(Document $document): JsonResponse
+    {
+        return response()->json($document->fullDeclarationChain());
+    }
+
+    public function update(Request $request, Document $document): RedirectResponse
+    {
+        $validated = $request->validate([
+            'previous_tax_declaration_number' => ['nullable', 'string', 'max:100'],
+            'previous_declaration_date' => ['nullable', 'date'],
+        ]);
+
+        if (filled($document->previous_tax_declaration_number)) {
+            throw ValidationException::withMessages([
+                'previous_tax_declaration_number' => 'A previous tax declaration number is already set.',
+            ]);
+        }
+
+        $previousNumber = $validated['previous_tax_declaration_number'] ?? null;
+
+        $this->assertPreviousDeclarationIsNotSelf(
+            $previousNumber,
+            $document->tax_declaration_number,
+        );
+
+        $document->update([
+            'previous_tax_declaration_number' => $previousNumber,
+            'previous_declaration_date' => $validated['previous_declaration_date'] ?? null,
+        ]);
+
+        return to_route('documents.index');
+    }
+
     public function view(Document $document): StreamedResponse
     {
         abort_unless(Storage::disk('local')->exists($document->storage_path), 404);
@@ -172,5 +229,18 @@ class DocumentController extends Controller
             ],
             'inline',
         );
+    }
+
+    private function assertPreviousDeclarationIsNotSelf(?string $previousNumber, ?string $taxDeclarationNumber): void
+    {
+        if (! filled($previousNumber) || ! filled($taxDeclarationNumber)) {
+            return;
+        }
+
+        if (strcasecmp(trim($previousNumber), trim($taxDeclarationNumber)) === 0) {
+            throw ValidationException::withMessages([
+                'previous_tax_declaration_number' => 'The previous tax declaration number cannot be the same as this document.',
+            ]);
+        }
     }
 }

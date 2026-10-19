@@ -1,12 +1,12 @@
 import { Link } from '@inertiajs/react';
 import {
     FileSearch,
+    FolderClosed,
     LayoutGrid,
     Palette,
     Shield,
     UserRound,
 } from 'lucide-react';
-import AppLogoIcon from '@/components/app-logo-icon';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import {
@@ -36,6 +36,11 @@ const mainNavItems: NavItem[] = [
         href: '/documents',
         icon: FileSearch,
     },
+    {
+        title: 'Filing Cabinets',
+        href: '/filing-cabinets',
+        icon: FolderClosed,
+    },
 ];
 
 const accountNavItems: NavItem[] = [
@@ -64,10 +69,19 @@ export function AppSidebar() {
                     <SidebarMenuItem>
                         <SidebarMenuButton
                             size="lg"
-                            className="rounded-none"
+                            className="h-auto min-h-12 rounded-none py-2"
                             render={<Link href={dashboard()} prefetch />}
                         >
-                            <AppLogoIcon className="h-8 w-auto max-w-40 shrink-0 group-data-[collapsible=icon]:size-8 dark:bg-white dark:p-1" />
+                            <img
+                                src="/logo.png"
+                                alt=""
+                                className="size-9 shrink-0 object-contain"
+                            />
+                            <span className="min-w-0 text-xs leading-tight font-semibold whitespace-normal group-data-[collapsible=icon]:hidden">
+                                Tax Declaration Archive
+                                <br />
+                                Management System
+                            </span>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>

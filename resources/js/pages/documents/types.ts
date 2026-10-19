@@ -1,6 +1,7 @@
 export type ArchivedDocument = {
     id: number;
     taxDeclarationNumber: string | null;
+    declarationDate: string | null;
     lotNumber: string | null;
     registeredOwner: string | null;
     municipality: string | null;
@@ -11,6 +12,7 @@ export type ArchivedDocument = {
     createdAt: string | null;
     viewUrl: string;
     previousTaxDeclarationNumber: string | null;
+    previousDeclarationDate: string | null;
     titleNumber: string | null;
     propertyLocationStreet: string | null;
     propertyLocationBarangay: string | null;
@@ -44,9 +46,11 @@ export type DocumentsPageProps = {
 export type UploadForm = {
     file: File | null;
     tax_declaration_number: string;
+    declaration_date: string;
     lot_number: string;
     registered_owner: string;
     previous_tax_declaration_number: string;
+    previous_declaration_date: string;
     title_number: string;
     property_location_street: string;
     property_location_barangay: string;
@@ -67,3 +71,24 @@ export type UploadForm = {
 };
 
 export type MetadataField = Exclude<keyof UploadForm, 'file'>;
+
+export type DeclarationNumberMatch = {
+    id: number;
+    taxDeclarationNumber: string;
+    registeredOwner: string | null;
+    lotNumber: string | null;
+    municipality: string | null;
+    declarationDate: string | null;
+    createdAt: string | null;
+};
+
+export type PreviousDeclarationEntry = {
+    taxDeclarationNumber: string;
+    document: ArchivedDocument | null;
+    declarationDate: string | null;
+};
+
+export type DocumentChainResponse = {
+    originId: number;
+    entries: PreviousDeclarationEntry[];
+};

@@ -15,6 +15,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { metadataSections } from '../lib/metadata';
 import type { UploadForm } from '../types';
+import DeclarationNumberSearch from './declaration-number-search';
 
 type DocumentUploadDialogProps = {
     form: InertiaFormProps<UploadForm>;
@@ -101,43 +102,83 @@ export default function DocumentUploadDialog({
                                                     <Label htmlFor={id}>
                                                         {field.label}
                                                     </Label>
-                                                    <Input
-                                                        id={id}
-                                                        type={
-                                                            field.name ===
-                                                            'area'
-                                                                ? 'number'
-                                                                : 'text'
-                                                        }
-                                                        step={
-                                                            field.name ===
-                                                            'area'
-                                                                ? '0.0001'
-                                                                : undefined
-                                                        }
-                                                        min={
-                                                            field.name ===
-                                                            'area'
-                                                                ? '0'
-                                                                : undefined
-                                                        }
-                                                        value={
-                                                            form.data[
-                                                                field.name
-                                                            ]
-                                                        }
-                                                        onChange={(event) =>
-                                                            form.setData(
-                                                                field.name,
-                                                                event.target
-                                                                    .value,
-                                                            )
-                                                        }
-                                                        maxLength={
-                                                            field.maxLength
-                                                        }
-                                                        className="rounded-none"
-                                                    />
+                                                    {field.name ===
+                                                    'previous_tax_declaration_number' ? (
+                                                        <DeclarationNumberSearch
+                                                            id={id}
+                                                            value={
+                                                                form.data
+                                                                    .previous_tax_declaration_number
+                                                            }
+                                                            onChange={(
+                                                                value,
+                                                                match,
+                                                            ) => {
+                                                                form.setData(
+                                                                    'previous_tax_declaration_number',
+                                                                    value,
+                                                                );
+
+                                                                if (
+                                                                    match?.declarationDate
+                                                                ) {
+                                                                    form.setData(
+                                                                        'previous_declaration_date',
+                                                                        match.declarationDate,
+                                                                    );
+                                                                }
+                                                            }}
+                                                            excludeNumber={
+                                                                form.data
+                                                                    .tax_declaration_number
+                                                            }
+                                                            maxLength={
+                                                                field.maxLength
+                                                            }
+                                                            disabled={
+                                                                form.processing
+                                                            }
+                                                        />
+                                                    ) : (
+                                                        <Input
+                                                            id={id}
+                                                            type={
+                                                                field.type ??
+                                                                (field.name ===
+                                                                'area'
+                                                                    ? 'number'
+                                                                    : 'text')
+                                                            }
+                                                            step={
+                                                                field.name ===
+                                                                'area'
+                                                                    ? '0.0001'
+                                                                    : undefined
+                                                            }
+                                                            min={
+                                                                field.name ===
+                                                                'area'
+                                                                    ? '0'
+                                                                    : undefined
+                                                            }
+                                                            value={
+                                                                form.data[
+                                                                    field.name
+                                                                ]
+                                                            }
+                                                            onChange={(event) =>
+                                                                form.setData(
+                                                                    field.name,
+                                                                    event.target
+                                                                        .value,
+                                                                )
+                                                            }
+                                                            maxLength={
+                                                                field.maxLength
+                                                            }
+                                                            className="rounded-none"
+                                                        />
+                                                    )}
                                                     <InputError
                                                         message={
                                                             form.errors[

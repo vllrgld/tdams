@@ -2,7 +2,12 @@ import type { MetadataField } from '../types';
 
 export const metadataSections: {
     title: string;
-    fields: { name: MetadataField; label: string; maxLength?: number }[];
+    fields: {
+        name: MetadataField;
+        label: string;
+        maxLength?: number;
+        type?: 'text' | 'number' | 'date';
+    }[];
 }[] = [
     {
         title: 'Declaration details',
@@ -13,9 +18,19 @@ export const metadataSections: {
                 maxLength: 100,
             },
             {
+                name: 'declaration_date',
+                label: 'Declaration date',
+                type: 'date',
+            },
+            {
                 name: 'previous_tax_declaration_number',
                 label: 'Previous tax declaration number',
                 maxLength: 100,
+            },
+            {
+                name: 'previous_declaration_date',
+                label: 'Previous declaration date',
+                type: 'date',
             },
             { name: 'title_number', label: 'Title number', maxLength: 100 },
             {

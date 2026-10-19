@@ -1,7 +1,19 @@
-import { lazy, Suspense, useEffect, useState, type ReactNode } from 'react';
+import {
+    lazy,
+    Suspense,
+    useEffect,
+    useState,
+    type FormEvent,
+    type ReactNode,
+} from 'react';
+import { useForm } from '@inertiajs/react';
 import { History, Info } from 'lucide-react';
+import { toast } from 'sonner';
+import InputError from '@/components/input-error';
 import { Spinner } from '@/components/ui/spinner';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
     Dialog,
     DialogContent,
@@ -11,6 +23,7 @@ import {
 } from '@/components/ui/dialog';
 import { formatDate, formatFileSize } from '../lib/formatters';
 import type { ArchivedDocument } from '../types';
+import DeclarationNumberSearch from './declaration-number-search';
 import DocumentHistory from './document-history';
 
 const PdfPreview = lazy(() => import('@/components/pdf-preview'));
@@ -181,7 +194,11 @@ export default function DocumentViewerDialog({
                 >
                     {document &&
                         (panelView === 'history' ? (
-                            <DocumentHistory document={document} />
+                            <DocumentHistory
+                                document={document}
+                                onDocumentChange={onDocumentChange}
+                                onShowInfo={() => setPanelView('info')}
+                            />
                         ) : (
                             <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
                                 <div className="flex shrink-0 items-center gap-3 border-b border-slate-200 p-4 pr-12 text-left dark:border-slate-800">
@@ -210,14 +227,48 @@ export default function DocumentViewerDialog({
                                                 }
                                             />
                                             <InfoField
-                                                label="Previous tax declaration number"
-                                                value={
-                                                    document.previousTaxDeclarationNumber
-                                                }
-                                                onClick={() =>
-                                                    setPanelView('history')
-                                                }
+                                                label="Declaration date"
+                                                value={formatDate(
+                                                    document.declarationDate,
+                                                )}
                                             />
+                                            {document.previousTaxDeclarationNumber ? (
+                                                <>
+                                                    <InfoField
+                                                        label="Previous tax declaration number"
+                                                        value={
+                                                            document.previousTaxDeclarationNumber
+                                                        }
+                                                        onClick={() =>
+                                                            setPanelView(
+                                                                'history',
+                                                            )
+                                                        }
+                                                    />
+                                                    <InfoField
+                                                        label="Previous declaration date"
+                                                        value={formatDate(
+                                                            document.previousDeclarationDate,
+                                                        )}
+                                                    />
+                                                </>
+                                            ) : (
+                                                <PreviousDeclarationEditor
+                                                    key={document.id}
+                                                    document={document}
+                                                    onSaved={(
+                                                        previousNumber,
+                                                        previousDeclarationDate,
+                                                    ) =>
+                                                        onDocumentChange({
+                                                            ...document,
+                                                            previousTaxDeclarationNumber:
+                                                                previousNumber,
+                                                            previousDeclarationDate,
+                                                        })
+                                                    }
+                                                />
+                                            )}
                                             <InfoField
                                                 label="Title number"
                                                 value={document.titleNumber}
@@ -350,6 +401,119 @@ export default function DocumentViewerDialog({
                 </DialogContent>
             </Dialog>
         </>
+    );
+}
+
+function PreviousDeclarationEditor({
+    document,
+    onSaved,
+}: {
+    document: ArchivedDocument;
+    onSaved: (
+        previousTaxDeclarationNumber: string,
+        previousDeclarationDate: string | null,
+    ) => void;
+}) {
+    const form = useForm({
+        previous_tax_declaration_number: '',
+        previous_declaration_date: '',
+    });
+
+    function submit(event: FormEvent<HTMLFormElement>) {
+        event.preventDefault();
+
+        const previousNumber = form.data.previous_tax_declaration_number.trim();
+
+        if (previousNumber === '') {
+            return;
+        }
+
+        form.patch(`/documents/${document.id}`, {
+            preserveScroll: true,
+            preserveState: true,
+            onSuccess: () => {
+                onSaved(
+                    previousNumber,
+                    form.data.previous_declaration_date || null,
+                );
+                toast.success('Previous tax declaration number saved.');
+            },
+        });
+    }
+
+    return (
+        <div className="grid min-w-0 gap-1 sm:col-span-2">
+            <dt className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                Previous tax declaration number
+            </dt>
+            <dd>
+                <form onSubmit={submit} className="grid gap-2">
+                    <div className="flex items-start gap-2">
+                        <div className="min-w-0 flex-1">
+                            <DeclarationNumberSearch
+                                id={`document-${document.id}-previous`}
+                                value={
+                                    form.data.previous_tax_declaration_number
+                                }
+                                onChange={(value, match) => {
+                                    form.setData(
+                                        'previous_tax_declaration_number',
+                                        value,
+                                    );
+
+                                    if (match?.declarationDate) {
+                                        form.setData(
+                                            'previous_declaration_date',
+                                            match.declarationDate,
+                                        );
+                                    }
+                                }}
+                                excludeId={document.id}
+                                excludeNumber={document.taxDeclarationNumber}
+                                disabled={form.processing}
+                            />
+                        </div>
+                        <Button
+                            type="submit"
+                            disabled={
+                                form.processing ||
+                                form.data.previous_tax_declaration_number.trim() ===
+                                    ''
+                            }
+                            className="h-9 shrink-0 rounded-none bg-blue-900 px-3 text-xs text-white hover:bg-blue-800 dark:bg-blue-700 dark:hover:bg-blue-600"
+                        >
+                            {form.processing ? 'Saving…' : 'Save'}
+                        </Button>
+                    </div>
+                    <InputError
+                        message={form.errors.previous_tax_declaration_number}
+                    />
+                    <div className="grid gap-1">
+                        <Label
+                            htmlFor={`document-${document.id}-previous-date`}
+                        >
+                            Previous declaration date
+                        </Label>
+                        <Input
+                            id={`document-${document.id}-previous-date`}
+                            type="date"
+                            value={form.data.previous_declaration_date}
+                            onChange={(event) =>
+                                form.setData(
+                                    'previous_declaration_date',
+                                    event.target.value,
+                                )
+                            }
+                            disabled={form.processing}
+                            className="rounded-none"
+                        />
+                        <InputError
+                            message={form.errors.previous_declaration_date}
+                        />
+                    </div>
+                </form>
+            </dd>
+        </div>
     );
 }
 
