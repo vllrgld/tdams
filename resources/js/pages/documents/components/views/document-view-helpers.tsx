@@ -47,7 +47,7 @@ export function DocumentCardField({
                 className={
                     onImage
                         ? 'text-[10px] font-medium tracking-wide text-white uppercase'
-                        : 'text-xs font-medium text-slate-500 dark:text-slate-400'
+                        : 'text-xs font-medium text-slate-500 dark:text-neutral-400'
                 }
             >
                 {label}
@@ -56,7 +56,7 @@ export function DocumentCardField({
                 className={
                     onImage
                         ? 'mt-0.5 truncate font-semibold text-white'
-                        : 'mt-0.5 break-words text-slate-900 dark:text-slate-100'
+                        : 'mt-0.5 break-words text-slate-900 dark:text-neutral-100'
                 }
             >
                 {value ?? '—'}

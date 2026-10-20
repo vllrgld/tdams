@@ -1,1 +1,347 @@
-{"nodes": [{"id": "github_prompts_ui_styling_references_shadcn_theming", "label": "shadcn-theming.md", "file_type": "document", "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_ui_styling_references_shadcn_theming_next_themes_dark_mode", "label": "Dark Mode via next-themes ThemeProvider", "file_type": "concept", "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md", "source_location": "L5", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_ui_styling_references_shadcn_theming_theme_toggle", "label": "ThemeToggle Component", "file_type": "concept", "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md", "source_location": "L53", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_ui_styling_references_shadcn_theming_css_variable_system", "label": "shadcn CSS Variable System (globals.css :root/.dark)", "file_type": "concept", "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md", "source_location": "L95", "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "CSS variables enable runtime theme switching between light and dark without rebuilding classes."}, {"id": "github_prompts_ui_styling_references_shadcn_theming_hsl_without_wrapper", "label": "HSL Values Without hsl() Wrapper", "file_type": "rationale", "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md", "source_location": "L140", "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "Storing bare H S L channels allows opacity modifiers like hsl(var(--primary) / 0.5)."}, {"id": "github_prompts_ui_styling_references_shadcn_theming_cva_variants", "label": "Component Variant Customization (cva buttonVariants)", "file_type": "concept", "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md", "source_location": "L250", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_ui_styling_references_shadcn_theming_multiple_themes_data_attributes", "label": "Multiple Themes via data-theme Attributes", "file_type": "concept", "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md", "source_location": "L224", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_ui_styling_references_shadcn_theming_base_color_presets", "label": "Base Color Presets (Slate, Gray, Zinc, Neutral, Stone)", "file_type": "concept", "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md", "source_location": "L318", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_ui_styling_references_shadcn_theming_style_variants", "label": "Style Variants (Default / New York, components.json)", "file_type": "concept", "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md", "source_location": "L330", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_ui_styling_references_shadcn_theming_radius_variable", "label": "Global --radius Variable", "file_type": "concept", "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md", "source_location": "L348", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_ui_styling_references_shadcn_theming_semantic_color_naming", "label": "Semantic Color Naming", "file_type": "rationale", "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md", "source_location": "L370", "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "Use destructive not red, muted not gray, so themes can remap colors without changing component code."}], "edges": [{"source": "github_prompts_ui_styling_references_shadcn_theming", "target": "github_prompts_ui_styling_references_shadcn_theming_next_themes_dark_mode", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md", "source_location": "L5", "weight": 1.0}, {"source": "github_prompts_ui_styling_references_shadcn_theming", "target": "github_prompts_ui_styling_references_shadcn_theming_theme_toggle", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md", "source_location": "L53", "weight": 1.0}, {"source": "github_prompts_ui_styling_references_shadcn_theming", "target": "github_prompts_ui_styling_references_shadcn_theming_css_variable_system", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md", "source_location": "L95", "weight": 1.0}, {"source": "github_prompts_ui_styling_references_shadcn_theming", "target": "github_prompts_ui_styling_references_shadcn_theming_hsl_without_wrapper", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md", "source_location": "L140", "weight": 1.0}, {"source": "github_prompts_ui_styling_references_shadcn_theming", "target": "github_prompts_ui_styling_references_shadcn_theming_cva_variants", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md", "source_location": "L250", "weight": 1.0}, {"source": "github_prompts_ui_styling_references_shadcn_theming", "target": "github_prompts_ui_styling_references_shadcn_theming_multiple_themes_data_attributes", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md", "source_location": "L224", "weight": 1.0}, {"source": "github_prompts_ui_styling_references_shadcn_theming", "target": "github_prompts_ui_styling_references_shadcn_theming_base_color_presets", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md", "source_location": "L318", "weight": 1.0}, {"source": "github_prompts_ui_styling_references_shadcn_theming", "target": "github_prompts_ui_styling_references_shadcn_theming_style_variants", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md", "source_location": "L330", "weight": 1.0}, {"source": "github_prompts_ui_styling_references_shadcn_theming", "target": "github_prompts_ui_styling_references_shadcn_theming_radius_variable", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md", "source_location": "L348", "weight": 1.0}, {"source": "github_prompts_ui_styling_references_shadcn_theming", "target": "github_prompts_ui_styling_references_shadcn_theming_semantic_color_naming", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md", "source_location": "L370", "weight": 1.0}, {"source": "github_prompts_ui_styling_references_shadcn_theming_next_themes_dark_mode", "target": "github_prompts_ui_styling_references_shadcn_theming_theme_toggle", "relation": "conceptually_related_to", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md", "source_location": "L56", "weight": 1.0}, {"source": "github_prompts_ui_styling_references_shadcn_theming_hsl_without_wrapper", "target": "github_prompts_ui_styling_references_shadcn_theming_css_variable_system", "relation": "rationale_for", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md", "source_location": "L142", "weight": 1.0}, {"source": "github_prompts_ui_styling_references_shadcn_theming_semantic_color_naming", "target": "github_prompts_ui_styling_references_shadcn_theming_css_variable_system", "relation": "rationale_for", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md", "source_location": "L370", "weight": 0.85}, {"source": "github_prompts_ui_styling_references_shadcn_theming_radius_variable", "target": "github_prompts_ui_styling_references_shadcn_theming_css_variable_system", "relation": "shares_data_with", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md", "source_location": "L117", "weight": 1.0}, {"source": "github_prompts_ui_styling_references_shadcn_theming_cva_variants", "target": "github_prompts_ui_styling_references_shadcn_components_button", "relation": "references", "confidence": "INFERRED", "confidence_score": 0.95, "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md", "source_location": "L254", "weight": 0.95}, {"source": "github_prompts_ui_styling_skill_copy_paste_distribution_model", "target": "github_prompts_ui_styling_references_shadcn_theming_cva_variants", "relation": "rationale_for", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md", "source_location": "L249", "weight": 0.85}, {"source": "github_prompts_ui_styling_references_shadcn_theming_theme_toggle", "target": "github_prompts_ui_styling_references_shadcn_accessibility_screen_reader_support", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.75, "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md", "source_location": "L70", "weight": 0.75}, {"source": "github_prompts_ui_styling_references_shadcn_theming_css_variable_system", "target": "github_prompts_ui_styling_references_tailwind_customization_tailwind_config_ts", "relation": "shares_data_with", "confidence": "INFERRED", "confidence_score": 0.95, "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md", "source_location": "L155", "weight": 0.95}, {"source": "github_prompts_ui_styling_references_shadcn_theming_next_themes_dark_mode", "target": "github_prompts_ui_styling_references_tailwind_customization_dark_mode_configuration", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md", "source_location": "L40", "weight": 0.85}, {"source": "github_prompts_ui_styling_references_shadcn_theming_multiple_themes_data_attributes", "target": "github_prompts_ui_styling_references_tailwind_customization_custom_variants", "relation": "semantically_similar_to", "confidence": "INFERRED", "confidence_score": 0.75, "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md", "source_location": "L224", "weight": 0.75}], "hyperedges": [{"id": "css_variable_theming_pipeline", "label": "CSS-variable theming pipeline (globals.css vars \u2192 Tailwind config \u2192 dark mode toggle)", "nodes": ["github_prompts_ui_styling_references_shadcn_theming_css_variable_system", "github_prompts_ui_styling_references_shadcn_theming_radius_variable", "github_prompts_ui_styling_references_tailwind_customization_tailwind_config_ts", "github_prompts_ui_styling_references_tailwind_customization_dark_mode_configuration", "github_prompts_ui_styling_references_shadcn_theming_next_themes_dark_mode"], "relation": "participate_in", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md"}]}
+{
+    "nodes": [
+        {
+            "id": "github_prompts_ui_styling_references_shadcn_theming",
+            "label": "shadcn-theming.md",
+            "file_type": "document",
+            "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_ui_styling_references_shadcn_theming_next_themes_dark_mode",
+            "label": "Dark Mode via next-themes ThemeProvider",
+            "file_type": "concept",
+            "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md",
+            "source_location": "L5",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_ui_styling_references_shadcn_theming_theme_toggle",
+            "label": "ThemeToggle Component",
+            "file_type": "concept",
+            "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md",
+            "source_location": "L53",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_ui_styling_references_shadcn_theming_css_variable_system",
+            "label": "shadcn CSS Variable System (globals.css :root/.dark)",
+            "file_type": "concept",
+            "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md",
+            "source_location": "L95",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null,
+            "rationale": "CSS variables enable runtime theme switching between light and dark without rebuilding classes."
+        },
+        {
+            "id": "github_prompts_ui_styling_references_shadcn_theming_hsl_without_wrapper",
+            "label": "HSL Values Without hsl() Wrapper",
+            "file_type": "rationale",
+            "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md",
+            "source_location": "L140",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null,
+            "rationale": "Storing bare H S L channels allows opacity modifiers like hsl(var(--primary) / 0.5)."
+        },
+        {
+            "id": "github_prompts_ui_styling_references_shadcn_theming_cva_variants",
+            "label": "Component Variant Customization (cva buttonVariants)",
+            "file_type": "concept",
+            "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md",
+            "source_location": "L250",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_ui_styling_references_shadcn_theming_multiple_themes_data_attributes",
+            "label": "Multiple Themes via data-theme Attributes",
+            "file_type": "concept",
+            "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md",
+            "source_location": "L224",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_ui_styling_references_shadcn_theming_base_color_presets",
+            "label": "Base Color Presets (Slate, Gray, Zinc, Neutral, Stone)",
+            "file_type": "concept",
+            "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md",
+            "source_location": "L318",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_ui_styling_references_shadcn_theming_style_variants",
+            "label": "Style Variants (Default / New York, components.json)",
+            "file_type": "concept",
+            "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md",
+            "source_location": "L330",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_ui_styling_references_shadcn_theming_radius_variable",
+            "label": "Global --radius Variable",
+            "file_type": "concept",
+            "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md",
+            "source_location": "L348",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_ui_styling_references_shadcn_theming_semantic_color_naming",
+            "label": "Semantic Color Naming",
+            "file_type": "rationale",
+            "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md",
+            "source_location": "L370",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null,
+            "rationale": "Use destructive not red, muted not gray, so themes can remap colors without changing component code."
+        }
+    ],
+    "edges": [
+        {
+            "source": "github_prompts_ui_styling_references_shadcn_theming",
+            "target": "github_prompts_ui_styling_references_shadcn_theming_next_themes_dark_mode",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md",
+            "source_location": "L5",
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_ui_styling_references_shadcn_theming",
+            "target": "github_prompts_ui_styling_references_shadcn_theming_theme_toggle",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md",
+            "source_location": "L53",
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_ui_styling_references_shadcn_theming",
+            "target": "github_prompts_ui_styling_references_shadcn_theming_css_variable_system",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md",
+            "source_location": "L95",
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_ui_styling_references_shadcn_theming",
+            "target": "github_prompts_ui_styling_references_shadcn_theming_hsl_without_wrapper",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md",
+            "source_location": "L140",
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_ui_styling_references_shadcn_theming",
+            "target": "github_prompts_ui_styling_references_shadcn_theming_cva_variants",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md",
+            "source_location": "L250",
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_ui_styling_references_shadcn_theming",
+            "target": "github_prompts_ui_styling_references_shadcn_theming_multiple_themes_data_attributes",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md",
+            "source_location": "L224",
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_ui_styling_references_shadcn_theming",
+            "target": "github_prompts_ui_styling_references_shadcn_theming_base_color_presets",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md",
+            "source_location": "L318",
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_ui_styling_references_shadcn_theming",
+            "target": "github_prompts_ui_styling_references_shadcn_theming_style_variants",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md",
+            "source_location": "L330",
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_ui_styling_references_shadcn_theming",
+            "target": "github_prompts_ui_styling_references_shadcn_theming_radius_variable",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md",
+            "source_location": "L348",
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_ui_styling_references_shadcn_theming",
+            "target": "github_prompts_ui_styling_references_shadcn_theming_semantic_color_naming",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md",
+            "source_location": "L370",
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_ui_styling_references_shadcn_theming_next_themes_dark_mode",
+            "target": "github_prompts_ui_styling_references_shadcn_theming_theme_toggle",
+            "relation": "conceptually_related_to",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md",
+            "source_location": "L56",
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_ui_styling_references_shadcn_theming_hsl_without_wrapper",
+            "target": "github_prompts_ui_styling_references_shadcn_theming_css_variable_system",
+            "relation": "rationale_for",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md",
+            "source_location": "L142",
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_ui_styling_references_shadcn_theming_semantic_color_naming",
+            "target": "github_prompts_ui_styling_references_shadcn_theming_css_variable_system",
+            "relation": "rationale_for",
+            "confidence": "INFERRED",
+            "confidence_score": 0.85,
+            "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md",
+            "source_location": "L370",
+            "weight": 0.85
+        },
+        {
+            "source": "github_prompts_ui_styling_references_shadcn_theming_radius_variable",
+            "target": "github_prompts_ui_styling_references_shadcn_theming_css_variable_system",
+            "relation": "shares_data_with",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md",
+            "source_location": "L117",
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_ui_styling_references_shadcn_theming_cva_variants",
+            "target": "github_prompts_ui_styling_references_shadcn_components_button",
+            "relation": "references",
+            "confidence": "INFERRED",
+            "confidence_score": 0.95,
+            "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md",
+            "source_location": "L254",
+            "weight": 0.95
+        },
+        {
+            "source": "github_prompts_ui_styling_skill_copy_paste_distribution_model",
+            "target": "github_prompts_ui_styling_references_shadcn_theming_cva_variants",
+            "relation": "rationale_for",
+            "confidence": "INFERRED",
+            "confidence_score": 0.85,
+            "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md",
+            "source_location": "L249",
+            "weight": 0.85
+        },
+        {
+            "source": "github_prompts_ui_styling_references_shadcn_theming_theme_toggle",
+            "target": "github_prompts_ui_styling_references_shadcn_accessibility_screen_reader_support",
+            "relation": "conceptually_related_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.75,
+            "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md",
+            "source_location": "L70",
+            "weight": 0.75
+        },
+        {
+            "source": "github_prompts_ui_styling_references_shadcn_theming_css_variable_system",
+            "target": "github_prompts_ui_styling_references_tailwind_customization_tailwind_config_ts",
+            "relation": "shares_data_with",
+            "confidence": "INFERRED",
+            "confidence_score": 0.95,
+            "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md",
+            "source_location": "L155",
+            "weight": 0.95
+        },
+        {
+            "source": "github_prompts_ui_styling_references_shadcn_theming_next_themes_dark_mode",
+            "target": "github_prompts_ui_styling_references_tailwind_customization_dark_mode_configuration",
+            "relation": "conceptually_related_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.85,
+            "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md",
+            "source_location": "L40",
+            "weight": 0.85
+        },
+        {
+            "source": "github_prompts_ui_styling_references_shadcn_theming_multiple_themes_data_attributes",
+            "target": "github_prompts_ui_styling_references_tailwind_customization_custom_variants",
+            "relation": "semantically_similar_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.75,
+            "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md",
+            "source_location": "L224",
+            "weight": 0.75
+        }
+    ],
+    "hyperedges": [
+        {
+            "id": "css_variable_theming_pipeline",
+            "label": "CSS-variable theming pipeline (globals.css vars \u2192 Tailwind config \u2192 dark mode toggle)",
+            "nodes": [
+                "github_prompts_ui_styling_references_shadcn_theming_css_variable_system",
+                "github_prompts_ui_styling_references_shadcn_theming_radius_variable",
+                "github_prompts_ui_styling_references_tailwind_customization_tailwind_config_ts",
+                "github_prompts_ui_styling_references_tailwind_customization_dark_mode_configuration",
+                "github_prompts_ui_styling_references_shadcn_theming_next_themes_dark_mode"
+            ],
+            "relation": "participate_in",
+            "confidence": "INFERRED",
+            "confidence_score": 0.85,
+            "source_file": ".github/prompts/ui-styling/references/shadcn-theming.md"
+        }
+    ]
+}

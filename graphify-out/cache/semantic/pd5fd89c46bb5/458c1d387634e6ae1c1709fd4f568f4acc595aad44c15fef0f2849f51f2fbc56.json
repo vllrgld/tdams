@@ -1,1 +1,476 @@
-{"nodes": [{"id": "github_prompts_banner_design_skill", "label": "SKILL.md (banner-design)", "file_type": "document", "source_file": ".github/prompts/banner-design/SKILL.md", "source_location": null, "source_url": null, "captured_at": null, "author": "claudekit", "contributor": null}, {"id": "github_prompts_banner_design_skill_banner_design_workflow", "label": "Banner Design Workflow", "file_type": "rationale", "source_file": ".github/prompts/banner-design/SKILL.md", "source_location": null, "source_url": null, "captured_at": null, "author": "claudekit", "contributor": null, "rationale": "Five steps: gather requirements, research art direction, design options, export PNGs, present and iterate."}, {"id": "github_prompts_banner_design_skill_art_direction_options", "label": "Multiple Art Direction Options", "file_type": "concept", "source_file": ".github/prompts/banner-design/SKILL.md", "source_location": null, "source_url": null, "captured_at": null, "author": "claudekit", "contributor": null, "rationale": "Generates 2-3 complementary styles per request (default 3 options) so users choose rather than iterate from one."}, {"id": "github_prompts_banner_design_skill_ai_visual_generation", "label": "AI Visual Generation (Gemini Flash / Pro)", "file_type": "concept", "source_file": ".github/prompts/banner-design/SKILL.md", "source_location": null, "source_url": null, "captured_at": null, "author": "claudekit", "contributor": null, "rationale": "Flash model (2K) for fast backgrounds/patterns and A/B variants; Pro model (4K) for hero illustrations and photorealism. Prompts specify no-text because text is overlaid in HTML."}, {"id": "github_prompts_banner_design_skill_banner_png_export", "label": "Banner PNG Export via chrome-devtools", "file_type": "concept", "source_file": ".github/prompts/banner-design/SKILL.md", "source_location": null, "source_url": null, "captured_at": null, "author": "claudekit", "contributor": null, "rationale": "HTML banners served locally and screenshotted at exact platform dimensions with auto-compression above 5MB."}, {"id": "github_prompts_banner_design_skill_banner_output_path_convention", "label": "Banner Output Path Convention", "file_type": "concept", "source_file": ".github/prompts/banner-design/SKILL.md", "source_location": null, "source_url": null, "captured_at": null, "author": "claudekit", "contributor": null, "rationale": "assets/banners/{campaign}/{style}-{width}x{height}.png, kebab-case, optional date prefix."}, {"id": "github_prompts_banner_design_skill_banner_design_rules", "label": "Banner Design Rules", "file_type": "rationale", "source_file": ".github/prompts/banner-design/SKILL.md", "source_location": null, "source_url": null, "captured_at": null, "author": "claudekit", "contributor": null, "rationale": "Safe zones, single CTA, max 2 fonts, <20% text for ads because Meta penalizes heavy text, print at 300 DPI CMYK with bleed."}, {"id": "github_prompts_banner_design_skill_pinterest_research", "label": "Pinterest Art Direction Research", "file_type": "concept", "source_file": ".github/prompts/banner-design/SKILL.md", "source_location": null, "source_url": null, "captured_at": null, "author": "claudekit", "contributor": null}, {"id": "github_prompts_banner_design_skill_ui_ux_pro_max_skill", "label": "ui-ux-pro-max Skill", "file_type": "concept", "source_file": ".github/prompts/banner-design/SKILL.md", "source_location": null, "source_url": null, "captured_at": null, "author": "claudekit", "contributor": null}, {"id": "github_prompts_banner_design_skill_frontend_design_skill", "label": "frontend-design Skill", "file_type": "concept", "source_file": ".github/prompts/banner-design/SKILL.md", "source_location": null, "source_url": null, "captured_at": null, "author": "claudekit", "contributor": null}, {"id": "github_prompts_banner_design_skill_ai_multimodal_skill", "label": "ai-multimodal Skill", "file_type": "concept", "source_file": ".github/prompts/banner-design/SKILL.md", "source_location": null, "source_url": null, "captured_at": null, "author": "claudekit", "contributor": null}, {"id": "github_prompts_banner_design_skill_ai_artist_skill", "label": "ai-artist Skill", "file_type": "concept", "source_file": ".github/prompts/banner-design/SKILL.md", "source_location": null, "source_url": null, "captured_at": null, "author": "claudekit", "contributor": null}, {"id": "github_prompts_banner_design_skill_chrome_devtools_skill", "label": "chrome-devtools Skill", "file_type": "concept", "source_file": ".github/prompts/banner-design/SKILL.md", "source_location": null, "source_url": null, "captured_at": null, "author": "claudekit", "contributor": null}], "edges": [{"source": "github_prompts_banner_design_skill", "target": "github_prompts_banner_design_skill_banner_design_workflow", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/banner-design/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_banner_design_skill", "target": "github_prompts_banner_design_skill_art_direction_options", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/banner-design/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_banner_design_skill", "target": "github_prompts_banner_design_skill_ai_visual_generation", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/banner-design/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_banner_design_skill", "target": "github_prompts_banner_design_skill_banner_png_export", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/banner-design/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_banner_design_skill", "target": "github_prompts_banner_design_skill_banner_output_path_convention", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/banner-design/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_banner_design_skill", "target": "github_prompts_banner_design_skill_banner_design_rules", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/banner-design/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_banner_design_skill", "target": "github_prompts_banner_design_skill_pinterest_research", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/banner-design/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_banner_design_skill", "target": "github_prompts_banner_design_skill_ui_ux_pro_max_skill", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/banner-design/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_banner_design_skill", "target": "github_prompts_banner_design_skill_frontend_design_skill", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/banner-design/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_banner_design_skill", "target": "github_prompts_banner_design_skill_ai_multimodal_skill", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/banner-design/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_banner_design_skill", "target": "github_prompts_banner_design_skill_ai_artist_skill", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/banner-design/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_banner_design_skill", "target": "github_prompts_banner_design_skill_chrome_devtools_skill", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/banner-design/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_banner_design_skill_banner_design_workflow", "target": "github_prompts_banner_design_references_banner_sizes_and_styles", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/banner-design/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_banner_design_skill_banner_design_workflow", "target": "github_prompts_brand_skill_inject_brand_context_script", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/banner-design/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_banner_design_skill_banner_design_rules", "target": "github_prompts_brand_skill_inject_brand_context_script", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/banner-design/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_banner_design_skill_banner_design_workflow", "target": "github_prompts_brand_skill_brand_guidelines_source_of_truth", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/banner-design/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_banner_design_skill_banner_design_workflow", "target": "github_prompts_banner_design_skill_ui_ux_pro_max_skill", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/banner-design/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_banner_design_skill_banner_design_workflow", "target": "github_prompts_banner_design_skill_frontend_design_skill", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/banner-design/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_banner_design_skill_banner_design_workflow", "target": "github_prompts_banner_design_skill_ai_multimodal_skill", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/banner-design/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_banner_design_skill_banner_design_workflow", "target": "github_prompts_banner_design_skill_ai_artist_skill", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/banner-design/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_banner_design_skill_banner_design_workflow", "target": "github_prompts_banner_design_skill_chrome_devtools_skill", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/banner-design/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_banner_design_skill_ai_visual_generation", "target": "github_prompts_banner_design_skill_ai_multimodal_skill", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/banner-design/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_banner_design_skill_ai_visual_generation", "target": "github_prompts_banner_design_skill_ai_artist_skill", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/banner-design/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_banner_design_skill_banner_png_export", "target": "github_prompts_banner_design_skill_chrome_devtools_skill", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/banner-design/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_banner_design_skill_art_direction_options", "target": "github_prompts_banner_design_references_banner_sizes_and_styles_art_direction_styles_22", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/banner-design/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_banner_design_skill_banner_png_export", "target": "github_prompts_banner_design_skill_banner_output_path_convention", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/banner-design/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_banner_design_skill_banner_design_rules", "target": "github_prompts_banner_design_references_banner_sizes_and_styles_safe_zones", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.95, "source_file": ".github/prompts/banner-design/SKILL.md", "source_location": null, "weight": 0.95}, {"source": "github_prompts_banner_design_skill_banner_design_rules", "target": "github_prompts_banner_design_references_banner_sizes_and_styles_cta_rules", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.95, "source_file": ".github/prompts/banner-design/SKILL.md", "source_location": null, "weight": 0.95}, {"source": "github_prompts_banner_design_skill_banner_design_rules", "target": "github_prompts_banner_design_references_banner_sizes_and_styles_text_to_image_ratio", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.95, "source_file": ".github/prompts/banner-design/SKILL.md", "source_location": null, "weight": 0.95}, {"source": "github_prompts_banner_design_skill_pinterest_research", "target": "github_prompts_banner_design_references_banner_sizes_and_styles_pinterest_research_queries", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.95, "source_file": ".github/prompts/banner-design/SKILL.md", "source_location": null, "weight": 0.95}, {"source": "github_prompts_banner_design_skill_banner_output_path_convention", "target": "github_prompts_brand_references_asset_organization_asset_naming_convention", "relation": "semantically_similar_to", "confidence": "INFERRED", "confidence_score": 0.75, "source_file": ".github/prompts/banner-design/SKILL.md", "source_location": null, "weight": 0.75}, {"source": "github_prompts_banner_design_skill_banner_output_path_convention", "target": "github_prompts_brand_references_asset_organization_asset_directory_structure", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": ".github/prompts/banner-design/SKILL.md", "source_location": null, "weight": 0.85}], "hyperedges": []}
+{
+    "nodes": [
+        {
+            "id": "github_prompts_banner_design_skill",
+            "label": "SKILL.md (banner-design)",
+            "file_type": "document",
+            "source_file": ".github/prompts/banner-design/SKILL.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": "claudekit",
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_banner_design_skill_banner_design_workflow",
+            "label": "Banner Design Workflow",
+            "file_type": "rationale",
+            "source_file": ".github/prompts/banner-design/SKILL.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": "claudekit",
+            "contributor": null,
+            "rationale": "Five steps: gather requirements, research art direction, design options, export PNGs, present and iterate."
+        },
+        {
+            "id": "github_prompts_banner_design_skill_art_direction_options",
+            "label": "Multiple Art Direction Options",
+            "file_type": "concept",
+            "source_file": ".github/prompts/banner-design/SKILL.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": "claudekit",
+            "contributor": null,
+            "rationale": "Generates 2-3 complementary styles per request (default 3 options) so users choose rather than iterate from one."
+        },
+        {
+            "id": "github_prompts_banner_design_skill_ai_visual_generation",
+            "label": "AI Visual Generation (Gemini Flash / Pro)",
+            "file_type": "concept",
+            "source_file": ".github/prompts/banner-design/SKILL.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": "claudekit",
+            "contributor": null,
+            "rationale": "Flash model (2K) for fast backgrounds/patterns and A/B variants; Pro model (4K) for hero illustrations and photorealism. Prompts specify no-text because text is overlaid in HTML."
+        },
+        {
+            "id": "github_prompts_banner_design_skill_banner_png_export",
+            "label": "Banner PNG Export via chrome-devtools",
+            "file_type": "concept",
+            "source_file": ".github/prompts/banner-design/SKILL.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": "claudekit",
+            "contributor": null,
+            "rationale": "HTML banners served locally and screenshotted at exact platform dimensions with auto-compression above 5MB."
+        },
+        {
+            "id": "github_prompts_banner_design_skill_banner_output_path_convention",
+            "label": "Banner Output Path Convention",
+            "file_type": "concept",
+            "source_file": ".github/prompts/banner-design/SKILL.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": "claudekit",
+            "contributor": null,
+            "rationale": "assets/banners/{campaign}/{style}-{width}x{height}.png, kebab-case, optional date prefix."
+        },
+        {
+            "id": "github_prompts_banner_design_skill_banner_design_rules",
+            "label": "Banner Design Rules",
+            "file_type": "rationale",
+            "source_file": ".github/prompts/banner-design/SKILL.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": "claudekit",
+            "contributor": null,
+            "rationale": "Safe zones, single CTA, max 2 fonts, <20% text for ads because Meta penalizes heavy text, print at 300 DPI CMYK with bleed."
+        },
+        {
+            "id": "github_prompts_banner_design_skill_pinterest_research",
+            "label": "Pinterest Art Direction Research",
+            "file_type": "concept",
+            "source_file": ".github/prompts/banner-design/SKILL.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": "claudekit",
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_banner_design_skill_ui_ux_pro_max_skill",
+            "label": "ui-ux-pro-max Skill",
+            "file_type": "concept",
+            "source_file": ".github/prompts/banner-design/SKILL.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": "claudekit",
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_banner_design_skill_frontend_design_skill",
+            "label": "frontend-design Skill",
+            "file_type": "concept",
+            "source_file": ".github/prompts/banner-design/SKILL.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": "claudekit",
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_banner_design_skill_ai_multimodal_skill",
+            "label": "ai-multimodal Skill",
+            "file_type": "concept",
+            "source_file": ".github/prompts/banner-design/SKILL.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": "claudekit",
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_banner_design_skill_ai_artist_skill",
+            "label": "ai-artist Skill",
+            "file_type": "concept",
+            "source_file": ".github/prompts/banner-design/SKILL.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": "claudekit",
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_banner_design_skill_chrome_devtools_skill",
+            "label": "chrome-devtools Skill",
+            "file_type": "concept",
+            "source_file": ".github/prompts/banner-design/SKILL.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": "claudekit",
+            "contributor": null
+        }
+    ],
+    "edges": [
+        {
+            "source": "github_prompts_banner_design_skill",
+            "target": "github_prompts_banner_design_skill_banner_design_workflow",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/banner-design/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_banner_design_skill",
+            "target": "github_prompts_banner_design_skill_art_direction_options",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/banner-design/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_banner_design_skill",
+            "target": "github_prompts_banner_design_skill_ai_visual_generation",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/banner-design/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_banner_design_skill",
+            "target": "github_prompts_banner_design_skill_banner_png_export",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/banner-design/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_banner_design_skill",
+            "target": "github_prompts_banner_design_skill_banner_output_path_convention",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/banner-design/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_banner_design_skill",
+            "target": "github_prompts_banner_design_skill_banner_design_rules",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/banner-design/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_banner_design_skill",
+            "target": "github_prompts_banner_design_skill_pinterest_research",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/banner-design/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_banner_design_skill",
+            "target": "github_prompts_banner_design_skill_ui_ux_pro_max_skill",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/banner-design/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_banner_design_skill",
+            "target": "github_prompts_banner_design_skill_frontend_design_skill",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/banner-design/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_banner_design_skill",
+            "target": "github_prompts_banner_design_skill_ai_multimodal_skill",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/banner-design/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_banner_design_skill",
+            "target": "github_prompts_banner_design_skill_ai_artist_skill",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/banner-design/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_banner_design_skill",
+            "target": "github_prompts_banner_design_skill_chrome_devtools_skill",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/banner-design/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_banner_design_skill_banner_design_workflow",
+            "target": "github_prompts_banner_design_references_banner_sizes_and_styles",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/banner-design/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_banner_design_skill_banner_design_workflow",
+            "target": "github_prompts_brand_skill_inject_brand_context_script",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/banner-design/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_banner_design_skill_banner_design_rules",
+            "target": "github_prompts_brand_skill_inject_brand_context_script",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/banner-design/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_banner_design_skill_banner_design_workflow",
+            "target": "github_prompts_brand_skill_brand_guidelines_source_of_truth",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/banner-design/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_banner_design_skill_banner_design_workflow",
+            "target": "github_prompts_banner_design_skill_ui_ux_pro_max_skill",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/banner-design/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_banner_design_skill_banner_design_workflow",
+            "target": "github_prompts_banner_design_skill_frontend_design_skill",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/banner-design/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_banner_design_skill_banner_design_workflow",
+            "target": "github_prompts_banner_design_skill_ai_multimodal_skill",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/banner-design/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_banner_design_skill_banner_design_workflow",
+            "target": "github_prompts_banner_design_skill_ai_artist_skill",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/banner-design/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_banner_design_skill_banner_design_workflow",
+            "target": "github_prompts_banner_design_skill_chrome_devtools_skill",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/banner-design/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_banner_design_skill_ai_visual_generation",
+            "target": "github_prompts_banner_design_skill_ai_multimodal_skill",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/banner-design/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_banner_design_skill_ai_visual_generation",
+            "target": "github_prompts_banner_design_skill_ai_artist_skill",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/banner-design/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_banner_design_skill_banner_png_export",
+            "target": "github_prompts_banner_design_skill_chrome_devtools_skill",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/banner-design/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_banner_design_skill_art_direction_options",
+            "target": "github_prompts_banner_design_references_banner_sizes_and_styles_art_direction_styles_22",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/banner-design/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_banner_design_skill_banner_png_export",
+            "target": "github_prompts_banner_design_skill_banner_output_path_convention",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/banner-design/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_banner_design_skill_banner_design_rules",
+            "target": "github_prompts_banner_design_references_banner_sizes_and_styles_safe_zones",
+            "relation": "conceptually_related_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.95,
+            "source_file": ".github/prompts/banner-design/SKILL.md",
+            "source_location": null,
+            "weight": 0.95
+        },
+        {
+            "source": "github_prompts_banner_design_skill_banner_design_rules",
+            "target": "github_prompts_banner_design_references_banner_sizes_and_styles_cta_rules",
+            "relation": "conceptually_related_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.95,
+            "source_file": ".github/prompts/banner-design/SKILL.md",
+            "source_location": null,
+            "weight": 0.95
+        },
+        {
+            "source": "github_prompts_banner_design_skill_banner_design_rules",
+            "target": "github_prompts_banner_design_references_banner_sizes_and_styles_text_to_image_ratio",
+            "relation": "conceptually_related_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.95,
+            "source_file": ".github/prompts/banner-design/SKILL.md",
+            "source_location": null,
+            "weight": 0.95
+        },
+        {
+            "source": "github_prompts_banner_design_skill_pinterest_research",
+            "target": "github_prompts_banner_design_references_banner_sizes_and_styles_pinterest_research_queries",
+            "relation": "conceptually_related_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.95,
+            "source_file": ".github/prompts/banner-design/SKILL.md",
+            "source_location": null,
+            "weight": 0.95
+        },
+        {
+            "source": "github_prompts_banner_design_skill_banner_output_path_convention",
+            "target": "github_prompts_brand_references_asset_organization_asset_naming_convention",
+            "relation": "semantically_similar_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.75,
+            "source_file": ".github/prompts/banner-design/SKILL.md",
+            "source_location": null,
+            "weight": 0.75
+        },
+        {
+            "source": "github_prompts_banner_design_skill_banner_output_path_convention",
+            "target": "github_prompts_brand_references_asset_organization_asset_directory_structure",
+            "relation": "conceptually_related_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.85,
+            "source_file": ".github/prompts/banner-design/SKILL.md",
+            "source_location": null,
+            "weight": 0.85
+        }
+    ],
+    "hyperedges": []
+}

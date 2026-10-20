@@ -1,1 +1,502 @@
-{"nodes": [{"id": "github_prompts_design_system_skill", "label": "SKILL.md (design-system)", "file_type": "document", "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "source_url": null, "captured_at": null, "author": "claudekit", "contributor": null}, {"id": "github_prompts_design_system_skill_three_layer_token_structure", "label": "Three-Layer Token Structure", "file_type": "rationale", "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "source_url": null, "captured_at": null, "author": "claudekit", "contributor": null, "rationale": "Primitive -> Semantic -> Component; semantic layer enables theme switching, component layer enables per-component customization."}, {"id": "github_prompts_design_system_skill_generate_tokens_script", "label": "generate-tokens.cjs", "file_type": "concept", "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "source_url": null, "captured_at": null, "author": "claudekit", "contributor": null}, {"id": "github_prompts_design_system_skill_validate_tokens_script", "label": "validate-tokens.cjs", "file_type": "concept", "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "source_url": null, "captured_at": null, "author": "claudekit", "contributor": null}, {"id": "github_prompts_design_system_skill_component_spec_pattern", "label": "Component Spec Pattern", "file_type": "concept", "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "source_url": null, "captured_at": null, "author": "claudekit", "contributor": null}, {"id": "github_prompts_design_system_skill_slide_system", "label": "Slide System", "file_type": "concept", "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "source_url": null, "captured_at": null, "author": "claudekit", "contributor": null}, {"id": "github_prompts_design_system_skill_slide_search_bm25", "label": "BM25 Slide Search", "file_type": "concept", "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "source_url": null, "captured_at": null, "author": "claudekit", "contributor": null}, {"id": "github_prompts_design_system_skill_contextual_decision_flow", "label": "Contextual Slide Decision Flow", "file_type": "concept", "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "source_url": null, "captured_at": null, "author": "claudekit", "contributor": null}, {"id": "github_prompts_design_system_skill_duarte_sparkline_pattern_breaking", "label": "Duarte Sparkline Pattern Breaking", "file_type": "rationale", "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "source_url": null, "captured_at": null, "author": "claudekit", "contributor": null, "rationale": "Alternates \"What Is\" (frustration) and \"What Could Be\" (hope) with breaks at 1/3 and 2/3 for engagement."}, {"id": "github_prompts_design_system_skill_token_compliance_rule", "label": "Token Compliance Rule", "file_type": "rationale", "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "source_url": null, "captured_at": null, "author": "claudekit", "contributor": null, "rationale": "Never use raw hex in components; slides import design-tokens.css and use var() exclusively."}, {"id": "github_prompts_design_system_skill_chartjs_integration", "label": "Chart.js Integration", "file_type": "concept", "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "source_url": null, "captured_at": null, "author": "claudekit", "contributor": null}, {"id": "github_prompts_design_system_skill_slide_token_validator", "label": "slide-token-validator.py", "file_type": "concept", "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "source_url": null, "captured_at": null, "author": "claudekit", "contributor": null}], "edges": [{"source": "github_prompts_design_system_skill", "target": "github_prompts_design_system_skill_three_layer_token_structure", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_system_skill", "target": "github_prompts_design_system_skill_generate_tokens_script", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_system_skill", "target": "github_prompts_design_system_skill_validate_tokens_script", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_system_skill", "target": "github_prompts_design_system_skill_component_spec_pattern", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_system_skill", "target": "github_prompts_design_system_skill_slide_system", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_system_skill", "target": "github_prompts_design_system_skill_slide_search_bm25", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_system_skill", "target": "github_prompts_design_system_skill_contextual_decision_flow", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_system_skill", "target": "github_prompts_design_system_skill_duarte_sparkline_pattern_breaking", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_system_skill", "target": "github_prompts_design_system_skill_token_compliance_rule", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_system_skill", "target": "github_prompts_design_system_skill_chartjs_integration", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_system_skill", "target": "github_prompts_design_system_skill_slide_token_validator", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_system_skill", "target": "github_prompts_design_system_references_token_architecture", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_system_skill", "target": "github_prompts_design_system_references_primitive_tokens", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_system_skill", "target": "github_prompts_design_system_references_semantic_tokens", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_system_skill", "target": "github_prompts_design_system_references_component_tokens", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_system_skill", "target": "github_prompts_design_system_references_component_specs", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_system_skill", "target": "github_prompts_design_system_references_states_and_variants", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_system_skill", "target": "github_prompts_design_system_references_tailwind_integration", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_system_skill", "target": "github_prompts_brand_skill", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_system_skill_three_layer_token_structure", "target": "github_prompts_design_system_references_token_architecture", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_system_skill_three_layer_token_structure", "target": "github_prompts_design_system_references_token_architecture_primitive_layer", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.95, "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "weight": 0.95}, {"source": "github_prompts_design_system_skill_three_layer_token_structure", "target": "github_prompts_design_system_references_token_architecture_semantic_layer", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.95, "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "weight": 0.95}, {"source": "github_prompts_design_system_skill_three_layer_token_structure", "target": "github_prompts_design_system_references_token_architecture_component_layer", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.95, "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "weight": 0.95}, {"source": "github_prompts_design_system_skill_slide_system", "target": "github_prompts_brand_skill_design_tokens_css", "relation": "shares_data_with", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_system_skill_slide_system", "target": "github_prompts_brand_skill_design_tokens_json", "relation": "shares_data_with", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_system_skill_slide_system", "target": "github_prompts_brand_skill_brand_guidelines_source_of_truth", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_system_skill_slide_system", "target": "github_prompts_design_system_skill_chartjs_integration", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_system_skill_contextual_decision_flow", "target": "github_prompts_design_system_skill_slide_token_validator", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_system_skill_contextual_decision_flow", "target": "github_prompts_design_system_skill_slide_search_bm25", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "weight": 0.85}, {"source": "github_prompts_design_system_skill_duarte_sparkline_pattern_breaking", "target": "github_prompts_design_system_skill_contextual_decision_flow", "relation": "rationale_for", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "weight": 0.85}, {"source": "github_prompts_design_system_skill_token_compliance_rule", "target": "github_prompts_design_system_skill_validate_tokens_script", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "weight": 0.85}, {"source": "github_prompts_design_system_skill_token_compliance_rule", "target": "github_prompts_design_system_skill_slide_token_validator", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "weight": 0.85}, {"source": "github_prompts_design_system_skill_token_compliance_rule", "target": "github_prompts_brand_references_color_palette_management_brand_color_compliance_validation", "relation": "semantically_similar_to", "confidence": "INFERRED", "confidence_score": 0.75, "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "weight": 0.75}, {"source": "github_prompts_design_system_skill_generate_tokens_script", "target": "github_prompts_brand_skill_design_tokens_css", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.75, "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "weight": 0.75}, {"source": "github_prompts_design_system_skill_component_spec_pattern", "target": "github_prompts_design_system_references_states_and_variants_interactive_states", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "weight": 0.85}, {"source": "github_prompts_design_system_references_token_architecture_component_layer", "target": "github_prompts_design_system_references_tailwind_integration_tailwind_config", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": ".github/prompts/design-system/SKILL.md", "source_location": null, "weight": 0.85}], "hyperedges": []}
+{
+    "nodes": [
+        {
+            "id": "github_prompts_design_system_skill",
+            "label": "SKILL.md (design-system)",
+            "file_type": "document",
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": "claudekit",
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_design_system_skill_three_layer_token_structure",
+            "label": "Three-Layer Token Structure",
+            "file_type": "rationale",
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": "claudekit",
+            "contributor": null,
+            "rationale": "Primitive -> Semantic -> Component; semantic layer enables theme switching, component layer enables per-component customization."
+        },
+        {
+            "id": "github_prompts_design_system_skill_generate_tokens_script",
+            "label": "generate-tokens.cjs",
+            "file_type": "concept",
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": "claudekit",
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_design_system_skill_validate_tokens_script",
+            "label": "validate-tokens.cjs",
+            "file_type": "concept",
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": "claudekit",
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_design_system_skill_component_spec_pattern",
+            "label": "Component Spec Pattern",
+            "file_type": "concept",
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": "claudekit",
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_design_system_skill_slide_system",
+            "label": "Slide System",
+            "file_type": "concept",
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": "claudekit",
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_design_system_skill_slide_search_bm25",
+            "label": "BM25 Slide Search",
+            "file_type": "concept",
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": "claudekit",
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_design_system_skill_contextual_decision_flow",
+            "label": "Contextual Slide Decision Flow",
+            "file_type": "concept",
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": "claudekit",
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_design_system_skill_duarte_sparkline_pattern_breaking",
+            "label": "Duarte Sparkline Pattern Breaking",
+            "file_type": "rationale",
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": "claudekit",
+            "contributor": null,
+            "rationale": "Alternates \"What Is\" (frustration) and \"What Could Be\" (hope) with breaks at 1/3 and 2/3 for engagement."
+        },
+        {
+            "id": "github_prompts_design_system_skill_token_compliance_rule",
+            "label": "Token Compliance Rule",
+            "file_type": "rationale",
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": "claudekit",
+            "contributor": null,
+            "rationale": "Never use raw hex in components; slides import design-tokens.css and use var() exclusively."
+        },
+        {
+            "id": "github_prompts_design_system_skill_chartjs_integration",
+            "label": "Chart.js Integration",
+            "file_type": "concept",
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": "claudekit",
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_design_system_skill_slide_token_validator",
+            "label": "slide-token-validator.py",
+            "file_type": "concept",
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": "claudekit",
+            "contributor": null
+        }
+    ],
+    "edges": [
+        {
+            "source": "github_prompts_design_system_skill",
+            "target": "github_prompts_design_system_skill_three_layer_token_structure",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_system_skill",
+            "target": "github_prompts_design_system_skill_generate_tokens_script",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_system_skill",
+            "target": "github_prompts_design_system_skill_validate_tokens_script",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_system_skill",
+            "target": "github_prompts_design_system_skill_component_spec_pattern",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_system_skill",
+            "target": "github_prompts_design_system_skill_slide_system",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_system_skill",
+            "target": "github_prompts_design_system_skill_slide_search_bm25",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_system_skill",
+            "target": "github_prompts_design_system_skill_contextual_decision_flow",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_system_skill",
+            "target": "github_prompts_design_system_skill_duarte_sparkline_pattern_breaking",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_system_skill",
+            "target": "github_prompts_design_system_skill_token_compliance_rule",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_system_skill",
+            "target": "github_prompts_design_system_skill_chartjs_integration",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_system_skill",
+            "target": "github_prompts_design_system_skill_slide_token_validator",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_system_skill",
+            "target": "github_prompts_design_system_references_token_architecture",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_system_skill",
+            "target": "github_prompts_design_system_references_primitive_tokens",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_system_skill",
+            "target": "github_prompts_design_system_references_semantic_tokens",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_system_skill",
+            "target": "github_prompts_design_system_references_component_tokens",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_system_skill",
+            "target": "github_prompts_design_system_references_component_specs",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_system_skill",
+            "target": "github_prompts_design_system_references_states_and_variants",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_system_skill",
+            "target": "github_prompts_design_system_references_tailwind_integration",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_system_skill",
+            "target": "github_prompts_brand_skill",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_system_skill_three_layer_token_structure",
+            "target": "github_prompts_design_system_references_token_architecture",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_system_skill_three_layer_token_structure",
+            "target": "github_prompts_design_system_references_token_architecture_primitive_layer",
+            "relation": "conceptually_related_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.95,
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "weight": 0.95
+        },
+        {
+            "source": "github_prompts_design_system_skill_three_layer_token_structure",
+            "target": "github_prompts_design_system_references_token_architecture_semantic_layer",
+            "relation": "conceptually_related_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.95,
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "weight": 0.95
+        },
+        {
+            "source": "github_prompts_design_system_skill_three_layer_token_structure",
+            "target": "github_prompts_design_system_references_token_architecture_component_layer",
+            "relation": "conceptually_related_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.95,
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "weight": 0.95
+        },
+        {
+            "source": "github_prompts_design_system_skill_slide_system",
+            "target": "github_prompts_brand_skill_design_tokens_css",
+            "relation": "shares_data_with",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_system_skill_slide_system",
+            "target": "github_prompts_brand_skill_design_tokens_json",
+            "relation": "shares_data_with",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_system_skill_slide_system",
+            "target": "github_prompts_brand_skill_brand_guidelines_source_of_truth",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_system_skill_slide_system",
+            "target": "github_prompts_design_system_skill_chartjs_integration",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_system_skill_contextual_decision_flow",
+            "target": "github_prompts_design_system_skill_slide_token_validator",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_system_skill_contextual_decision_flow",
+            "target": "github_prompts_design_system_skill_slide_search_bm25",
+            "relation": "conceptually_related_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.85,
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "weight": 0.85
+        },
+        {
+            "source": "github_prompts_design_system_skill_duarte_sparkline_pattern_breaking",
+            "target": "github_prompts_design_system_skill_contextual_decision_flow",
+            "relation": "rationale_for",
+            "confidence": "INFERRED",
+            "confidence_score": 0.85,
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "weight": 0.85
+        },
+        {
+            "source": "github_prompts_design_system_skill_token_compliance_rule",
+            "target": "github_prompts_design_system_skill_validate_tokens_script",
+            "relation": "conceptually_related_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.85,
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "weight": 0.85
+        },
+        {
+            "source": "github_prompts_design_system_skill_token_compliance_rule",
+            "target": "github_prompts_design_system_skill_slide_token_validator",
+            "relation": "conceptually_related_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.85,
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "weight": 0.85
+        },
+        {
+            "source": "github_prompts_design_system_skill_token_compliance_rule",
+            "target": "github_prompts_brand_references_color_palette_management_brand_color_compliance_validation",
+            "relation": "semantically_similar_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.75,
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "weight": 0.75
+        },
+        {
+            "source": "github_prompts_design_system_skill_generate_tokens_script",
+            "target": "github_prompts_brand_skill_design_tokens_css",
+            "relation": "conceptually_related_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.75,
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "weight": 0.75
+        },
+        {
+            "source": "github_prompts_design_system_skill_component_spec_pattern",
+            "target": "github_prompts_design_system_references_states_and_variants_interactive_states",
+            "relation": "conceptually_related_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.85,
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "weight": 0.85
+        },
+        {
+            "source": "github_prompts_design_system_references_token_architecture_component_layer",
+            "target": "github_prompts_design_system_references_tailwind_integration_tailwind_config",
+            "relation": "conceptually_related_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.85,
+            "source_file": ".github/prompts/design-system/SKILL.md",
+            "source_location": null,
+            "weight": 0.85
+        }
+    ],
+    "hyperedges": []
+}

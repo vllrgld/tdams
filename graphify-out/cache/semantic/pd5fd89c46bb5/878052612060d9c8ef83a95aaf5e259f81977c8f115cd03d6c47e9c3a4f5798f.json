@@ -1,1 +1,195 @@
-{"nodes": [{"id": "github_prompts_design_system_references_tailwind_integration", "label": "tailwind-integration.md", "file_type": "document", "source_file": ".github/prompts/design-system/references/tailwind-integration.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_design_system_references_tailwind_integration_hsl_css_variables", "label": "HSL CSS Variables Base Layer", "file_type": "concept", "source_file": ".github/prompts/design-system/references/tailwind-integration.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_design_system_references_tailwind_integration_tailwind_config", "label": "tailwind.config.ts Token Mapping", "file_type": "concept", "source_file": ".github/prompts/design-system/references/tailwind-integration.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_design_system_references_tailwind_integration_hsl_opacity_modifiers", "label": "HSL Opacity Modifiers", "file_type": "rationale", "source_file": ".github/prompts/design-system/references/tailwind-integration.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "Space-separated HSL without hsl() lets Tailwind apply /50-style opacity modifiers."}, {"id": "github_prompts_design_system_references_tailwind_integration_btn_component_classes", "label": "Button Component Classes (@apply)", "file_type": "concept", "source_file": ".github/prompts/design-system/references/tailwind-integration.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_design_system_references_tailwind_integration_dark_mode_toggle", "label": "Dark Mode Toggle", "file_type": "concept", "source_file": ".github/prompts/design-system/references/tailwind-integration.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_design_system_references_tailwind_integration_shadcn_ui_alignment", "label": "shadcn/ui Alignment", "file_type": "concept", "source_file": ".github/prompts/design-system/references/tailwind-integration.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [{"source": "github_prompts_design_system_references_tailwind_integration", "target": "github_prompts_design_system_references_tailwind_integration_hsl_css_variables", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design-system/references/tailwind-integration.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_system_references_tailwind_integration", "target": "github_prompts_design_system_references_tailwind_integration_tailwind_config", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design-system/references/tailwind-integration.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_system_references_tailwind_integration", "target": "github_prompts_design_system_references_tailwind_integration_hsl_opacity_modifiers", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design-system/references/tailwind-integration.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_system_references_tailwind_integration", "target": "github_prompts_design_system_references_tailwind_integration_btn_component_classes", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design-system/references/tailwind-integration.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_system_references_tailwind_integration", "target": "github_prompts_design_system_references_tailwind_integration_dark_mode_toggle", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design-system/references/tailwind-integration.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_system_references_tailwind_integration", "target": "github_prompts_design_system_references_tailwind_integration_shadcn_ui_alignment", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design-system/references/tailwind-integration.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_system_references_tailwind_integration_tailwind_config", "target": "github_prompts_design_system_references_tailwind_integration_hsl_css_variables", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design-system/references/tailwind-integration.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_system_references_tailwind_integration_hsl_opacity_modifiers", "target": "github_prompts_design_system_references_tailwind_integration_hsl_css_variables", "relation": "rationale_for", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design-system/references/tailwind-integration.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_system_references_tailwind_integration_hsl_css_variables", "target": "github_prompts_design_system_references_token_architecture_semantic_layer", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": ".github/prompts/design-system/references/tailwind-integration.md", "source_location": null, "weight": 0.85}, {"source": "github_prompts_design_system_references_tailwind_integration_btn_component_classes", "target": "github_prompts_design_system_references_component_tokens_button_tokens", "relation": "semantically_similar_to", "confidence": "INFERRED", "confidence_score": 0.75, "source_file": ".github/prompts/design-system/references/tailwind-integration.md", "source_location": null, "weight": 0.75}, {"source": "github_prompts_design_system_references_tailwind_integration_dark_mode_toggle", "target": "github_prompts_design_system_references_semantic_tokens_dark_mode_overrides", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": ".github/prompts/design-system/references/tailwind-integration.md", "source_location": null, "weight": 0.85}], "hyperedges": []}
+{
+    "nodes": [
+        {
+            "id": "github_prompts_design_system_references_tailwind_integration",
+            "label": "tailwind-integration.md",
+            "file_type": "document",
+            "source_file": ".github/prompts/design-system/references/tailwind-integration.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_design_system_references_tailwind_integration_hsl_css_variables",
+            "label": "HSL CSS Variables Base Layer",
+            "file_type": "concept",
+            "source_file": ".github/prompts/design-system/references/tailwind-integration.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_design_system_references_tailwind_integration_tailwind_config",
+            "label": "tailwind.config.ts Token Mapping",
+            "file_type": "concept",
+            "source_file": ".github/prompts/design-system/references/tailwind-integration.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_design_system_references_tailwind_integration_hsl_opacity_modifiers",
+            "label": "HSL Opacity Modifiers",
+            "file_type": "rationale",
+            "source_file": ".github/prompts/design-system/references/tailwind-integration.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null,
+            "rationale": "Space-separated HSL without hsl() lets Tailwind apply /50-style opacity modifiers."
+        },
+        {
+            "id": "github_prompts_design_system_references_tailwind_integration_btn_component_classes",
+            "label": "Button Component Classes (@apply)",
+            "file_type": "concept",
+            "source_file": ".github/prompts/design-system/references/tailwind-integration.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_design_system_references_tailwind_integration_dark_mode_toggle",
+            "label": "Dark Mode Toggle",
+            "file_type": "concept",
+            "source_file": ".github/prompts/design-system/references/tailwind-integration.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_design_system_references_tailwind_integration_shadcn_ui_alignment",
+            "label": "shadcn/ui Alignment",
+            "file_type": "concept",
+            "source_file": ".github/prompts/design-system/references/tailwind-integration.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        }
+    ],
+    "edges": [
+        {
+            "source": "github_prompts_design_system_references_tailwind_integration",
+            "target": "github_prompts_design_system_references_tailwind_integration_hsl_css_variables",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design-system/references/tailwind-integration.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_system_references_tailwind_integration",
+            "target": "github_prompts_design_system_references_tailwind_integration_tailwind_config",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design-system/references/tailwind-integration.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_system_references_tailwind_integration",
+            "target": "github_prompts_design_system_references_tailwind_integration_hsl_opacity_modifiers",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design-system/references/tailwind-integration.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_system_references_tailwind_integration",
+            "target": "github_prompts_design_system_references_tailwind_integration_btn_component_classes",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design-system/references/tailwind-integration.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_system_references_tailwind_integration",
+            "target": "github_prompts_design_system_references_tailwind_integration_dark_mode_toggle",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design-system/references/tailwind-integration.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_system_references_tailwind_integration",
+            "target": "github_prompts_design_system_references_tailwind_integration_shadcn_ui_alignment",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design-system/references/tailwind-integration.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_system_references_tailwind_integration_tailwind_config",
+            "target": "github_prompts_design_system_references_tailwind_integration_hsl_css_variables",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design-system/references/tailwind-integration.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_system_references_tailwind_integration_hsl_opacity_modifiers",
+            "target": "github_prompts_design_system_references_tailwind_integration_hsl_css_variables",
+            "relation": "rationale_for",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design-system/references/tailwind-integration.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_system_references_tailwind_integration_hsl_css_variables",
+            "target": "github_prompts_design_system_references_token_architecture_semantic_layer",
+            "relation": "conceptually_related_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.85,
+            "source_file": ".github/prompts/design-system/references/tailwind-integration.md",
+            "source_location": null,
+            "weight": 0.85
+        },
+        {
+            "source": "github_prompts_design_system_references_tailwind_integration_btn_component_classes",
+            "target": "github_prompts_design_system_references_component_tokens_button_tokens",
+            "relation": "semantically_similar_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.75,
+            "source_file": ".github/prompts/design-system/references/tailwind-integration.md",
+            "source_location": null,
+            "weight": 0.75
+        },
+        {
+            "source": "github_prompts_design_system_references_tailwind_integration_dark_mode_toggle",
+            "target": "github_prompts_design_system_references_semantic_tokens_dark_mode_overrides",
+            "relation": "conceptually_related_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.85,
+            "source_file": ".github/prompts/design-system/references/tailwind-integration.md",
+            "source_location": null,
+            "weight": 0.85
+        }
+    ],
+    "hyperedges": []
+}

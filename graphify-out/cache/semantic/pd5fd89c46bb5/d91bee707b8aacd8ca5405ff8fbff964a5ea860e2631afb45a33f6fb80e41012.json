@@ -1,1 +1,132 @@
-{"nodes": [{"id": "migration_separator", "label": "separator.md", "file_type": "document", "source_file": ".migration/separator.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "migration_separator_base_ui_separator", "label": "@base-ui/react/separator", "file_type": "concept", "source_file": ".migration/separator.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "migration_separator_decorative_prop_dropped", "label": "decorative prop dropped", "file_type": "concept", "source_file": ".migration/separator.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "No longer accepted; nothing in the app passed it."}, {"id": "resources_js_components_ui_separator", "label": "separator.tsx", "file_type": "code", "source_file": ".migration/separator.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [{"source": "migration_separator", "target": "migration_separator_base_ui_separator", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/separator.md", "source_location": "L3", "weight": 1.0}, {"source": "migration_separator_base_ui_separator", "target": "migration_project_base_ui_react", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.95, "source_file": ".migration/separator.md", "source_location": "L3", "weight": 1.0}, {"source": "migration_separator", "target": "migration_separator_decorative_prop_dropped", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/separator.md", "source_location": "L16", "weight": 1.0}, {"source": "migration_separator", "target": "migration_project_transformation_engine", "relation": "references", "confidence": "INFERRED", "confidence_score": 0.95, "source_file": ".migration/separator.md", "source_location": "L3", "weight": 1.0}, {"source": "migration_separator", "target": "resources_js_components_ui_separator", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/separator.md", "source_location": "L7", "weight": 1.0}, {"source": "resources_js_components_ui_separator", "target": "migration_separator_base_ui_separator", "relation": "implements", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/separator.md", "source_location": "L3", "weight": 1.0}, {"source": "resources_js_components_ui_separator", "target": "migration_separator_decorative_prop_dropped", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/separator.md", "source_location": "L16", "weight": 1.0}, {"source": "resources_js_layouts_settings_layout", "target": "resources_js_components_ui_separator", "relation": "calls", "confidence": "AMBIGUOUS", "confidence_score": 0.3, "source_file": ".migration/separator.md", "source_location": "L20", "weight": 1.0}], "hyperedges": []}
+{
+    "nodes": [
+        {
+            "id": "migration_separator",
+            "label": "separator.md",
+            "file_type": "document",
+            "source_file": ".migration/separator.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "migration_separator_base_ui_separator",
+            "label": "@base-ui/react/separator",
+            "file_type": "concept",
+            "source_file": ".migration/separator.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "migration_separator_decorative_prop_dropped",
+            "label": "decorative prop dropped",
+            "file_type": "concept",
+            "source_file": ".migration/separator.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null,
+            "rationale": "No longer accepted; nothing in the app passed it."
+        },
+        {
+            "id": "resources_js_components_ui_separator",
+            "label": "separator.tsx",
+            "file_type": "code",
+            "source_file": ".migration/separator.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        }
+    ],
+    "edges": [
+        {
+            "source": "migration_separator",
+            "target": "migration_separator_base_ui_separator",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/separator.md",
+            "source_location": "L3",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_separator_base_ui_separator",
+            "target": "migration_project_base_ui_react",
+            "relation": "conceptually_related_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.95,
+            "source_file": ".migration/separator.md",
+            "source_location": "L3",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_separator",
+            "target": "migration_separator_decorative_prop_dropped",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/separator.md",
+            "source_location": "L16",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_separator",
+            "target": "migration_project_transformation_engine",
+            "relation": "references",
+            "confidence": "INFERRED",
+            "confidence_score": 0.95,
+            "source_file": ".migration/separator.md",
+            "source_location": "L3",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_separator",
+            "target": "resources_js_components_ui_separator",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/separator.md",
+            "source_location": "L7",
+            "weight": 1.0
+        },
+        {
+            "source": "resources_js_components_ui_separator",
+            "target": "migration_separator_base_ui_separator",
+            "relation": "implements",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/separator.md",
+            "source_location": "L3",
+            "weight": 1.0
+        },
+        {
+            "source": "resources_js_components_ui_separator",
+            "target": "migration_separator_decorative_prop_dropped",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/separator.md",
+            "source_location": "L16",
+            "weight": 1.0
+        },
+        {
+            "source": "resources_js_layouts_settings_layout",
+            "target": "resources_js_components_ui_separator",
+            "relation": "calls",
+            "confidence": "AMBIGUOUS",
+            "confidence_score": 0.3,
+            "source_file": ".migration/separator.md",
+            "source_location": "L20",
+            "weight": 1.0
+        }
+    ],
+    "hyperedges": []
+}

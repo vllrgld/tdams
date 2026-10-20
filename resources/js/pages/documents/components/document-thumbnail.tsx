@@ -58,7 +58,7 @@ export default function DocumentThumbnail({
 
     return (
         <div
-            className={`relative w-full overflow-hidden bg-slate-100 dark:bg-slate-900 ${
+            className={`relative w-full overflow-hidden bg-slate-100 dark:bg-neutral-900 ${
                 fit === 'cover'
                     ? 'h-full'
                     : 'flex h-48 items-center justify-center'

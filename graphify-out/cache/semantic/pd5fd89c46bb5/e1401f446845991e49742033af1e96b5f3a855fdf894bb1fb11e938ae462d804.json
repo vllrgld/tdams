@@ -1,1 +1,208 @@
-{"nodes": [{"id": "github_prompts_brand_references_asset_organization", "label": "asset-organization.md", "file_type": "document", "source_file": ".github/prompts/brand/references/asset-organization.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_brand_references_asset_organization_asset_directory_structure", "label": "Asset Directory Structure", "file_type": "concept", "source_file": ".github/prompts/brand/references/asset-organization.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "Git-tracked .assets/ metadata separated from raw files in assets/."}, {"id": "github_prompts_brand_references_asset_organization_asset_naming_convention", "label": "Asset Naming Convention", "file_type": "concept", "source_file": ".github/prompts/brand/references/asset-organization.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "{type}_{campaign}_{description}_{timestamp}_{variant}.{ext}; \"evergreen\" for non-campaign assets."}, {"id": "github_prompts_brand_references_asset_organization_manifest_json", "label": "manifest.json Asset Registry", "file_type": "concept", "source_file": ".github/prompts/brand/references/asset-organization.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_brand_references_asset_organization_asset_version_history", "label": "Asset Version History", "file_type": "concept", "source_file": ".github/prompts/brand/references/asset-organization.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_brand_references_asset_organization_asset_tagging_system", "label": "Asset Tagging System", "file_type": "concept", "source_file": ".github/prompts/brand/references/asset-organization.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_brand_references_asset_organization_asset_cleanup_workflow", "label": "Asset Cleanup Workflow", "file_type": "concept", "source_file": ".github/prompts/brand/references/asset-organization.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_brand_references_asset_organization_archive_dont_delete", "label": "Archive, Don't Delete", "file_type": "rationale", "source_file": ".github/prompts/brand/references/asset-organization.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "Outdated assets moved to archived/ with date prefix to preserve history."}], "edges": [{"source": "github_prompts_brand_references_asset_organization", "target": "github_prompts_brand_references_asset_organization_asset_directory_structure", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/references/asset-organization.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_references_asset_organization", "target": "github_prompts_brand_references_asset_organization_asset_naming_convention", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/references/asset-organization.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_references_asset_organization", "target": "github_prompts_brand_references_asset_organization_manifest_json", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/references/asset-organization.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_references_asset_organization", "target": "github_prompts_brand_references_asset_organization_asset_version_history", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/references/asset-organization.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_references_asset_organization", "target": "github_prompts_brand_references_asset_organization_asset_tagging_system", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/references/asset-organization.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_references_asset_organization", "target": "github_prompts_brand_references_asset_organization_asset_cleanup_workflow", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/references/asset-organization.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_references_asset_organization", "target": "github_prompts_brand_references_asset_organization_archive_dont_delete", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/references/asset-organization.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_references_asset_organization_asset_cleanup_workflow", "target": "github_prompts_brand_skill_extract_colors_script", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/references/asset-organization.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_references_asset_organization_asset_cleanup_workflow", "target": "github_prompts_brand_references_asset_organization_manifest_json", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/references/asset-organization.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_references_asset_organization_asset_version_history", "target": "github_prompts_brand_references_asset_organization_manifest_json", "relation": "shares_data_with", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/references/asset-organization.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_references_asset_organization_archive_dont_delete", "target": "github_prompts_brand_references_asset_organization_asset_directory_structure", "relation": "rationale_for", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/references/asset-organization.md", "source_location": null, "weight": 1.0}], "hyperedges": []}
+{
+    "nodes": [
+        {
+            "id": "github_prompts_brand_references_asset_organization",
+            "label": "asset-organization.md",
+            "file_type": "document",
+            "source_file": ".github/prompts/brand/references/asset-organization.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_brand_references_asset_organization_asset_directory_structure",
+            "label": "Asset Directory Structure",
+            "file_type": "concept",
+            "source_file": ".github/prompts/brand/references/asset-organization.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null,
+            "rationale": "Git-tracked .assets/ metadata separated from raw files in assets/."
+        },
+        {
+            "id": "github_prompts_brand_references_asset_organization_asset_naming_convention",
+            "label": "Asset Naming Convention",
+            "file_type": "concept",
+            "source_file": ".github/prompts/brand/references/asset-organization.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null,
+            "rationale": "{type}_{campaign}_{description}_{timestamp}_{variant}.{ext}; \"evergreen\" for non-campaign assets."
+        },
+        {
+            "id": "github_prompts_brand_references_asset_organization_manifest_json",
+            "label": "manifest.json Asset Registry",
+            "file_type": "concept",
+            "source_file": ".github/prompts/brand/references/asset-organization.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_brand_references_asset_organization_asset_version_history",
+            "label": "Asset Version History",
+            "file_type": "concept",
+            "source_file": ".github/prompts/brand/references/asset-organization.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_brand_references_asset_organization_asset_tagging_system",
+            "label": "Asset Tagging System",
+            "file_type": "concept",
+            "source_file": ".github/prompts/brand/references/asset-organization.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_brand_references_asset_organization_asset_cleanup_workflow",
+            "label": "Asset Cleanup Workflow",
+            "file_type": "concept",
+            "source_file": ".github/prompts/brand/references/asset-organization.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_brand_references_asset_organization_archive_dont_delete",
+            "label": "Archive, Don't Delete",
+            "file_type": "rationale",
+            "source_file": ".github/prompts/brand/references/asset-organization.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null,
+            "rationale": "Outdated assets moved to archived/ with date prefix to preserve history."
+        }
+    ],
+    "edges": [
+        {
+            "source": "github_prompts_brand_references_asset_organization",
+            "target": "github_prompts_brand_references_asset_organization_asset_directory_structure",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/references/asset-organization.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_references_asset_organization",
+            "target": "github_prompts_brand_references_asset_organization_asset_naming_convention",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/references/asset-organization.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_references_asset_organization",
+            "target": "github_prompts_brand_references_asset_organization_manifest_json",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/references/asset-organization.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_references_asset_organization",
+            "target": "github_prompts_brand_references_asset_organization_asset_version_history",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/references/asset-organization.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_references_asset_organization",
+            "target": "github_prompts_brand_references_asset_organization_asset_tagging_system",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/references/asset-organization.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_references_asset_organization",
+            "target": "github_prompts_brand_references_asset_organization_asset_cleanup_workflow",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/references/asset-organization.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_references_asset_organization",
+            "target": "github_prompts_brand_references_asset_organization_archive_dont_delete",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/references/asset-organization.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_references_asset_organization_asset_cleanup_workflow",
+            "target": "github_prompts_brand_skill_extract_colors_script",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/references/asset-organization.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_references_asset_organization_asset_cleanup_workflow",
+            "target": "github_prompts_brand_references_asset_organization_manifest_json",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/references/asset-organization.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_references_asset_organization_asset_version_history",
+            "target": "github_prompts_brand_references_asset_organization_manifest_json",
+            "relation": "shares_data_with",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/references/asset-organization.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_references_asset_organization_archive_dont_delete",
+            "target": "github_prompts_brand_references_asset_organization_asset_directory_structure",
+            "relation": "rationale_for",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/references/asset-organization.md",
+            "source_location": null,
+            "weight": 1.0
+        }
+    ],
+    "hyperedges": []
+}

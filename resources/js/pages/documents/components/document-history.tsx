@@ -19,7 +19,7 @@ function loadPdfPreview() {
 
 function pdfViewerFallback(): ReactNode {
     return (
-        <div className="flex h-full items-center justify-center gap-2 border border-slate-200 bg-slate-100 text-sm text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300">
+        <div className="flex h-full items-center justify-center gap-2 border border-slate-200 bg-slate-100 text-sm text-slate-600 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-300">
             <Spinner />
             Loading PDF viewer…
         </div>
@@ -89,15 +89,15 @@ export default function DocumentHistory({
 
     return (
         <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-            <div className="flex shrink-0 items-center gap-3 border-b border-slate-200 p-4 pr-12 text-left dark:border-slate-800">
-                <span className="flex size-8 items-center justify-center bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200">
+            <div className="flex shrink-0 items-center gap-3 border-b border-slate-200 p-4 pr-12 text-left dark:border-neutral-800">
+                <span className="flex size-8 items-center justify-center bg-slate-100 text-slate-700 dark:bg-neutral-800 dark:text-neutral-200">
                     <History aria-hidden="true" className="size-4" />
                 </span>
                 <div className="min-w-0">
-                    <div className="text-base font-semibold text-slate-900 dark:text-slate-100">
+                    <div className="text-base font-semibold text-slate-900 dark:text-neutral-100">
                         Document history
                     </div>
-                    <div className="truncate text-xs text-slate-500 dark:text-slate-400">
+                    <div className="truncate text-xs text-slate-500 dark:text-neutral-400">
                         {document.originalFilename}
                     </div>
                 </div>
@@ -106,22 +106,22 @@ export default function DocumentHistory({
             <div className="min-h-0 flex-1 overflow-y-auto">
                 <div className="flex flex-col gap-5 p-4">
                     <section>
-                        <div className="mb-3 border-b border-slate-200 pb-2 dark:border-slate-800">
-                            <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                        <div className="mb-3 border-b border-slate-200 pb-2 dark:border-neutral-800">
+                            <h3 className="text-sm font-semibold text-slate-900 dark:text-neutral-100">
                                 Previous documents
                             </h3>
-                            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                            <p className="mt-1 text-xs text-slate-500 dark:text-neutral-400">
                                 Browse previous declarations
                             </p>
                         </div>
 
                         {loading ? (
-                            <div className="flex min-h-48 items-center justify-center gap-2 border border-slate-200 bg-slate-50 text-sm text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300">
+                            <div className="flex min-h-48 items-center justify-center gap-2 border border-slate-200 bg-slate-50 text-sm text-slate-600 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-300">
                                 <Spinner />
                                 Loading previous declarations…
                             </div>
                         ) : entries.length === 0 ? (
-                            <div className="border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300">
+                            <div className="border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-300">
                                 <p>
                                     No previous tax declaration number is linked
                                     to this record yet.
@@ -139,7 +139,7 @@ export default function DocumentHistory({
                             <>
                                 <div
                                     aria-label="Document navigation"
-                                    className="mb-3 flex items-center justify-between border border-slate-200 bg-card p-2 dark:border-slate-800 dark:bg-slate-950"
+                                    className="mb-3 flex items-center justify-between border border-slate-200 bg-card p-2 dark:border-neutral-800 dark:bg-black"
                                 >
                                     <Button
                                         type="button"
@@ -159,7 +159,7 @@ export default function DocumentHistory({
                                     </Button>
                                     <span
                                         aria-live="polite"
-                                        className="px-2 text-xs text-slate-700 tabular-nums dark:text-slate-300"
+                                        className="px-2 text-xs text-slate-700 tabular-nums dark:text-neutral-300"
                                     >
                                         {currentIndex + 1} / {entries.length}
                                     </span>
@@ -187,8 +187,8 @@ export default function DocumentHistory({
                                 </div>
 
                                 {currentEntry && (
-                                    <article className="overflow-hidden border border-slate-200 bg-card shadow-sm dark:border-slate-800 dark:bg-slate-950">
-                                        <div className="flex items-start justify-between gap-3 border-b border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-900">
+                                    <article className="overflow-hidden border border-slate-200 bg-card shadow-sm dark:border-neutral-800 dark:bg-black">
+                                        <div className="flex items-start justify-between gap-3 border-b border-slate-200 bg-slate-50 p-4 dark:border-neutral-800 dark:bg-neutral-900">
                                             <div className="flex min-w-0 items-start gap-3">
                                                 <span className="flex size-10 shrink-0 items-center justify-center bg-blue-50 text-blue-900 dark:bg-blue-950 dark:text-blue-200">
                                                     <FileText
@@ -197,10 +197,10 @@ export default function DocumentHistory({
                                                     />
                                                 </span>
                                                 <div className="min-w-0">
-                                                    <p className="text-xs font-medium tracking-wide text-slate-500 uppercase dark:text-slate-400">
+                                                    <p className="text-xs font-medium tracking-wide text-slate-500 uppercase dark:text-neutral-400">
                                                         Previous declaration
                                                     </p>
-                                                    <h4 className="mt-1 text-sm font-semibold break-words text-slate-900 dark:text-slate-100">
+                                                    <h4 className="mt-1 text-sm font-semibold break-words text-slate-900 dark:text-neutral-100">
                                                         Tax declaration{' '}
                                                         {
                                                             currentEntry.taxDeclarationNumber
@@ -231,10 +231,10 @@ export default function DocumentHistory({
                                         </div>
                                         <dl className="grid gap-4 p-4 text-sm sm:grid-cols-2">
                                             <div>
-                                                <dt className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                                                <dt className="text-xs font-medium text-slate-500 dark:text-neutral-400">
                                                     Date added
                                                 </dt>
-                                                <dd className="mt-1 text-slate-900 dark:text-slate-100">
+                                                <dd className="mt-1 text-slate-900 dark:text-neutral-100">
                                                     {currentDocument
                                                         ? formatDate(
                                                               currentDocument.createdAt,
@@ -243,17 +243,17 @@ export default function DocumentHistory({
                                                 </dd>
                                             </div>
                                             <div>
-                                                <dt className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                                                <dt className="text-xs font-medium text-slate-500 dark:text-neutral-400">
                                                     Current declaration
                                                 </dt>
-                                                <dd className="mt-1 break-words text-slate-900 dark:text-slate-100">
+                                                <dd className="mt-1 break-words text-slate-900 dark:text-neutral-100">
                                                     {document.taxDeclarationNumber ??
                                                         '—'}
                                                 </dd>
                                             </div>
                                         </dl>
-                                        <div className="border-t border-slate-200 p-3 dark:border-slate-800">
-                                            <p className="mb-2 text-xs font-medium text-slate-500 dark:text-slate-400">
+                                        <div className="border-t border-slate-200 p-3 dark:border-neutral-800">
+                                            <p className="mb-2 text-xs font-medium text-slate-500 dark:text-neutral-400">
                                                 Document preview
                                             </p>
                                             {currentDocument?.mimeType ===
@@ -274,7 +274,7 @@ export default function DocumentHistory({
                                                     </ClientOnly>
                                                 </div>
                                             ) : currentDocument ? (
-                                                <div className="flex min-h-48 items-center justify-center overflow-auto border border-slate-200 bg-slate-100 p-2 dark:border-slate-800 dark:bg-slate-900">
+                                                <div className="flex min-h-48 items-center justify-center overflow-auto border border-slate-200 bg-slate-100 p-2 dark:border-neutral-800 dark:bg-neutral-900">
                                                     <img
                                                         src={
                                                             currentDocument.viewUrl
@@ -286,7 +286,7 @@ export default function DocumentHistory({
                                                     />
                                                 </div>
                                             ) : (
-                                                <p className="border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300">
+                                                <p className="border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-300">
                                                     This previous declaration
                                                     number is not in the archive
                                                     yet.

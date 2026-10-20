@@ -1,1 +1,391 @@
-{"nodes": [{"id": "$graphify-root$_routes_console_php", "label": "console.php", "file_type": "code", "source_file": "routes/console.php", "source_location": "L1"}, {"id": "$graphify-root$_routes_console_closure_1", "label": "{closure#1}()", "file_type": "code", "source_file": "routes/console.php", "source_location": "L7", "_callable": true}, {"id": "$graphify-root$_routes_console_closure_2", "label": "{closure#2}()", "file_type": "code", "source_file": "routes/console.php", "source_location": "L11", "_callable": true}, {"id": "$graphify-root$_routes_console_closure_3", "label": "{closure#3}()", "file_type": "code", "source_file": "routes/console.php", "source_location": "L20", "_callable": true}, {"id": "$graphify-root$_routes_console_closure_4", "label": "{closure#4}()", "file_type": "code", "source_file": "routes/console.php", "source_location": "L24", "_callable": true}, {"id": "$graphify-root$_routes_console_closure_5", "label": "{closure#5}()", "file_type": "code", "source_file": "routes/console.php", "source_location": "L48", "_callable": true}], "edges": [{"source": "$graphify-root$_routes_console_php", "target": "devcommands", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "routes/console.php", "source_location": "L3", "weight": 1.0}, {"source": "$graphify-root$_routes_console_php", "target": "inspiring", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "routes/console.php", "source_location": "L4", "weight": 1.0}, {"source": "$graphify-root$_routes_console_php", "target": "artisan", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "routes/console.php", "source_location": "L5", "weight": 1.0}, {"source": "$graphify-root$_routes_console_php", "target": "$graphify-root$_routes_console_closure_1", "relation": "contains", "confidence": "EXTRACTED", "source_file": "routes/console.php", "source_location": "L7", "weight": 1.0}, {"source": "$graphify-root$_routes_console_php", "target": "$graphify-root$_routes_console_closure_2", "relation": "contains", "confidence": "EXTRACTED", "source_file": "routes/console.php", "source_location": "L11", "weight": 1.0}, {"source": "$graphify-root$_routes_console_php", "target": "$graphify-root$_routes_console_closure_3", "relation": "contains", "confidence": "EXTRACTED", "source_file": "routes/console.php", "source_location": "L20", "weight": 1.0}, {"source": "$graphify-root$_routes_console_php", "target": "$graphify-root$_routes_console_closure_4", "relation": "contains", "confidence": "EXTRACTED", "source_file": "routes/console.php", "source_location": "L24", "weight": 1.0}, {"source": "$graphify-root$_routes_console_php", "target": "$graphify-root$_routes_console_closure_5", "relation": "contains", "confidence": "EXTRACTED", "source_file": "routes/console.php", "source_location": "L48", "weight": 1.0}], "raw_calls": [{"caller_nid": "$graphify-root$_routes_console_closure_1", "callee": "gethostbynamel", "is_member_call": false, "source_file": "routes/console.php", "source_location": "L8", "receiver": null, "php_scoped": false}, {"caller_nid": "$graphify-root$_routes_console_closure_1", "callee": "gethostname", "is_member_call": false, "source_file": "routes/console.php", "source_location": "L8", "receiver": null, "php_scoped": false}, {"caller_nid": "$graphify-root$_routes_console_closure_1", "callee": "all", "is_member_call": true, "source_file": "routes/console.php", "source_location": "L10", "receiver": null, "php_scoped": false}, {"caller_nid": "$graphify-root$_routes_console_closure_1", "callee": "values", "is_member_call": true, "source_file": "routes/console.php", "source_location": "L10", "receiver": null, "php_scoped": false}, {"caller_nid": "$graphify-root$_routes_console_closure_1", "callee": "sort", "is_member_call": true, "source_file": "routes/console.php", "source_location": "L10", "receiver": null, "php_scoped": false}, {"caller_nid": "$graphify-root$_routes_console_closure_1", "callee": "unique", "is_member_call": true, "source_file": "routes/console.php", "source_location": "L10", "receiver": null, "php_scoped": false}, {"caller_nid": "$graphify-root$_routes_console_closure_1", "callee": "filter", "is_member_call": true, "source_file": "routes/console.php", "source_location": "L10", "receiver": null, "php_scoped": false}, {"caller_nid": "$graphify-root$_routes_console_closure_1", "callee": "collect", "is_member_call": false, "source_file": "routes/console.php", "source_location": "L10", "receiver": null, "php_scoped": false}, {"caller_nid": "$graphify-root$_routes_console_closure_2", "callee": "filter_var", "is_member_call": false, "source_file": "routes/console.php", "source_location": "L11", "receiver": null, "php_scoped": false}, {"caller_nid": "$graphify-root$_routes_console_closure_2", "callee": "str_starts_with", "is_member_call": false, "source_file": "routes/console.php", "source_location": "L12", "receiver": null, "php_scoped": false}, {"caller_nid": "$graphify-root$_routes_console_closure_3", "callee": "comment", "is_member_call": true, "source_file": "routes/console.php", "source_location": "L21", "receiver": "this", "php_scoped": false}, {"caller_nid": "$graphify-root$_routes_console_closure_3", "callee": "quote", "is_member_call": true, "source_file": "routes/console.php", "source_location": "L21", "receiver": "Inspiring", "php_scoped": true}, {"caller_nid": "$graphify-root$_routes_console_closure_4", "callee": "option", "is_member_call": true, "source_file": "routes/console.php", "source_location": "L25", "receiver": "this", "php_scoped": false}, {"caller_nid": "$graphify-root$_routes_console_closure_4", "callee": "$getNetworkAddresses", "is_member_call": false, "source_file": "routes/console.php", "source_location": "L26", "receiver": null, "php_scoped": false}, {"caller_nid": "$graphify-root$_routes_console_closure_4", "callee": "info", "is_member_call": true, "source_file": "routes/console.php", "source_location": "L28", "receiver": "this", "php_scoped": false}, {"caller_nid": "$graphify-root$_routes_console_closure_4", "callee": "line", "is_member_call": true, "source_file": "routes/console.php", "source_location": "L29", "receiver": "this", "php_scoped": false}, {"caller_nid": "$graphify-root$_routes_console_closure_4", "callee": "line", "is_member_call": true, "source_file": "routes/console.php", "source_location": "L32", "receiver": "this", "php_scoped": false}, {"caller_nid": "$graphify-root$_routes_console_closure_4", "callee": "warn", "is_member_call": true, "source_file": "routes/console.php", "source_location": "L36", "receiver": "this", "php_scoped": false}, {"caller_nid": "$graphify-root$_routes_console_closure_4", "callee": "comment", "is_member_call": true, "source_file": "routes/console.php", "source_location": "L39", "receiver": "this", "php_scoped": false}, {"caller_nid": "$graphify-root$_routes_console_closure_4", "callee": "newLine", "is_member_call": true, "source_file": "routes/console.php", "source_location": "L40", "receiver": "this", "php_scoped": false}, {"caller_nid": "$graphify-root$_routes_console_closure_4", "callee": "call", "is_member_call": true, "source_file": "routes/console.php", "source_location": "L42", "receiver": "this", "php_scoped": false}, {"caller_nid": "$graphify-root$_routes_console_closure_5", "callee": "option", "is_member_call": true, "source_file": "routes/console.php", "source_location": "L49", "receiver": "this", "php_scoped": false}, {"caller_nid": "$graphify-root$_routes_console_closure_5", "callee": "$getNetworkAddresses", "is_member_call": false, "source_file": "routes/console.php", "source_location": "L50", "receiver": null, "php_scoped": false}, {"caller_nid": "$graphify-root$_routes_console_closure_5", "callee": "sleep", "is_member_call": false, "source_file": "routes/console.php", "source_location": "L53", "receiver": null, "php_scoped": false}, {"caller_nid": "$graphify-root$_routes_console_closure_5", "callee": "$getNetworkAddresses", "is_member_call": false, "source_file": "routes/console.php", "source_location": "L55", "receiver": null, "php_scoped": false}, {"caller_nid": "$graphify-root$_routes_console_closure_5", "callee": "newLine", "is_member_call": true, "source_file": "routes/console.php", "source_location": "L61", "receiver": "this", "php_scoped": false}, {"caller_nid": "$graphify-root$_routes_console_closure_5", "callee": "info", "is_member_call": true, "source_file": "routes/console.php", "source_location": "L62", "receiver": "this", "php_scoped": false}, {"caller_nid": "$graphify-root$_routes_console_closure_5", "callee": "warn", "is_member_call": true, "source_file": "routes/console.php", "source_location": "L65", "receiver": "this", "php_scoped": false}, {"caller_nid": "$graphify-root$_routes_console_closure_5", "callee": "line", "is_member_call": true, "source_file": "routes/console.php", "source_location": "L68", "receiver": "this", "php_scoped": false}]}
+{
+    "nodes": [
+        {
+            "id": "$graphify-root$_routes_console_php",
+            "label": "console.php",
+            "file_type": "code",
+            "source_file": "routes/console.php",
+            "source_location": "L1"
+        },
+        {
+            "id": "$graphify-root$_routes_console_closure_1",
+            "label": "{closure#1}()",
+            "file_type": "code",
+            "source_file": "routes/console.php",
+            "source_location": "L7",
+            "_callable": true
+        },
+        {
+            "id": "$graphify-root$_routes_console_closure_2",
+            "label": "{closure#2}()",
+            "file_type": "code",
+            "source_file": "routes/console.php",
+            "source_location": "L11",
+            "_callable": true
+        },
+        {
+            "id": "$graphify-root$_routes_console_closure_3",
+            "label": "{closure#3}()",
+            "file_type": "code",
+            "source_file": "routes/console.php",
+            "source_location": "L20",
+            "_callable": true
+        },
+        {
+            "id": "$graphify-root$_routes_console_closure_4",
+            "label": "{closure#4}()",
+            "file_type": "code",
+            "source_file": "routes/console.php",
+            "source_location": "L24",
+            "_callable": true
+        },
+        {
+            "id": "$graphify-root$_routes_console_closure_5",
+            "label": "{closure#5}()",
+            "file_type": "code",
+            "source_file": "routes/console.php",
+            "source_location": "L48",
+            "_callable": true
+        }
+    ],
+    "edges": [
+        {
+            "source": "$graphify-root$_routes_console_php",
+            "target": "devcommands",
+            "relation": "imports",
+            "context": "import",
+            "confidence": "EXTRACTED",
+            "source_file": "routes/console.php",
+            "source_location": "L3",
+            "weight": 1.0
+        },
+        {
+            "source": "$graphify-root$_routes_console_php",
+            "target": "inspiring",
+            "relation": "imports",
+            "context": "import",
+            "confidence": "EXTRACTED",
+            "source_file": "routes/console.php",
+            "source_location": "L4",
+            "weight": 1.0
+        },
+        {
+            "source": "$graphify-root$_routes_console_php",
+            "target": "artisan",
+            "relation": "imports",
+            "context": "import",
+            "confidence": "EXTRACTED",
+            "source_file": "routes/console.php",
+            "source_location": "L5",
+            "weight": 1.0
+        },
+        {
+            "source": "$graphify-root$_routes_console_php",
+            "target": "$graphify-root$_routes_console_closure_1",
+            "relation": "contains",
+            "confidence": "EXTRACTED",
+            "source_file": "routes/console.php",
+            "source_location": "L7",
+            "weight": 1.0
+        },
+        {
+            "source": "$graphify-root$_routes_console_php",
+            "target": "$graphify-root$_routes_console_closure_2",
+            "relation": "contains",
+            "confidence": "EXTRACTED",
+            "source_file": "routes/console.php",
+            "source_location": "L11",
+            "weight": 1.0
+        },
+        {
+            "source": "$graphify-root$_routes_console_php",
+            "target": "$graphify-root$_routes_console_closure_3",
+            "relation": "contains",
+            "confidence": "EXTRACTED",
+            "source_file": "routes/console.php",
+            "source_location": "L20",
+            "weight": 1.0
+        },
+        {
+            "source": "$graphify-root$_routes_console_php",
+            "target": "$graphify-root$_routes_console_closure_4",
+            "relation": "contains",
+            "confidence": "EXTRACTED",
+            "source_file": "routes/console.php",
+            "source_location": "L24",
+            "weight": 1.0
+        },
+        {
+            "source": "$graphify-root$_routes_console_php",
+            "target": "$graphify-root$_routes_console_closure_5",
+            "relation": "contains",
+            "confidence": "EXTRACTED",
+            "source_file": "routes/console.php",
+            "source_location": "L48",
+            "weight": 1.0
+        }
+    ],
+    "raw_calls": [
+        {
+            "caller_nid": "$graphify-root$_routes_console_closure_1",
+            "callee": "gethostbynamel",
+            "is_member_call": false,
+            "source_file": "routes/console.php",
+            "source_location": "L8",
+            "receiver": null,
+            "php_scoped": false
+        },
+        {
+            "caller_nid": "$graphify-root$_routes_console_closure_1",
+            "callee": "gethostname",
+            "is_member_call": false,
+            "source_file": "routes/console.php",
+            "source_location": "L8",
+            "receiver": null,
+            "php_scoped": false
+        },
+        {
+            "caller_nid": "$graphify-root$_routes_console_closure_1",
+            "callee": "all",
+            "is_member_call": true,
+            "source_file": "routes/console.php",
+            "source_location": "L10",
+            "receiver": null,
+            "php_scoped": false
+        },
+        {
+            "caller_nid": "$graphify-root$_routes_console_closure_1",
+            "callee": "values",
+            "is_member_call": true,
+            "source_file": "routes/console.php",
+            "source_location": "L10",
+            "receiver": null,
+            "php_scoped": false
+        },
+        {
+            "caller_nid": "$graphify-root$_routes_console_closure_1",
+            "callee": "sort",
+            "is_member_call": true,
+            "source_file": "routes/console.php",
+            "source_location": "L10",
+            "receiver": null,
+            "php_scoped": false
+        },
+        {
+            "caller_nid": "$graphify-root$_routes_console_closure_1",
+            "callee": "unique",
+            "is_member_call": true,
+            "source_file": "routes/console.php",
+            "source_location": "L10",
+            "receiver": null,
+            "php_scoped": false
+        },
+        {
+            "caller_nid": "$graphify-root$_routes_console_closure_1",
+            "callee": "filter",
+            "is_member_call": true,
+            "source_file": "routes/console.php",
+            "source_location": "L10",
+            "receiver": null,
+            "php_scoped": false
+        },
+        {
+            "caller_nid": "$graphify-root$_routes_console_closure_1",
+            "callee": "collect",
+            "is_member_call": false,
+            "source_file": "routes/console.php",
+            "source_location": "L10",
+            "receiver": null,
+            "php_scoped": false
+        },
+        {
+            "caller_nid": "$graphify-root$_routes_console_closure_2",
+            "callee": "filter_var",
+            "is_member_call": false,
+            "source_file": "routes/console.php",
+            "source_location": "L11",
+            "receiver": null,
+            "php_scoped": false
+        },
+        {
+            "caller_nid": "$graphify-root$_routes_console_closure_2",
+            "callee": "str_starts_with",
+            "is_member_call": false,
+            "source_file": "routes/console.php",
+            "source_location": "L12",
+            "receiver": null,
+            "php_scoped": false
+        },
+        {
+            "caller_nid": "$graphify-root$_routes_console_closure_3",
+            "callee": "comment",
+            "is_member_call": true,
+            "source_file": "routes/console.php",
+            "source_location": "L21",
+            "receiver": "this",
+            "php_scoped": false
+        },
+        {
+            "caller_nid": "$graphify-root$_routes_console_closure_3",
+            "callee": "quote",
+            "is_member_call": true,
+            "source_file": "routes/console.php",
+            "source_location": "L21",
+            "receiver": "Inspiring",
+            "php_scoped": true
+        },
+        {
+            "caller_nid": "$graphify-root$_routes_console_closure_4",
+            "callee": "option",
+            "is_member_call": true,
+            "source_file": "routes/console.php",
+            "source_location": "L25",
+            "receiver": "this",
+            "php_scoped": false
+        },
+        {
+            "caller_nid": "$graphify-root$_routes_console_closure_4",
+            "callee": "$getNetworkAddresses",
+            "is_member_call": false,
+            "source_file": "routes/console.php",
+            "source_location": "L26",
+            "receiver": null,
+            "php_scoped": false
+        },
+        {
+            "caller_nid": "$graphify-root$_routes_console_closure_4",
+            "callee": "info",
+            "is_member_call": true,
+            "source_file": "routes/console.php",
+            "source_location": "L28",
+            "receiver": "this",
+            "php_scoped": false
+        },
+        {
+            "caller_nid": "$graphify-root$_routes_console_closure_4",
+            "callee": "line",
+            "is_member_call": true,
+            "source_file": "routes/console.php",
+            "source_location": "L29",
+            "receiver": "this",
+            "php_scoped": false
+        },
+        {
+            "caller_nid": "$graphify-root$_routes_console_closure_4",
+            "callee": "line",
+            "is_member_call": true,
+            "source_file": "routes/console.php",
+            "source_location": "L32",
+            "receiver": "this",
+            "php_scoped": false
+        },
+        {
+            "caller_nid": "$graphify-root$_routes_console_closure_4",
+            "callee": "warn",
+            "is_member_call": true,
+            "source_file": "routes/console.php",
+            "source_location": "L36",
+            "receiver": "this",
+            "php_scoped": false
+        },
+        {
+            "caller_nid": "$graphify-root$_routes_console_closure_4",
+            "callee": "comment",
+            "is_member_call": true,
+            "source_file": "routes/console.php",
+            "source_location": "L39",
+            "receiver": "this",
+            "php_scoped": false
+        },
+        {
+            "caller_nid": "$graphify-root$_routes_console_closure_4",
+            "callee": "newLine",
+            "is_member_call": true,
+            "source_file": "routes/console.php",
+            "source_location": "L40",
+            "receiver": "this",
+            "php_scoped": false
+        },
+        {
+            "caller_nid": "$graphify-root$_routes_console_closure_4",
+            "callee": "call",
+            "is_member_call": true,
+            "source_file": "routes/console.php",
+            "source_location": "L42",
+            "receiver": "this",
+            "php_scoped": false
+        },
+        {
+            "caller_nid": "$graphify-root$_routes_console_closure_5",
+            "callee": "option",
+            "is_member_call": true,
+            "source_file": "routes/console.php",
+            "source_location": "L49",
+            "receiver": "this",
+            "php_scoped": false
+        },
+        {
+            "caller_nid": "$graphify-root$_routes_console_closure_5",
+            "callee": "$getNetworkAddresses",
+            "is_member_call": false,
+            "source_file": "routes/console.php",
+            "source_location": "L50",
+            "receiver": null,
+            "php_scoped": false
+        },
+        {
+            "caller_nid": "$graphify-root$_routes_console_closure_5",
+            "callee": "sleep",
+            "is_member_call": false,
+            "source_file": "routes/console.php",
+            "source_location": "L53",
+            "receiver": null,
+            "php_scoped": false
+        },
+        {
+            "caller_nid": "$graphify-root$_routes_console_closure_5",
+            "callee": "$getNetworkAddresses",
+            "is_member_call": false,
+            "source_file": "routes/console.php",
+            "source_location": "L55",
+            "receiver": null,
+            "php_scoped": false
+        },
+        {
+            "caller_nid": "$graphify-root$_routes_console_closure_5",
+            "callee": "newLine",
+            "is_member_call": true,
+            "source_file": "routes/console.php",
+            "source_location": "L61",
+            "receiver": "this",
+            "php_scoped": false
+        },
+        {
+            "caller_nid": "$graphify-root$_routes_console_closure_5",
+            "callee": "info",
+            "is_member_call": true,
+            "source_file": "routes/console.php",
+            "source_location": "L62",
+            "receiver": "this",
+            "php_scoped": false
+        },
+        {
+            "caller_nid": "$graphify-root$_routes_console_closure_5",
+            "callee": "warn",
+            "is_member_call": true,
+            "source_file": "routes/console.php",
+            "source_location": "L65",
+            "receiver": "this",
+            "php_scoped": false
+        },
+        {
+            "caller_nid": "$graphify-root$_routes_console_closure_5",
+            "callee": "line",
+            "is_member_call": true,
+            "source_file": "routes/console.php",
+            "source_location": "L68",
+            "receiver": "this",
+            "php_scoped": false
+        }
+    ]
+}

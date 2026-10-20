@@ -1,1 +1,190 @@
-{"nodes": [{"id": "github_prompts_banner_design_references_banner_sizes_and_styles", "label": "banner-sizes-and-styles.md", "file_type": "document", "source_file": ".github/prompts/banner-design/references/banner-sizes-and-styles.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_banner_design_references_banner_sizes_and_styles_platform_banner_sizes", "label": "Platform Banner Sizes", "file_type": "concept", "source_file": ".github/prompts/banner-design/references/banner-sizes-and-styles.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_banner_design_references_banner_sizes_and_styles_art_direction_styles_22", "label": "22 Art Direction Styles", "file_type": "concept", "source_file": ".github/prompts/banner-design/references/banner-sizes-and-styles.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_banner_design_references_banner_sizes_and_styles_three_zone_visual_hierarchy", "label": "3-Zone Visual Hierarchy Rule", "file_type": "rationale", "source_file": ".github/prompts/banner-design/references/banner-sizes-and-styles.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "Top: logo/value prop, middle: supporting message, bottom: CTA."}, {"id": "github_prompts_banner_design_references_banner_sizes_and_styles_safe_zones", "label": "Banner Safe Zones", "file_type": "rationale", "source_file": ".github/prompts/banner-design/references/banner-sizes-and-styles.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "Critical content in central 70-80% to avoid platform UI chrome and cropping."}, {"id": "github_prompts_banner_design_references_banner_sizes_and_styles_cta_rules", "label": "Banner CTA Rules", "file_type": "rationale", "source_file": ".github/prompts/banner-design/references/banner-sizes-and-styles.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "One high-contrast CTA, bottom-right terminal area, min 44px for mobile tap targets."}, {"id": "github_prompts_banner_design_references_banner_sizes_and_styles_text_to_image_ratio", "label": "Text-to-Image Ratio", "file_type": "rationale", "source_file": ".github/prompts/banner-design/references/banner-sizes-and-styles.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "Ads under 20% text because Meta penalizes text-heavy creatives."}, {"id": "github_prompts_banner_design_references_banner_sizes_and_styles_print_specs", "label": "Print Specs", "file_type": "concept", "source_file": ".github/prompts/banner-design/references/banner-sizes-and-styles.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_banner_design_references_banner_sizes_and_styles_pinterest_research_queries", "label": "Pinterest Research Queries", "file_type": "concept", "source_file": ".github/prompts/banner-design/references/banner-sizes-and-styles.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [{"source": "github_prompts_banner_design_references_banner_sizes_and_styles", "target": "github_prompts_banner_design_references_banner_sizes_and_styles_platform_banner_sizes", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/banner-design/references/banner-sizes-and-styles.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_banner_design_references_banner_sizes_and_styles", "target": "github_prompts_banner_design_references_banner_sizes_and_styles_art_direction_styles_22", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/banner-design/references/banner-sizes-and-styles.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_banner_design_references_banner_sizes_and_styles", "target": "github_prompts_banner_design_references_banner_sizes_and_styles_three_zone_visual_hierarchy", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/banner-design/references/banner-sizes-and-styles.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_banner_design_references_banner_sizes_and_styles", "target": "github_prompts_banner_design_references_banner_sizes_and_styles_safe_zones", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/banner-design/references/banner-sizes-and-styles.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_banner_design_references_banner_sizes_and_styles", "target": "github_prompts_banner_design_references_banner_sizes_and_styles_cta_rules", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/banner-design/references/banner-sizes-and-styles.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_banner_design_references_banner_sizes_and_styles", "target": "github_prompts_banner_design_references_banner_sizes_and_styles_text_to_image_ratio", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/banner-design/references/banner-sizes-and-styles.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_banner_design_references_banner_sizes_and_styles", "target": "github_prompts_banner_design_references_banner_sizes_and_styles_print_specs", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/banner-design/references/banner-sizes-and-styles.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_banner_design_references_banner_sizes_and_styles", "target": "github_prompts_banner_design_references_banner_sizes_and_styles_pinterest_research_queries", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/banner-design/references/banner-sizes-and-styles.md", "source_location": null, "weight": 1.0}], "hyperedges": []}
+{
+    "nodes": [
+        {
+            "id": "github_prompts_banner_design_references_banner_sizes_and_styles",
+            "label": "banner-sizes-and-styles.md",
+            "file_type": "document",
+            "source_file": ".github/prompts/banner-design/references/banner-sizes-and-styles.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_banner_design_references_banner_sizes_and_styles_platform_banner_sizes",
+            "label": "Platform Banner Sizes",
+            "file_type": "concept",
+            "source_file": ".github/prompts/banner-design/references/banner-sizes-and-styles.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_banner_design_references_banner_sizes_and_styles_art_direction_styles_22",
+            "label": "22 Art Direction Styles",
+            "file_type": "concept",
+            "source_file": ".github/prompts/banner-design/references/banner-sizes-and-styles.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_banner_design_references_banner_sizes_and_styles_three_zone_visual_hierarchy",
+            "label": "3-Zone Visual Hierarchy Rule",
+            "file_type": "rationale",
+            "source_file": ".github/prompts/banner-design/references/banner-sizes-and-styles.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null,
+            "rationale": "Top: logo/value prop, middle: supporting message, bottom: CTA."
+        },
+        {
+            "id": "github_prompts_banner_design_references_banner_sizes_and_styles_safe_zones",
+            "label": "Banner Safe Zones",
+            "file_type": "rationale",
+            "source_file": ".github/prompts/banner-design/references/banner-sizes-and-styles.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null,
+            "rationale": "Critical content in central 70-80% to avoid platform UI chrome and cropping."
+        },
+        {
+            "id": "github_prompts_banner_design_references_banner_sizes_and_styles_cta_rules",
+            "label": "Banner CTA Rules",
+            "file_type": "rationale",
+            "source_file": ".github/prompts/banner-design/references/banner-sizes-and-styles.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null,
+            "rationale": "One high-contrast CTA, bottom-right terminal area, min 44px for mobile tap targets."
+        },
+        {
+            "id": "github_prompts_banner_design_references_banner_sizes_and_styles_text_to_image_ratio",
+            "label": "Text-to-Image Ratio",
+            "file_type": "rationale",
+            "source_file": ".github/prompts/banner-design/references/banner-sizes-and-styles.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null,
+            "rationale": "Ads under 20% text because Meta penalizes text-heavy creatives."
+        },
+        {
+            "id": "github_prompts_banner_design_references_banner_sizes_and_styles_print_specs",
+            "label": "Print Specs",
+            "file_type": "concept",
+            "source_file": ".github/prompts/banner-design/references/banner-sizes-and-styles.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_banner_design_references_banner_sizes_and_styles_pinterest_research_queries",
+            "label": "Pinterest Research Queries",
+            "file_type": "concept",
+            "source_file": ".github/prompts/banner-design/references/banner-sizes-and-styles.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        }
+    ],
+    "edges": [
+        {
+            "source": "github_prompts_banner_design_references_banner_sizes_and_styles",
+            "target": "github_prompts_banner_design_references_banner_sizes_and_styles_platform_banner_sizes",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/banner-design/references/banner-sizes-and-styles.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_banner_design_references_banner_sizes_and_styles",
+            "target": "github_prompts_banner_design_references_banner_sizes_and_styles_art_direction_styles_22",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/banner-design/references/banner-sizes-and-styles.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_banner_design_references_banner_sizes_and_styles",
+            "target": "github_prompts_banner_design_references_banner_sizes_and_styles_three_zone_visual_hierarchy",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/banner-design/references/banner-sizes-and-styles.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_banner_design_references_banner_sizes_and_styles",
+            "target": "github_prompts_banner_design_references_banner_sizes_and_styles_safe_zones",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/banner-design/references/banner-sizes-and-styles.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_banner_design_references_banner_sizes_and_styles",
+            "target": "github_prompts_banner_design_references_banner_sizes_and_styles_cta_rules",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/banner-design/references/banner-sizes-and-styles.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_banner_design_references_banner_sizes_and_styles",
+            "target": "github_prompts_banner_design_references_banner_sizes_and_styles_text_to_image_ratio",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/banner-design/references/banner-sizes-and-styles.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_banner_design_references_banner_sizes_and_styles",
+            "target": "github_prompts_banner_design_references_banner_sizes_and_styles_print_specs",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/banner-design/references/banner-sizes-and-styles.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_banner_design_references_banner_sizes_and_styles",
+            "target": "github_prompts_banner_design_references_banner_sizes_and_styles_pinterest_research_queries",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/banner-design/references/banner-sizes-and-styles.md",
+            "source_location": null,
+            "weight": 1.0
+        }
+    ],
+    "hyperedges": []
+}

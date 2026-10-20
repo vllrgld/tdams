@@ -1,1 +1,71 @@
-{"nodes": [{"id": "public_tdams_no_logo", "label": "tdams no logo.png", "file_type": "image", "description": "TDAMS wordmark only, without the seal/emblem row: 'PROVINCIAL ASESSOR'S OFFICE' heading, large outlined blue 'TDAMS' letters with drop shadow, and 'TAX DECLARATION ARCHIVE MANAGEMENT SYSTEM' tagline.", "source_file": "public/tdams no logo.png", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "public_tdams_no_logo_tdams_system", "label": "TDAMS (Tax Declaration Archive Management System)", "file_type": "concept", "source_file": "public/tdams no logo.png", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "public_tdams_no_logo_provincial_assessors_office", "label": "Provincial Assessor's Office", "file_type": "concept", "source_file": "public/tdams no logo.png", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [{"source": "public_tdams_no_logo", "target": "public_tdams_no_logo_tdams_system", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "public/tdams no logo.png", "source_location": null, "weight": 1.0}, {"source": "public_tdams_no_logo", "target": "public_tdams_no_logo_provincial_assessors_office", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "public/tdams no logo.png", "source_location": null, "weight": 1.0}, {"source": "public_tdams_no_logo", "target": "public_tdams_logo", "relation": "semantically_similar_to", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": "public/tdams no logo.png", "source_location": null, "weight": 1.0}], "hyperedges": []}
+{
+    "nodes": [
+        {
+            "id": "public_tdams_no_logo",
+            "label": "tdams no logo.png",
+            "file_type": "image",
+            "description": "TDAMS wordmark only, without the seal/emblem row: 'PROVINCIAL ASESSOR'S OFFICE' heading, large outlined blue 'TDAMS' letters with drop shadow, and 'TAX DECLARATION ARCHIVE MANAGEMENT SYSTEM' tagline.",
+            "source_file": "public/tdams no logo.png",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "public_tdams_no_logo_tdams_system",
+            "label": "TDAMS (Tax Declaration Archive Management System)",
+            "file_type": "concept",
+            "source_file": "public/tdams no logo.png",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "public_tdams_no_logo_provincial_assessors_office",
+            "label": "Provincial Assessor's Office",
+            "file_type": "concept",
+            "source_file": "public/tdams no logo.png",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        }
+    ],
+    "edges": [
+        {
+            "source": "public_tdams_no_logo",
+            "target": "public_tdams_no_logo_tdams_system",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": "public/tdams no logo.png",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "public_tdams_no_logo",
+            "target": "public_tdams_no_logo_provincial_assessors_office",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": "public/tdams no logo.png",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "public_tdams_no_logo",
+            "target": "public_tdams_logo",
+            "relation": "semantically_similar_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.85,
+            "source_file": "public/tdams no logo.png",
+            "source_location": null,
+            "weight": 1.0
+        }
+    ],
+    "hyperedges": []
+}

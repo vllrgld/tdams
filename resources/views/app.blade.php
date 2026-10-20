@@ -30,8 +30,8 @@
             }
         </style>
 
-        <link rel="icon" href="/favicon.ico" sizes="any">
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+        <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+        <link rel="icon" href="/favicon.png" type="image/png" sizes="192x192">
         <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
         @fonts
@@ -39,7 +39,7 @@
         @viteReactRefresh
         @vite(['resources/css/app.css', 'resources/js/app.tsx', "resources/js/pages/{$page['component']}.tsx"])
         <x-inertia::head>
-            <title>{{ config('app.name', 'Laravel') }}</title>
+            <title>TDAMS · Tax Declaration Archive Management System</title>
         </x-inertia::head>
     </head>
     <body class="font-sans antialiased">

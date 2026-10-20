@@ -28,7 +28,7 @@ function loadPdfPreview() {
 
 function pdfViewerFallback(): ReactNode {
     return (
-        <div className="flex min-h-0 flex-1 items-center justify-center gap-2 border border-slate-200 bg-slate-100 text-sm text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300">
+        <div className="flex min-h-0 flex-1 items-center justify-center gap-2 border border-slate-200 bg-slate-100 text-sm text-slate-600 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-300">
             <Spinner />
             Loading PDF viewer…
         </div>
@@ -119,7 +119,7 @@ export default function DocumentViewerDialog({
                 }}
             >
                 <DialogContent
-                    className={`flex h-[90vh] max-h-[90vh] w-[calc(100%-1rem)] flex-col gap-3 overflow-hidden rounded-none p-4 transition-[left] duration-300 ease-in-out motion-reduce:transition-none sm:p-6 lg:!top-[5vh] lg:!h-[90vh] lg:!w-[66vw] lg:!max-w-none lg:!translate-x-0 lg:!translate-y-0 ${
+                    className={`flex h-[90vh] max-h-[90vh] w-[calc(100%-1rem)] flex-col gap-3 overflow-hidden rounded-none p-4 transition-[left] duration-300 ease-in-out motion-reduce:transition-none sm:p-6 lg:!top-[5vh] lg:!h-[90vh] lg:!w-[66vw] lg:!max-w-none lg:!translate-x-0 lg:!translate-y-0 dark:border-neutral-800 dark:bg-black ${
                         infoOpen
                             ? 'lg:!left-[2vw]'
                             : '!max-w-none sm:!max-w-none lg:!left-[17vw]'
@@ -215,7 +215,7 @@ export default function DocumentViewerDialog({
                                         />
                                     </ClientOnly>
                                 ) : (
-                                    <div className="flex min-h-0 flex-1 items-center justify-center overflow-auto border border-slate-200 bg-slate-100 p-2 dark:border-slate-800 dark:bg-slate-900">
+                                    <div className="flex min-h-0 flex-1 items-center justify-center overflow-auto border border-slate-200 bg-slate-100 p-2 dark:border-neutral-800 dark:bg-neutral-900">
                                         <img
                                             src={document.viewUrl}
                                             alt={document.originalFilename}
@@ -237,7 +237,7 @@ export default function DocumentViewerDialog({
             >
                 <DialogContent
                     overlayClassName="!pointer-events-none !bg-transparent"
-                    className="flex h-[90vh] max-h-[90vh] w-[calc(100%-1rem)] max-w-lg flex-col gap-0 overflow-hidden rounded-none p-0 sm:w-[min(30vw,32rem)] sm:max-w-none lg:!top-[5vh] lg:!left-[68vw] lg:!h-[90vh] lg:!w-[30vw] lg:!max-w-none lg:!translate-x-0 lg:!translate-y-0"
+                    className="flex h-[90vh] max-h-[90vh] w-[calc(100%-1rem)] max-w-lg flex-col gap-0 overflow-hidden rounded-none p-0 sm:w-[min(30vw,32rem)] sm:max-w-none lg:!top-[5vh] lg:!left-[68vw] lg:!h-[90vh] lg:!w-[30vw] lg:!max-w-none lg:!translate-x-0 lg:!translate-y-0 dark:border-neutral-800 dark:bg-black"
                 >
                     {document &&
                         (panelView === 'history' ? (
@@ -248,18 +248,18 @@ export default function DocumentViewerDialog({
                             />
                         ) : (
                             <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-                                <div className="flex shrink-0 items-center gap-3 border-b border-slate-200 p-4 pr-12 text-left dark:border-slate-800">
-                                    <span className="flex size-8 items-center justify-center bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                                <div className="flex shrink-0 items-center gap-3 border-b border-slate-200 p-4 pr-12 text-left dark:border-neutral-800">
+                                    <span className="flex size-8 items-center justify-center bg-slate-100 text-slate-700 dark:bg-neutral-800 dark:text-neutral-200">
                                         <Info
                                             aria-hidden="true"
                                             className="size-4"
                                         />
                                     </span>
                                     <div className="min-w-0">
-                                        <div className="text-base font-semibold text-slate-900 dark:text-slate-100">
+                                        <div className="text-base font-semibold text-slate-900 dark:text-neutral-100">
                                             Document information
                                         </div>
-                                        <div className="truncate text-xs text-slate-500 dark:text-slate-400">
+                                        <div className="truncate text-xs text-slate-500 dark:text-neutral-400">
                                             {document.originalFilename}
                                         </div>
                                     </div>
@@ -400,21 +400,8 @@ export default function DocumentViewerDialog({
                                                 label="Area"
                                                 value={document.area}
                                             />
-                                            <InfoField
-                                                label="North boundary"
-                                                value={document.boundaryNorth}
-                                            />
-                                            <InfoField
-                                                label="South boundary"
-                                                value={document.boundarySouth}
-                                            />
-                                            <InfoField
-                                                label="East boundary"
-                                                value={document.boundaryEast}
-                                            />
-                                            <InfoField
-                                                label="West boundary"
-                                                value={document.boundaryWest}
+                                            <BoundaryCompass
+                                                document={document}
                                             />
                                             <InfoField
                                                 label="Remarks"
@@ -499,7 +486,7 @@ function PreviousDeclarationEditor({
 
     return (
         <div className="grid min-w-0 gap-1 sm:col-span-2">
-            <dt className="text-xs font-medium text-slate-500 dark:text-slate-400">
+            <dt className="text-xs font-medium text-slate-500 dark:text-neutral-400">
                 Previous tax declaration number
             </dt>
             <dd>
@@ -582,11 +569,74 @@ function InfoSection({
 }) {
     return (
         <section>
-            <h3 className="mb-3 border-b border-slate-200 pb-2 text-sm font-semibold text-slate-900 dark:border-slate-800 dark:text-slate-100">
+            <h3 className="mb-3 border-b border-slate-200 pb-2 text-sm font-semibold text-slate-900 dark:border-neutral-800 dark:text-neutral-100">
                 {title}
             </h3>
             <dl className="grid gap-x-5 gap-y-4 sm:grid-cols-2">{children}</dl>
         </section>
+    );
+}
+
+function BoundaryCompass({ document }: { document: ArchivedDocument }) {
+    const corner = 'bg-slate-50 dark:bg-neutral-900';
+
+    return (
+        <div className="grid min-w-0 gap-2 sm:col-span-2">
+            <dt className="text-xs font-medium text-slate-500 dark:text-neutral-400">
+                Boundaries
+            </dt>
+            <dd>
+                <dl className="grid grid-cols-3 gap-px border border-slate-200 bg-slate-200 dark:border-neutral-800 dark:bg-neutral-800">
+                    <div className={corner} />
+                    <BoundaryCell direction="N" label="North">
+                        {document.boundaryNorth}
+                    </BoundaryCell>
+                    <div className={corner} />
+                    <BoundaryCell direction="W" label="West">
+                        {document.boundaryWest}
+                    </BoundaryCell>
+                    <div className="flex min-h-16 flex-col items-center justify-center bg-card p-2 text-center">
+                        <span className="text-[10px] font-medium tracking-wide text-slate-500 uppercase dark:text-neutral-400">
+                            Lot
+                        </span>
+                        <span className="max-w-full truncate text-xs font-semibold text-slate-900 dark:text-neutral-100">
+                            {document.lotNumber || '—'}
+                        </span>
+                    </div>
+                    <BoundaryCell direction="E" label="East">
+                        {document.boundaryEast}
+                    </BoundaryCell>
+                    <div className={corner} />
+                    <BoundaryCell direction="S" label="South">
+                        {document.boundarySouth}
+                    </BoundaryCell>
+                    <div className={corner} />
+                </dl>
+            </dd>
+        </div>
+    );
+}
+
+function BoundaryCell({
+    direction,
+    label,
+    children,
+}: {
+    direction: string;
+    label: string;
+    children: string | null;
+}) {
+    return (
+        <div className="flex min-h-16 min-w-0 flex-col gap-1 bg-card p-2">
+            <dt className="text-[10px] font-semibold text-blue-900 dark:text-blue-300">
+                <abbr title={label} className="no-underline">
+                    {direction}
+                </abbr>
+            </dt>
+            <dd className="text-xs break-words text-slate-900 dark:text-neutral-100">
+                {children || '—'}
+            </dd>
+        </div>
     );
 }
 
@@ -605,15 +655,15 @@ function InfoField({
         <div
             className={`grid min-w-0 gap-1 ${fullWidth ? 'sm:col-span-2' : ''}`}
         >
-            <dt className="text-xs font-medium text-slate-500 dark:text-slate-400">
+            <dt className="text-xs font-medium text-slate-500 dark:text-neutral-400">
                 {label}
             </dt>
-            <dd className="text-sm break-words text-slate-900 dark:text-slate-100">
+            <dd className="text-sm break-words text-slate-900 dark:text-neutral-100">
                 {onClick && value ? (
                     <button
                         type="button"
                         onClick={onClick}
-                        className="text-left underline decoration-slate-400 underline-offset-2 hover:text-blue-800 focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:outline-none dark:decoration-slate-500 dark:hover:text-blue-300"
+                        className="text-left underline decoration-slate-400 underline-offset-2 hover:text-blue-800 focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:outline-none dark:decoration-neutral-500 dark:hover:text-blue-300"
                     >
                         {value}
                     </button>

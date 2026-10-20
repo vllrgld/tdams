@@ -157,8 +157,8 @@ export default function DocumentInfo({
     }
 
     return (
-        <Card className="min-w-0 gap-0 overflow-visible rounded-none border-slate-200 bg-card py-0 shadow-none dark:border-slate-800 dark:bg-slate-950">
-            <CardHeader className="border-b border-slate-200 px-4 py-4 sm:px-5 dark:border-slate-800">
+        <Card className="min-w-0 gap-0 overflow-visible rounded-none border-slate-200 bg-card py-0 shadow-none dark:border-neutral-800 dark:bg-black">
+            <CardHeader className="border-b border-slate-200 px-4 py-4 sm:px-5 dark:border-neutral-800">
                 <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
                     <div>
                         <CardTitle className="flex items-center gap-2 text-base text-slate-950 dark:text-white">
@@ -174,7 +174,7 @@ export default function DocumentInfo({
                     </div>
                     <Badge
                         variant="outline"
-                        className="w-fit rounded-none border-slate-300 text-slate-700 dark:border-slate-700 dark:text-slate-300"
+                        className="w-fit rounded-none border-slate-300 text-slate-700 dark:border-neutral-700 dark:text-neutral-300"
                     >
                         {documents.total.toLocaleString()}{' '}
                         {documents.total === 1 ? 'document' : 'documents'}
@@ -183,9 +183,9 @@ export default function DocumentInfo({
             </CardHeader>
 
             <CardContent className="px-0 py-0">
-                <div className="flex flex-col gap-3 border-b border-slate-200 p-3 sm:flex-row sm:p-4 dark:border-slate-800">
+                <div className="flex flex-col gap-3 border-b border-slate-200 p-3 sm:flex-row sm:p-4 dark:border-neutral-800">
                     <form onSubmit={submitSearch} className="min-w-0 flex-1">
-                        <div className="flex h-10 min-w-0 overflow-hidden rounded-none border border-slate-300 bg-card focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/50 dark:border-slate-700 dark:bg-slate-950">
+                        <div className="flex h-10 min-w-0 overflow-hidden rounded-none border border-slate-300 bg-card focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/50 dark:border-neutral-700 dark:bg-black">
                             <Select
                                 value={field}
                                 onValueChange={changeSearchField}
@@ -193,7 +193,7 @@ export default function DocumentInfo({
                             >
                                 <SelectTrigger
                                     aria-label="Search in"
-                                    className="h-full w-40 shrink-0 rounded-none border-0 border-r border-slate-300 bg-transparent px-3 shadow-none focus-visible:border-transparent focus-visible:ring-0 *:data-[slot=select-value]:min-w-0 *:data-[slot=select-value]:flex-1 *:data-[slot=select-value]:truncate dark:border-slate-700 dark:bg-transparent"
+                                    className="h-full w-40 shrink-0 rounded-none border-0 border-r border-slate-300 bg-transparent px-3 shadow-none focus-visible:border-transparent focus-visible:ring-0 *:data-[slot=select-value]:min-w-0 *:data-[slot=select-value]:flex-1 *:data-[slot=select-value]:truncate dark:border-neutral-700 dark:bg-transparent"
                                 >
                                     <SelectValue placeholder="All fields" />
                                 </SelectTrigger>
@@ -252,7 +252,7 @@ export default function DocumentInfo({
                             aria-pressed={viewMode === 'cards'}
                             title="Card view"
                             onClick={() => onViewModeChange('cards')}
-                            className="size-10 rounded-none border border-slate-300 dark:border-slate-700"
+                            className="size-10 rounded-none border border-slate-300 dark:border-neutral-700"
                         >
                             <LayoutGrid aria-hidden="true" />
                         </Button>
@@ -266,7 +266,7 @@ export default function DocumentInfo({
                             aria-pressed={viewMode === 'list'}
                             title="List view"
                             onClick={() => onViewModeChange('list')}
-                            className="-ml-px size-10 rounded-none border border-slate-300 dark:border-slate-700"
+                            className="-ml-px size-10 rounded-none border border-slate-300 dark:border-neutral-700"
                         >
                             <List aria-hidden="true" />
                         </Button>
@@ -286,7 +286,7 @@ export default function DocumentInfo({
                                 onViewDocument={onViewDocument}
                             />
                         )}
-                        <div className="flex flex-col justify-between gap-2 border-t border-slate-200 px-4 py-3 text-xs text-slate-500 sm:flex-row sm:items-center sm:px-5 dark:border-slate-800 dark:text-slate-400">
+                        <div className="flex flex-col justify-between gap-2 border-t border-slate-200 px-4 py-3 text-xs text-slate-500 sm:flex-row sm:items-center sm:px-5 dark:border-neutral-800 dark:text-neutral-400">
                             <span>
                                 Showing {documents.from}–{documents.to} of{' '}
                                 {documents.total} documents
@@ -307,7 +307,7 @@ export default function DocumentInfo({
                                 <h2 className="text-base font-semibold text-slate-950 dark:text-white">
                                     No matching documents
                                 </h2>
-                                <p className="mt-1 max-w-md text-sm text-slate-600 dark:text-slate-400">
+                                <p className="mt-1 max-w-md text-sm text-slate-600 dark:text-neutral-400">
                                     Nothing in the archive matches “
                                     {searchQuery}” in{' '}
                                     {selectedLabel.toLowerCase()}. Try a
@@ -319,7 +319,7 @@ export default function DocumentInfo({
                                 <h2 className="text-base font-semibold text-slate-950 dark:text-white">
                                     No documents in the archive yet
                                 </h2>
-                                <p className="mt-1 max-w-md text-sm text-slate-600 dark:text-slate-400">
+                                <p className="mt-1 max-w-md text-sm text-slate-600 dark:text-neutral-400">
                                     Use the upload button to add a scanned PDF
                                     or image with its property details.
                                 </p>

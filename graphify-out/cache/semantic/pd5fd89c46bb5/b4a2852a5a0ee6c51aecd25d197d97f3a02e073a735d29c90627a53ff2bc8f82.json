@@ -1,1 +1,295 @@
-{"nodes": [{"id": "github_prompts_design_system_references_component_tokens", "label": "component-tokens.md", "file_type": "document", "source_file": ".github/prompts/design-system/references/component-tokens.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_design_system_references_component_tokens_button_tokens", "label": "Button Tokens", "file_type": "concept", "source_file": ".github/prompts/design-system/references/component-tokens.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_design_system_references_component_tokens_input_tokens", "label": "Input Tokens", "file_type": "concept", "source_file": ".github/prompts/design-system/references/component-tokens.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_design_system_references_component_tokens_card_tokens", "label": "Card Tokens", "file_type": "concept", "source_file": ".github/prompts/design-system/references/component-tokens.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_design_system_references_component_tokens_badge_tokens", "label": "Badge Tokens", "file_type": "concept", "source_file": ".github/prompts/design-system/references/component-tokens.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_design_system_references_component_tokens_alert_tokens", "label": "Alert Tokens", "file_type": "concept", "source_file": ".github/prompts/design-system/references/component-tokens.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_design_system_references_component_tokens_dialog_tokens", "label": "Dialog/Modal Tokens", "file_type": "concept", "source_file": ".github/prompts/design-system/references/component-tokens.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_design_system_references_component_tokens_table_tokens", "label": "Table Tokens", "file_type": "concept", "source_file": ".github/prompts/design-system/references/component-tokens.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [{"source": "github_prompts_design_system_references_component_tokens", "target": "github_prompts_design_system_references_component_tokens_button_tokens", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design-system/references/component-tokens.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_system_references_component_tokens", "target": "github_prompts_design_system_references_component_tokens_input_tokens", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design-system/references/component-tokens.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_system_references_component_tokens", "target": "github_prompts_design_system_references_component_tokens_card_tokens", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design-system/references/component-tokens.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_system_references_component_tokens", "target": "github_prompts_design_system_references_component_tokens_badge_tokens", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design-system/references/component-tokens.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_system_references_component_tokens", "target": "github_prompts_design_system_references_component_tokens_alert_tokens", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design-system/references/component-tokens.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_system_references_component_tokens", "target": "github_prompts_design_system_references_component_tokens_dialog_tokens", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design-system/references/component-tokens.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_system_references_component_tokens", "target": "github_prompts_design_system_references_component_tokens_table_tokens", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design-system/references/component-tokens.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_system_references_component_specs_button_spec", "target": "github_prompts_design_system_references_component_tokens_button_tokens", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": ".github/prompts/design-system/references/component-tokens.md", "source_location": null, "weight": 0.85}, {"source": "github_prompts_design_system_references_component_specs_input_spec", "target": "github_prompts_design_system_references_component_tokens_input_tokens", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": ".github/prompts/design-system/references/component-tokens.md", "source_location": null, "weight": 0.85}, {"source": "github_prompts_design_system_references_component_specs_card_spec", "target": "github_prompts_design_system_references_component_tokens_card_tokens", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": ".github/prompts/design-system/references/component-tokens.md", "source_location": null, "weight": 0.85}, {"source": "github_prompts_design_system_references_component_specs_badge_spec", "target": "github_prompts_design_system_references_component_tokens_badge_tokens", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": ".github/prompts/design-system/references/component-tokens.md", "source_location": null, "weight": 0.85}, {"source": "github_prompts_design_system_references_component_specs_alert_spec", "target": "github_prompts_design_system_references_component_tokens_alert_tokens", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": ".github/prompts/design-system/references/component-tokens.md", "source_location": null, "weight": 0.85}, {"source": "github_prompts_design_system_references_component_specs_dialog_spec", "target": "github_prompts_design_system_references_component_tokens_dialog_tokens", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": ".github/prompts/design-system/references/component-tokens.md", "source_location": null, "weight": 0.85}, {"source": "github_prompts_design_system_references_component_specs_table_spec", "target": "github_prompts_design_system_references_component_tokens_table_tokens", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": ".github/prompts/design-system/references/component-tokens.md", "source_location": null, "weight": 0.85}, {"source": "github_prompts_design_system_references_component_tokens_button_tokens", "target": "github_prompts_design_system_references_semantic_tokens_color_semantics", "relation": "shares_data_with", "confidence": "INFERRED", "confidence_score": 0.95, "source_file": ".github/prompts/design-system/references/component-tokens.md", "source_location": null, "weight": 0.95}, {"source": "github_prompts_design_system_references_component_tokens_input_tokens", "target": "github_prompts_design_system_references_semantic_tokens_color_semantics", "relation": "shares_data_with", "confidence": "INFERRED", "confidence_score": 0.95, "source_file": ".github/prompts/design-system/references/component-tokens.md", "source_location": null, "weight": 0.95}, {"source": "github_prompts_design_system_references_component_tokens_button_tokens", "target": "github_prompts_design_system_references_primitive_tokens_spacing_scale", "relation": "shares_data_with", "confidence": "INFERRED", "confidence_score": 0.95, "source_file": ".github/prompts/design-system/references/component-tokens.md", "source_location": null, "weight": 0.95}, {"source": "github_prompts_design_system_references_component_tokens_card_tokens", "target": "github_prompts_design_system_references_primitive_tokens_shadow_scale", "relation": "shares_data_with", "confidence": "INFERRED", "confidence_score": 0.95, "source_file": ".github/prompts/design-system/references/component-tokens.md", "source_location": null, "weight": 0.95}, {"source": "github_prompts_design_system_references_component_tokens_badge_tokens", "target": "github_prompts_design_system_references_primitive_tokens_border_radius_scale", "relation": "shares_data_with", "confidence": "INFERRED", "confidence_score": 0.95, "source_file": ".github/prompts/design-system/references/component-tokens.md", "source_location": null, "weight": 0.95}, {"source": "github_prompts_design_system_references_component_tokens", "target": "github_prompts_design_system_references_token_architecture_component_layer", "relation": "implements", "confidence": "INFERRED", "confidence_score": 0.95, "source_file": ".github/prompts/design-system/references/component-tokens.md", "source_location": null, "weight": 0.95}], "hyperedges": []}
+{
+    "nodes": [
+        {
+            "id": "github_prompts_design_system_references_component_tokens",
+            "label": "component-tokens.md",
+            "file_type": "document",
+            "source_file": ".github/prompts/design-system/references/component-tokens.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_design_system_references_component_tokens_button_tokens",
+            "label": "Button Tokens",
+            "file_type": "concept",
+            "source_file": ".github/prompts/design-system/references/component-tokens.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_design_system_references_component_tokens_input_tokens",
+            "label": "Input Tokens",
+            "file_type": "concept",
+            "source_file": ".github/prompts/design-system/references/component-tokens.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_design_system_references_component_tokens_card_tokens",
+            "label": "Card Tokens",
+            "file_type": "concept",
+            "source_file": ".github/prompts/design-system/references/component-tokens.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_design_system_references_component_tokens_badge_tokens",
+            "label": "Badge Tokens",
+            "file_type": "concept",
+            "source_file": ".github/prompts/design-system/references/component-tokens.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_design_system_references_component_tokens_alert_tokens",
+            "label": "Alert Tokens",
+            "file_type": "concept",
+            "source_file": ".github/prompts/design-system/references/component-tokens.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_design_system_references_component_tokens_dialog_tokens",
+            "label": "Dialog/Modal Tokens",
+            "file_type": "concept",
+            "source_file": ".github/prompts/design-system/references/component-tokens.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_design_system_references_component_tokens_table_tokens",
+            "label": "Table Tokens",
+            "file_type": "concept",
+            "source_file": ".github/prompts/design-system/references/component-tokens.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        }
+    ],
+    "edges": [
+        {
+            "source": "github_prompts_design_system_references_component_tokens",
+            "target": "github_prompts_design_system_references_component_tokens_button_tokens",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design-system/references/component-tokens.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_system_references_component_tokens",
+            "target": "github_prompts_design_system_references_component_tokens_input_tokens",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design-system/references/component-tokens.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_system_references_component_tokens",
+            "target": "github_prompts_design_system_references_component_tokens_card_tokens",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design-system/references/component-tokens.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_system_references_component_tokens",
+            "target": "github_prompts_design_system_references_component_tokens_badge_tokens",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design-system/references/component-tokens.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_system_references_component_tokens",
+            "target": "github_prompts_design_system_references_component_tokens_alert_tokens",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design-system/references/component-tokens.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_system_references_component_tokens",
+            "target": "github_prompts_design_system_references_component_tokens_dialog_tokens",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design-system/references/component-tokens.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_system_references_component_tokens",
+            "target": "github_prompts_design_system_references_component_tokens_table_tokens",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design-system/references/component-tokens.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_system_references_component_specs_button_spec",
+            "target": "github_prompts_design_system_references_component_tokens_button_tokens",
+            "relation": "conceptually_related_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.85,
+            "source_file": ".github/prompts/design-system/references/component-tokens.md",
+            "source_location": null,
+            "weight": 0.85
+        },
+        {
+            "source": "github_prompts_design_system_references_component_specs_input_spec",
+            "target": "github_prompts_design_system_references_component_tokens_input_tokens",
+            "relation": "conceptually_related_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.85,
+            "source_file": ".github/prompts/design-system/references/component-tokens.md",
+            "source_location": null,
+            "weight": 0.85
+        },
+        {
+            "source": "github_prompts_design_system_references_component_specs_card_spec",
+            "target": "github_prompts_design_system_references_component_tokens_card_tokens",
+            "relation": "conceptually_related_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.85,
+            "source_file": ".github/prompts/design-system/references/component-tokens.md",
+            "source_location": null,
+            "weight": 0.85
+        },
+        {
+            "source": "github_prompts_design_system_references_component_specs_badge_spec",
+            "target": "github_prompts_design_system_references_component_tokens_badge_tokens",
+            "relation": "conceptually_related_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.85,
+            "source_file": ".github/prompts/design-system/references/component-tokens.md",
+            "source_location": null,
+            "weight": 0.85
+        },
+        {
+            "source": "github_prompts_design_system_references_component_specs_alert_spec",
+            "target": "github_prompts_design_system_references_component_tokens_alert_tokens",
+            "relation": "conceptually_related_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.85,
+            "source_file": ".github/prompts/design-system/references/component-tokens.md",
+            "source_location": null,
+            "weight": 0.85
+        },
+        {
+            "source": "github_prompts_design_system_references_component_specs_dialog_spec",
+            "target": "github_prompts_design_system_references_component_tokens_dialog_tokens",
+            "relation": "conceptually_related_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.85,
+            "source_file": ".github/prompts/design-system/references/component-tokens.md",
+            "source_location": null,
+            "weight": 0.85
+        },
+        {
+            "source": "github_prompts_design_system_references_component_specs_table_spec",
+            "target": "github_prompts_design_system_references_component_tokens_table_tokens",
+            "relation": "conceptually_related_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.85,
+            "source_file": ".github/prompts/design-system/references/component-tokens.md",
+            "source_location": null,
+            "weight": 0.85
+        },
+        {
+            "source": "github_prompts_design_system_references_component_tokens_button_tokens",
+            "target": "github_prompts_design_system_references_semantic_tokens_color_semantics",
+            "relation": "shares_data_with",
+            "confidence": "INFERRED",
+            "confidence_score": 0.95,
+            "source_file": ".github/prompts/design-system/references/component-tokens.md",
+            "source_location": null,
+            "weight": 0.95
+        },
+        {
+            "source": "github_prompts_design_system_references_component_tokens_input_tokens",
+            "target": "github_prompts_design_system_references_semantic_tokens_color_semantics",
+            "relation": "shares_data_with",
+            "confidence": "INFERRED",
+            "confidence_score": 0.95,
+            "source_file": ".github/prompts/design-system/references/component-tokens.md",
+            "source_location": null,
+            "weight": 0.95
+        },
+        {
+            "source": "github_prompts_design_system_references_component_tokens_button_tokens",
+            "target": "github_prompts_design_system_references_primitive_tokens_spacing_scale",
+            "relation": "shares_data_with",
+            "confidence": "INFERRED",
+            "confidence_score": 0.95,
+            "source_file": ".github/prompts/design-system/references/component-tokens.md",
+            "source_location": null,
+            "weight": 0.95
+        },
+        {
+            "source": "github_prompts_design_system_references_component_tokens_card_tokens",
+            "target": "github_prompts_design_system_references_primitive_tokens_shadow_scale",
+            "relation": "shares_data_with",
+            "confidence": "INFERRED",
+            "confidence_score": 0.95,
+            "source_file": ".github/prompts/design-system/references/component-tokens.md",
+            "source_location": null,
+            "weight": 0.95
+        },
+        {
+            "source": "github_prompts_design_system_references_component_tokens_badge_tokens",
+            "target": "github_prompts_design_system_references_primitive_tokens_border_radius_scale",
+            "relation": "shares_data_with",
+            "confidence": "INFERRED",
+            "confidence_score": 0.95,
+            "source_file": ".github/prompts/design-system/references/component-tokens.md",
+            "source_location": null,
+            "weight": 0.95
+        },
+        {
+            "source": "github_prompts_design_system_references_component_tokens",
+            "target": "github_prompts_design_system_references_token_architecture_component_layer",
+            "relation": "implements",
+            "confidence": "INFERRED",
+            "confidence_score": 0.95,
+            "source_file": ".github/prompts/design-system/references/component-tokens.md",
+            "source_location": null,
+            "weight": 0.95
+        }
+    ],
+    "hyperedges": []
+}

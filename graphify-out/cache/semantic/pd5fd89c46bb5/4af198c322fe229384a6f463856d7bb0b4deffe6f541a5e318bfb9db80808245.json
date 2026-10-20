@@ -1,1 +1,113 @@
-{"nodes": [{"id": "github_prompts_brand_references_voice_framework", "label": "voice-framework.md", "file_type": "document", "source_file": ".github/prompts/brand/references/voice-framework.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_brand_references_voice_framework_voice_vs_tone", "label": "Voice vs. Tone", "file_type": "rationale", "source_file": ".github/prompts/brand/references/voice-framework.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "Voice is the consistent personality; tone adapts it to context."}, {"id": "github_prompts_brand_references_voice_framework_voice_dimension_spectrums", "label": "Voice Dimension Spectrums", "file_type": "concept", "source_file": ".github/prompts/brand/references/voice-framework.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_brand_references_voice_framework_voice_chart", "label": "Voice Chart", "file_type": "concept", "source_file": ".github/prompts/brand/references/voice-framework.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_brand_references_voice_framework_voice_testing", "label": "Voice Testing", "file_type": "concept", "source_file": ".github/prompts/brand/references/voice-framework.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [{"source": "github_prompts_brand_references_voice_framework", "target": "github_prompts_brand_references_voice_framework_voice_vs_tone", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/references/voice-framework.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_references_voice_framework", "target": "github_prompts_brand_references_voice_framework_voice_dimension_spectrums", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/references/voice-framework.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_references_voice_framework", "target": "github_prompts_brand_references_voice_framework_voice_chart", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/references/voice-framework.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_references_voice_framework", "target": "github_prompts_brand_references_voice_framework_voice_testing", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/references/voice-framework.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_references_voice_framework_voice_chart", "target": "github_prompts_brand_templates_brand_guidelines_starter_brand_personality", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": ".github/prompts/brand/references/voice-framework.md", "source_location": null, "weight": 0.85}], "hyperedges": []}
+{
+    "nodes": [
+        {
+            "id": "github_prompts_brand_references_voice_framework",
+            "label": "voice-framework.md",
+            "file_type": "document",
+            "source_file": ".github/prompts/brand/references/voice-framework.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_brand_references_voice_framework_voice_vs_tone",
+            "label": "Voice vs. Tone",
+            "file_type": "rationale",
+            "source_file": ".github/prompts/brand/references/voice-framework.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null,
+            "rationale": "Voice is the consistent personality; tone adapts it to context."
+        },
+        {
+            "id": "github_prompts_brand_references_voice_framework_voice_dimension_spectrums",
+            "label": "Voice Dimension Spectrums",
+            "file_type": "concept",
+            "source_file": ".github/prompts/brand/references/voice-framework.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_brand_references_voice_framework_voice_chart",
+            "label": "Voice Chart",
+            "file_type": "concept",
+            "source_file": ".github/prompts/brand/references/voice-framework.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_brand_references_voice_framework_voice_testing",
+            "label": "Voice Testing",
+            "file_type": "concept",
+            "source_file": ".github/prompts/brand/references/voice-framework.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        }
+    ],
+    "edges": [
+        {
+            "source": "github_prompts_brand_references_voice_framework",
+            "target": "github_prompts_brand_references_voice_framework_voice_vs_tone",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/references/voice-framework.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_references_voice_framework",
+            "target": "github_prompts_brand_references_voice_framework_voice_dimension_spectrums",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/references/voice-framework.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_references_voice_framework",
+            "target": "github_prompts_brand_references_voice_framework_voice_chart",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/references/voice-framework.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_references_voice_framework",
+            "target": "github_prompts_brand_references_voice_framework_voice_testing",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/references/voice-framework.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_references_voice_framework_voice_chart",
+            "target": "github_prompts_brand_templates_brand_guidelines_starter_brand_personality",
+            "relation": "conceptually_related_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.85,
+            "source_file": ".github/prompts/brand/references/voice-framework.md",
+            "source_location": null,
+            "weight": 0.85
+        }
+    ],
+    "hyperedges": []
+}

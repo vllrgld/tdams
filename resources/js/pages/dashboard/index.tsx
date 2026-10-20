@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Head, Link } from '@inertiajs/react';
 import {
     ArrowDownRight,
@@ -19,7 +20,13 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
 import { dashboard } from '@/routes';
+import IlocosNorteMap, {
+    bucketFor,
+    lguRows,
+    provinceTotals,
+} from './components/ilocos-norte-map';
 
 const metrics = [
     {
@@ -60,7 +67,7 @@ const metrics = [
         icon: Clock3,
         trend: 'down',
         iconClass:
-            'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-200',
+            'bg-slate-100 text-slate-800 dark:bg-neutral-800 dark:text-neutral-200',
     },
 ];
 
@@ -72,14 +79,6 @@ const dailyIntake = [
     { day: 'Tue', date: 'Oct 07', count: 27 },
     { day: 'Wed', date: 'Oct 08', count: 41 },
     { day: 'Thu', date: 'Oct 09', count: 36 },
-];
-
-const propertyLocations = [
-    { name: 'Laoag City', count: 462, share: 100 },
-    { name: 'Batac City', count: 328, share: 71 },
-    { name: 'San Nicolas', count: 244, share: 53 },
-    { name: 'Paoay', count: 196, share: 42 },
-    { name: 'Bacarra', count: 158, share: 34 },
 ];
 
 const archiveStatus = [
@@ -99,11 +98,19 @@ const archiveStatus = [
         name: 'OCR processing',
         count: 18,
         percent: 1,
-        color: 'bg-slate-400 dark:bg-slate-500',
+        color: 'bg-slate-400 dark:bg-neutral-500',
     },
 ];
 
 export default function Dashboard() {
+    const [activePcode, setActivePcode] = useState<string | null>(null);
+    const [selectedPcode, setSelectedPcode] = useState<string | null>(null);
+    const highlightedPcode = activePcode ?? selectedPcode;
+    const maxLots = lguRows[0]?.lots ?? 1;
+
+    const toggleSelected = (pcode: string) =>
+        setSelectedPcode((current) => (current === pcode ? null : pcode));
+
     return (
         <>
             <Head title="Archive Analytics" />
@@ -115,10 +122,10 @@ export default function Dashboard() {
                             <p className="mb-2 text-xs font-semibold tracking-[0.14em] text-blue-900 uppercase dark:text-blue-200">
                                 Provincial Assessor&apos;s Office
                             </p>
-                            <h1 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl dark:text-slate-50">
+                            <h1 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl dark:text-neutral-50">
                                 Archive Analytics
                             </h1>
-                            <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+                            <p className="mt-1 text-sm text-slate-600 dark:text-neutral-400">
                                 Incoming papers, digitization performance, and
                                 property locations.
                             </p>
@@ -147,13 +154,13 @@ export default function Dashboard() {
                             <span className="h-4 w-1 bg-amber-700 dark:bg-amber-500" />
                             <h2
                                 id="key-indicators-heading"
-                                className="text-sm font-semibold tracking-wide text-slate-800 uppercase dark:text-slate-200"
+                                className="text-sm font-semibold tracking-wide text-slate-800 uppercase dark:text-neutral-200"
                             >
                                 Key indicators
                             </h2>
                             <Badge
                                 variant="outline"
-                                className="ml-auto rounded-none border-slate-300 text-slate-600 dark:border-slate-700 dark:text-slate-400"
+                                className="ml-auto rounded-none border-slate-300 text-slate-600 dark:border-neutral-700 dark:text-neutral-400"
                             >
                                 Today · Oct 09, 2026
                             </Badge>
@@ -168,18 +175,18 @@ export default function Dashboard() {
                                 return (
                                     <Card
                                         key={metric.label}
-                                        className="gap-4 rounded-none border-slate-200 bg-white py-4 shadow-none dark:border-slate-800 dark:bg-slate-950"
+                                        className="gap-4 rounded-none border-slate-200 bg-white py-4 shadow-none dark:border-neutral-800 dark:bg-black"
                                     >
                                         <CardContent className="px-4">
                                             <div className="flex items-start justify-between gap-4">
                                                 <div>
-                                                    <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
+                                                    <p className="text-sm font-medium text-slate-600 dark:text-neutral-400">
                                                         {metric.label}
                                                     </p>
                                                     <p className="mt-2 text-3xl font-semibold tracking-tight text-slate-950 tabular-nums dark:text-white">
                                                         {metric.value}
                                                     </p>
-                                                    <p className="mt-1 flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
+                                                    <p className="mt-1 flex items-center gap-1 text-xs text-slate-500 dark:text-neutral-400">
                                                         {metric.trend !==
                                                             'steady' && (
                                                             <TrendIcon
@@ -187,7 +194,7 @@ export default function Dashboard() {
                                                                 className="size-3.5 text-emerald-700 dark:text-emerald-400"
                                                             />
                                                         )}
-                                                        <span className="font-semibold text-slate-700 dark:text-slate-200">
+                                                        <span className="font-semibold text-slate-700 dark:text-neutral-200">
                                                             {metric.comparison}
                                                         </span>
                                                         {metric.detail}
@@ -210,11 +217,11 @@ export default function Dashboard() {
                     </section>
 
                     <section
-                        aria-label="Archive activity and location analytics"
+                        aria-label="Archive activity analytics"
                         className="grid min-w-0 gap-4 xl:grid-cols-12"
                     >
-                        <Card className="min-w-0 gap-0 rounded-none border-slate-200 bg-white py-0 shadow-none xl:col-span-8 dark:border-slate-800 dark:bg-slate-950">
-                            <CardHeader className="flex-row items-start justify-between border-b border-slate-200 px-4 py-4 sm:px-5 dark:border-slate-800">
+                        <Card className="min-w-0 gap-0 rounded-none border-slate-200 bg-white py-0 shadow-none xl:col-span-12 dark:border-neutral-800 dark:bg-black">
+                            <CardHeader className="flex-row items-start justify-between border-b border-slate-200 px-4 py-4 sm:px-5 dark:border-neutral-800">
                                 <div>
                                     <CardTitle className="flex items-center gap-2 text-base text-slate-950 dark:text-white">
                                         <Files
@@ -246,10 +253,10 @@ export default function Dashboard() {
                                             key={item.date}
                                             className="flex min-w-0 flex-col items-center justify-end gap-2"
                                         >
-                                            <span className="text-xs font-semibold text-slate-700 tabular-nums dark:text-slate-300">
+                                            <span className="text-xs font-semibold text-slate-700 tabular-nums dark:text-neutral-300">
                                                 {item.count}
                                             </span>
-                                            <div className="flex h-36 w-full items-end border-b border-slate-200 bg-slate-50 px-1 dark:border-slate-800 dark:bg-slate-900">
+                                            <div className="flex h-36 w-full items-end border-b border-slate-200 bg-slate-50 px-1 dark:border-neutral-800 dark:bg-neutral-900">
                                                 <div
                                                     className={`w-full ${index === dailyIntake.length - 1 ? 'bg-amber-600 dark:bg-amber-400' : 'bg-blue-900 dark:bg-blue-500'}`}
                                                     style={{
@@ -258,76 +265,178 @@ export default function Dashboard() {
                                                 />
                                             </div>
                                             <div className="text-center">
-                                                <p className="text-xs font-medium text-slate-700 dark:text-slate-300">
+                                                <p className="text-xs font-medium text-slate-700 dark:text-neutral-300">
                                                     {item.day}
                                                 </p>
-                                                <p className="hidden text-[11px] text-slate-500 sm:block dark:text-slate-400">
+                                                <p className="hidden text-[11px] text-slate-500 sm:block dark:text-neutral-400">
                                                     {item.date}
                                                 </p>
                                             </div>
                                         </div>
                                     ))}
                                 </div>
-                                <div className="mt-4 flex items-center justify-between border-t border-slate-200 pt-3 text-xs text-slate-500 dark:border-slate-800 dark:text-slate-400">
+                                <div className="mt-4 flex items-center justify-between border-t border-slate-200 pt-3 text-xs text-slate-500 dark:border-neutral-800 dark:text-neutral-400">
                                     <span>Average: 27 papers per day</span>
                                     <span>Peak: 41 papers · Oct 08</span>
                                 </div>
                             </CardContent>
                         </Card>
+                    </section>
 
-                        <Card className="min-w-0 gap-0 rounded-none border-slate-200 bg-white py-0 shadow-none xl:col-span-4 dark:border-slate-800 dark:bg-slate-950">
-                            <CardHeader className="border-b border-slate-200 px-4 py-4 sm:px-5 dark:border-slate-800">
-                                <CardTitle className="flex items-center gap-2 text-base text-slate-950 dark:text-white">
-                                    <MapPin
-                                        aria-hidden="true"
-                                        className="size-4 text-blue-900 dark:text-blue-200"
-                                    />
-                                    Property locations
-                                </CardTitle>
-                                <CardDescription className="mt-1">
-                                    Archived lots by municipality
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent className="space-y-4 p-4 sm:p-5">
-                                {propertyLocations.map((location, index) => (
-                                    <div
-                                        key={location.name}
-                                        className="space-y-1.5"
+                    <section aria-labelledby="coverage-heading">
+                        <Card className="min-w-0 gap-0 rounded-none border-slate-200 bg-white py-0 shadow-none dark:border-neutral-800 dark:bg-black">
+                            <CardHeader className="flex-row items-start justify-between border-b border-slate-200 px-4 py-4 sm:px-5 dark:border-neutral-800">
+                                <div>
+                                    <CardTitle
+                                        id="coverage-heading"
+                                        className="flex items-center gap-2 text-base text-slate-950 dark:text-white"
                                     >
-                                        <div className="flex items-center justify-between gap-3 text-sm">
-                                            <span className="flex min-w-0 items-center gap-2 font-medium text-slate-800 dark:text-slate-200">
-                                                <span className="text-xs text-slate-400 tabular-nums dark:text-slate-500">
-                                                    {String(index + 1).padStart(
-                                                        2,
-                                                        '0',
-                                                    )}
-                                                </span>
-                                                <span className="truncate">
-                                                    {location.name}
-                                                </span>
-                                            </span>
-                                            <span className="shrink-0 font-semibold text-slate-700 tabular-nums dark:text-slate-300">
-                                                {location.count.toLocaleString()}
-                                            </span>
-                                        </div>
-                                        <div
-                                            className="h-2 bg-slate-100 dark:bg-slate-800"
-                                            role="img"
-                                            aria-label={`${location.name}: ${location.count} archived lots`}
-                                        >
-                                            <div
-                                                className="h-full bg-blue-900 dark:bg-blue-500"
-                                                style={{
-                                                    width: `${location.share}%`,
-                                                }}
-                                            />
-                                        </div>
+                                        <MapPin
+                                            aria-hidden="true"
+                                            className="size-4 text-blue-900 dark:text-blue-200"
+                                        />
+                                        Ilocos Norte coverage
+                                    </CardTitle>
+                                    <CardDescription className="mt-1">
+                                        Archived lots by city and municipality ·
+                                        illustrative figures
+                                    </CardDescription>
+                                </div>
+                                <Badge
+                                    variant="outline"
+                                    className="rounded-none border-blue-200 bg-blue-50 text-blue-900 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-200"
+                                >
+                                    {provinceTotals.lgus} LGUs ·{' '}
+                                    {provinceTotals.lots.toLocaleString()} lots
+                                </Badge>
+                            </CardHeader>
+                            <CardContent className="grid gap-5 p-4 sm:p-5 xl:grid-cols-12">
+                                <div className="min-w-0 xl:col-span-7">
+                                    <IlocosNorteMap
+                                        activePcode={activePcode}
+                                        selectedPcode={selectedPcode}
+                                        onActiveChange={setActivePcode}
+                                        onSelect={toggleSelected}
+                                    />
+                                </div>
+                                <div className="flex min-w-0 flex-col xl:col-span-5">
+                                    <div className="mb-2 flex items-center justify-between text-xs font-medium tracking-wide text-slate-500 uppercase dark:text-neutral-400">
+                                        <span>Ranked by archived lots</span>
+                                        {selectedPcode && (
+                                            <button
+                                                type="button"
+                                                onClick={() =>
+                                                    setSelectedPcode(null)
+                                                }
+                                                className="cursor-pointer text-blue-900 normal-case underline-offset-2 hover:underline focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:outline-none dark:text-blue-300"
+                                            >
+                                                Clear selection
+                                            </button>
+                                        )}
                                     </div>
-                                ))}
-                                <p className="border-t border-slate-200 pt-3 text-xs text-slate-500 dark:border-slate-800 dark:text-slate-400">
-                                    Grouped by municipality from property
-                                    location fields.
-                                </p>
+                                    <ol className="max-h-[36rem] min-h-0 flex-1 overflow-y-auto border border-slate-200 dark:border-neutral-800">
+                                        {lguRows.map((row, index) => {
+                                            const isHighlighted =
+                                                row.pcode === highlightedPcode;
+
+                                            return (
+                                                <li
+                                                    key={row.pcode}
+                                                    className="border-b border-slate-100 last:border-b-0 dark:border-neutral-800"
+                                                >
+                                                    <button
+                                                        type="button"
+                                                        aria-pressed={
+                                                            selectedPcode ===
+                                                            row.pcode
+                                                        }
+                                                        onClick={() =>
+                                                            toggleSelected(
+                                                                row.pcode,
+                                                            )
+                                                        }
+                                                        onMouseEnter={() =>
+                                                            setActivePcode(
+                                                                row.pcode,
+                                                            )
+                                                        }
+                                                        onMouseLeave={() =>
+                                                            setActivePcode(null)
+                                                        }
+                                                        onFocus={() =>
+                                                            setActivePcode(
+                                                                row.pcode,
+                                                            )
+                                                        }
+                                                        onBlur={() =>
+                                                            setActivePcode(null)
+                                                        }
+                                                        className={cn(
+                                                            'w-full cursor-pointer space-y-1.5 px-3 py-2 text-left transition-colors focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:outline-none focus-visible:ring-inset',
+                                                            isHighlighted
+                                                                ? 'bg-amber-50 dark:bg-amber-950/40'
+                                                                : 'hover:bg-slate-50 dark:hover:bg-neutral-900',
+                                                        )}
+                                                    >
+                                                        <span className="flex items-center justify-between gap-3 text-sm">
+                                                            <span className="flex min-w-0 items-center gap-2 font-medium text-slate-800 dark:text-neutral-200">
+                                                                <span className="w-5 text-xs text-slate-400 tabular-nums dark:text-neutral-500">
+                                                                    {String(
+                                                                        index +
+                                                                            1,
+                                                                    ).padStart(
+                                                                        2,
+                                                                        '0',
+                                                                    )}
+                                                                </span>
+                                                                <span
+                                                                    aria-hidden="true"
+                                                                    className={cn(
+                                                                        'size-2.5 shrink-0 border border-slate-300 dark:border-neutral-700',
+                                                                        bucketFor(
+                                                                            row.lots,
+                                                                        )
+                                                                            .swatch,
+                                                                    )}
+                                                                />
+                                                                <span className="truncate">
+                                                                    {row.name}
+                                                                </span>
+                                                            </span>
+                                                            <span className="shrink-0 font-semibold text-slate-700 tabular-nums dark:text-neutral-300">
+                                                                {row.lots.toLocaleString()}
+                                                            </span>
+                                                        </span>
+                                                        <span
+                                                            aria-hidden="true"
+                                                            className="block h-1.5 bg-slate-100 dark:bg-neutral-800"
+                                                        >
+                                                            <span
+                                                                className={cn(
+                                                                    'block h-full',
+                                                                    isHighlighted
+                                                                        ? 'bg-amber-600 dark:bg-amber-400'
+                                                                        : 'bg-blue-900 dark:bg-blue-500',
+                                                                )}
+                                                                style={{
+                                                                    width: `${(row.lots / maxLots) * 100}%`,
+                                                                }}
+                                                            />
+                                                        </span>
+                                                    </button>
+                                                </li>
+                                            );
+                                        })}
+                                    </ol>
+                                    <Button
+                                        render={<Link href="/documents" />}
+                                        variant="outline"
+                                        className="mt-3 w-full justify-between rounded-none border-slate-300 dark:border-neutral-700"
+                                    >
+                                        Explore archive records
+                                        <ArrowRight aria-hidden="true" />
+                                    </Button>
+                                </div>
                             </CardContent>
                         </Card>
                     </section>
@@ -336,8 +445,8 @@ export default function Dashboard() {
                         aria-label="Archive processing analytics"
                         className="grid min-w-0 gap-4 xl:grid-cols-12"
                     >
-                        <Card className="min-w-0 gap-0 rounded-none border-slate-200 bg-white py-0 shadow-none xl:col-span-7 dark:border-slate-800 dark:bg-slate-950">
-                            <CardHeader className="border-b border-slate-200 px-4 py-4 sm:px-5 dark:border-slate-800">
+                        <Card className="min-w-0 gap-0 rounded-none border-slate-200 bg-white py-0 shadow-none xl:col-span-12 dark:border-neutral-800 dark:bg-black">
+                            <CardHeader className="border-b border-slate-200 px-4 py-4 sm:px-5 dark:border-neutral-800">
                                 <CardTitle className="flex items-center gap-2 text-base text-slate-950 dark:text-white">
                                     <ScanText
                                         aria-hidden="true"
@@ -352,7 +461,7 @@ export default function Dashboard() {
                             </CardHeader>
                             <CardContent className="p-4 sm:p-5">
                                 <div
-                                    className="flex h-3 overflow-hidden bg-slate-100 dark:bg-slate-800"
+                                    className="flex h-3 overflow-hidden bg-slate-100 dark:bg-neutral-800"
                                     role="img"
                                     aria-label="Archive status: 97 percent indexed successfully, 2 percent needs verification, 1 percent OCR processing"
                                 >
@@ -377,7 +486,7 @@ export default function Dashboard() {
                                                 className={`mt-1 size-2 shrink-0 ${status.color}`}
                                             />
                                             <div>
-                                                <p className="text-xs text-slate-600 dark:text-slate-400">
+                                                <p className="text-xs text-slate-600 dark:text-neutral-400">
                                                     {status.name}
                                                 </p>
                                                 <p className="mt-1 text-lg font-semibold text-slate-950 tabular-nums dark:text-white">
@@ -387,37 +496,6 @@ export default function Dashboard() {
                                         </div>
                                     ))}
                                 </div>
-                            </CardContent>
-                        </Card>
-
-                        <Card className="min-w-0 gap-0 rounded-none border-slate-200 bg-white py-0 shadow-none xl:col-span-5 dark:border-slate-800 dark:bg-slate-950">
-                            <CardHeader className="border-b border-slate-200 px-4 py-4 sm:px-5 dark:border-slate-800">
-                                <CardTitle className="flex items-center gap-2 text-base text-slate-950 dark:text-white">
-                                    <MapPin
-                                        aria-hidden="true"
-                                        className="size-4 text-blue-900 dark:text-blue-200"
-                                    />
-                                    Geographic coverage
-                                </CardTitle>
-                                <CardDescription className="mt-1">
-                                    Sample of the most represented
-                                    municipalities
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent className="flex h-full flex-col justify-between gap-4 p-4 sm:p-5">
-                                <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
-                                    Property locations can help staff see where
-                                    the archive is most active and identify
-                                    municipalities with fewer digitized records.
-                                </p>
-                                <Button
-                                    render={<Link href="/documents" />}
-                                    variant="outline"
-                                    className="w-full justify-between rounded-none border-slate-300 dark:border-slate-700"
-                                >
-                                    Explore archive records
-                                    <ArrowRight aria-hidden="true" />
-                                </Button>
                             </CardContent>
                         </Card>
                     </section>

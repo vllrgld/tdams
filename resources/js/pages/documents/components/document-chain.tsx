@@ -345,7 +345,7 @@ export default function DocumentChain({
                                     ) : null}
                                 </div>
                                 <span
-                                    className={`text-base font-bold tracking-wide text-slate-700 transition duration-200 dark:text-slate-200 ${
+                                    className={`text-base font-bold tracking-wide text-slate-700 transition duration-200 dark:text-neutral-200 ${
                                         isHighlighted
                                             ? 'scale-110 text-blue-800 dark:text-blue-300'
                                             : ''
@@ -364,11 +364,11 @@ export default function DocumentChain({
                                     className={`group relative flex h-88 w-80 shrink-0 origin-center flex-col overflow-hidden border text-left shadow-sm transition duration-200 ${
                                         isDragging
                                             ? ''
-                                            : 'hover:z-10 hover:scale-105 hover:border-blue-800 hover:shadow-lg hover:ring-2 hover:ring-blue-800/20 dark:hover:border-blue-300 dark:hover:ring-blue-300/20'
+                                            : 'hover:z-10 hover:scale-105 hover:border-blue-800 hover:shadow-lg hover:ring-2 hover:ring-blue-800/20 dark:hover:border-blue-800 dark:hover:ring-blue-800/20'
                                     } ${
                                         isSelected
-                                            ? 'z-10 scale-105 border-blue-800 shadow-lg ring-2 ring-blue-800/20 dark:border-blue-300 dark:ring-blue-300/20'
-                                            : 'border-slate-200 dark:border-slate-700'
+                                            ? 'z-10 scale-105 border-blue-800 shadow-lg ring-2 ring-blue-800/20 dark:border-blue-800 dark:ring-blue-800/20'
+                                            : 'border-slate-200 dark:border-neutral-700'
                                     }`}
                                 >
                                     {item.archived ? (
@@ -405,7 +405,7 @@ export default function DocumentChain({
                                                 }}
                                                 aria-label={`Open ${item.title}`}
                                                 title={`Open ${item.title}`}
-                                                className={`absolute top-2 right-2 z-20 h-8 cursor-pointer rounded-none bg-card/95 px-2 text-xs shadow-sm dark:bg-slate-950/95 ${
+                                                className={`absolute top-2 right-2 z-20 h-8 cursor-pointer rounded-none bg-card/95 px-2 text-xs shadow-sm dark:bg-black/95 ${
                                                     isDragging
                                                         ? 'pointer-events-none opacity-0'
                                                         : isHighlighted
@@ -421,18 +421,18 @@ export default function DocumentChain({
                                             </Button>
                                         </div>
                                     ) : (
-                                        <div className="flex h-60 w-full shrink-0 items-center justify-center bg-slate-100 text-slate-400 dark:bg-slate-900 dark:text-slate-500">
+                                        <div className="flex h-60 w-full shrink-0 items-center justify-center bg-slate-100 text-slate-400 dark:bg-neutral-900 dark:text-neutral-500">
                                             <FileText
                                                 aria-hidden="true"
                                                 className="size-10"
                                             />
                                         </div>
                                     )}
-                                    <div className="flex min-h-0 flex-1 flex-col justify-center border-t border-slate-100 bg-card p-4 dark:border-slate-800 dark:bg-slate-950">
-                                        <p className="text-[10px] font-semibold tracking-wide text-slate-500 uppercase dark:text-slate-400">
+                                    <div className="flex min-h-0 flex-1 flex-col justify-center border-t border-slate-100 bg-card p-4 dark:border-neutral-800 dark:bg-black">
+                                        <p className="text-[10px] font-semibold tracking-wide text-slate-500 uppercase dark:text-neutral-400">
                                             {item.label}
                                         </p>
-                                        <p className="mt-1 truncate text-sm font-semibold text-slate-900 dark:text-slate-100">
+                                        <p className="mt-1 truncate text-sm font-semibold text-slate-900 dark:text-neutral-100">
                                             {item.title}
                                         </p>
                                     </div>
@@ -440,7 +440,7 @@ export default function DocumentChain({
                                 {item.isOrigin && loadingPrevious ? (
                                     <div
                                         role="status"
-                                        className="absolute top-full left-1/2 mt-4 flex -translate-x-1/2 items-center gap-2 text-sm whitespace-nowrap text-slate-700 dark:text-slate-200"
+                                        className="absolute top-full left-1/2 mt-4 flex -translate-x-1/2 items-center gap-2 text-sm whitespace-nowrap text-slate-700 dark:text-neutral-200"
                                     >
                                         <Spinner />
                                         Loading document chain…

@@ -15,7 +15,7 @@ export default function DocumentListView({
     return (
         <div className="overflow-x-auto">
             <table className="w-full min-w-[68rem] text-left text-sm">
-                <thead className="bg-slate-50 text-xs tracking-wide text-slate-600 uppercase dark:bg-slate-900 dark:text-slate-400">
+                <thead className="bg-slate-50 text-xs tracking-wide text-slate-600 uppercase dark:bg-neutral-900 dark:text-neutral-400">
                     <tr>
                         {[
                             'File',
@@ -35,11 +35,11 @@ export default function DocumentListView({
                         ))}
                     </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                <tbody className="divide-y divide-slate-100 dark:divide-neutral-800">
                     {documents.map((document) => (
                         <tr
                             key={document.id}
-                            className="text-slate-700 dark:text-slate-300"
+                            className="text-slate-700 dark:text-neutral-300"
                         >
                             <th scope="row" className="px-4 py-3.5 sm:px-5">
                                 <span className="flex max-w-72 items-center gap-2">
@@ -52,7 +52,7 @@ export default function DocumentListView({
                                         onViewDocument={onViewDocument}
                                     />
                                 </span>
-                                <span className="mt-1 block pl-6 text-xs font-normal text-slate-500 dark:text-slate-400">
+                                <span className="mt-1 block pl-6 text-xs font-normal text-slate-500 dark:text-neutral-400">
                                     {formatFileSize(document.fileSize)}
                                 </span>
                             </th>
@@ -68,7 +68,7 @@ export default function DocumentListView({
                             <td className="px-3 py-3.5">
                                 {getPropertyLocation(document) || '—'}
                             </td>
-                            <td className="px-3 py-3.5 whitespace-nowrap text-slate-600 dark:text-slate-400">
+                            <td className="px-3 py-3.5 whitespace-nowrap text-slate-600 dark:text-neutral-400">
                                 {formatDate(document.createdAt)}
                             </td>
                         </tr>

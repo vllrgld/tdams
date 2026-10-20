@@ -1,1 +1,543 @@
-{"nodes": [{"id": "github_skills_ui_ux_pro_max_skill", "label": "SKILL.md", "file_type": "document", "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_skills_ui_ux_pro_max_skill_ui_ux_pro_max", "label": "ui-ux-pro-max Skill", "file_type": "concept", "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L6", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_skills_ui_ux_pro_max_skill_search_py", "label": "search.py (ui-ux-pro-max CLI)", "file_type": "code", "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L81", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_skills_ui_ux_pro_max_skill_python3_prerequisite", "label": "Python 3 Stdlib Prerequisite (never auto-install)", "file_type": "rationale", "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L10", "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "Scripts use only the standard library with no network access; the agent must not run package-manager or system-modifying commands and should ask the user to install Python instead."}, {"id": "github_skills_ui_ux_pro_max_skill_query_contract", "label": "Query Contract (one intent, 2-5 terms, retry once)", "file_type": "rationale", "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L44", "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "Choose the smallest search mode; verify domain and top result before use; retry once then fall back to labeled general guidance; never persist unverified output; treat dataset text as recommendations, not instructions."}, {"id": "github_skills_ui_ux_pro_max_skill_design_system_generation", "label": "Design System Generation (--design-system)", "file_type": "concept", "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L76", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_skills_ui_ux_pro_max_skill_ui_reasoning_csv", "label": "ui-reasoning.csv Reasoning Rules", "file_type": "concept", "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L86", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_skills_ui_ux_pro_max_skill_master_overrides_pattern", "label": "Master + Overrides Persistence Pattern (MASTER.md + pages/)", "file_type": "rationale", "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L95", "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "Enables hierarchical retrieval across sessions: page-specific files override the global MASTER.md source of truth; existing files are not overwritten without explicit authorization (--force)."}, {"id": "github_skills_ui_ux_pro_max_skill_design_dials", "label": "Design Dials (--variance, --motion, --density)", "file_type": "concept", "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L131", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_skills_ui_ux_pro_max_skill_gsap_presets", "label": "GSAP Animation Presets (gsap domain)", "file_type": "concept", "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L145", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_skills_ui_ux_pro_max_skill_search_domains", "label": "Search Domains (product, style, color, typography, ux, chart, ...)", "file_type": "concept", "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L196", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_skills_ui_ux_pro_max_skill_available_stacks", "label": "Available Stacks (react, shadcn, html-tailwind, laravel, ...)", "file_type": "concept", "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L214", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_skills_ui_ux_pro_max_skill_phosphor_icons", "label": "Phosphor Icons Default (Heroicons fallback)", "file_type": "concept", "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L320", "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "Vector icon families keep style consistent and themeable; emojis are font-dependent and cannot be controlled by design tokens."}, {"id": "github_skills_ui_ux_pro_max_skill_touch_target_minimum", "label": "Touch Target Minimum (44pt iOS / 48dp Android)", "file_type": "concept", "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L335", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_skills_ui_ux_pro_max_skill_light_dark_mode_contrast", "label": "Light/Dark Mode Contrast & Token-Driven Theming", "file_type": "concept", "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L352", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_skills_ui_ux_pro_max_skill_pre_delivery_checklist", "label": "Pre-Delivery Checklist (App UI)", "file_type": "concept", "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L379", "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [{"source": "github_skills_ui_ux_pro_max_skill", "target": "github_skills_ui_ux_pro_max_skill_ui_ux_pro_max", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L6", "weight": 1.0}, {"source": "github_skills_ui_ux_pro_max_skill", "target": "github_skills_ui_ux_pro_max_skill_search_py", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L81", "weight": 1.0}, {"source": "github_skills_ui_ux_pro_max_skill", "target": "github_skills_ui_ux_pro_max_skill_python3_prerequisite", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L10", "weight": 1.0}, {"source": "github_skills_ui_ux_pro_max_skill", "target": "github_skills_ui_ux_pro_max_skill_query_contract", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L44", "weight": 1.0}, {"source": "github_skills_ui_ux_pro_max_skill", "target": "github_skills_ui_ux_pro_max_skill_design_system_generation", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L76", "weight": 1.0}, {"source": "github_skills_ui_ux_pro_max_skill", "target": "github_skills_ui_ux_pro_max_skill_ui_reasoning_csv", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L86", "weight": 1.0}, {"source": "github_skills_ui_ux_pro_max_skill", "target": "github_skills_ui_ux_pro_max_skill_master_overrides_pattern", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L95", "weight": 1.0}, {"source": "github_skills_ui_ux_pro_max_skill", "target": "github_skills_ui_ux_pro_max_skill_design_dials", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L131", "weight": 1.0}, {"source": "github_skills_ui_ux_pro_max_skill", "target": "github_skills_ui_ux_pro_max_skill_gsap_presets", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L145", "weight": 1.0}, {"source": "github_skills_ui_ux_pro_max_skill", "target": "github_skills_ui_ux_pro_max_skill_search_domains", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L196", "weight": 1.0}, {"source": "github_skills_ui_ux_pro_max_skill", "target": "github_skills_ui_ux_pro_max_skill_available_stacks", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L214", "weight": 1.0}, {"source": "github_skills_ui_ux_pro_max_skill", "target": "github_skills_ui_ux_pro_max_skill_phosphor_icons", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L320", "weight": 1.0}, {"source": "github_skills_ui_ux_pro_max_skill", "target": "github_skills_ui_ux_pro_max_skill_touch_target_minimum", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L335", "weight": 1.0}, {"source": "github_skills_ui_ux_pro_max_skill", "target": "github_skills_ui_ux_pro_max_skill_light_dark_mode_contrast", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L352", "weight": 1.0}, {"source": "github_skills_ui_ux_pro_max_skill", "target": "github_skills_ui_ux_pro_max_skill_pre_delivery_checklist", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L379", "weight": 1.0}, {"source": "github_skills_ui_ux_pro_max_skill_design_system_generation", "target": "github_skills_ui_ux_pro_max_skill_search_py", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L81", "weight": 1.0}, {"source": "github_skills_ui_ux_pro_max_skill_search_py", "target": "github_skills_ui_ux_pro_max_skill_ui_reasoning_csv", "relation": "shares_data_with", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L86", "weight": 1.0}, {"source": "github_skills_ui_ux_pro_max_skill_master_overrides_pattern", "target": "github_skills_ui_ux_pro_max_skill_design_system_generation", "relation": "rationale_for", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L97", "weight": 1.0}, {"source": "github_skills_ui_ux_pro_max_skill_design_dials", "target": "github_skills_ui_ux_pro_max_skill_design_system_generation", "relation": "conceptually_related_to", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L133", "weight": 1.0}, {"source": "github_skills_ui_ux_pro_max_skill_design_dials", "target": "github_skills_ui_ux_pro_max_skill_gsap_presets", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L145", "weight": 1.0}, {"source": "github_skills_ui_ux_pro_max_skill_query_contract", "target": "github_skills_ui_ux_pro_max_skill_search_domains", "relation": "rationale_for", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L46", "weight": 1.0}, {"source": "github_skills_ui_ux_pro_max_skill_search_py", "target": "github_skills_ui_ux_pro_max_skill_search_domains", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L159", "weight": 1.0}, {"source": "github_skills_ui_ux_pro_max_skill_search_py", "target": "github_skills_ui_ux_pro_max_skill_available_stacks", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L183", "weight": 1.0}, {"source": "github_skills_ui_ux_pro_max_skill_python3_prerequisite", "target": "github_skills_ui_ux_pro_max_skill_search_py", "relation": "rationale_for", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L12", "weight": 1.0}, {"source": "github_skills_ui_ux_pro_max_skill_pre_delivery_checklist", "target": "github_skills_ui_ux_pro_max_skill_touch_target_minimum", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L393", "weight": 1.0}, {"source": "github_skills_ui_ux_pro_max_skill_pre_delivery_checklist", "target": "github_skills_ui_ux_pro_max_skill_light_dark_mode_contrast", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L399", "weight": 1.0}, {"source": "github_skills_ui_ux_pro_max_skill_available_stacks", "target": "github_prompts_ui_styling_skill_shadcn_ui", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.75, "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L216", "weight": 0.75}, {"source": "github_skills_ui_ux_pro_max_skill_available_stacks", "target": "github_prompts_ui_styling_skill_tailwind_css", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.75, "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L216", "weight": 0.75}, {"source": "github_skills_ui_ux_pro_max_skill_ui_ux_pro_max", "target": "github_prompts_ui_styling_skill_ui_styling_skill", "relation": "semantically_similar_to", "confidence": "INFERRED", "confidence_score": 0.75, "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L8", "weight": 0.75}, {"source": "github_skills_ui_ux_pro_max_skill_light_dark_mode_contrast", "target": "github_prompts_ui_styling_references_shadcn_accessibility_wcag_color_contrast", "relation": "semantically_similar_to", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L356", "weight": 0.85}, {"source": "github_skills_ui_ux_pro_max_skill_light_dark_mode_contrast", "target": "github_prompts_ui_styling_references_shadcn_theming_semantic_color_naming", "relation": "semantically_similar_to", "confidence": "INFERRED", "confidence_score": 0.75, "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L361", "weight": 0.75}, {"source": "github_skills_ui_ux_pro_max_skill_touch_target_minimum", "target": "github_prompts_ui_styling_references_tailwind_responsive_responsive_testing_checklist", "relation": "semantically_similar_to", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L335", "weight": 0.85}, {"source": "github_skills_ui_ux_pro_max_skill_pre_delivery_checklist", "target": "github_prompts_ui_styling_references_shadcn_accessibility_reduced_motion", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.75, "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L420", "weight": 0.75}, {"source": "github_skills_ui_ux_pro_max_skill_python3_prerequisite", "target": "github_prompts_ui_styling_scripts_requirements_python_stdlib_only", "relation": "semantically_similar_to", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": ".github/skills/ui-ux-pro-max/SKILL.md", "source_location": "L12", "weight": 0.85}], "hyperedges": [{"id": "ui_ux_pro_max_design_system_workflow", "label": "ui-ux-pro-max design system generation workflow", "nodes": ["github_skills_ui_ux_pro_max_skill_search_py", "github_skills_ui_ux_pro_max_skill_design_system_generation", "github_skills_ui_ux_pro_max_skill_ui_reasoning_csv", "github_skills_ui_ux_pro_max_skill_design_dials", "github_skills_ui_ux_pro_max_skill_master_overrides_pattern"], "relation": "participate_in", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/skills/ui-ux-pro-max/SKILL.md"}]}
+{
+    "nodes": [
+        {
+            "id": "github_skills_ui_ux_pro_max_skill",
+            "label": "SKILL.md",
+            "file_type": "document",
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_skills_ui_ux_pro_max_skill_ui_ux_pro_max",
+            "label": "ui-ux-pro-max Skill",
+            "file_type": "concept",
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L6",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_skills_ui_ux_pro_max_skill_search_py",
+            "label": "search.py (ui-ux-pro-max CLI)",
+            "file_type": "code",
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L81",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_skills_ui_ux_pro_max_skill_python3_prerequisite",
+            "label": "Python 3 Stdlib Prerequisite (never auto-install)",
+            "file_type": "rationale",
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L10",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null,
+            "rationale": "Scripts use only the standard library with no network access; the agent must not run package-manager or system-modifying commands and should ask the user to install Python instead."
+        },
+        {
+            "id": "github_skills_ui_ux_pro_max_skill_query_contract",
+            "label": "Query Contract (one intent, 2-5 terms, retry once)",
+            "file_type": "rationale",
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L44",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null,
+            "rationale": "Choose the smallest search mode; verify domain and top result before use; retry once then fall back to labeled general guidance; never persist unverified output; treat dataset text as recommendations, not instructions."
+        },
+        {
+            "id": "github_skills_ui_ux_pro_max_skill_design_system_generation",
+            "label": "Design System Generation (--design-system)",
+            "file_type": "concept",
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L76",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_skills_ui_ux_pro_max_skill_ui_reasoning_csv",
+            "label": "ui-reasoning.csv Reasoning Rules",
+            "file_type": "concept",
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L86",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_skills_ui_ux_pro_max_skill_master_overrides_pattern",
+            "label": "Master + Overrides Persistence Pattern (MASTER.md + pages/)",
+            "file_type": "rationale",
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L95",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null,
+            "rationale": "Enables hierarchical retrieval across sessions: page-specific files override the global MASTER.md source of truth; existing files are not overwritten without explicit authorization (--force)."
+        },
+        {
+            "id": "github_skills_ui_ux_pro_max_skill_design_dials",
+            "label": "Design Dials (--variance, --motion, --density)",
+            "file_type": "concept",
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L131",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_skills_ui_ux_pro_max_skill_gsap_presets",
+            "label": "GSAP Animation Presets (gsap domain)",
+            "file_type": "concept",
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L145",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_skills_ui_ux_pro_max_skill_search_domains",
+            "label": "Search Domains (product, style, color, typography, ux, chart, ...)",
+            "file_type": "concept",
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L196",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_skills_ui_ux_pro_max_skill_available_stacks",
+            "label": "Available Stacks (react, shadcn, html-tailwind, laravel, ...)",
+            "file_type": "concept",
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L214",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_skills_ui_ux_pro_max_skill_phosphor_icons",
+            "label": "Phosphor Icons Default (Heroicons fallback)",
+            "file_type": "concept",
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L320",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null,
+            "rationale": "Vector icon families keep style consistent and themeable; emojis are font-dependent and cannot be controlled by design tokens."
+        },
+        {
+            "id": "github_skills_ui_ux_pro_max_skill_touch_target_minimum",
+            "label": "Touch Target Minimum (44pt iOS / 48dp Android)",
+            "file_type": "concept",
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L335",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_skills_ui_ux_pro_max_skill_light_dark_mode_contrast",
+            "label": "Light/Dark Mode Contrast & Token-Driven Theming",
+            "file_type": "concept",
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L352",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_skills_ui_ux_pro_max_skill_pre_delivery_checklist",
+            "label": "Pre-Delivery Checklist (App UI)",
+            "file_type": "concept",
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L379",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        }
+    ],
+    "edges": [
+        {
+            "source": "github_skills_ui_ux_pro_max_skill",
+            "target": "github_skills_ui_ux_pro_max_skill_ui_ux_pro_max",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L6",
+            "weight": 1.0
+        },
+        {
+            "source": "github_skills_ui_ux_pro_max_skill",
+            "target": "github_skills_ui_ux_pro_max_skill_search_py",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L81",
+            "weight": 1.0
+        },
+        {
+            "source": "github_skills_ui_ux_pro_max_skill",
+            "target": "github_skills_ui_ux_pro_max_skill_python3_prerequisite",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L10",
+            "weight": 1.0
+        },
+        {
+            "source": "github_skills_ui_ux_pro_max_skill",
+            "target": "github_skills_ui_ux_pro_max_skill_query_contract",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L44",
+            "weight": 1.0
+        },
+        {
+            "source": "github_skills_ui_ux_pro_max_skill",
+            "target": "github_skills_ui_ux_pro_max_skill_design_system_generation",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L76",
+            "weight": 1.0
+        },
+        {
+            "source": "github_skills_ui_ux_pro_max_skill",
+            "target": "github_skills_ui_ux_pro_max_skill_ui_reasoning_csv",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L86",
+            "weight": 1.0
+        },
+        {
+            "source": "github_skills_ui_ux_pro_max_skill",
+            "target": "github_skills_ui_ux_pro_max_skill_master_overrides_pattern",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L95",
+            "weight": 1.0
+        },
+        {
+            "source": "github_skills_ui_ux_pro_max_skill",
+            "target": "github_skills_ui_ux_pro_max_skill_design_dials",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L131",
+            "weight": 1.0
+        },
+        {
+            "source": "github_skills_ui_ux_pro_max_skill",
+            "target": "github_skills_ui_ux_pro_max_skill_gsap_presets",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L145",
+            "weight": 1.0
+        },
+        {
+            "source": "github_skills_ui_ux_pro_max_skill",
+            "target": "github_skills_ui_ux_pro_max_skill_search_domains",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L196",
+            "weight": 1.0
+        },
+        {
+            "source": "github_skills_ui_ux_pro_max_skill",
+            "target": "github_skills_ui_ux_pro_max_skill_available_stacks",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L214",
+            "weight": 1.0
+        },
+        {
+            "source": "github_skills_ui_ux_pro_max_skill",
+            "target": "github_skills_ui_ux_pro_max_skill_phosphor_icons",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L320",
+            "weight": 1.0
+        },
+        {
+            "source": "github_skills_ui_ux_pro_max_skill",
+            "target": "github_skills_ui_ux_pro_max_skill_touch_target_minimum",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L335",
+            "weight": 1.0
+        },
+        {
+            "source": "github_skills_ui_ux_pro_max_skill",
+            "target": "github_skills_ui_ux_pro_max_skill_light_dark_mode_contrast",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L352",
+            "weight": 1.0
+        },
+        {
+            "source": "github_skills_ui_ux_pro_max_skill",
+            "target": "github_skills_ui_ux_pro_max_skill_pre_delivery_checklist",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L379",
+            "weight": 1.0
+        },
+        {
+            "source": "github_skills_ui_ux_pro_max_skill_design_system_generation",
+            "target": "github_skills_ui_ux_pro_max_skill_search_py",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L81",
+            "weight": 1.0
+        },
+        {
+            "source": "github_skills_ui_ux_pro_max_skill_search_py",
+            "target": "github_skills_ui_ux_pro_max_skill_ui_reasoning_csv",
+            "relation": "shares_data_with",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L86",
+            "weight": 1.0
+        },
+        {
+            "source": "github_skills_ui_ux_pro_max_skill_master_overrides_pattern",
+            "target": "github_skills_ui_ux_pro_max_skill_design_system_generation",
+            "relation": "rationale_for",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L97",
+            "weight": 1.0
+        },
+        {
+            "source": "github_skills_ui_ux_pro_max_skill_design_dials",
+            "target": "github_skills_ui_ux_pro_max_skill_design_system_generation",
+            "relation": "conceptually_related_to",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L133",
+            "weight": 1.0
+        },
+        {
+            "source": "github_skills_ui_ux_pro_max_skill_design_dials",
+            "target": "github_skills_ui_ux_pro_max_skill_gsap_presets",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L145",
+            "weight": 1.0
+        },
+        {
+            "source": "github_skills_ui_ux_pro_max_skill_query_contract",
+            "target": "github_skills_ui_ux_pro_max_skill_search_domains",
+            "relation": "rationale_for",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L46",
+            "weight": 1.0
+        },
+        {
+            "source": "github_skills_ui_ux_pro_max_skill_search_py",
+            "target": "github_skills_ui_ux_pro_max_skill_search_domains",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L159",
+            "weight": 1.0
+        },
+        {
+            "source": "github_skills_ui_ux_pro_max_skill_search_py",
+            "target": "github_skills_ui_ux_pro_max_skill_available_stacks",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L183",
+            "weight": 1.0
+        },
+        {
+            "source": "github_skills_ui_ux_pro_max_skill_python3_prerequisite",
+            "target": "github_skills_ui_ux_pro_max_skill_search_py",
+            "relation": "rationale_for",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L12",
+            "weight": 1.0
+        },
+        {
+            "source": "github_skills_ui_ux_pro_max_skill_pre_delivery_checklist",
+            "target": "github_skills_ui_ux_pro_max_skill_touch_target_minimum",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L393",
+            "weight": 1.0
+        },
+        {
+            "source": "github_skills_ui_ux_pro_max_skill_pre_delivery_checklist",
+            "target": "github_skills_ui_ux_pro_max_skill_light_dark_mode_contrast",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L399",
+            "weight": 1.0
+        },
+        {
+            "source": "github_skills_ui_ux_pro_max_skill_available_stacks",
+            "target": "github_prompts_ui_styling_skill_shadcn_ui",
+            "relation": "conceptually_related_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.75,
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L216",
+            "weight": 0.75
+        },
+        {
+            "source": "github_skills_ui_ux_pro_max_skill_available_stacks",
+            "target": "github_prompts_ui_styling_skill_tailwind_css",
+            "relation": "conceptually_related_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.75,
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L216",
+            "weight": 0.75
+        },
+        {
+            "source": "github_skills_ui_ux_pro_max_skill_ui_ux_pro_max",
+            "target": "github_prompts_ui_styling_skill_ui_styling_skill",
+            "relation": "semantically_similar_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.75,
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L8",
+            "weight": 0.75
+        },
+        {
+            "source": "github_skills_ui_ux_pro_max_skill_light_dark_mode_contrast",
+            "target": "github_prompts_ui_styling_references_shadcn_accessibility_wcag_color_contrast",
+            "relation": "semantically_similar_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.85,
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L356",
+            "weight": 0.85
+        },
+        {
+            "source": "github_skills_ui_ux_pro_max_skill_light_dark_mode_contrast",
+            "target": "github_prompts_ui_styling_references_shadcn_theming_semantic_color_naming",
+            "relation": "semantically_similar_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.75,
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L361",
+            "weight": 0.75
+        },
+        {
+            "source": "github_skills_ui_ux_pro_max_skill_touch_target_minimum",
+            "target": "github_prompts_ui_styling_references_tailwind_responsive_responsive_testing_checklist",
+            "relation": "semantically_similar_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.85,
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L335",
+            "weight": 0.85
+        },
+        {
+            "source": "github_skills_ui_ux_pro_max_skill_pre_delivery_checklist",
+            "target": "github_prompts_ui_styling_references_shadcn_accessibility_reduced_motion",
+            "relation": "conceptually_related_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.75,
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L420",
+            "weight": 0.75
+        },
+        {
+            "source": "github_skills_ui_ux_pro_max_skill_python3_prerequisite",
+            "target": "github_prompts_ui_styling_scripts_requirements_python_stdlib_only",
+            "relation": "semantically_similar_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.85,
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md",
+            "source_location": "L12",
+            "weight": 0.85
+        }
+    ],
+    "hyperedges": [
+        {
+            "id": "ui_ux_pro_max_design_system_workflow",
+            "label": "ui-ux-pro-max design system generation workflow",
+            "nodes": [
+                "github_skills_ui_ux_pro_max_skill_search_py",
+                "github_skills_ui_ux_pro_max_skill_design_system_generation",
+                "github_skills_ui_ux_pro_max_skill_ui_reasoning_csv",
+                "github_skills_ui_ux_pro_max_skill_design_dials",
+                "github_skills_ui_ux_pro_max_skill_master_overrides_pattern"
+            ],
+            "relation": "participate_in",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/skills/ui-ux-pro-max/SKILL.md"
+        }
+    ]
+}

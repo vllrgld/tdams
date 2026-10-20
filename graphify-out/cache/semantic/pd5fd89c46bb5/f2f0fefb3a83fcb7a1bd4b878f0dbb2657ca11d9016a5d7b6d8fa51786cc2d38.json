@@ -1,1 +1,173 @@
-{"nodes": [{"id": "migration_sheet", "label": "sheet.md", "file_type": "document", "source_file": ".migration/sheet.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "migration_sheet_sheet_dialog_primitive", "label": "Sheet on dialog primitive", "file_type": "rationale", "source_file": ".migration/sheet.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "Uses the same dialog primitive as the modal, with edge slide classes on data-starting-style / data-ending-style."}, {"id": "migration_sheet_translate_transitions", "label": "Per-side translate transitions", "file_type": "concept", "source_file": ".migration/sheet.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "Slide-in keyframes restated as translate transitions per side."}, {"id": "resources_js_components_ui_sheet", "label": "sheet.tsx", "file_type": "code", "source_file": ".migration/sheet.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [{"source": "migration_sheet", "target": "migration_sheet_sheet_dialog_primitive", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/sheet.md", "source_location": "L3", "weight": 1.0}, {"source": "migration_sheet", "target": "migration_sheet_translate_transitions", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/sheet.md", "source_location": "L17", "weight": 1.0}, {"source": "migration_sheet", "target": "migration_project_transformation_engine", "relation": "references", "confidence": "INFERRED", "confidence_score": 0.95, "source_file": ".migration/sheet.md", "source_location": "L3", "weight": 1.0}, {"source": "migration_sheet", "target": "resources_js_components_ui_sheet", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/sheet.md", "source_location": "L7", "weight": 1.0}, {"source": "migration_sheet", "target": "resources_js_components_app_header", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/sheet.md", "source_location": "L8", "weight": 1.0}, {"source": "resources_js_components_ui_sheet", "target": "migration_sheet_sheet_dialog_primitive", "relation": "implements", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/sheet.md", "source_location": "L3", "weight": 1.0}, {"source": "migration_sheet_sheet_dialog_primitive", "target": "migration_dialog_backdrop_popup", "relation": "conceptually_related_to", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/sheet.md", "source_location": "L3", "weight": 1.0}, {"source": "migration_sheet_sheet_dialog_primitive", "target": "migration_project_data_starting_ending_style", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/sheet.md", "source_location": "L3", "weight": 1.0}, {"source": "resources_js_components_ui_sheet", "target": "migration_sheet_translate_transitions", "relation": "implements", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/sheet.md", "source_location": "L17", "weight": 1.0}, {"source": "resources_js_components_app_header", "target": "resources_js_components_ui_sheet", "relation": "calls", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": ".migration/sheet.md", "source_location": "L8", "weight": 1.0}, {"source": "resources_js_components_ui_sheet", "target": "resources_js_components_ui_dialog", "relation": "shares_data_with", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": ".migration/sheet.md", "source_location": "L3", "weight": 1.0}, {"source": "resources_js_components_ui_sidebar", "target": "resources_js_components_ui_sheet", "relation": "calls", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": ".migration/sheet.md", "source_location": "L9", "weight": 1.0}], "hyperedges": []}
+{
+    "nodes": [
+        {
+            "id": "migration_sheet",
+            "label": "sheet.md",
+            "file_type": "document",
+            "source_file": ".migration/sheet.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "migration_sheet_sheet_dialog_primitive",
+            "label": "Sheet on dialog primitive",
+            "file_type": "rationale",
+            "source_file": ".migration/sheet.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null,
+            "rationale": "Uses the same dialog primitive as the modal, with edge slide classes on data-starting-style / data-ending-style."
+        },
+        {
+            "id": "migration_sheet_translate_transitions",
+            "label": "Per-side translate transitions",
+            "file_type": "concept",
+            "source_file": ".migration/sheet.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null,
+            "rationale": "Slide-in keyframes restated as translate transitions per side."
+        },
+        {
+            "id": "resources_js_components_ui_sheet",
+            "label": "sheet.tsx",
+            "file_type": "code",
+            "source_file": ".migration/sheet.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        }
+    ],
+    "edges": [
+        {
+            "source": "migration_sheet",
+            "target": "migration_sheet_sheet_dialog_primitive",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/sheet.md",
+            "source_location": "L3",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_sheet",
+            "target": "migration_sheet_translate_transitions",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/sheet.md",
+            "source_location": "L17",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_sheet",
+            "target": "migration_project_transformation_engine",
+            "relation": "references",
+            "confidence": "INFERRED",
+            "confidence_score": 0.95,
+            "source_file": ".migration/sheet.md",
+            "source_location": "L3",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_sheet",
+            "target": "resources_js_components_ui_sheet",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/sheet.md",
+            "source_location": "L7",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_sheet",
+            "target": "resources_js_components_app_header",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/sheet.md",
+            "source_location": "L8",
+            "weight": 1.0
+        },
+        {
+            "source": "resources_js_components_ui_sheet",
+            "target": "migration_sheet_sheet_dialog_primitive",
+            "relation": "implements",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/sheet.md",
+            "source_location": "L3",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_sheet_sheet_dialog_primitive",
+            "target": "migration_dialog_backdrop_popup",
+            "relation": "conceptually_related_to",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/sheet.md",
+            "source_location": "L3",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_sheet_sheet_dialog_primitive",
+            "target": "migration_project_data_starting_ending_style",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/sheet.md",
+            "source_location": "L3",
+            "weight": 1.0
+        },
+        {
+            "source": "resources_js_components_ui_sheet",
+            "target": "migration_sheet_translate_transitions",
+            "relation": "implements",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/sheet.md",
+            "source_location": "L17",
+            "weight": 1.0
+        },
+        {
+            "source": "resources_js_components_app_header",
+            "target": "resources_js_components_ui_sheet",
+            "relation": "calls",
+            "confidence": "INFERRED",
+            "confidence_score": 0.85,
+            "source_file": ".migration/sheet.md",
+            "source_location": "L8",
+            "weight": 1.0
+        },
+        {
+            "source": "resources_js_components_ui_sheet",
+            "target": "resources_js_components_ui_dialog",
+            "relation": "shares_data_with",
+            "confidence": "INFERRED",
+            "confidence_score": 0.85,
+            "source_file": ".migration/sheet.md",
+            "source_location": "L3",
+            "weight": 1.0
+        },
+        {
+            "source": "resources_js_components_ui_sidebar",
+            "target": "resources_js_components_ui_sheet",
+            "relation": "calls",
+            "confidence": "INFERRED",
+            "confidence_score": 0.85,
+            "source_file": ".migration/sheet.md",
+            "source_location": "L9",
+            "weight": 1.0
+        }
+    ],
+    "hyperedges": []
+}

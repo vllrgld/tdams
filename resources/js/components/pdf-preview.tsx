@@ -110,9 +110,9 @@ export default function PdfPreview({ url, title }: PdfPreviewProps) {
     const pageWidth = Math.max(240, Math.floor((viewerWidth - 40) * zoom));
 
     return (
-        <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden border border-slate-200 dark:border-slate-800">
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden border border-slate-200 dark:border-neutral-800">
             <div
-                className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-b border-slate-200 bg-card px-2 py-2 dark:border-slate-800 dark:bg-slate-950"
+                className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-b border-slate-200 bg-card px-2 py-2 dark:border-neutral-800 dark:bg-black"
                 aria-label="PDF viewer controls"
             >
                 <div className="flex items-center gap-1">
@@ -128,7 +128,7 @@ export default function PdfPreview({ url, title }: PdfPreviewProps) {
                     >
                         <ChevronLeft aria-hidden="true" />
                     </Button>
-                    <span className="min-w-20 px-1 text-center text-xs text-slate-700 tabular-nums dark:text-slate-300">
+                    <span className="min-w-20 px-1 text-center text-xs text-slate-700 tabular-nums dark:text-neutral-300">
                         <Input
                             aria-label="Current PDF page"
                             type="number"
@@ -192,7 +192,7 @@ export default function PdfPreview({ url, title }: PdfPreviewProps) {
                         <ZoomOut aria-hidden="true" />
                     </Button>
                     <span
-                        className="min-w-12 text-center text-xs text-slate-700 tabular-nums dark:text-slate-300"
+                        className="min-w-12 text-center text-xs text-slate-700 tabular-nums dark:text-neutral-300"
                         aria-live="polite"
                     >
                         {Math.round(zoom * 100)}%
@@ -231,10 +231,10 @@ export default function PdfPreview({ url, title }: PdfPreviewProps) {
 
             <div
                 ref={viewerRef}
-                className="min-h-0 flex-1 overflow-auto bg-slate-200 p-2 dark:bg-slate-900"
+                className="min-h-0 flex-1 overflow-auto bg-slate-200 p-2 dark:bg-neutral-900"
             >
                 {!workerReady ? (
-                    <p className="p-6 text-center text-sm text-slate-600 dark:text-slate-300">
+                    <p className="p-6 text-center text-sm text-slate-600 dark:text-neutral-300">
                         Loading PDF…
                     </p>
                 ) : (
@@ -248,7 +248,7 @@ export default function PdfPreview({ url, title }: PdfPreviewProps) {
                         }}
                         onLoadError={(error) => setLoadError(error.message)}
                         loading={
-                            <p className="p-6 text-center text-sm text-slate-600 dark:text-slate-300">
+                            <p className="p-6 text-center text-sm text-slate-600 dark:text-neutral-300">
                                 Loading PDF…
                             </p>
                         }
@@ -282,7 +282,7 @@ export default function PdfPreview({ url, title }: PdfPreviewProps) {
                                     setLoadError(error.message)
                                 }
                                 loading={
-                                    <p className="p-6 text-center text-sm text-slate-600 dark:text-slate-300">
+                                    <p className="p-6 text-center text-sm text-slate-600 dark:text-neutral-300">
                                         Rendering page {page}…
                                     </p>
                                 }

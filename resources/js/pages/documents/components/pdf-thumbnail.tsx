@@ -194,7 +194,7 @@ export default function PdfThumbnail({
                 <p
                     role="img"
                     aria-label="PDF preview unavailable"
-                    className="pt-16 text-center text-xs text-slate-500 dark:text-slate-400"
+                    className="pt-16 text-center text-xs text-slate-500 dark:text-neutral-400"
                 >
                     Preview unavailable
                 </p>

@@ -1,1 +1,176 @@
-{"nodes": [{"id": "github_prompts_brand_references_logo_usage_rules", "label": "logo-usage-rules.md", "file_type": "document", "source_file": ".github/prompts/brand/references/logo-usage-rules.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_brand_references_logo_usage_rules_logo_variants", "label": "Logo Variants", "file_type": "concept", "source_file": ".github/prompts/brand/references/logo-usage-rules.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_brand_references_logo_usage_rules_logo_clear_space", "label": "Logo Clear Space", "file_type": "rationale", "source_file": ".github/prompts/brand/references/logo-usage-rules.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "Clear space equals the height of the logo mark."}, {"id": "github_prompts_brand_references_logo_usage_rules_logo_minimum_size", "label": "Logo Minimum Size", "file_type": "concept", "source_file": ".github/prompts/brand/references/logo-usage-rules.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_brand_references_logo_usage_rules_logo_incorrect_usage", "label": "Logo Incorrect Usage", "file_type": "concept", "source_file": ".github/prompts/brand/references/logo-usage-rules.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_brand_references_logo_usage_rules_co_branding_guidelines", "label": "Co-branding Guidelines", "file_type": "concept", "source_file": ".github/prompts/brand/references/logo-usage-rules.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_brand_references_logo_usage_rules_logo_file_formats", "label": "Logo File Formats", "file_type": "concept", "source_file": ".github/prompts/brand/references/logo-usage-rules.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_brand_references_logo_usage_rules_logo_approval_process", "label": "Logo Approval Process", "file_type": "concept", "source_file": ".github/prompts/brand/references/logo-usage-rules.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [{"source": "github_prompts_brand_references_logo_usage_rules", "target": "github_prompts_brand_references_logo_usage_rules_logo_variants", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/references/logo-usage-rules.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_references_logo_usage_rules", "target": "github_prompts_brand_references_logo_usage_rules_logo_clear_space", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/references/logo-usage-rules.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_references_logo_usage_rules", "target": "github_prompts_brand_references_logo_usage_rules_logo_minimum_size", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/references/logo-usage-rules.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_references_logo_usage_rules", "target": "github_prompts_brand_references_logo_usage_rules_logo_incorrect_usage", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/references/logo-usage-rules.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_references_logo_usage_rules", "target": "github_prompts_brand_references_logo_usage_rules_co_branding_guidelines", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/references/logo-usage-rules.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_references_logo_usage_rules", "target": "github_prompts_brand_references_logo_usage_rules_logo_file_formats", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/references/logo-usage-rules.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_references_logo_usage_rules", "target": "github_prompts_brand_references_logo_usage_rules_logo_approval_process", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/references/logo-usage-rules.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_references_logo_usage_rules_logo_file_formats", "target": "github_prompts_brand_references_asset_organization_asset_directory_structure", "relation": "shares_data_with", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": ".github/prompts/brand/references/logo-usage-rules.md", "source_location": null, "weight": 0.85}], "hyperedges": []}
+{
+    "nodes": [
+        {
+            "id": "github_prompts_brand_references_logo_usage_rules",
+            "label": "logo-usage-rules.md",
+            "file_type": "document",
+            "source_file": ".github/prompts/brand/references/logo-usage-rules.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_brand_references_logo_usage_rules_logo_variants",
+            "label": "Logo Variants",
+            "file_type": "concept",
+            "source_file": ".github/prompts/brand/references/logo-usage-rules.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_brand_references_logo_usage_rules_logo_clear_space",
+            "label": "Logo Clear Space",
+            "file_type": "rationale",
+            "source_file": ".github/prompts/brand/references/logo-usage-rules.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null,
+            "rationale": "Clear space equals the height of the logo mark."
+        },
+        {
+            "id": "github_prompts_brand_references_logo_usage_rules_logo_minimum_size",
+            "label": "Logo Minimum Size",
+            "file_type": "concept",
+            "source_file": ".github/prompts/brand/references/logo-usage-rules.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_brand_references_logo_usage_rules_logo_incorrect_usage",
+            "label": "Logo Incorrect Usage",
+            "file_type": "concept",
+            "source_file": ".github/prompts/brand/references/logo-usage-rules.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_brand_references_logo_usage_rules_co_branding_guidelines",
+            "label": "Co-branding Guidelines",
+            "file_type": "concept",
+            "source_file": ".github/prompts/brand/references/logo-usage-rules.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_brand_references_logo_usage_rules_logo_file_formats",
+            "label": "Logo File Formats",
+            "file_type": "concept",
+            "source_file": ".github/prompts/brand/references/logo-usage-rules.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_brand_references_logo_usage_rules_logo_approval_process",
+            "label": "Logo Approval Process",
+            "file_type": "concept",
+            "source_file": ".github/prompts/brand/references/logo-usage-rules.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        }
+    ],
+    "edges": [
+        {
+            "source": "github_prompts_brand_references_logo_usage_rules",
+            "target": "github_prompts_brand_references_logo_usage_rules_logo_variants",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/references/logo-usage-rules.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_references_logo_usage_rules",
+            "target": "github_prompts_brand_references_logo_usage_rules_logo_clear_space",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/references/logo-usage-rules.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_references_logo_usage_rules",
+            "target": "github_prompts_brand_references_logo_usage_rules_logo_minimum_size",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/references/logo-usage-rules.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_references_logo_usage_rules",
+            "target": "github_prompts_brand_references_logo_usage_rules_logo_incorrect_usage",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/references/logo-usage-rules.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_references_logo_usage_rules",
+            "target": "github_prompts_brand_references_logo_usage_rules_co_branding_guidelines",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/references/logo-usage-rules.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_references_logo_usage_rules",
+            "target": "github_prompts_brand_references_logo_usage_rules_logo_file_formats",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/references/logo-usage-rules.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_references_logo_usage_rules",
+            "target": "github_prompts_brand_references_logo_usage_rules_logo_approval_process",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/references/logo-usage-rules.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_references_logo_usage_rules_logo_file_formats",
+            "target": "github_prompts_brand_references_asset_organization_asset_directory_structure",
+            "relation": "shares_data_with",
+            "confidence": "INFERRED",
+            "confidence_score": 0.85,
+            "source_file": ".github/prompts/brand/references/logo-usage-rules.md",
+            "source_location": null,
+            "weight": 0.85
+        }
+    ],
+    "hyperedges": []
+}

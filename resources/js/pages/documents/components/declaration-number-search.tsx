@@ -197,14 +197,14 @@ export default function DeclarationNumberSearch({
                     id={listboxId}
                     role="listbox"
                     aria-label="Available tax declaration numbers"
-                    className="absolute z-50 mt-1 max-h-56 w-full overflow-y-auto border border-slate-200 bg-card shadow-md dark:border-slate-700 dark:bg-slate-950"
+                    className="absolute z-50 mt-1 max-h-56 w-full overflow-y-auto border border-slate-200 bg-card shadow-md dark:border-neutral-700 dark:bg-black"
                 >
                     {loading && results.length === 0 ? (
-                        <li className="px-3 py-2 text-sm text-slate-500 dark:text-slate-400">
+                        <li className="px-3 py-2 text-sm text-slate-500 dark:text-neutral-400">
                             Searching…
                         </li>
                     ) : results.length === 0 ? (
-                        <li className="px-3 py-2 text-sm text-slate-500 dark:text-slate-400">
+                        <li className="px-3 py-2 text-sm text-slate-500 dark:text-neutral-400">
                             No archived declaration numbers match. You can still
                             keep this number.
                         </li>
@@ -237,13 +237,13 @@ export default function DeclarationNumberSearch({
                                         className={`flex w-full flex-col gap-0.5 px-3 py-2 text-left text-sm ${
                                             index === activeIndex
                                                 ? 'bg-blue-50 text-blue-950 dark:bg-blue-950 dark:text-blue-100'
-                                                : 'text-slate-900 dark:text-slate-100'
+                                                : 'text-slate-900 dark:text-neutral-100'
                                         }`}
                                     >
                                         <span className="font-medium">
                                             {match.taxDeclarationNumber}
                                         </span>
-                                        <span className="text-xs text-slate-500 dark:text-slate-400">
+                                        <span className="text-xs text-slate-500 dark:text-neutral-400">
                                             {details ||
                                                 'No owner or lot details'}
                                             {match.declarationDate

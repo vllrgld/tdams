@@ -1,1 +1,307 @@
-{"nodes": [{"id": "migration_sidebar", "label": "sidebar.md", "file_type": "document", "source_file": ".migration/sidebar.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "migration_sidebar_userender_slot_pieces", "label": "Slot-based sidebar pieces via useRender", "file_type": "concept", "source_file": ".migration/sidebar.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "migration_sidebar_menu_button_composition", "label": "Menu button composition via render", "file_type": "rationale", "source_file": ".migration/sidebar.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "Sidebar menu buttons compose with the tooltip and dropdown trigger through render."}, {"id": "migration_sidebar_data_popup_open", "label": "data-popup-open on menu buttons", "file_type": "concept", "source_file": ".migration/sidebar.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "Replaces data-[state=open]."}, {"id": "resources_js_components_ui_sidebar", "label": "sidebar.tsx", "file_type": "code", "source_file": ".migration/sidebar.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "resources_js_components_app_sidebar", "label": "app-sidebar.tsx", "file_type": "code", "source_file": ".migration/sidebar.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "resources_js_components_nav_main", "label": "nav-main.tsx", "file_type": "code", "source_file": ".migration/sidebar.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "resources_js_components_nav_footer", "label": "nav-footer.tsx", "file_type": "code", "source_file": ".migration/sidebar.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [{"source": "migration_sidebar", "target": "migration_sidebar_userender_slot_pieces", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/sidebar.md", "source_location": "L3", "weight": 1.0}, {"source": "migration_sidebar", "target": "migration_sidebar_menu_button_composition", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/sidebar.md", "source_location": "L3", "weight": 1.0}, {"source": "migration_sidebar", "target": "migration_sidebar_data_popup_open", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/sidebar.md", "source_location": "L9", "weight": 1.0}, {"source": "migration_sidebar", "target": "migration_project_transformation_engine", "relation": "references", "confidence": "INFERRED", "confidence_score": 0.95, "source_file": ".migration/sidebar.md", "source_location": "L3", "weight": 1.0}, {"source": "migration_sidebar", "target": "resources_js_components_ui_sidebar", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/sidebar.md", "source_location": "L7", "weight": 1.0}, {"source": "migration_sidebar", "target": "resources_js_components_app_sidebar", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/sidebar.md", "source_location": "L8", "weight": 1.0}, {"source": "migration_sidebar", "target": "resources_js_components_nav_main", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/sidebar.md", "source_location": "L8", "weight": 1.0}, {"source": "migration_sidebar", "target": "resources_js_components_nav_footer", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/sidebar.md", "source_location": "L8", "weight": 1.0}, {"source": "migration_sidebar", "target": "resources_js_components_nav_user", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/sidebar.md", "source_location": "L8", "weight": 1.0}, {"source": "resources_js_components_ui_sidebar", "target": "migration_sidebar_userender_slot_pieces", "relation": "implements", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/sidebar.md", "source_location": "L3", "weight": 1.0}, {"source": "resources_js_components_ui_sidebar", "target": "migration_sidebar_menu_button_composition", "relation": "implements", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/sidebar.md", "source_location": "L3", "weight": 1.0}, {"source": "resources_js_components_ui_sidebar", "target": "migration_sidebar_data_popup_open", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/sidebar.md", "source_location": "L9", "weight": 1.0}, {"source": "migration_sidebar_userender_slot_pieces", "target": "migration_badge_userender", "relation": "references", "confidence": "INFERRED", "confidence_score": 0.95, "source_file": ".migration/sidebar.md", "source_location": "L3", "weight": 1.0}, {"source": "migration_sidebar_menu_button_composition", "target": "migration_project_aschild_to_render", "relation": "implements", "confidence": "INFERRED", "confidence_score": 0.95, "source_file": ".migration/sidebar.md", "source_location": "L3", "weight": 1.0}, {"source": "migration_sidebar_menu_button_composition", "target": "migration_dropdown_menu_base_ui_menu", "relation": "references", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": ".migration/sidebar.md", "source_location": "L3", "weight": 1.0}, {"source": "migration_sidebar_data_popup_open", "target": "migration_navigation_menu_data_popup_open", "relation": "semantically_similar_to", "confidence": "INFERRED", "confidence_score": 0.95, "source_file": ".migration/sidebar.md", "source_location": "L9", "weight": 1.0}, {"source": "resources_js_components_app_sidebar", "target": "resources_js_components_ui_sidebar", "relation": "calls", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": ".migration/sidebar.md", "source_location": "L8", "weight": 1.0}, {"source": "resources_js_components_nav_main", "target": "resources_js_components_ui_sidebar", "relation": "calls", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": ".migration/sidebar.md", "source_location": "L8", "weight": 1.0}, {"source": "resources_js_components_nav_footer", "target": "resources_js_components_ui_sidebar", "relation": "calls", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": ".migration/sidebar.md", "source_location": "L8", "weight": 1.0}, {"source": "resources_js_components_nav_user", "target": "resources_js_components_ui_sidebar", "relation": "calls", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": ".migration/sidebar.md", "source_location": "L8", "weight": 1.0}, {"source": "migration_sidebar_menu_button_composition", "target": "migration_tooltip_base_ui_tooltip", "relation": "references", "confidence": "INFERRED", "confidence_score": 0.95, "source_file": ".migration/sidebar.md", "source_location": "L3", "weight": 1.0}], "hyperedges": []}
+{
+    "nodes": [
+        {
+            "id": "migration_sidebar",
+            "label": "sidebar.md",
+            "file_type": "document",
+            "source_file": ".migration/sidebar.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "migration_sidebar_userender_slot_pieces",
+            "label": "Slot-based sidebar pieces via useRender",
+            "file_type": "concept",
+            "source_file": ".migration/sidebar.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "migration_sidebar_menu_button_composition",
+            "label": "Menu button composition via render",
+            "file_type": "rationale",
+            "source_file": ".migration/sidebar.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null,
+            "rationale": "Sidebar menu buttons compose with the tooltip and dropdown trigger through render."
+        },
+        {
+            "id": "migration_sidebar_data_popup_open",
+            "label": "data-popup-open on menu buttons",
+            "file_type": "concept",
+            "source_file": ".migration/sidebar.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null,
+            "rationale": "Replaces data-[state=open]."
+        },
+        {
+            "id": "resources_js_components_ui_sidebar",
+            "label": "sidebar.tsx",
+            "file_type": "code",
+            "source_file": ".migration/sidebar.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "resources_js_components_app_sidebar",
+            "label": "app-sidebar.tsx",
+            "file_type": "code",
+            "source_file": ".migration/sidebar.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "resources_js_components_nav_main",
+            "label": "nav-main.tsx",
+            "file_type": "code",
+            "source_file": ".migration/sidebar.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "resources_js_components_nav_footer",
+            "label": "nav-footer.tsx",
+            "file_type": "code",
+            "source_file": ".migration/sidebar.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        }
+    ],
+    "edges": [
+        {
+            "source": "migration_sidebar",
+            "target": "migration_sidebar_userender_slot_pieces",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/sidebar.md",
+            "source_location": "L3",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_sidebar",
+            "target": "migration_sidebar_menu_button_composition",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/sidebar.md",
+            "source_location": "L3",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_sidebar",
+            "target": "migration_sidebar_data_popup_open",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/sidebar.md",
+            "source_location": "L9",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_sidebar",
+            "target": "migration_project_transformation_engine",
+            "relation": "references",
+            "confidence": "INFERRED",
+            "confidence_score": 0.95,
+            "source_file": ".migration/sidebar.md",
+            "source_location": "L3",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_sidebar",
+            "target": "resources_js_components_ui_sidebar",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/sidebar.md",
+            "source_location": "L7",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_sidebar",
+            "target": "resources_js_components_app_sidebar",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/sidebar.md",
+            "source_location": "L8",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_sidebar",
+            "target": "resources_js_components_nav_main",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/sidebar.md",
+            "source_location": "L8",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_sidebar",
+            "target": "resources_js_components_nav_footer",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/sidebar.md",
+            "source_location": "L8",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_sidebar",
+            "target": "resources_js_components_nav_user",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/sidebar.md",
+            "source_location": "L8",
+            "weight": 1.0
+        },
+        {
+            "source": "resources_js_components_ui_sidebar",
+            "target": "migration_sidebar_userender_slot_pieces",
+            "relation": "implements",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/sidebar.md",
+            "source_location": "L3",
+            "weight": 1.0
+        },
+        {
+            "source": "resources_js_components_ui_sidebar",
+            "target": "migration_sidebar_menu_button_composition",
+            "relation": "implements",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/sidebar.md",
+            "source_location": "L3",
+            "weight": 1.0
+        },
+        {
+            "source": "resources_js_components_ui_sidebar",
+            "target": "migration_sidebar_data_popup_open",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/sidebar.md",
+            "source_location": "L9",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_sidebar_userender_slot_pieces",
+            "target": "migration_badge_userender",
+            "relation": "references",
+            "confidence": "INFERRED",
+            "confidence_score": 0.95,
+            "source_file": ".migration/sidebar.md",
+            "source_location": "L3",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_sidebar_menu_button_composition",
+            "target": "migration_project_aschild_to_render",
+            "relation": "implements",
+            "confidence": "INFERRED",
+            "confidence_score": 0.95,
+            "source_file": ".migration/sidebar.md",
+            "source_location": "L3",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_sidebar_menu_button_composition",
+            "target": "migration_dropdown_menu_base_ui_menu",
+            "relation": "references",
+            "confidence": "INFERRED",
+            "confidence_score": 0.85,
+            "source_file": ".migration/sidebar.md",
+            "source_location": "L3",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_sidebar_data_popup_open",
+            "target": "migration_navigation_menu_data_popup_open",
+            "relation": "semantically_similar_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.95,
+            "source_file": ".migration/sidebar.md",
+            "source_location": "L9",
+            "weight": 1.0
+        },
+        {
+            "source": "resources_js_components_app_sidebar",
+            "target": "resources_js_components_ui_sidebar",
+            "relation": "calls",
+            "confidence": "INFERRED",
+            "confidence_score": 0.85,
+            "source_file": ".migration/sidebar.md",
+            "source_location": "L8",
+            "weight": 1.0
+        },
+        {
+            "source": "resources_js_components_nav_main",
+            "target": "resources_js_components_ui_sidebar",
+            "relation": "calls",
+            "confidence": "INFERRED",
+            "confidence_score": 0.85,
+            "source_file": ".migration/sidebar.md",
+            "source_location": "L8",
+            "weight": 1.0
+        },
+        {
+            "source": "resources_js_components_nav_footer",
+            "target": "resources_js_components_ui_sidebar",
+            "relation": "calls",
+            "confidence": "INFERRED",
+            "confidence_score": 0.85,
+            "source_file": ".migration/sidebar.md",
+            "source_location": "L8",
+            "weight": 1.0
+        },
+        {
+            "source": "resources_js_components_nav_user",
+            "target": "resources_js_components_ui_sidebar",
+            "relation": "calls",
+            "confidence": "INFERRED",
+            "confidence_score": 0.85,
+            "source_file": ".migration/sidebar.md",
+            "source_location": "L8",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_sidebar_menu_button_composition",
+            "target": "migration_tooltip_base_ui_tooltip",
+            "relation": "references",
+            "confidence": "INFERRED",
+            "confidence_score": 0.95,
+            "source_file": ".migration/sidebar.md",
+            "source_location": "L3",
+            "weight": 1.0
+        }
+    ],
+    "hyperedges": []
+}

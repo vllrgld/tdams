@@ -1,1 +1,145 @@
-{"nodes": [{"id": "github_prompts_design_references_icon_design", "label": "icon-design.md", "file_type": "document", "source_file": ".github/prompts/design/references/icon-design.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_design_references_icon_design_icon_generate_script", "label": "scripts/icon/generate.py", "file_type": "concept", "source_file": ".github/prompts/design/references/icon-design.md", "source_location": "L5-L9", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_design_references_icon_design_icon_styles", "label": "15 Icon Styles", "file_type": "concept", "source_file": ".github/prompts/design/references/icon-design.md", "source_location": "L56-L75", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_design_references_icon_design_icon_categories", "label": "12 Icon Categories", "file_type": "concept", "source_file": ".github/prompts/design/references/icon-design.md", "source_location": "L77-L92", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_design_references_icon_design_svg_best_practices", "label": "SVG Best Practices", "file_type": "rationale", "source_file": ".github/prompts/design/references/icon-design.md", "source_location": "L94-L101", "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "Use currentColor for CSS inheritance, include <title> for accessibility, design at 24px and test at 16/48px."}, {"id": "github_prompts_design_references_icon_design_gemini_3_1_pro_preview", "label": "gemini-3.1-pro-preview", "file_type": "concept", "source_file": ".github/prompts/design/references/icon-design.md", "source_location": "L103-L107", "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "SVG is XML text, so a text-only model suffices; no image generation API needed."}], "edges": [{"source": "github_prompts_design_references_icon_design", "target": "github_prompts_design_references_icon_design_icon_generate_script", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design/references/icon-design.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_references_icon_design", "target": "github_prompts_design_references_icon_design_icon_styles", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design/references/icon-design.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_references_icon_design", "target": "github_prompts_design_references_icon_design_icon_categories", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design/references/icon-design.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_references_icon_design", "target": "github_prompts_design_references_icon_design_svg_best_practices", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design/references/icon-design.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_references_icon_design", "target": "github_prompts_design_references_icon_design_gemini_3_1_pro_preview", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design/references/icon-design.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_references_icon_design_icon_generate_script", "target": "github_prompts_design_references_icon_design_gemini_3_1_pro_preview", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design/references/icon-design.md", "source_location": "L9", "weight": 1.0}, {"source": "github_prompts_design_references_icon_design_icon_generate_script", "target": "github_prompts_design_references_icon_design_icon_styles", "relation": "shares_data_with", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design/references/icon-design.md", "source_location": "L47", "weight": 1.0}], "hyperedges": []}
+{
+    "nodes": [
+        {
+            "id": "github_prompts_design_references_icon_design",
+            "label": "icon-design.md",
+            "file_type": "document",
+            "source_file": ".github/prompts/design/references/icon-design.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_design_references_icon_design_icon_generate_script",
+            "label": "scripts/icon/generate.py",
+            "file_type": "concept",
+            "source_file": ".github/prompts/design/references/icon-design.md",
+            "source_location": "L5-L9",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_design_references_icon_design_icon_styles",
+            "label": "15 Icon Styles",
+            "file_type": "concept",
+            "source_file": ".github/prompts/design/references/icon-design.md",
+            "source_location": "L56-L75",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_design_references_icon_design_icon_categories",
+            "label": "12 Icon Categories",
+            "file_type": "concept",
+            "source_file": ".github/prompts/design/references/icon-design.md",
+            "source_location": "L77-L92",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_design_references_icon_design_svg_best_practices",
+            "label": "SVG Best Practices",
+            "file_type": "rationale",
+            "source_file": ".github/prompts/design/references/icon-design.md",
+            "source_location": "L94-L101",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null,
+            "rationale": "Use currentColor for CSS inheritance, include <title> for accessibility, design at 24px and test at 16/48px."
+        },
+        {
+            "id": "github_prompts_design_references_icon_design_gemini_3_1_pro_preview",
+            "label": "gemini-3.1-pro-preview",
+            "file_type": "concept",
+            "source_file": ".github/prompts/design/references/icon-design.md",
+            "source_location": "L103-L107",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null,
+            "rationale": "SVG is XML text, so a text-only model suffices; no image generation API needed."
+        }
+    ],
+    "edges": [
+        {
+            "source": "github_prompts_design_references_icon_design",
+            "target": "github_prompts_design_references_icon_design_icon_generate_script",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design/references/icon-design.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_references_icon_design",
+            "target": "github_prompts_design_references_icon_design_icon_styles",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design/references/icon-design.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_references_icon_design",
+            "target": "github_prompts_design_references_icon_design_icon_categories",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design/references/icon-design.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_references_icon_design",
+            "target": "github_prompts_design_references_icon_design_svg_best_practices",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design/references/icon-design.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_references_icon_design",
+            "target": "github_prompts_design_references_icon_design_gemini_3_1_pro_preview",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design/references/icon-design.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_references_icon_design_icon_generate_script",
+            "target": "github_prompts_design_references_icon_design_gemini_3_1_pro_preview",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design/references/icon-design.md",
+            "source_location": "L9",
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_references_icon_design_icon_generate_script",
+            "target": "github_prompts_design_references_icon_design_icon_styles",
+            "relation": "shares_data_with",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design/references/icon-design.md",
+            "source_location": "L47",
+            "weight": 1.0
+        }
+    ],
+    "hyperedges": []
+}

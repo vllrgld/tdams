@@ -1,1 +1,91 @@
-{"nodes": [{"id": "migration_label", "label": "label.md", "file_type": "document", "source_file": ".migration/label.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "migration_label_native_label", "label": "Native label element", "file_type": "rationale", "source_file": ".migration/label.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "Base UI has no Label primitive, so the wrapper renders a native label; class string with peer-disabled hooks kept."}, {"id": "resources_js_components_ui_label", "label": "label.tsx", "file_type": "code", "source_file": ".migration/label.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [{"source": "migration_label", "target": "migration_label_native_label", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/label.md", "source_location": "L3", "weight": 1.0}, {"source": "migration_label", "target": "migration_project_transformation_engine", "relation": "references", "confidence": "INFERRED", "confidence_score": 0.95, "source_file": ".migration/label.md", "source_location": "L3", "weight": 1.0}, {"source": "migration_label", "target": "resources_js_components_ui_label", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/label.md", "source_location": "L7", "weight": 1.0}, {"source": "resources_js_components_ui_label", "target": "migration_label_native_label", "relation": "implements", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/label.md", "source_location": "L3", "weight": 1.0}, {"source": "migration_label_native_label", "target": "migration_project_base_ui_react", "relation": "conceptually_related_to", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/label.md", "source_location": "L3", "weight": 1.0}], "hyperedges": []}
+{
+    "nodes": [
+        {
+            "id": "migration_label",
+            "label": "label.md",
+            "file_type": "document",
+            "source_file": ".migration/label.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "migration_label_native_label",
+            "label": "Native label element",
+            "file_type": "rationale",
+            "source_file": ".migration/label.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null,
+            "rationale": "Base UI has no Label primitive, so the wrapper renders a native label; class string with peer-disabled hooks kept."
+        },
+        {
+            "id": "resources_js_components_ui_label",
+            "label": "label.tsx",
+            "file_type": "code",
+            "source_file": ".migration/label.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        }
+    ],
+    "edges": [
+        {
+            "source": "migration_label",
+            "target": "migration_label_native_label",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/label.md",
+            "source_location": "L3",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_label",
+            "target": "migration_project_transformation_engine",
+            "relation": "references",
+            "confidence": "INFERRED",
+            "confidence_score": 0.95,
+            "source_file": ".migration/label.md",
+            "source_location": "L3",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_label",
+            "target": "resources_js_components_ui_label",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/label.md",
+            "source_location": "L7",
+            "weight": 1.0
+        },
+        {
+            "source": "resources_js_components_ui_label",
+            "target": "migration_label_native_label",
+            "relation": "implements",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/label.md",
+            "source_location": "L3",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_label_native_label",
+            "target": "migration_project_base_ui_react",
+            "relation": "conceptually_related_to",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/label.md",
+            "source_location": "L3",
+            "weight": 1.0
+        }
+    ],
+    "hyperedges": []
+}

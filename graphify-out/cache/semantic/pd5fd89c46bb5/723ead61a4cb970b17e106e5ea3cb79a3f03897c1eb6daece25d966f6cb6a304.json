@@ -1,1 +1,165 @@
-{"nodes": [{"id": "github_prompts_ui_styling_references_tailwind_responsive", "label": "tailwind-responsive.md", "file_type": "document", "source_file": ".github/prompts/ui-styling/references/tailwind-responsive.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_ui_styling_references_tailwind_responsive_mobile_first_approach", "label": "Mobile-First Breakpoint Approach", "file_type": "concept", "source_file": ".github/prompts/ui-styling/references/tailwind-responsive.md", "source_location": "L5", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_ui_styling_references_tailwind_responsive_breakpoint_system", "label": "Breakpoint System (sm 640 \u2013 2xl 1536)", "file_type": "concept", "source_file": ".github/prompts/ui-styling/references/tailwind-responsive.md", "source_location": "L21", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_ui_styling_references_tailwind_responsive_max_width_queries", "label": "Max-Width & Range Queries (max-*:)", "file_type": "concept", "source_file": ".github/prompts/ui-styling/references/tailwind-responsive.md", "source_location": "L191", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_ui_styling_references_tailwind_responsive_container_queries", "label": "Container Queries (@container)", "file_type": "concept", "source_file": ".github/prompts/ui-styling/references/tailwind-responsive.md", "source_location": "L225", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_ui_styling_references_tailwind_responsive_custom_breakpoints", "label": "Custom Breakpoints (--breakpoint-3xl, --breakpoint-tablet)", "file_type": "concept", "source_file": ".github/prompts/ui-styling/references/tailwind-responsive.md", "source_location": "L239", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_ui_styling_references_tailwind_responsive_responsive_testing_checklist", "label": "Responsive Testing Checklist (320-1280px, 44x44 touch targets)", "file_type": "concept", "source_file": ".github/prompts/ui-styling/references/tailwind-responsive.md", "source_location": "L371", "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "Limit to 2-3 breakpoints per element for maintainability and test at exact breakpoint boundaries to catch edge cases."}], "edges": [{"source": "github_prompts_ui_styling_references_tailwind_responsive", "target": "github_prompts_ui_styling_references_tailwind_responsive_mobile_first_approach", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/ui-styling/references/tailwind-responsive.md", "source_location": "L5", "weight": 1.0}, {"source": "github_prompts_ui_styling_references_tailwind_responsive", "target": "github_prompts_ui_styling_references_tailwind_responsive_breakpoint_system", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/ui-styling/references/tailwind-responsive.md", "source_location": "L21", "weight": 1.0}, {"source": "github_prompts_ui_styling_references_tailwind_responsive", "target": "github_prompts_ui_styling_references_tailwind_responsive_max_width_queries", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/ui-styling/references/tailwind-responsive.md", "source_location": "L191", "weight": 1.0}, {"source": "github_prompts_ui_styling_references_tailwind_responsive", "target": "github_prompts_ui_styling_references_tailwind_responsive_container_queries", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/ui-styling/references/tailwind-responsive.md", "source_location": "L225", "weight": 1.0}, {"source": "github_prompts_ui_styling_references_tailwind_responsive", "target": "github_prompts_ui_styling_references_tailwind_responsive_custom_breakpoints", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/ui-styling/references/tailwind-responsive.md", "source_location": "L239", "weight": 1.0}, {"source": "github_prompts_ui_styling_references_tailwind_responsive", "target": "github_prompts_ui_styling_references_tailwind_responsive_responsive_testing_checklist", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/ui-styling/references/tailwind-responsive.md", "source_location": "L371", "weight": 1.0}, {"source": "github_prompts_ui_styling_references_tailwind_responsive_mobile_first_approach", "target": "github_prompts_ui_styling_references_tailwind_responsive_breakpoint_system", "relation": "conceptually_related_to", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/ui-styling/references/tailwind-responsive.md", "source_location": "L7", "weight": 1.0}, {"source": "github_prompts_ui_styling_references_tailwind_responsive_custom_breakpoints", "target": "github_prompts_ui_styling_references_tailwind_customization_theme_directive", "relation": "shares_data_with", "confidence": "INFERRED", "confidence_score": 0.95, "source_file": ".github/prompts/ui-styling/references/tailwind-responsive.md", "source_location": "L243", "weight": 0.95}], "hyperedges": []}
+{
+    "nodes": [
+        {
+            "id": "github_prompts_ui_styling_references_tailwind_responsive",
+            "label": "tailwind-responsive.md",
+            "file_type": "document",
+            "source_file": ".github/prompts/ui-styling/references/tailwind-responsive.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_ui_styling_references_tailwind_responsive_mobile_first_approach",
+            "label": "Mobile-First Breakpoint Approach",
+            "file_type": "concept",
+            "source_file": ".github/prompts/ui-styling/references/tailwind-responsive.md",
+            "source_location": "L5",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_ui_styling_references_tailwind_responsive_breakpoint_system",
+            "label": "Breakpoint System (sm 640 \u2013 2xl 1536)",
+            "file_type": "concept",
+            "source_file": ".github/prompts/ui-styling/references/tailwind-responsive.md",
+            "source_location": "L21",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_ui_styling_references_tailwind_responsive_max_width_queries",
+            "label": "Max-Width & Range Queries (max-*:)",
+            "file_type": "concept",
+            "source_file": ".github/prompts/ui-styling/references/tailwind-responsive.md",
+            "source_location": "L191",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_ui_styling_references_tailwind_responsive_container_queries",
+            "label": "Container Queries (@container)",
+            "file_type": "concept",
+            "source_file": ".github/prompts/ui-styling/references/tailwind-responsive.md",
+            "source_location": "L225",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_ui_styling_references_tailwind_responsive_custom_breakpoints",
+            "label": "Custom Breakpoints (--breakpoint-3xl, --breakpoint-tablet)",
+            "file_type": "concept",
+            "source_file": ".github/prompts/ui-styling/references/tailwind-responsive.md",
+            "source_location": "L239",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_ui_styling_references_tailwind_responsive_responsive_testing_checklist",
+            "label": "Responsive Testing Checklist (320-1280px, 44x44 touch targets)",
+            "file_type": "concept",
+            "source_file": ".github/prompts/ui-styling/references/tailwind-responsive.md",
+            "source_location": "L371",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null,
+            "rationale": "Limit to 2-3 breakpoints per element for maintainability and test at exact breakpoint boundaries to catch edge cases."
+        }
+    ],
+    "edges": [
+        {
+            "source": "github_prompts_ui_styling_references_tailwind_responsive",
+            "target": "github_prompts_ui_styling_references_tailwind_responsive_mobile_first_approach",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/ui-styling/references/tailwind-responsive.md",
+            "source_location": "L5",
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_ui_styling_references_tailwind_responsive",
+            "target": "github_prompts_ui_styling_references_tailwind_responsive_breakpoint_system",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/ui-styling/references/tailwind-responsive.md",
+            "source_location": "L21",
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_ui_styling_references_tailwind_responsive",
+            "target": "github_prompts_ui_styling_references_tailwind_responsive_max_width_queries",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/ui-styling/references/tailwind-responsive.md",
+            "source_location": "L191",
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_ui_styling_references_tailwind_responsive",
+            "target": "github_prompts_ui_styling_references_tailwind_responsive_container_queries",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/ui-styling/references/tailwind-responsive.md",
+            "source_location": "L225",
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_ui_styling_references_tailwind_responsive",
+            "target": "github_prompts_ui_styling_references_tailwind_responsive_custom_breakpoints",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/ui-styling/references/tailwind-responsive.md",
+            "source_location": "L239",
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_ui_styling_references_tailwind_responsive",
+            "target": "github_prompts_ui_styling_references_tailwind_responsive_responsive_testing_checklist",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/ui-styling/references/tailwind-responsive.md",
+            "source_location": "L371",
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_ui_styling_references_tailwind_responsive_mobile_first_approach",
+            "target": "github_prompts_ui_styling_references_tailwind_responsive_breakpoint_system",
+            "relation": "conceptually_related_to",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/ui-styling/references/tailwind-responsive.md",
+            "source_location": "L7",
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_ui_styling_references_tailwind_responsive_custom_breakpoints",
+            "target": "github_prompts_ui_styling_references_tailwind_customization_theme_directive",
+            "relation": "shares_data_with",
+            "confidence": "INFERRED",
+            "confidence_score": 0.95,
+            "source_file": ".github/prompts/ui-styling/references/tailwind-responsive.md",
+            "source_location": "L243",
+            "weight": 0.95
+        }
+    ],
+    "hyperedges": []
+}

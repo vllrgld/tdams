@@ -1,1 +1,408 @@
-{"nodes": [{"id": "github_prompts_brand_skill", "label": "SKILL.md (brand)", "file_type": "document", "source_file": ".github/prompts/brand/SKILL.md", "source_location": null, "source_url": null, "captured_at": null, "author": "claudekit", "contributor": null}, {"id": "github_prompts_brand_skill_brand_sync_workflow", "label": "Brand Sync Workflow", "file_type": "rationale", "source_file": ".github/prompts/brand/SKILL.md", "source_location": null, "source_url": null, "captured_at": null, "author": "claudekit", "contributor": null, "rationale": "Edit brand guidelines, sync to design tokens, then verify via context injection."}, {"id": "github_prompts_brand_skill_inject_brand_context_script", "label": "inject-brand-context.cjs", "file_type": "concept", "source_file": ".github/prompts/brand/SKILL.md", "source_location": null, "source_url": null, "captured_at": null, "author": "claudekit", "contributor": null}, {"id": "github_prompts_brand_skill_sync_brand_to_tokens_script", "label": "sync-brand-to-tokens.cjs", "file_type": "concept", "source_file": ".github/prompts/brand/SKILL.md", "source_location": null, "source_url": null, "captured_at": null, "author": "claudekit", "contributor": null}, {"id": "github_prompts_brand_skill_validate_asset_script", "label": "validate-asset.cjs", "file_type": "concept", "source_file": ".github/prompts/brand/SKILL.md", "source_location": null, "source_url": null, "captured_at": null, "author": "claudekit", "contributor": null}, {"id": "github_prompts_brand_skill_extract_colors_script", "label": "extract-colors.cjs", "file_type": "concept", "source_file": ".github/prompts/brand/SKILL.md", "source_location": null, "source_url": null, "captured_at": null, "author": "claudekit", "contributor": null}, {"id": "github_prompts_brand_skill_brand_guidelines_source_of_truth", "label": "docs/brand-guidelines.md (Source of Truth)", "file_type": "concept", "source_file": ".github/prompts/brand/SKILL.md", "source_location": null, "source_url": null, "captured_at": null, "author": "claudekit", "contributor": null}, {"id": "github_prompts_brand_skill_design_tokens_json", "label": "assets/design-tokens.json", "file_type": "concept", "source_file": ".github/prompts/brand/SKILL.md", "source_location": null, "source_url": null, "captured_at": null, "author": "claudekit", "contributor": null}, {"id": "github_prompts_brand_skill_design_tokens_css", "label": "assets/design-tokens.css", "file_type": "concept", "source_file": ".github/prompts/brand/SKILL.md", "source_location": null, "source_url": null, "captured_at": null, "author": "claudekit", "contributor": null}, {"id": "github_prompts_brand_skill_subcommand_routing", "label": "Brand Subcommand Routing", "file_type": "concept", "source_file": ".github/prompts/brand/SKILL.md", "source_location": null, "source_url": null, "captured_at": null, "author": "claudekit", "contributor": null}], "edges": [{"source": "github_prompts_brand_skill", "target": "github_prompts_brand_skill_brand_sync_workflow", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_skill", "target": "github_prompts_brand_skill_inject_brand_context_script", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_skill", "target": "github_prompts_brand_skill_sync_brand_to_tokens_script", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_skill", "target": "github_prompts_brand_skill_validate_asset_script", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_skill", "target": "github_prompts_brand_skill_extract_colors_script", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_skill", "target": "github_prompts_brand_skill_brand_guidelines_source_of_truth", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_skill", "target": "github_prompts_brand_skill_design_tokens_json", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_skill", "target": "github_prompts_brand_skill_design_tokens_css", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_skill", "target": "github_prompts_brand_skill_subcommand_routing", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_skill", "target": "github_prompts_brand_references_voice_framework", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_skill", "target": "github_prompts_brand_references_visual_identity", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_skill", "target": "github_prompts_brand_references_messaging_framework", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_skill", "target": "github_prompts_brand_references_consistency_checklist", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_skill", "target": "github_prompts_brand_references_brand_guideline_template", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_skill", "target": "github_prompts_brand_references_asset_organization", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_skill", "target": "github_prompts_brand_references_color_palette_management", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_skill", "target": "github_prompts_brand_references_typography_specifications", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_skill", "target": "github_prompts_brand_references_logo_usage_rules", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_skill", "target": "github_prompts_brand_references_approval_checklist", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_skill", "target": "github_prompts_brand_references_update", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_skill", "target": "github_prompts_brand_templates_brand_guidelines_starter", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_skill_sync_brand_to_tokens_script", "target": "github_prompts_brand_skill_brand_guidelines_source_of_truth", "relation": "shares_data_with", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_skill_sync_brand_to_tokens_script", "target": "github_prompts_brand_skill_design_tokens_json", "relation": "shares_data_with", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_skill_sync_brand_to_tokens_script", "target": "github_prompts_brand_skill_design_tokens_css", "relation": "shares_data_with", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_skill_inject_brand_context_script", "target": "github_prompts_brand_skill_brand_guidelines_source_of_truth", "relation": "shares_data_with", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_skill_brand_sync_workflow", "target": "github_prompts_brand_skill_sync_brand_to_tokens_script", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_skill_brand_sync_workflow", "target": "github_prompts_brand_skill_inject_brand_context_script", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_skill_subcommand_routing", "target": "github_prompts_brand_references_update_brand_update_command", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/SKILL.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_skill_design_tokens_json", "target": "github_prompts_design_system_references_token_architecture_primitive_layer", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.75, "source_file": ".github/prompts/brand/SKILL.md", "source_location": null, "weight": 0.75}], "hyperedges": []}
+{
+    "nodes": [
+        {
+            "id": "github_prompts_brand_skill",
+            "label": "SKILL.md (brand)",
+            "file_type": "document",
+            "source_file": ".github/prompts/brand/SKILL.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": "claudekit",
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_brand_skill_brand_sync_workflow",
+            "label": "Brand Sync Workflow",
+            "file_type": "rationale",
+            "source_file": ".github/prompts/brand/SKILL.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": "claudekit",
+            "contributor": null,
+            "rationale": "Edit brand guidelines, sync to design tokens, then verify via context injection."
+        },
+        {
+            "id": "github_prompts_brand_skill_inject_brand_context_script",
+            "label": "inject-brand-context.cjs",
+            "file_type": "concept",
+            "source_file": ".github/prompts/brand/SKILL.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": "claudekit",
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_brand_skill_sync_brand_to_tokens_script",
+            "label": "sync-brand-to-tokens.cjs",
+            "file_type": "concept",
+            "source_file": ".github/prompts/brand/SKILL.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": "claudekit",
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_brand_skill_validate_asset_script",
+            "label": "validate-asset.cjs",
+            "file_type": "concept",
+            "source_file": ".github/prompts/brand/SKILL.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": "claudekit",
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_brand_skill_extract_colors_script",
+            "label": "extract-colors.cjs",
+            "file_type": "concept",
+            "source_file": ".github/prompts/brand/SKILL.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": "claudekit",
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_brand_skill_brand_guidelines_source_of_truth",
+            "label": "docs/brand-guidelines.md (Source of Truth)",
+            "file_type": "concept",
+            "source_file": ".github/prompts/brand/SKILL.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": "claudekit",
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_brand_skill_design_tokens_json",
+            "label": "assets/design-tokens.json",
+            "file_type": "concept",
+            "source_file": ".github/prompts/brand/SKILL.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": "claudekit",
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_brand_skill_design_tokens_css",
+            "label": "assets/design-tokens.css",
+            "file_type": "concept",
+            "source_file": ".github/prompts/brand/SKILL.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": "claudekit",
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_brand_skill_subcommand_routing",
+            "label": "Brand Subcommand Routing",
+            "file_type": "concept",
+            "source_file": ".github/prompts/brand/SKILL.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": "claudekit",
+            "contributor": null
+        }
+    ],
+    "edges": [
+        {
+            "source": "github_prompts_brand_skill",
+            "target": "github_prompts_brand_skill_brand_sync_workflow",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_skill",
+            "target": "github_prompts_brand_skill_inject_brand_context_script",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_skill",
+            "target": "github_prompts_brand_skill_sync_brand_to_tokens_script",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_skill",
+            "target": "github_prompts_brand_skill_validate_asset_script",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_skill",
+            "target": "github_prompts_brand_skill_extract_colors_script",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_skill",
+            "target": "github_prompts_brand_skill_brand_guidelines_source_of_truth",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_skill",
+            "target": "github_prompts_brand_skill_design_tokens_json",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_skill",
+            "target": "github_prompts_brand_skill_design_tokens_css",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_skill",
+            "target": "github_prompts_brand_skill_subcommand_routing",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_skill",
+            "target": "github_prompts_brand_references_voice_framework",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_skill",
+            "target": "github_prompts_brand_references_visual_identity",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_skill",
+            "target": "github_prompts_brand_references_messaging_framework",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_skill",
+            "target": "github_prompts_brand_references_consistency_checklist",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_skill",
+            "target": "github_prompts_brand_references_brand_guideline_template",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_skill",
+            "target": "github_prompts_brand_references_asset_organization",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_skill",
+            "target": "github_prompts_brand_references_color_palette_management",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_skill",
+            "target": "github_prompts_brand_references_typography_specifications",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_skill",
+            "target": "github_prompts_brand_references_logo_usage_rules",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_skill",
+            "target": "github_prompts_brand_references_approval_checklist",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_skill",
+            "target": "github_prompts_brand_references_update",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_skill",
+            "target": "github_prompts_brand_templates_brand_guidelines_starter",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_skill_sync_brand_to_tokens_script",
+            "target": "github_prompts_brand_skill_brand_guidelines_source_of_truth",
+            "relation": "shares_data_with",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_skill_sync_brand_to_tokens_script",
+            "target": "github_prompts_brand_skill_design_tokens_json",
+            "relation": "shares_data_with",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_skill_sync_brand_to_tokens_script",
+            "target": "github_prompts_brand_skill_design_tokens_css",
+            "relation": "shares_data_with",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_skill_inject_brand_context_script",
+            "target": "github_prompts_brand_skill_brand_guidelines_source_of_truth",
+            "relation": "shares_data_with",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_skill_brand_sync_workflow",
+            "target": "github_prompts_brand_skill_sync_brand_to_tokens_script",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_skill_brand_sync_workflow",
+            "target": "github_prompts_brand_skill_inject_brand_context_script",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_skill_subcommand_routing",
+            "target": "github_prompts_brand_references_update_brand_update_command",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/SKILL.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_skill_design_tokens_json",
+            "target": "github_prompts_design_system_references_token_architecture_primitive_layer",
+            "relation": "conceptually_related_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.75,
+            "source_file": ".github/prompts/brand/SKILL.md",
+            "source_location": null,
+            "weight": 0.75
+        }
+    ],
+    "hyperedges": []
+}

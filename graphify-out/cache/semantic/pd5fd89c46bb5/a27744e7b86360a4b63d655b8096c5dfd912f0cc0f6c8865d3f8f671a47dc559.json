@@ -1,1 +1,122 @@
-{"nodes": [{"id": "migration_toggle", "label": "toggle.md", "file_type": "document", "source_file": ".migration/toggle.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "migration_toggle_base_ui_toggle", "label": "@base-ui/react/toggle", "file_type": "concept", "source_file": ".migration/toggle.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "migration_toggle_data_pressed", "label": "data-pressed attribute", "file_type": "concept", "source_file": ".migration/toggle.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "Replaces Radix data-[state=on]."}, {"id": "resources_js_components_ui_toggle", "label": "toggle.tsx", "file_type": "code", "source_file": ".migration/toggle.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [{"source": "migration_toggle", "target": "migration_toggle_base_ui_toggle", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/toggle.md", "source_location": "L3", "weight": 1.0}, {"source": "migration_toggle_base_ui_toggle", "target": "migration_project_base_ui_react", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.95, "source_file": ".migration/toggle.md", "source_location": "L3", "weight": 1.0}, {"source": "migration_toggle", "target": "migration_toggle_data_pressed", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/toggle.md", "source_location": "L3", "weight": 1.0}, {"source": "migration_toggle", "target": "migration_project_transformation_engine", "relation": "references", "confidence": "INFERRED", "confidence_score": 0.95, "source_file": ".migration/toggle.md", "source_location": "L3", "weight": 1.0}, {"source": "migration_toggle", "target": "resources_js_components_ui_toggle", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/toggle.md", "source_location": "L7", "weight": 1.0}, {"source": "resources_js_components_ui_toggle", "target": "migration_toggle_base_ui_toggle", "relation": "implements", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/toggle.md", "source_location": "L3", "weight": 1.0}, {"source": "resources_js_components_ui_toggle", "target": "migration_toggle_data_pressed", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/toggle.md", "source_location": "L3", "weight": 1.0}], "hyperedges": []}
+{
+    "nodes": [
+        {
+            "id": "migration_toggle",
+            "label": "toggle.md",
+            "file_type": "document",
+            "source_file": ".migration/toggle.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "migration_toggle_base_ui_toggle",
+            "label": "@base-ui/react/toggle",
+            "file_type": "concept",
+            "source_file": ".migration/toggle.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "migration_toggle_data_pressed",
+            "label": "data-pressed attribute",
+            "file_type": "concept",
+            "source_file": ".migration/toggle.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null,
+            "rationale": "Replaces Radix data-[state=on]."
+        },
+        {
+            "id": "resources_js_components_ui_toggle",
+            "label": "toggle.tsx",
+            "file_type": "code",
+            "source_file": ".migration/toggle.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        }
+    ],
+    "edges": [
+        {
+            "source": "migration_toggle",
+            "target": "migration_toggle_base_ui_toggle",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/toggle.md",
+            "source_location": "L3",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_toggle_base_ui_toggle",
+            "target": "migration_project_base_ui_react",
+            "relation": "conceptually_related_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.95,
+            "source_file": ".migration/toggle.md",
+            "source_location": "L3",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_toggle",
+            "target": "migration_toggle_data_pressed",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/toggle.md",
+            "source_location": "L3",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_toggle",
+            "target": "migration_project_transformation_engine",
+            "relation": "references",
+            "confidence": "INFERRED",
+            "confidence_score": 0.95,
+            "source_file": ".migration/toggle.md",
+            "source_location": "L3",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_toggle",
+            "target": "resources_js_components_ui_toggle",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/toggle.md",
+            "source_location": "L7",
+            "weight": 1.0
+        },
+        {
+            "source": "resources_js_components_ui_toggle",
+            "target": "migration_toggle_base_ui_toggle",
+            "relation": "implements",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/toggle.md",
+            "source_location": "L3",
+            "weight": 1.0
+        },
+        {
+            "source": "resources_js_components_ui_toggle",
+            "target": "migration_toggle_data_pressed",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/toggle.md",
+            "source_location": "L3",
+            "weight": 1.0
+        }
+    ],
+    "hyperedges": []
+}

@@ -1,1 +1,294 @@
-{"nodes": [{"id": "github_prompts_ui_styling_references_canvas_design_system", "label": "canvas-design-system.md", "file_type": "document", "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_ui_styling_references_canvas_design_system_two_phase_design_process", "label": "Two-Phase Canvas Design Process (Philosophy then Visual Expression)", "file_type": "rationale", "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md", "source_location": "L7", "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "A 4-6 paragraph design philosophy (manifesto) is written first and then expressed as a canvas artifact, so every visual decision is guided by a coherent aesthetic movement rather than templates."}, {"id": "github_prompts_ui_styling_references_canvas_design_system_visual_communication_first", "label": "Visual Communication First (90% visual / 10% text)", "file_type": "rationale", "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md", "source_location": "L37", "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "Information lives in design, not paragraphs; text is a rare, powerful gesture integrated into the visual architecture."}, {"id": "github_prompts_ui_styling_references_canvas_design_system_systematic_patterns", "label": "Systematic Patterns", "file_type": "rationale", "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md", "source_location": "L64", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_ui_styling_references_canvas_design_system_expert_craftsmanship", "label": "Expert Craftsmanship / Museum Quality", "file_type": "rationale", "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md", "source_location": "L56", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_ui_styling_references_canvas_design_system_concrete_poetry", "label": "Concrete Poetry (design movement)", "file_type": "concept", "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md", "source_location": "L75", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_ui_styling_references_canvas_design_system_chromatic_language", "label": "Chromatic Language (design movement)", "file_type": "concept", "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md", "source_location": "L86", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_ui_styling_references_canvas_design_system_analog_meditation", "label": "Analog Meditation (design movement)", "file_type": "concept", "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md", "source_location": "L97", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_ui_styling_references_canvas_design_system_organic_systems", "label": "Organic Systems (design movement)", "file_type": "concept", "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md", "source_location": "L109", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_ui_styling_references_canvas_design_system_geometric_silence", "label": "Geometric Silence (design movement)", "file_type": "concept", "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md", "source_location": "L121", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_ui_styling_references_canvas_design_system_oklch_color_palette", "label": "Intentional OKLCH Color Palette (2-5 colors)", "file_type": "concept", "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md", "source_location": "L146", "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "oklch color space chosen for precision; limited palette so each shade carries meaning."}, {"id": "github_prompts_ui_styling_references_canvas_design_system_multi_page_design_systems", "label": "Multi-Page Design Systems", "file_type": "concept", "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md", "source_location": "L207", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_ui_styling_references_canvas_design_system_refinement_process", "label": "Refinement Process (polish, don't expand)", "file_type": "rationale", "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md", "source_location": "L271", "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "The critical second pass refines existing elements instead of adding graphics, respecting the minimalism philosophy."}], "edges": [{"source": "github_prompts_ui_styling_references_canvas_design_system", "target": "github_prompts_ui_styling_references_canvas_design_system_two_phase_design_process", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md", "source_location": "L5", "weight": 1.0}, {"source": "github_prompts_ui_styling_references_canvas_design_system", "target": "github_prompts_ui_styling_references_canvas_design_system_visual_communication_first", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md", "source_location": "L37", "weight": 1.0}, {"source": "github_prompts_ui_styling_references_canvas_design_system", "target": "github_prompts_ui_styling_references_canvas_design_system_systematic_patterns", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md", "source_location": "L64", "weight": 1.0}, {"source": "github_prompts_ui_styling_references_canvas_design_system", "target": "github_prompts_ui_styling_references_canvas_design_system_expert_craftsmanship", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md", "source_location": "L56", "weight": 1.0}, {"source": "github_prompts_ui_styling_references_canvas_design_system", "target": "github_prompts_ui_styling_references_canvas_design_system_concrete_poetry", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md", "source_location": "L75", "weight": 1.0}, {"source": "github_prompts_ui_styling_references_canvas_design_system", "target": "github_prompts_ui_styling_references_canvas_design_system_chromatic_language", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md", "source_location": "L86", "weight": 1.0}, {"source": "github_prompts_ui_styling_references_canvas_design_system", "target": "github_prompts_ui_styling_references_canvas_design_system_analog_meditation", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md", "source_location": "L97", "weight": 1.0}, {"source": "github_prompts_ui_styling_references_canvas_design_system", "target": "github_prompts_ui_styling_references_canvas_design_system_organic_systems", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md", "source_location": "L109", "weight": 1.0}, {"source": "github_prompts_ui_styling_references_canvas_design_system", "target": "github_prompts_ui_styling_references_canvas_design_system_geometric_silence", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md", "source_location": "L121", "weight": 1.0}, {"source": "github_prompts_ui_styling_references_canvas_design_system", "target": "github_prompts_ui_styling_references_canvas_design_system_oklch_color_palette", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md", "source_location": "L146", "weight": 1.0}, {"source": "github_prompts_ui_styling_references_canvas_design_system", "target": "github_prompts_ui_styling_references_canvas_design_system_multi_page_design_systems", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md", "source_location": "L207", "weight": 1.0}, {"source": "github_prompts_ui_styling_references_canvas_design_system", "target": "github_prompts_ui_styling_references_canvas_design_system_refinement_process", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md", "source_location": "L271", "weight": 1.0}, {"source": "github_prompts_ui_styling_references_canvas_design_system_refinement_process", "target": "github_prompts_ui_styling_references_canvas_design_system_expert_craftsmanship", "relation": "rationale_for", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md", "source_location": "L271", "weight": 0.85}, {"source": "github_prompts_ui_styling_references_canvas_design_system_oklch_color_palette", "target": "github_prompts_ui_styling_references_tailwind_customization_theme_directive", "relation": "shares_data_with", "confidence": "INFERRED", "confidence_score": 0.95, "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md", "source_location": "L156", "weight": 0.95}], "hyperedges": []}
+{
+    "nodes": [
+        {
+            "id": "github_prompts_ui_styling_references_canvas_design_system",
+            "label": "canvas-design-system.md",
+            "file_type": "document",
+            "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_ui_styling_references_canvas_design_system_two_phase_design_process",
+            "label": "Two-Phase Canvas Design Process (Philosophy then Visual Expression)",
+            "file_type": "rationale",
+            "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md",
+            "source_location": "L7",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null,
+            "rationale": "A 4-6 paragraph design philosophy (manifesto) is written first and then expressed as a canvas artifact, so every visual decision is guided by a coherent aesthetic movement rather than templates."
+        },
+        {
+            "id": "github_prompts_ui_styling_references_canvas_design_system_visual_communication_first",
+            "label": "Visual Communication First (90% visual / 10% text)",
+            "file_type": "rationale",
+            "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md",
+            "source_location": "L37",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null,
+            "rationale": "Information lives in design, not paragraphs; text is a rare, powerful gesture integrated into the visual architecture."
+        },
+        {
+            "id": "github_prompts_ui_styling_references_canvas_design_system_systematic_patterns",
+            "label": "Systematic Patterns",
+            "file_type": "rationale",
+            "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md",
+            "source_location": "L64",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_ui_styling_references_canvas_design_system_expert_craftsmanship",
+            "label": "Expert Craftsmanship / Museum Quality",
+            "file_type": "rationale",
+            "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md",
+            "source_location": "L56",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_ui_styling_references_canvas_design_system_concrete_poetry",
+            "label": "Concrete Poetry (design movement)",
+            "file_type": "concept",
+            "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md",
+            "source_location": "L75",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_ui_styling_references_canvas_design_system_chromatic_language",
+            "label": "Chromatic Language (design movement)",
+            "file_type": "concept",
+            "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md",
+            "source_location": "L86",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_ui_styling_references_canvas_design_system_analog_meditation",
+            "label": "Analog Meditation (design movement)",
+            "file_type": "concept",
+            "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md",
+            "source_location": "L97",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_ui_styling_references_canvas_design_system_organic_systems",
+            "label": "Organic Systems (design movement)",
+            "file_type": "concept",
+            "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md",
+            "source_location": "L109",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_ui_styling_references_canvas_design_system_geometric_silence",
+            "label": "Geometric Silence (design movement)",
+            "file_type": "concept",
+            "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md",
+            "source_location": "L121",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_ui_styling_references_canvas_design_system_oklch_color_palette",
+            "label": "Intentional OKLCH Color Palette (2-5 colors)",
+            "file_type": "concept",
+            "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md",
+            "source_location": "L146",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null,
+            "rationale": "oklch color space chosen for precision; limited palette so each shade carries meaning."
+        },
+        {
+            "id": "github_prompts_ui_styling_references_canvas_design_system_multi_page_design_systems",
+            "label": "Multi-Page Design Systems",
+            "file_type": "concept",
+            "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md",
+            "source_location": "L207",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_ui_styling_references_canvas_design_system_refinement_process",
+            "label": "Refinement Process (polish, don't expand)",
+            "file_type": "rationale",
+            "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md",
+            "source_location": "L271",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null,
+            "rationale": "The critical second pass refines existing elements instead of adding graphics, respecting the minimalism philosophy."
+        }
+    ],
+    "edges": [
+        {
+            "source": "github_prompts_ui_styling_references_canvas_design_system",
+            "target": "github_prompts_ui_styling_references_canvas_design_system_two_phase_design_process",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md",
+            "source_location": "L5",
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_ui_styling_references_canvas_design_system",
+            "target": "github_prompts_ui_styling_references_canvas_design_system_visual_communication_first",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md",
+            "source_location": "L37",
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_ui_styling_references_canvas_design_system",
+            "target": "github_prompts_ui_styling_references_canvas_design_system_systematic_patterns",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md",
+            "source_location": "L64",
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_ui_styling_references_canvas_design_system",
+            "target": "github_prompts_ui_styling_references_canvas_design_system_expert_craftsmanship",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md",
+            "source_location": "L56",
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_ui_styling_references_canvas_design_system",
+            "target": "github_prompts_ui_styling_references_canvas_design_system_concrete_poetry",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md",
+            "source_location": "L75",
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_ui_styling_references_canvas_design_system",
+            "target": "github_prompts_ui_styling_references_canvas_design_system_chromatic_language",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md",
+            "source_location": "L86",
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_ui_styling_references_canvas_design_system",
+            "target": "github_prompts_ui_styling_references_canvas_design_system_analog_meditation",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md",
+            "source_location": "L97",
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_ui_styling_references_canvas_design_system",
+            "target": "github_prompts_ui_styling_references_canvas_design_system_organic_systems",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md",
+            "source_location": "L109",
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_ui_styling_references_canvas_design_system",
+            "target": "github_prompts_ui_styling_references_canvas_design_system_geometric_silence",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md",
+            "source_location": "L121",
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_ui_styling_references_canvas_design_system",
+            "target": "github_prompts_ui_styling_references_canvas_design_system_oklch_color_palette",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md",
+            "source_location": "L146",
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_ui_styling_references_canvas_design_system",
+            "target": "github_prompts_ui_styling_references_canvas_design_system_multi_page_design_systems",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md",
+            "source_location": "L207",
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_ui_styling_references_canvas_design_system",
+            "target": "github_prompts_ui_styling_references_canvas_design_system_refinement_process",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md",
+            "source_location": "L271",
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_ui_styling_references_canvas_design_system_refinement_process",
+            "target": "github_prompts_ui_styling_references_canvas_design_system_expert_craftsmanship",
+            "relation": "rationale_for",
+            "confidence": "INFERRED",
+            "confidence_score": 0.85,
+            "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md",
+            "source_location": "L271",
+            "weight": 0.85
+        },
+        {
+            "source": "github_prompts_ui_styling_references_canvas_design_system_oklch_color_palette",
+            "target": "github_prompts_ui_styling_references_tailwind_customization_theme_directive",
+            "relation": "shares_data_with",
+            "confidence": "INFERRED",
+            "confidence_score": 0.95,
+            "source_file": ".github/prompts/ui-styling/references/canvas-design-system.md",
+            "source_location": "L156",
+            "weight": 0.95
+        }
+    ],
+    "hyperedges": []
+}

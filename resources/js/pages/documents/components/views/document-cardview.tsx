@@ -29,7 +29,7 @@ export default function DocumentCardView({
                 {documents.map((document) => (
                     <article
                         key={document.id}
-                        className="group relative z-0 aspect-[3/4] min-w-0 origin-center overflow-hidden border border-slate-200 bg-blue-900 shadow-sm transition duration-200 ease-out hover:z-20 hover:-translate-y-1.5 hover:scale-105 hover:border-blue-800 hover:shadow-xl hover:ring-2 hover:ring-blue-800/20 focus-within:z-20 focus-within:-translate-y-1.5 focus-within:scale-105 focus-within:border-blue-800 focus-within:shadow-xl focus-within:ring-2 focus-within:ring-blue-800/20 motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:hover:scale-100 motion-reduce:focus-within:translate-y-0 motion-reduce:focus-within:scale-100 dark:border-slate-800 dark:hover:border-blue-300 dark:hover:ring-blue-300/20 dark:focus-within:border-blue-300 dark:focus-within:ring-blue-300/20"
+                        className="group relative z-0 aspect-[3/4] min-w-0 origin-center overflow-hidden border border-slate-200 bg-blue-900 shadow-sm transition duration-200 ease-out focus-within:z-20 focus-within:-translate-y-1.5 focus-within:scale-105 focus-within:border-blue-800 focus-within:shadow-xl focus-within:ring-2 focus-within:ring-blue-800/20 hover:z-20 hover:-translate-y-1.5 hover:scale-105 hover:border-blue-800 hover:shadow-xl hover:ring-2 hover:ring-blue-800/20 motion-reduce:transition-none motion-reduce:focus-within:translate-y-0 motion-reduce:focus-within:scale-100 motion-reduce:hover:translate-y-0 motion-reduce:hover:scale-100 dark:border-neutral-800 dark:focus-within:border-blue-800 dark:focus-within:ring-blue-800/20 dark:hover:border-blue-800 dark:hover:ring-blue-800/20"
                     >
                         <DocumentThumbnail
                             mimeType={document.mimeType}
@@ -52,7 +52,7 @@ export default function DocumentCardView({
                             onClick={() => setChainDocument(document)}
                             aria-label={`Show document chain for ${document.originalFilename}`}
                             title="Show document chain"
-                            className="absolute top-2 right-2 z-20 size-8 cursor-pointer rounded-none bg-transparent text-blue-900 shadow-none transition-transform duration-200 ease-out hover:bg-transparent hover:text-blue-950 hover:scale-150 focus-visible:ring-blue-700 motion-reduce:transition-none motion-reduce:hover:scale-100 [filter:drop-shadow(0_0_2px_rgb(255_255_255))_drop-shadow(0_1px_2px_rgb(255_255_255_/_0.9))]"
+                            className="absolute top-2 right-2 z-20 size-8 cursor-pointer rounded-none bg-transparent text-blue-900 shadow-none [filter:drop-shadow(0_0_2px_rgb(255_255_255))_drop-shadow(0_1px_2px_rgb(255_255_255_/_0.9))] transition-transform duration-200 ease-out hover:scale-150 hover:bg-transparent hover:text-blue-950 focus-visible:ring-blue-700 motion-reduce:transition-none motion-reduce:hover:scale-100"
                         >
                             <Link aria-hidden="true" className="size-4" />
                         </Button>

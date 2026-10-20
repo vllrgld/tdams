@@ -1,1 +1,967 @@
-{"nodes": [{"id": "$graphify-root$_app_providers_fortifyserviceprovider_php", "label": "FortifyServiceProvider.php", "file_type": "code", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L1"}, {"id": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider", "label": "FortifyServiceProvider", "file_type": "code", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L17", "_callable": true, "_callable_class": true}, {"id": "serviceprovider", "label": "ServiceProvider", "file_type": "code", "source_file": "", "source_location": ""}, {"id": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_register", "label": ".register()", "file_type": "code", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L22", "_callable": true}, {"id": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_boot", "label": ".boot()", "file_type": "code", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L30", "_callable": true}, {"id": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_configureactions", "label": ".configureActions()", "file_type": "code", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L40", "_callable": true}, {"id": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_configureviews", "label": ".configureViews()", "file_type": "code", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L49", "_callable": true}, {"id": "$graphify-root$_app_providers_fortifyserviceprovider_closure_1", "label": "{closure#1}()", "file_type": "code", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L51", "_callable": true}, {"id": "request", "label": "Request", "file_type": "code", "source_file": "", "source_location": "", "origin_file": "$graphify-root$/app/Providers/FortifyServiceProvider.php"}, {"id": "$graphify-root$_app_providers_fortifyserviceprovider_closure_2", "label": "{closure#2}()", "file_type": "code", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L56", "_callable": true}, {"id": "$graphify-root$_app_providers_fortifyserviceprovider_closure_3", "label": "{closure#3}()", "file_type": "code", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L62", "_callable": true}, {"id": "$graphify-root$_app_providers_fortifyserviceprovider_closure_4", "label": "{closure#4}()", "file_type": "code", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L66", "_callable": true}, {"id": "$graphify-root$_app_providers_fortifyserviceprovider_closure_5", "label": "{closure#5}()", "file_type": "code", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L70", "_callable": true}, {"id": "$graphify-root$_app_providers_fortifyserviceprovider_closure_6", "label": "{closure#6}()", "file_type": "code", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L74", "_callable": true}, {"id": "$graphify-root$_app_providers_fortifyserviceprovider_closure_7", "label": "{closure#7}()", "file_type": "code", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L76", "_callable": true}, {"id": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_configureratelimiting", "label": ".configureRateLimiting()", "file_type": "code", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L82", "_callable": true}, {"id": "$graphify-root$_app_providers_fortifyserviceprovider_closure_8", "label": "{closure#8}()", "file_type": "code", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L84", "_callable": true}, {"id": "$graphify-root$_app_providers_fortifyserviceprovider_closure_9", "label": "{closure#9}()", "file_type": "code", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L88", "_callable": true}, {"id": "$graphify-root$_app_providers_fortifyserviceprovider_closure_10", "label": "{closure#10}()", "file_type": "code", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L94", "_callable": true}], "edges": [{"source": "$graphify-root$_app_providers_fortifyserviceprovider_php", "target": "createnewuser", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L5", "weight": 1.0}, {"source": "$graphify-root$_app_providers_fortifyserviceprovider_php", "target": "resetuserpassword", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L6", "weight": 1.0}, {"source": "$graphify-root$_app_providers_fortifyserviceprovider_php", "target": "limit", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L7", "weight": 1.0}, {"source": "$graphify-root$_app_providers_fortifyserviceprovider_php", "target": "request", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L8", "weight": 1.0}, {"source": "$graphify-root$_app_providers_fortifyserviceprovider_php", "target": "ratelimiter", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L9", "weight": 1.0}, {"source": "$graphify-root$_app_providers_fortifyserviceprovider_php", "target": "serviceprovider", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L10", "weight": 1.0}, {"source": "$graphify-root$_app_providers_fortifyserviceprovider_php", "target": "str", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L11", "weight": 1.0}, {"source": "$graphify-root$_app_providers_fortifyserviceprovider_php", "target": "password", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L12", "weight": 1.0}, {"source": "$graphify-root$_app_providers_fortifyserviceprovider_php", "target": "inertia", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L13", "weight": 1.0}, {"source": "$graphify-root$_app_providers_fortifyserviceprovider_php", "target": "features", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L14", "weight": 1.0}, {"source": "$graphify-root$_app_providers_fortifyserviceprovider_php", "target": "fortify", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L15", "weight": 1.0}, {"source": "$graphify-root$_app_providers_fortifyserviceprovider_php", "target": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider", "relation": "contains", "confidence": "EXTRACTED", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L17", "weight": 1.0}, {"source": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider", "target": "serviceprovider", "relation": "inherits", "confidence": "EXTRACTED", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L17", "weight": 1.0}, {"source": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider", "target": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_register", "relation": "method", "confidence": "EXTRACTED", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L22", "weight": 1.0}, {"source": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider", "target": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_boot", "relation": "method", "confidence": "EXTRACTED", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L30", "weight": 1.0}, {"source": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider", "target": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_configureactions", "relation": "method", "confidence": "EXTRACTED", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L40", "weight": 1.0}, {"source": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider", "target": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_configureviews", "relation": "method", "confidence": "EXTRACTED", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L49", "weight": 1.0}, {"source": "$graphify-root$_app_providers_fortifyserviceprovider_php", "target": "$graphify-root$_app_providers_fortifyserviceprovider_closure_1", "relation": "contains", "confidence": "EXTRACTED", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L51", "weight": 1.0}, {"source": "$graphify-root$_app_providers_fortifyserviceprovider_closure_1", "target": "request", "relation": "references", "confidence": "EXTRACTED", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L51", "weight": 1.0, "context": "parameter_type"}, {"source": "$graphify-root$_app_providers_fortifyserviceprovider_php", "target": "$graphify-root$_app_providers_fortifyserviceprovider_closure_2", "relation": "contains", "confidence": "EXTRACTED", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L56", "weight": 1.0}, {"source": "$graphify-root$_app_providers_fortifyserviceprovider_closure_2", "target": "request", "relation": "references", "confidence": "EXTRACTED", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L56", "weight": 1.0, "context": "parameter_type"}, {"source": "$graphify-root$_app_providers_fortifyserviceprovider_php", "target": "$graphify-root$_app_providers_fortifyserviceprovider_closure_3", "relation": "contains", "confidence": "EXTRACTED", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L62", "weight": 1.0}, {"source": "$graphify-root$_app_providers_fortifyserviceprovider_closure_3", "target": "request", "relation": "references", "confidence": "EXTRACTED", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L62", "weight": 1.0, "context": "parameter_type"}, {"source": "$graphify-root$_app_providers_fortifyserviceprovider_php", "target": "$graphify-root$_app_providers_fortifyserviceprovider_closure_4", "relation": "contains", "confidence": "EXTRACTED", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L66", "weight": 1.0}, {"source": "$graphify-root$_app_providers_fortifyserviceprovider_closure_4", "target": "request", "relation": "references", "confidence": "EXTRACTED", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L66", "weight": 1.0, "context": "parameter_type"}, {"source": "$graphify-root$_app_providers_fortifyserviceprovider_php", "target": "$graphify-root$_app_providers_fortifyserviceprovider_closure_5", "relation": "contains", "confidence": "EXTRACTED", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L70", "weight": 1.0}, {"source": "$graphify-root$_app_providers_fortifyserviceprovider_php", "target": "$graphify-root$_app_providers_fortifyserviceprovider_closure_6", "relation": "contains", "confidence": "EXTRACTED", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L74", "weight": 1.0}, {"source": "$graphify-root$_app_providers_fortifyserviceprovider_php", "target": "$graphify-root$_app_providers_fortifyserviceprovider_closure_7", "relation": "contains", "confidence": "EXTRACTED", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L76", "weight": 1.0}, {"source": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider", "target": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_configureratelimiting", "relation": "method", "confidence": "EXTRACTED", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L82", "weight": 1.0}, {"source": "$graphify-root$_app_providers_fortifyserviceprovider_php", "target": "$graphify-root$_app_providers_fortifyserviceprovider_closure_8", "relation": "contains", "confidence": "EXTRACTED", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L84", "weight": 1.0}, {"source": "$graphify-root$_app_providers_fortifyserviceprovider_closure_8", "target": "request", "relation": "references", "confidence": "EXTRACTED", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L84", "weight": 1.0, "context": "parameter_type"}, {"source": "$graphify-root$_app_providers_fortifyserviceprovider_php", "target": "$graphify-root$_app_providers_fortifyserviceprovider_closure_9", "relation": "contains", "confidence": "EXTRACTED", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L88", "weight": 1.0}, {"source": "$graphify-root$_app_providers_fortifyserviceprovider_closure_9", "target": "request", "relation": "references", "confidence": "EXTRACTED", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L88", "weight": 1.0, "context": "parameter_type"}, {"source": "$graphify-root$_app_providers_fortifyserviceprovider_php", "target": "$graphify-root$_app_providers_fortifyserviceprovider_closure_10", "relation": "contains", "confidence": "EXTRACTED", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L94", "weight": 1.0}, {"source": "$graphify-root$_app_providers_fortifyserviceprovider_closure_10", "target": "request", "relation": "references", "confidence": "EXTRACTED", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L94", "weight": 1.0, "context": "parameter_type"}, {"source": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_boot", "target": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_configureactions", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L32", "weight": 1.0}, {"source": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_boot", "target": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_configureviews", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L33", "weight": 1.0}, {"source": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_boot", "target": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_configureratelimiting", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L34", "weight": 1.0}], "raw_calls": [{"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_configureactions", "callee": "resetUserPasswordsUsing", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L42", "receiver": "Fortify", "php_scoped": true}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_configureactions", "callee": "createUsersUsing", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L43", "receiver": "Fortify", "php_scoped": true}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_configureviews", "callee": "loginView", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L51", "receiver": "Fortify", "php_scoped": true}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_configureviews", "callee": "resetPasswordView", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L56", "receiver": "Fortify", "php_scoped": true}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_configureviews", "callee": "requestPasswordResetLinkView", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L62", "receiver": "Fortify", "php_scoped": true}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_configureviews", "callee": "verifyEmailView", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L66", "receiver": "Fortify", "php_scoped": true}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_configureviews", "callee": "registerView", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L70", "receiver": "Fortify", "php_scoped": true}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_configureviews", "callee": "twoFactorChallengeView", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L74", "receiver": "Fortify", "php_scoped": true}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_configureviews", "callee": "confirmPasswordView", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L76", "receiver": "Fortify", "php_scoped": true}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_1", "callee": "render", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L51", "receiver": "Inertia", "php_scoped": true}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_1", "callee": "enabled", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L52", "receiver": "Features", "php_scoped": true}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_1", "callee": "resetPasswords", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L52", "receiver": "Features", "php_scoped": true}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_1", "callee": "get", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L53", "receiver": null, "php_scoped": false}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_1", "callee": "session", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L53", "receiver": "request", "php_scoped": false}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_2", "callee": "render", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L56", "receiver": "Inertia", "php_scoped": true}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_2", "callee": "route", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L58", "receiver": "request", "php_scoped": false}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_2", "callee": "toPasswordRulesString", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L59", "receiver": null, "php_scoped": false}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_2", "callee": "defaults", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L59", "receiver": "Password", "php_scoped": true}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_3", "callee": "render", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L62", "receiver": "Inertia", "php_scoped": true}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_3", "callee": "get", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L63", "receiver": null, "php_scoped": false}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_3", "callee": "session", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L63", "receiver": "request", "php_scoped": false}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_4", "callee": "render", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L66", "receiver": "Inertia", "php_scoped": true}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_4", "callee": "get", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L67", "receiver": null, "php_scoped": false}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_4", "callee": "session", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L67", "receiver": "request", "php_scoped": false}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_5", "callee": "render", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L70", "receiver": "Inertia", "php_scoped": true}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_5", "callee": "toPasswordRulesString", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L71", "receiver": null, "php_scoped": false}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_5", "callee": "defaults", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L71", "receiver": "Password", "php_scoped": true}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_6", "callee": "render", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L74", "receiver": "Inertia", "php_scoped": true}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_7", "callee": "render", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L76", "receiver": "Inertia", "php_scoped": true}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_configureratelimiting", "callee": "for", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L84", "receiver": "RateLimiter", "php_scoped": true}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_configureratelimiting", "callee": "for", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L88", "receiver": "RateLimiter", "php_scoped": true}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_configureratelimiting", "callee": "for", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L94", "receiver": "RateLimiter", "php_scoped": true}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_8", "callee": "by", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L85", "receiver": null, "php_scoped": false}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_8", "callee": "perMinute", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L85", "receiver": "Limit", "php_scoped": true}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_8", "callee": "get", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L85", "receiver": null, "php_scoped": false}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_8", "callee": "session", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L85", "receiver": "request", "php_scoped": false}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_9", "callee": "transliterate", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L89", "receiver": "Str", "php_scoped": true}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_9", "callee": "lower", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L89", "receiver": "Str", "php_scoped": true}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_9", "callee": "input", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L89", "receiver": "request", "php_scoped": false}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_9", "callee": "username", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L89", "receiver": "Fortify", "php_scoped": true}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_9", "callee": "ip", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L89", "receiver": "request", "php_scoped": false}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_9", "callee": "by", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L91", "receiver": null, "php_scoped": false}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_9", "callee": "perMinute", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L91", "receiver": "Limit", "php_scoped": true}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_10", "callee": "by", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L95", "receiver": null, "php_scoped": false}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_10", "callee": "perMinute", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L95", "receiver": "Limit", "php_scoped": true}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_10", "callee": "input", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L96", "receiver": "request", "php_scoped": false}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_10", "callee": "getId", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L96", "receiver": null, "php_scoped": false}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_10", "callee": "session", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L96", "receiver": "request", "php_scoped": false}, {"caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_10", "callee": "ip", "is_member_call": true, "source_file": "app/Providers/FortifyServiceProvider.php", "source_location": "L96", "receiver": "request", "php_scoped": false}], "php_type_table": {"path": "$graphify-root$/app/Providers/FortifyServiceProvider.php", "table": {"request": "Request"}}}
+{
+    "nodes": [
+        {
+            "id": "$graphify-root$_app_providers_fortifyserviceprovider_php",
+            "label": "FortifyServiceProvider.php",
+            "file_type": "code",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L1"
+        },
+        {
+            "id": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider",
+            "label": "FortifyServiceProvider",
+            "file_type": "code",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L17",
+            "_callable": true,
+            "_callable_class": true
+        },
+        {
+            "id": "serviceprovider",
+            "label": "ServiceProvider",
+            "file_type": "code",
+            "source_file": "",
+            "source_location": ""
+        },
+        {
+            "id": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_register",
+            "label": ".register()",
+            "file_type": "code",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L22",
+            "_callable": true
+        },
+        {
+            "id": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_boot",
+            "label": ".boot()",
+            "file_type": "code",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L30",
+            "_callable": true
+        },
+        {
+            "id": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_configureactions",
+            "label": ".configureActions()",
+            "file_type": "code",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L40",
+            "_callable": true
+        },
+        {
+            "id": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_configureviews",
+            "label": ".configureViews()",
+            "file_type": "code",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L49",
+            "_callable": true
+        },
+        {
+            "id": "$graphify-root$_app_providers_fortifyserviceprovider_closure_1",
+            "label": "{closure#1}()",
+            "file_type": "code",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L51",
+            "_callable": true
+        },
+        {
+            "id": "request",
+            "label": "Request",
+            "file_type": "code",
+            "source_file": "",
+            "source_location": "",
+            "origin_file": "$graphify-root$/app/Providers/FortifyServiceProvider.php"
+        },
+        {
+            "id": "$graphify-root$_app_providers_fortifyserviceprovider_closure_2",
+            "label": "{closure#2}()",
+            "file_type": "code",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L56",
+            "_callable": true
+        },
+        {
+            "id": "$graphify-root$_app_providers_fortifyserviceprovider_closure_3",
+            "label": "{closure#3}()",
+            "file_type": "code",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L62",
+            "_callable": true
+        },
+        {
+            "id": "$graphify-root$_app_providers_fortifyserviceprovider_closure_4",
+            "label": "{closure#4}()",
+            "file_type": "code",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L66",
+            "_callable": true
+        },
+        {
+            "id": "$graphify-root$_app_providers_fortifyserviceprovider_closure_5",
+            "label": "{closure#5}()",
+            "file_type": "code",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L70",
+            "_callable": true
+        },
+        {
+            "id": "$graphify-root$_app_providers_fortifyserviceprovider_closure_6",
+            "label": "{closure#6}()",
+            "file_type": "code",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L74",
+            "_callable": true
+        },
+        {
+            "id": "$graphify-root$_app_providers_fortifyserviceprovider_closure_7",
+            "label": "{closure#7}()",
+            "file_type": "code",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L76",
+            "_callable": true
+        },
+        {
+            "id": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_configureratelimiting",
+            "label": ".configureRateLimiting()",
+            "file_type": "code",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L82",
+            "_callable": true
+        },
+        {
+            "id": "$graphify-root$_app_providers_fortifyserviceprovider_closure_8",
+            "label": "{closure#8}()",
+            "file_type": "code",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L84",
+            "_callable": true
+        },
+        {
+            "id": "$graphify-root$_app_providers_fortifyserviceprovider_closure_9",
+            "label": "{closure#9}()",
+            "file_type": "code",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L88",
+            "_callable": true
+        },
+        {
+            "id": "$graphify-root$_app_providers_fortifyserviceprovider_closure_10",
+            "label": "{closure#10}()",
+            "file_type": "code",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L94",
+            "_callable": true
+        }
+    ],
+    "edges": [
+        {
+            "source": "$graphify-root$_app_providers_fortifyserviceprovider_php",
+            "target": "createnewuser",
+            "relation": "imports",
+            "context": "import",
+            "confidence": "EXTRACTED",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L5",
+            "weight": 1.0
+        },
+        {
+            "source": "$graphify-root$_app_providers_fortifyserviceprovider_php",
+            "target": "resetuserpassword",
+            "relation": "imports",
+            "context": "import",
+            "confidence": "EXTRACTED",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L6",
+            "weight": 1.0
+        },
+        {
+            "source": "$graphify-root$_app_providers_fortifyserviceprovider_php",
+            "target": "limit",
+            "relation": "imports",
+            "context": "import",
+            "confidence": "EXTRACTED",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L7",
+            "weight": 1.0
+        },
+        {
+            "source": "$graphify-root$_app_providers_fortifyserviceprovider_php",
+            "target": "request",
+            "relation": "imports",
+            "context": "import",
+            "confidence": "EXTRACTED",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L8",
+            "weight": 1.0
+        },
+        {
+            "source": "$graphify-root$_app_providers_fortifyserviceprovider_php",
+            "target": "ratelimiter",
+            "relation": "imports",
+            "context": "import",
+            "confidence": "EXTRACTED",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L9",
+            "weight": 1.0
+        },
+        {
+            "source": "$graphify-root$_app_providers_fortifyserviceprovider_php",
+            "target": "serviceprovider",
+            "relation": "imports",
+            "context": "import",
+            "confidence": "EXTRACTED",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L10",
+            "weight": 1.0
+        },
+        {
+            "source": "$graphify-root$_app_providers_fortifyserviceprovider_php",
+            "target": "str",
+            "relation": "imports",
+            "context": "import",
+            "confidence": "EXTRACTED",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L11",
+            "weight": 1.0
+        },
+        {
+            "source": "$graphify-root$_app_providers_fortifyserviceprovider_php",
+            "target": "password",
+            "relation": "imports",
+            "context": "import",
+            "confidence": "EXTRACTED",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L12",
+            "weight": 1.0
+        },
+        {
+            "source": "$graphify-root$_app_providers_fortifyserviceprovider_php",
+            "target": "inertia",
+            "relation": "imports",
+            "context": "import",
+            "confidence": "EXTRACTED",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L13",
+            "weight": 1.0
+        },
+        {
+            "source": "$graphify-root$_app_providers_fortifyserviceprovider_php",
+            "target": "features",
+            "relation": "imports",
+            "context": "import",
+            "confidence": "EXTRACTED",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L14",
+            "weight": 1.0
+        },
+        {
+            "source": "$graphify-root$_app_providers_fortifyserviceprovider_php",
+            "target": "fortify",
+            "relation": "imports",
+            "context": "import",
+            "confidence": "EXTRACTED",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L15",
+            "weight": 1.0
+        },
+        {
+            "source": "$graphify-root$_app_providers_fortifyserviceprovider_php",
+            "target": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider",
+            "relation": "contains",
+            "confidence": "EXTRACTED",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L17",
+            "weight": 1.0
+        },
+        {
+            "source": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider",
+            "target": "serviceprovider",
+            "relation": "inherits",
+            "confidence": "EXTRACTED",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L17",
+            "weight": 1.0
+        },
+        {
+            "source": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider",
+            "target": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_register",
+            "relation": "method",
+            "confidence": "EXTRACTED",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L22",
+            "weight": 1.0
+        },
+        {
+            "source": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider",
+            "target": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_boot",
+            "relation": "method",
+            "confidence": "EXTRACTED",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L30",
+            "weight": 1.0
+        },
+        {
+            "source": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider",
+            "target": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_configureactions",
+            "relation": "method",
+            "confidence": "EXTRACTED",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L40",
+            "weight": 1.0
+        },
+        {
+            "source": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider",
+            "target": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_configureviews",
+            "relation": "method",
+            "confidence": "EXTRACTED",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L49",
+            "weight": 1.0
+        },
+        {
+            "source": "$graphify-root$_app_providers_fortifyserviceprovider_php",
+            "target": "$graphify-root$_app_providers_fortifyserviceprovider_closure_1",
+            "relation": "contains",
+            "confidence": "EXTRACTED",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L51",
+            "weight": 1.0
+        },
+        {
+            "source": "$graphify-root$_app_providers_fortifyserviceprovider_closure_1",
+            "target": "request",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L51",
+            "weight": 1.0,
+            "context": "parameter_type"
+        },
+        {
+            "source": "$graphify-root$_app_providers_fortifyserviceprovider_php",
+            "target": "$graphify-root$_app_providers_fortifyserviceprovider_closure_2",
+            "relation": "contains",
+            "confidence": "EXTRACTED",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L56",
+            "weight": 1.0
+        },
+        {
+            "source": "$graphify-root$_app_providers_fortifyserviceprovider_closure_2",
+            "target": "request",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L56",
+            "weight": 1.0,
+            "context": "parameter_type"
+        },
+        {
+            "source": "$graphify-root$_app_providers_fortifyserviceprovider_php",
+            "target": "$graphify-root$_app_providers_fortifyserviceprovider_closure_3",
+            "relation": "contains",
+            "confidence": "EXTRACTED",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L62",
+            "weight": 1.0
+        },
+        {
+            "source": "$graphify-root$_app_providers_fortifyserviceprovider_closure_3",
+            "target": "request",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L62",
+            "weight": 1.0,
+            "context": "parameter_type"
+        },
+        {
+            "source": "$graphify-root$_app_providers_fortifyserviceprovider_php",
+            "target": "$graphify-root$_app_providers_fortifyserviceprovider_closure_4",
+            "relation": "contains",
+            "confidence": "EXTRACTED",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L66",
+            "weight": 1.0
+        },
+        {
+            "source": "$graphify-root$_app_providers_fortifyserviceprovider_closure_4",
+            "target": "request",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L66",
+            "weight": 1.0,
+            "context": "parameter_type"
+        },
+        {
+            "source": "$graphify-root$_app_providers_fortifyserviceprovider_php",
+            "target": "$graphify-root$_app_providers_fortifyserviceprovider_closure_5",
+            "relation": "contains",
+            "confidence": "EXTRACTED",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L70",
+            "weight": 1.0
+        },
+        {
+            "source": "$graphify-root$_app_providers_fortifyserviceprovider_php",
+            "target": "$graphify-root$_app_providers_fortifyserviceprovider_closure_6",
+            "relation": "contains",
+            "confidence": "EXTRACTED",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L74",
+            "weight": 1.0
+        },
+        {
+            "source": "$graphify-root$_app_providers_fortifyserviceprovider_php",
+            "target": "$graphify-root$_app_providers_fortifyserviceprovider_closure_7",
+            "relation": "contains",
+            "confidence": "EXTRACTED",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L76",
+            "weight": 1.0
+        },
+        {
+            "source": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider",
+            "target": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_configureratelimiting",
+            "relation": "method",
+            "confidence": "EXTRACTED",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L82",
+            "weight": 1.0
+        },
+        {
+            "source": "$graphify-root$_app_providers_fortifyserviceprovider_php",
+            "target": "$graphify-root$_app_providers_fortifyserviceprovider_closure_8",
+            "relation": "contains",
+            "confidence": "EXTRACTED",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L84",
+            "weight": 1.0
+        },
+        {
+            "source": "$graphify-root$_app_providers_fortifyserviceprovider_closure_8",
+            "target": "request",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L84",
+            "weight": 1.0,
+            "context": "parameter_type"
+        },
+        {
+            "source": "$graphify-root$_app_providers_fortifyserviceprovider_php",
+            "target": "$graphify-root$_app_providers_fortifyserviceprovider_closure_9",
+            "relation": "contains",
+            "confidence": "EXTRACTED",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L88",
+            "weight": 1.0
+        },
+        {
+            "source": "$graphify-root$_app_providers_fortifyserviceprovider_closure_9",
+            "target": "request",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L88",
+            "weight": 1.0,
+            "context": "parameter_type"
+        },
+        {
+            "source": "$graphify-root$_app_providers_fortifyserviceprovider_php",
+            "target": "$graphify-root$_app_providers_fortifyserviceprovider_closure_10",
+            "relation": "contains",
+            "confidence": "EXTRACTED",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L94",
+            "weight": 1.0
+        },
+        {
+            "source": "$graphify-root$_app_providers_fortifyserviceprovider_closure_10",
+            "target": "request",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L94",
+            "weight": 1.0,
+            "context": "parameter_type"
+        },
+        {
+            "source": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_boot",
+            "target": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_configureactions",
+            "relation": "calls",
+            "context": "call",
+            "confidence": "EXTRACTED",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L32",
+            "weight": 1.0
+        },
+        {
+            "source": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_boot",
+            "target": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_configureviews",
+            "relation": "calls",
+            "context": "call",
+            "confidence": "EXTRACTED",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L33",
+            "weight": 1.0
+        },
+        {
+            "source": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_boot",
+            "target": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_configureratelimiting",
+            "relation": "calls",
+            "context": "call",
+            "confidence": "EXTRACTED",
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L34",
+            "weight": 1.0
+        }
+    ],
+    "raw_calls": [
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_configureactions",
+            "callee": "resetUserPasswordsUsing",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L42",
+            "receiver": "Fortify",
+            "php_scoped": true
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_configureactions",
+            "callee": "createUsersUsing",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L43",
+            "receiver": "Fortify",
+            "php_scoped": true
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_configureviews",
+            "callee": "loginView",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L51",
+            "receiver": "Fortify",
+            "php_scoped": true
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_configureviews",
+            "callee": "resetPasswordView",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L56",
+            "receiver": "Fortify",
+            "php_scoped": true
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_configureviews",
+            "callee": "requestPasswordResetLinkView",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L62",
+            "receiver": "Fortify",
+            "php_scoped": true
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_configureviews",
+            "callee": "verifyEmailView",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L66",
+            "receiver": "Fortify",
+            "php_scoped": true
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_configureviews",
+            "callee": "registerView",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L70",
+            "receiver": "Fortify",
+            "php_scoped": true
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_configureviews",
+            "callee": "twoFactorChallengeView",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L74",
+            "receiver": "Fortify",
+            "php_scoped": true
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_configureviews",
+            "callee": "confirmPasswordView",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L76",
+            "receiver": "Fortify",
+            "php_scoped": true
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_1",
+            "callee": "render",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L51",
+            "receiver": "Inertia",
+            "php_scoped": true
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_1",
+            "callee": "enabled",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L52",
+            "receiver": "Features",
+            "php_scoped": true
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_1",
+            "callee": "resetPasswords",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L52",
+            "receiver": "Features",
+            "php_scoped": true
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_1",
+            "callee": "get",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L53",
+            "receiver": null,
+            "php_scoped": false
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_1",
+            "callee": "session",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L53",
+            "receiver": "request",
+            "php_scoped": false
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_2",
+            "callee": "render",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L56",
+            "receiver": "Inertia",
+            "php_scoped": true
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_2",
+            "callee": "route",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L58",
+            "receiver": "request",
+            "php_scoped": false
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_2",
+            "callee": "toPasswordRulesString",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L59",
+            "receiver": null,
+            "php_scoped": false
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_2",
+            "callee": "defaults",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L59",
+            "receiver": "Password",
+            "php_scoped": true
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_3",
+            "callee": "render",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L62",
+            "receiver": "Inertia",
+            "php_scoped": true
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_3",
+            "callee": "get",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L63",
+            "receiver": null,
+            "php_scoped": false
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_3",
+            "callee": "session",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L63",
+            "receiver": "request",
+            "php_scoped": false
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_4",
+            "callee": "render",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L66",
+            "receiver": "Inertia",
+            "php_scoped": true
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_4",
+            "callee": "get",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L67",
+            "receiver": null,
+            "php_scoped": false
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_4",
+            "callee": "session",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L67",
+            "receiver": "request",
+            "php_scoped": false
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_5",
+            "callee": "render",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L70",
+            "receiver": "Inertia",
+            "php_scoped": true
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_5",
+            "callee": "toPasswordRulesString",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L71",
+            "receiver": null,
+            "php_scoped": false
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_5",
+            "callee": "defaults",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L71",
+            "receiver": "Password",
+            "php_scoped": true
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_6",
+            "callee": "render",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L74",
+            "receiver": "Inertia",
+            "php_scoped": true
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_7",
+            "callee": "render",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L76",
+            "receiver": "Inertia",
+            "php_scoped": true
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_configureratelimiting",
+            "callee": "for",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L84",
+            "receiver": "RateLimiter",
+            "php_scoped": true
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_configureratelimiting",
+            "callee": "for",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L88",
+            "receiver": "RateLimiter",
+            "php_scoped": true
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_fortifyserviceprovider_configureratelimiting",
+            "callee": "for",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L94",
+            "receiver": "RateLimiter",
+            "php_scoped": true
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_8",
+            "callee": "by",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L85",
+            "receiver": null,
+            "php_scoped": false
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_8",
+            "callee": "perMinute",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L85",
+            "receiver": "Limit",
+            "php_scoped": true
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_8",
+            "callee": "get",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L85",
+            "receiver": null,
+            "php_scoped": false
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_8",
+            "callee": "session",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L85",
+            "receiver": "request",
+            "php_scoped": false
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_9",
+            "callee": "transliterate",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L89",
+            "receiver": "Str",
+            "php_scoped": true
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_9",
+            "callee": "lower",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L89",
+            "receiver": "Str",
+            "php_scoped": true
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_9",
+            "callee": "input",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L89",
+            "receiver": "request",
+            "php_scoped": false
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_9",
+            "callee": "username",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L89",
+            "receiver": "Fortify",
+            "php_scoped": true
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_9",
+            "callee": "ip",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L89",
+            "receiver": "request",
+            "php_scoped": false
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_9",
+            "callee": "by",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L91",
+            "receiver": null,
+            "php_scoped": false
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_9",
+            "callee": "perMinute",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L91",
+            "receiver": "Limit",
+            "php_scoped": true
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_10",
+            "callee": "by",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L95",
+            "receiver": null,
+            "php_scoped": false
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_10",
+            "callee": "perMinute",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L95",
+            "receiver": "Limit",
+            "php_scoped": true
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_10",
+            "callee": "input",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L96",
+            "receiver": "request",
+            "php_scoped": false
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_10",
+            "callee": "getId",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L96",
+            "receiver": null,
+            "php_scoped": false
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_10",
+            "callee": "session",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L96",
+            "receiver": "request",
+            "php_scoped": false
+        },
+        {
+            "caller_nid": "$graphify-root$_app_providers_fortifyserviceprovider_closure_10",
+            "callee": "ip",
+            "is_member_call": true,
+            "source_file": "app/Providers/FortifyServiceProvider.php",
+            "source_location": "L96",
+            "receiver": "request",
+            "php_scoped": false
+        }
+    ],
+    "php_type_table": {
+        "path": "$graphify-root$/app/Providers/FortifyServiceProvider.php",
+        "table": { "request": "Request" }
+    }
+}

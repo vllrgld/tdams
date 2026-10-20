@@ -1,1 +1,145 @@
-{"nodes": [{"id": "github_prompts_design_references_slides", "label": "slides.md", "file_type": "document", "source_file": ".github/prompts/design/references/slides.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_design_references_slides_slides_workflow", "label": "Slides Workflow", "file_type": "concept", "source_file": ".github/prompts/design/references/slides.md", "source_location": "L35-L42", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_design_references_slides_key_features", "label": "Slides Key Features", "file_type": "concept", "source_file": ".github/prompts/design/references/slides.md", "source_location": "L27-L33", "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [{"source": "github_prompts_design_references_slides", "target": "github_prompts_design_references_slides_slides_workflow", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design/references/slides.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_references_slides", "target": "github_prompts_design_references_slides_key_features", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design/references/slides.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_references_slides_slides_workflow", "target": "github_prompts_design_references_slides_create", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design/references/slides.md", "source_location": "L38", "weight": 1.0}, {"source": "github_prompts_design_references_slides_slides_workflow", "target": "github_prompts_design_references_slides_layout_patterns", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design/references/slides.md", "source_location": "L39", "weight": 1.0}, {"source": "github_prompts_design_references_slides_slides_workflow", "target": "github_prompts_design_references_slides_copywriting_formulas", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design/references/slides.md", "source_location": "L40", "weight": 1.0}, {"source": "github_prompts_design_references_slides_slides_workflow", "target": "github_prompts_design_references_slides_html_template", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design/references/slides.md", "source_location": "L41", "weight": 1.0}, {"source": "github_prompts_design_references_slides_slides_workflow", "target": "github_prompts_design_references_slides_strategies", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design/references/slides.md", "source_location": "L42", "weight": 1.0}, {"source": "github_prompts_design_references_slides_key_features", "target": "github_prompts_design_references_slides_html_template_chart_js_integration", "relation": "references", "confidence": "INFERRED", "confidence_score": 0.95, "source_file": ".github/prompts/design/references/slides.md", "source_location": "L29", "weight": 1.0}, {"source": "github_prompts_design_references_slides", "target": "github_prompts_slides_skill", "relation": "semantically_similar_to", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": ".github/prompts/design/references/slides.md", "source_location": null, "weight": 1.0}], "hyperedges": [{"id": "slides_knowledge_base", "label": "Slides Knowledge Base (Layouts, Template, Copywriting, Strategies)", "nodes": ["github_prompts_design_references_slides_layout_patterns", "github_prompts_design_references_slides_html_template", "github_prompts_design_references_slides_copywriting_formulas", "github_prompts_design_references_slides_strategies"], "relation": "form", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design/references/slides.md"}]}
+{
+    "nodes": [
+        {
+            "id": "github_prompts_design_references_slides",
+            "label": "slides.md",
+            "file_type": "document",
+            "source_file": ".github/prompts/design/references/slides.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_design_references_slides_slides_workflow",
+            "label": "Slides Workflow",
+            "file_type": "concept",
+            "source_file": ".github/prompts/design/references/slides.md",
+            "source_location": "L35-L42",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_design_references_slides_key_features",
+            "label": "Slides Key Features",
+            "file_type": "concept",
+            "source_file": ".github/prompts/design/references/slides.md",
+            "source_location": "L27-L33",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        }
+    ],
+    "edges": [
+        {
+            "source": "github_prompts_design_references_slides",
+            "target": "github_prompts_design_references_slides_slides_workflow",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design/references/slides.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_references_slides",
+            "target": "github_prompts_design_references_slides_key_features",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design/references/slides.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_references_slides_slides_workflow",
+            "target": "github_prompts_design_references_slides_create",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design/references/slides.md",
+            "source_location": "L38",
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_references_slides_slides_workflow",
+            "target": "github_prompts_design_references_slides_layout_patterns",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design/references/slides.md",
+            "source_location": "L39",
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_references_slides_slides_workflow",
+            "target": "github_prompts_design_references_slides_copywriting_formulas",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design/references/slides.md",
+            "source_location": "L40",
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_references_slides_slides_workflow",
+            "target": "github_prompts_design_references_slides_html_template",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design/references/slides.md",
+            "source_location": "L41",
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_references_slides_slides_workflow",
+            "target": "github_prompts_design_references_slides_strategies",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design/references/slides.md",
+            "source_location": "L42",
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_references_slides_key_features",
+            "target": "github_prompts_design_references_slides_html_template_chart_js_integration",
+            "relation": "references",
+            "confidence": "INFERRED",
+            "confidence_score": 0.95,
+            "source_file": ".github/prompts/design/references/slides.md",
+            "source_location": "L29",
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_references_slides",
+            "target": "github_prompts_slides_skill",
+            "relation": "semantically_similar_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.85,
+            "source_file": ".github/prompts/design/references/slides.md",
+            "source_location": null,
+            "weight": 1.0
+        }
+    ],
+    "hyperedges": [
+        {
+            "id": "slides_knowledge_base",
+            "label": "Slides Knowledge Base (Layouts, Template, Copywriting, Strategies)",
+            "nodes": [
+                "github_prompts_design_references_slides_layout_patterns",
+                "github_prompts_design_references_slides_html_template",
+                "github_prompts_design_references_slides_copywriting_formulas",
+                "github_prompts_design_references_slides_strategies"
+            ],
+            "relation": "form",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design/references/slides.md"
+        }
+    ]
+}

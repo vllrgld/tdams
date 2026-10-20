@@ -94,6 +94,7 @@ export default defineConfig({
             '.github/**',
             'composer.json',
             'resources/js/components/ui/*',
+            'resources/js/pages/dashboard/data/ilocos-norte-geo.ts',
             'resources/views/mail/*',
         ],
         sortTailwindcss: {

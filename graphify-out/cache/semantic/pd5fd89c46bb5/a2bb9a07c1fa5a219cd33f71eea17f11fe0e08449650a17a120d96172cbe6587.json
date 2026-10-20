@@ -1,1 +1,165 @@
-{"nodes": [{"id": "github_workflows_tests", "label": "tests.yml", "file_type": "document", "source_file": ".github/workflows/tests.yml", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_workflows_tests_ci_job", "label": "CI Job (ubuntu-latest, push main / pull_request)", "file_type": "code", "source_file": ".github/workflows/tests.yml", "source_location": "L13", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_workflows_tests_php_8_3", "label": "PHP 8.3 + Composer v2 (setup-php)", "file_type": "concept", "source_file": ".github/workflows/tests.yml", "source_location": "L22", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_workflows_tests_node_22", "label": "Node 22 (setup-node)", "file_type": "concept", "source_file": ".github/workflows/tests.yml", "source_location": "L29", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_workflows_tests_composer_setup", "label": "composer setup", "file_type": "code", "source_file": ".github/workflows/tests.yml", "source_location": "L34", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_workflows_tests_composer_ci_check", "label": "composer ci:check", "file_type": "code", "source_file": ".github/workflows/tests.yml", "source_location": "L37", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_workflows_tests_sha_pinned_actions", "label": "SHA-Pinned Actions & Least-Privilege Permissions", "file_type": "rationale", "source_file": ".github/workflows/tests.yml", "source_location": "L9", "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "Actions are pinned to commit SHAs, permissions limited to contents: read, and persist-credentials: false to reduce supply-chain and token-leak risk."}], "edges": [{"source": "github_workflows_tests", "target": "github_workflows_tests_ci_job", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/workflows/tests.yml", "source_location": "L13", "weight": 1.0}, {"source": "github_workflows_tests", "target": "github_workflows_tests_sha_pinned_actions", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/workflows/tests.yml", "source_location": "L9", "weight": 1.0}, {"source": "github_workflows_tests_ci_job", "target": "github_workflows_tests_php_8_3", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/workflows/tests.yml", "source_location": "L22", "weight": 1.0}, {"source": "github_workflows_tests_ci_job", "target": "github_workflows_tests_node_22", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/workflows/tests.yml", "source_location": "L29", "weight": 1.0}, {"source": "github_workflows_tests_ci_job", "target": "github_workflows_tests_composer_setup", "relation": "calls", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/workflows/tests.yml", "source_location": "L34", "weight": 1.0}, {"source": "github_workflows_tests_ci_job", "target": "github_workflows_tests_composer_ci_check", "relation": "calls", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/workflows/tests.yml", "source_location": "L37", "weight": 1.0}, {"source": "github_workflows_tests_sha_pinned_actions", "target": "github_workflows_tests_ci_job", "relation": "rationale_for", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/workflows/tests.yml", "source_location": "L19", "weight": 1.0}, {"source": "github_workflows_tests_node_22", "target": "github_prompts_ui_styling_scripts_requirements_nodejs_18", "relation": "conceptually_related_to", "confidence": "AMBIGUOUS", "confidence_score": 0.2, "source_file": ".github/workflows/tests.yml", "source_location": "L32", "weight": 0.2}], "hyperedges": []}
+{
+    "nodes": [
+        {
+            "id": "github_workflows_tests",
+            "label": "tests.yml",
+            "file_type": "document",
+            "source_file": ".github/workflows/tests.yml",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_workflows_tests_ci_job",
+            "label": "CI Job (ubuntu-latest, push main / pull_request)",
+            "file_type": "code",
+            "source_file": ".github/workflows/tests.yml",
+            "source_location": "L13",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_workflows_tests_php_8_3",
+            "label": "PHP 8.3 + Composer v2 (setup-php)",
+            "file_type": "concept",
+            "source_file": ".github/workflows/tests.yml",
+            "source_location": "L22",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_workflows_tests_node_22",
+            "label": "Node 22 (setup-node)",
+            "file_type": "concept",
+            "source_file": ".github/workflows/tests.yml",
+            "source_location": "L29",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_workflows_tests_composer_setup",
+            "label": "composer setup",
+            "file_type": "code",
+            "source_file": ".github/workflows/tests.yml",
+            "source_location": "L34",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_workflows_tests_composer_ci_check",
+            "label": "composer ci:check",
+            "file_type": "code",
+            "source_file": ".github/workflows/tests.yml",
+            "source_location": "L37",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_workflows_tests_sha_pinned_actions",
+            "label": "SHA-Pinned Actions & Least-Privilege Permissions",
+            "file_type": "rationale",
+            "source_file": ".github/workflows/tests.yml",
+            "source_location": "L9",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null,
+            "rationale": "Actions are pinned to commit SHAs, permissions limited to contents: read, and persist-credentials: false to reduce supply-chain and token-leak risk."
+        }
+    ],
+    "edges": [
+        {
+            "source": "github_workflows_tests",
+            "target": "github_workflows_tests_ci_job",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/workflows/tests.yml",
+            "source_location": "L13",
+            "weight": 1.0
+        },
+        {
+            "source": "github_workflows_tests",
+            "target": "github_workflows_tests_sha_pinned_actions",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/workflows/tests.yml",
+            "source_location": "L9",
+            "weight": 1.0
+        },
+        {
+            "source": "github_workflows_tests_ci_job",
+            "target": "github_workflows_tests_php_8_3",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/workflows/tests.yml",
+            "source_location": "L22",
+            "weight": 1.0
+        },
+        {
+            "source": "github_workflows_tests_ci_job",
+            "target": "github_workflows_tests_node_22",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/workflows/tests.yml",
+            "source_location": "L29",
+            "weight": 1.0
+        },
+        {
+            "source": "github_workflows_tests_ci_job",
+            "target": "github_workflows_tests_composer_setup",
+            "relation": "calls",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/workflows/tests.yml",
+            "source_location": "L34",
+            "weight": 1.0
+        },
+        {
+            "source": "github_workflows_tests_ci_job",
+            "target": "github_workflows_tests_composer_ci_check",
+            "relation": "calls",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/workflows/tests.yml",
+            "source_location": "L37",
+            "weight": 1.0
+        },
+        {
+            "source": "github_workflows_tests_sha_pinned_actions",
+            "target": "github_workflows_tests_ci_job",
+            "relation": "rationale_for",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/workflows/tests.yml",
+            "source_location": "L19",
+            "weight": 1.0
+        },
+        {
+            "source": "github_workflows_tests_node_22",
+            "target": "github_prompts_ui_styling_scripts_requirements_nodejs_18",
+            "relation": "conceptually_related_to",
+            "confidence": "AMBIGUOUS",
+            "confidence_score": 0.2,
+            "source_file": ".github/workflows/tests.yml",
+            "source_location": "L32",
+            "weight": 0.2
+        }
+    ],
+    "hyperedges": []
+}

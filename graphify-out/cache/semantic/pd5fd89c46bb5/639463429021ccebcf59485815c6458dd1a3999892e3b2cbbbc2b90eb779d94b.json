@@ -1,1 +1,173 @@
-{"nodes": [{"id": "github_prompts_brand_references_approval_checklist", "label": "approval-checklist.md", "file_type": "document", "source_file": ".github/prompts/brand/references/approval-checklist.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_brand_references_approval_checklist_asset_approval_checklist", "label": "Asset Approval Checklist", "file_type": "concept", "source_file": ".github/prompts/brand/references/approval-checklist.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_brand_references_approval_checklist_accessibility_review", "label": "Accessibility Review (WCAG AA)", "file_type": "concept", "source_file": ".github/prompts/brand/references/approval-checklist.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_brand_references_approval_checklist_legal_compliance_review", "label": "Legal & Compliance Review", "file_type": "concept", "source_file": ".github/prompts/brand/references/approval-checklist.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_brand_references_approval_checklist_reviewer_sign_off", "label": "Reviewer Sign-off", "file_type": "concept", "source_file": ".github/prompts/brand/references/approval-checklist.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_brand_references_approval_checklist_approval_archival", "label": "Post-Approval Archival", "file_type": "concept", "source_file": ".github/prompts/brand/references/approval-checklist.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [{"source": "github_prompts_brand_references_approval_checklist", "target": "github_prompts_brand_references_approval_checklist_asset_approval_checklist", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/references/approval-checklist.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_references_approval_checklist", "target": "github_prompts_brand_references_approval_checklist_accessibility_review", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/references/approval-checklist.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_references_approval_checklist", "target": "github_prompts_brand_references_approval_checklist_legal_compliance_review", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/references/approval-checklist.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_references_approval_checklist", "target": "github_prompts_brand_references_approval_checklist_reviewer_sign_off", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/references/approval-checklist.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_references_approval_checklist", "target": "github_prompts_brand_references_approval_checklist_approval_archival", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/references/approval-checklist.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_references_approval_checklist_asset_approval_checklist", "target": "github_prompts_brand_skill_validate_asset_script", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/references/approval-checklist.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_references_approval_checklist_approval_archival", "target": "github_prompts_brand_references_asset_organization_manifest_json", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/brand/references/approval-checklist.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_brand_references_approval_checklist_accessibility_review", "target": "github_prompts_brand_references_color_palette_management_wcag_contrast_ratios", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": ".github/prompts/brand/references/approval-checklist.md", "source_location": null, "weight": 0.85}, {"source": "github_prompts_brand_references_approval_checklist_asset_approval_checklist", "target": "github_prompts_brand_references_consistency_checklist_brand_consistency_checklist", "relation": "semantically_similar_to", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": ".github/prompts/brand/references/approval-checklist.md", "source_location": null, "weight": 0.85}, {"source": "github_prompts_brand_skill_validate_asset_script", "target": "github_prompts_brand_references_color_palette_management_brand_color_compliance_validation", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": ".github/prompts/brand/references/approval-checklist.md", "source_location": null, "weight": 0.85}], "hyperedges": []}
+{
+    "nodes": [
+        {
+            "id": "github_prompts_brand_references_approval_checklist",
+            "label": "approval-checklist.md",
+            "file_type": "document",
+            "source_file": ".github/prompts/brand/references/approval-checklist.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_brand_references_approval_checklist_asset_approval_checklist",
+            "label": "Asset Approval Checklist",
+            "file_type": "concept",
+            "source_file": ".github/prompts/brand/references/approval-checklist.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_brand_references_approval_checklist_accessibility_review",
+            "label": "Accessibility Review (WCAG AA)",
+            "file_type": "concept",
+            "source_file": ".github/prompts/brand/references/approval-checklist.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_brand_references_approval_checklist_legal_compliance_review",
+            "label": "Legal & Compliance Review",
+            "file_type": "concept",
+            "source_file": ".github/prompts/brand/references/approval-checklist.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_brand_references_approval_checklist_reviewer_sign_off",
+            "label": "Reviewer Sign-off",
+            "file_type": "concept",
+            "source_file": ".github/prompts/brand/references/approval-checklist.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_brand_references_approval_checklist_approval_archival",
+            "label": "Post-Approval Archival",
+            "file_type": "concept",
+            "source_file": ".github/prompts/brand/references/approval-checklist.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        }
+    ],
+    "edges": [
+        {
+            "source": "github_prompts_brand_references_approval_checklist",
+            "target": "github_prompts_brand_references_approval_checklist_asset_approval_checklist",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/references/approval-checklist.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_references_approval_checklist",
+            "target": "github_prompts_brand_references_approval_checklist_accessibility_review",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/references/approval-checklist.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_references_approval_checklist",
+            "target": "github_prompts_brand_references_approval_checklist_legal_compliance_review",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/references/approval-checklist.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_references_approval_checklist",
+            "target": "github_prompts_brand_references_approval_checklist_reviewer_sign_off",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/references/approval-checklist.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_references_approval_checklist",
+            "target": "github_prompts_brand_references_approval_checklist_approval_archival",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/references/approval-checklist.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_references_approval_checklist_asset_approval_checklist",
+            "target": "github_prompts_brand_skill_validate_asset_script",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/references/approval-checklist.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_references_approval_checklist_approval_archival",
+            "target": "github_prompts_brand_references_asset_organization_manifest_json",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/brand/references/approval-checklist.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_brand_references_approval_checklist_accessibility_review",
+            "target": "github_prompts_brand_references_color_palette_management_wcag_contrast_ratios",
+            "relation": "conceptually_related_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.85,
+            "source_file": ".github/prompts/brand/references/approval-checklist.md",
+            "source_location": null,
+            "weight": 0.85
+        },
+        {
+            "source": "github_prompts_brand_references_approval_checklist_asset_approval_checklist",
+            "target": "github_prompts_brand_references_consistency_checklist_brand_consistency_checklist",
+            "relation": "semantically_similar_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.85,
+            "source_file": ".github/prompts/brand/references/approval-checklist.md",
+            "source_location": null,
+            "weight": 0.85
+        },
+        {
+            "source": "github_prompts_brand_skill_validate_asset_script",
+            "target": "github_prompts_brand_references_color_palette_management_brand_color_compliance_validation",
+            "relation": "conceptually_related_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.85,
+            "source_file": ".github/prompts/brand/references/approval-checklist.md",
+            "source_location": null,
+            "weight": 0.85
+        }
+    ],
+    "hyperedges": []
+}

@@ -1,1 +1,137 @@
-{"nodes": [{"id": "migration_checkbox", "label": "checkbox.md", "file_type": "document", "source_file": ".migration/checkbox.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "migration_checkbox_base_ui_checkbox", "label": "@base-ui/react/checkbox", "file_type": "concept", "source_file": ".migration/checkbox.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "migration_checkbox_data_checked", "label": "data-checked attribute", "file_type": "concept", "source_file": ".migration/checkbox.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "Replaces Radix data-[state=checked]."}, {"id": "resources_js_components_ui_checkbox", "label": "checkbox.tsx", "file_type": "code", "source_file": ".migration/checkbox.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [{"source": "migration_checkbox", "target": "migration_checkbox_base_ui_checkbox", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/checkbox.md", "source_location": "L3", "weight": 1.0}, {"source": "migration_checkbox_base_ui_checkbox", "target": "migration_project_base_ui_react", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.95, "source_file": ".migration/checkbox.md", "source_location": "L3", "weight": 1.0}, {"source": "migration_checkbox", "target": "migration_checkbox_data_checked", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/checkbox.md", "source_location": "L3", "weight": 1.0}, {"source": "migration_checkbox", "target": "migration_project_transformation_engine", "relation": "references", "confidence": "INFERRED", "confidence_score": 0.95, "source_file": ".migration/checkbox.md", "source_location": "L3", "weight": 1.0}, {"source": "migration_checkbox", "target": "resources_js_components_ui_checkbox", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/checkbox.md", "source_location": "L7", "weight": 1.0}, {"source": "resources_js_components_ui_checkbox", "target": "migration_checkbox_base_ui_checkbox", "relation": "implements", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/checkbox.md", "source_location": "L3", "weight": 1.0}, {"source": "resources_js_components_ui_checkbox", "target": "migration_checkbox_data_checked", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/checkbox.md", "source_location": "L3", "weight": 1.0}], "hyperedges": [{"id": "radix_data_state_to_base_ui_attributes", "label": "Radix data-state to Base UI data attributes", "nodes": ["migration_checkbox_data_checked", "migration_toggle_data_pressed", "migration_navigation_menu_data_popup_open", "migration_sidebar_data_popup_open"], "relation": "form", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": ".migration/checkbox.md"}]}
+{
+    "nodes": [
+        {
+            "id": "migration_checkbox",
+            "label": "checkbox.md",
+            "file_type": "document",
+            "source_file": ".migration/checkbox.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "migration_checkbox_base_ui_checkbox",
+            "label": "@base-ui/react/checkbox",
+            "file_type": "concept",
+            "source_file": ".migration/checkbox.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "migration_checkbox_data_checked",
+            "label": "data-checked attribute",
+            "file_type": "concept",
+            "source_file": ".migration/checkbox.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null,
+            "rationale": "Replaces Radix data-[state=checked]."
+        },
+        {
+            "id": "resources_js_components_ui_checkbox",
+            "label": "checkbox.tsx",
+            "file_type": "code",
+            "source_file": ".migration/checkbox.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        }
+    ],
+    "edges": [
+        {
+            "source": "migration_checkbox",
+            "target": "migration_checkbox_base_ui_checkbox",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/checkbox.md",
+            "source_location": "L3",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_checkbox_base_ui_checkbox",
+            "target": "migration_project_base_ui_react",
+            "relation": "conceptually_related_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.95,
+            "source_file": ".migration/checkbox.md",
+            "source_location": "L3",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_checkbox",
+            "target": "migration_checkbox_data_checked",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/checkbox.md",
+            "source_location": "L3",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_checkbox",
+            "target": "migration_project_transformation_engine",
+            "relation": "references",
+            "confidence": "INFERRED",
+            "confidence_score": 0.95,
+            "source_file": ".migration/checkbox.md",
+            "source_location": "L3",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_checkbox",
+            "target": "resources_js_components_ui_checkbox",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/checkbox.md",
+            "source_location": "L7",
+            "weight": 1.0
+        },
+        {
+            "source": "resources_js_components_ui_checkbox",
+            "target": "migration_checkbox_base_ui_checkbox",
+            "relation": "implements",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/checkbox.md",
+            "source_location": "L3",
+            "weight": 1.0
+        },
+        {
+            "source": "resources_js_components_ui_checkbox",
+            "target": "migration_checkbox_data_checked",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/checkbox.md",
+            "source_location": "L3",
+            "weight": 1.0
+        }
+    ],
+    "hyperedges": [
+        {
+            "id": "radix_data_state_to_base_ui_attributes",
+            "label": "Radix data-state to Base UI data attributes",
+            "nodes": [
+                "migration_checkbox_data_checked",
+                "migration_toggle_data_pressed",
+                "migration_navigation_menu_data_popup_open",
+                "migration_sidebar_data_popup_open"
+            ],
+            "relation": "form",
+            "confidence": "INFERRED",
+            "confidence_score": 0.85,
+            "source_file": ".migration/checkbox.md"
+        }
+    ]
+}

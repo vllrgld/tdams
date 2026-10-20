@@ -1,1 +1,529 @@
-{"nodes": [{"id": "migration_project", "label": "project.md", "file_type": "document", "source_file": ".migration/project.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "migration_project_radix_to_base_ui_migration", "label": "Radix UI to Base UI Migration", "file_type": "rationale", "source_file": ".migration/project.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "Whole-project switch from Radix primitives to @base-ui/react; typechecks with only three pre-existing unrelated errors."}, {"id": "migration_project_transformation_engine", "label": "Transformation Engine", "file_type": "rationale", "source_file": ".migration/project.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "Automated codemod used on 2026-10-07 for every component migration, followed by a leftover scan."}, {"id": "migration_project_base_ui_react", "label": "@base-ui/react", "file_type": "concept", "source_file": ".migration/project.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "migration_project_radix_ui", "label": "@radix-ui/react-* packages", "file_type": "concept", "source_file": ".migration/project.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "Every @radix-ui/react-* dependency was removed."}, {"id": "migration_project_aschild_to_render", "label": "asChild to render prop", "file_type": "rationale", "source_file": ".migration/project.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "Base UI composes via a `render` prop instead of Radix `asChild`/Slot, so all call sites were rewritten."}, {"id": "migration_project_new_york_style", "label": "new-york style (legacy)", "file_type": "concept", "source_file": ".migration/project.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "No base-new-york counterpart exists, so classes were kept and style stays new-york so the look is not replaced by a Base UI preset."}, {"id": "migration_project_data_starting_ending_style", "label": "data-starting-style / data-ending-style motion", "file_type": "rationale", "source_file": ".migration/project.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "Open/close motion uses Base UI's starting/ending style attributes instead of tailwind animate-in/animate-out."}, {"id": "migration_project_non_primitive_wrappers", "label": "Non-primitive wrappers (alert, card, input, skeleton, spinner)", "file_type": "concept", "source_file": ".migration/project.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "Left alone along with sonner and input-otp because they have no Radix dependency."}, {"id": "components", "label": "components.json", "file_type": "code", "source_file": ".migration/project.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "resources_js_components_ui_sonner", "label": "sonner.tsx", "file_type": "code", "source_file": ".migration/project.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "resources_js_components_ui_input_otp", "label": "input-otp.tsx", "file_type": "code", "source_file": ".migration/project.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "resources_js_components_ui_alert", "label": "alert.tsx", "file_type": "code", "source_file": ".migration/project.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "resources_js_components_ui_card", "label": "card.tsx", "file_type": "code", "source_file": ".migration/project.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "resources_js_components_ui_input", "label": "input.tsx", "file_type": "code", "source_file": ".migration/project.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "resources_js_components_ui_skeleton", "label": "skeleton.tsx", "file_type": "code", "source_file": ".migration/project.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "resources_js_components_ui_spinner", "label": "spinner.tsx", "file_type": "code", "source_file": ".migration/project.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [{"source": "migration_project", "target": "migration_project_radix_to_base_ui_migration", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/project.md", "source_location": "L3", "weight": 1.0}, {"source": "migration_project", "target": "migration_project_transformation_engine", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/project.md", "source_location": "L3", "weight": 1.0}, {"source": "migration_project", "target": "migration_project_base_ui_react", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/project.md", "source_location": "L7", "weight": 1.0}, {"source": "migration_project", "target": "migration_project_radix_ui", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/project.md", "source_location": "L7", "weight": 1.0}, {"source": "migration_project", "target": "migration_project_aschild_to_render", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/project.md", "source_location": "L8", "weight": 1.0}, {"source": "migration_project", "target": "migration_project_new_york_style", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/project.md", "source_location": "L3", "weight": 1.0}, {"source": "migration_project", "target": "migration_project_data_starting_ending_style", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/project.md", "source_location": "L17", "weight": 1.0}, {"source": "migration_project", "target": "migration_project_non_primitive_wrappers", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/project.md", "source_location": "L13", "weight": 1.0}, {"source": "migration_project", "target": "components", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/project.md", "source_location": "L9", "weight": 1.0}, {"source": "migration_project_radix_to_base_ui_migration", "target": "migration_project_base_ui_react", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/project.md", "source_location": "L7", "weight": 1.0}, {"source": "migration_project_radix_to_base_ui_migration", "target": "migration_project_radix_ui", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/project.md", "source_location": "L7", "weight": 1.0}, {"source": "migration_project_transformation_engine", "target": "migration_project_radix_to_base_ui_migration", "relation": "implements", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/project.md", "source_location": "L3", "weight": 1.0}, {"source": "migration_project_aschild_to_render", "target": "migration_project_radix_to_base_ui_migration", "relation": "implements", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/project.md", "source_location": "L8", "weight": 1.0}, {"source": "migration_project_new_york_style", "target": "migration_project_radix_to_base_ui_migration", "relation": "rationale_for", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/project.md", "source_location": "L3", "weight": 1.0}, {"source": "migration_project_data_starting_ending_style", "target": "migration_project_radix_to_base_ui_migration", "relation": "conceptually_related_to", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/project.md", "source_location": "L17", "weight": 1.0}, {"source": "migration_project_radix_to_base_ui_migration", "target": "components", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/project.md", "source_location": "L9", "weight": 1.0}, {"source": "migration_project_new_york_style", "target": "components", "relation": "references", "confidence": "INFERRED", "confidence_score": 0.95, "source_file": ".migration/project.md", "source_location": "L9", "weight": 1.0}, {"source": "migration_project", "target": "resources_js_components_ui_sonner", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/project.md", "source_location": "L13", "weight": 1.0}, {"source": "migration_project_non_primitive_wrappers", "target": "resources_js_components_ui_sonner", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/project.md", "source_location": "L13", "weight": 1.0}, {"source": "migration_project", "target": "resources_js_components_ui_input_otp", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/project.md", "source_location": "L13", "weight": 1.0}, {"source": "migration_project_non_primitive_wrappers", "target": "resources_js_components_ui_input_otp", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/project.md", "source_location": "L13", "weight": 1.0}, {"source": "migration_project", "target": "resources_js_components_ui_alert", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/project.md", "source_location": "L13", "weight": 1.0}, {"source": "migration_project_non_primitive_wrappers", "target": "resources_js_components_ui_alert", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/project.md", "source_location": "L13", "weight": 1.0}, {"source": "migration_project", "target": "resources_js_components_ui_card", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/project.md", "source_location": "L13", "weight": 1.0}, {"source": "migration_project_non_primitive_wrappers", "target": "resources_js_components_ui_card", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/project.md", "source_location": "L13", "weight": 1.0}, {"source": "migration_project", "target": "resources_js_components_ui_input", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/project.md", "source_location": "L13", "weight": 1.0}, {"source": "migration_project_non_primitive_wrappers", "target": "resources_js_components_ui_input", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/project.md", "source_location": "L13", "weight": 1.0}, {"source": "migration_project", "target": "resources_js_components_ui_skeleton", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/project.md", "source_location": "L13", "weight": 1.0}, {"source": "migration_project_non_primitive_wrappers", "target": "resources_js_components_ui_skeleton", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/project.md", "source_location": "L13", "weight": 1.0}, {"source": "migration_project", "target": "resources_js_components_ui_spinner", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/project.md", "source_location": "L13", "weight": 1.0}, {"source": "migration_project_non_primitive_wrappers", "target": "resources_js_components_ui_spinner", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/project.md", "source_location": "L13", "weight": 1.0}], "hyperedges": [{"id": "aschild_to_render_call_site_migration", "label": "asChild to render call-site migration", "nodes": ["migration_project_aschild_to_render", "migration_breadcrumb_render_link", "migration_button_base_ui_button", "migration_sidebar_menu_button_composition", "resources_js_components_breadcrumbs", "resources_js_components_delete_user", "resources_js_components_app_header"], "relation": "participate_in", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/project.md"}]}
+{
+    "nodes": [
+        {
+            "id": "migration_project",
+            "label": "project.md",
+            "file_type": "document",
+            "source_file": ".migration/project.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "migration_project_radix_to_base_ui_migration",
+            "label": "Radix UI to Base UI Migration",
+            "file_type": "rationale",
+            "source_file": ".migration/project.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null,
+            "rationale": "Whole-project switch from Radix primitives to @base-ui/react; typechecks with only three pre-existing unrelated errors."
+        },
+        {
+            "id": "migration_project_transformation_engine",
+            "label": "Transformation Engine",
+            "file_type": "rationale",
+            "source_file": ".migration/project.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null,
+            "rationale": "Automated codemod used on 2026-10-07 for every component migration, followed by a leftover scan."
+        },
+        {
+            "id": "migration_project_base_ui_react",
+            "label": "@base-ui/react",
+            "file_type": "concept",
+            "source_file": ".migration/project.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "migration_project_radix_ui",
+            "label": "@radix-ui/react-* packages",
+            "file_type": "concept",
+            "source_file": ".migration/project.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null,
+            "rationale": "Every @radix-ui/react-* dependency was removed."
+        },
+        {
+            "id": "migration_project_aschild_to_render",
+            "label": "asChild to render prop",
+            "file_type": "rationale",
+            "source_file": ".migration/project.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null,
+            "rationale": "Base UI composes via a `render` prop instead of Radix `asChild`/Slot, so all call sites were rewritten."
+        },
+        {
+            "id": "migration_project_new_york_style",
+            "label": "new-york style (legacy)",
+            "file_type": "concept",
+            "source_file": ".migration/project.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null,
+            "rationale": "No base-new-york counterpart exists, so classes were kept and style stays new-york so the look is not replaced by a Base UI preset."
+        },
+        {
+            "id": "migration_project_data_starting_ending_style",
+            "label": "data-starting-style / data-ending-style motion",
+            "file_type": "rationale",
+            "source_file": ".migration/project.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null,
+            "rationale": "Open/close motion uses Base UI's starting/ending style attributes instead of tailwind animate-in/animate-out."
+        },
+        {
+            "id": "migration_project_non_primitive_wrappers",
+            "label": "Non-primitive wrappers (alert, card, input, skeleton, spinner)",
+            "file_type": "concept",
+            "source_file": ".migration/project.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null,
+            "rationale": "Left alone along with sonner and input-otp because they have no Radix dependency."
+        },
+        {
+            "id": "components",
+            "label": "components.json",
+            "file_type": "code",
+            "source_file": ".migration/project.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "resources_js_components_ui_sonner",
+            "label": "sonner.tsx",
+            "file_type": "code",
+            "source_file": ".migration/project.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "resources_js_components_ui_input_otp",
+            "label": "input-otp.tsx",
+            "file_type": "code",
+            "source_file": ".migration/project.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "resources_js_components_ui_alert",
+            "label": "alert.tsx",
+            "file_type": "code",
+            "source_file": ".migration/project.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "resources_js_components_ui_card",
+            "label": "card.tsx",
+            "file_type": "code",
+            "source_file": ".migration/project.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "resources_js_components_ui_input",
+            "label": "input.tsx",
+            "file_type": "code",
+            "source_file": ".migration/project.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "resources_js_components_ui_skeleton",
+            "label": "skeleton.tsx",
+            "file_type": "code",
+            "source_file": ".migration/project.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "resources_js_components_ui_spinner",
+            "label": "spinner.tsx",
+            "file_type": "code",
+            "source_file": ".migration/project.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        }
+    ],
+    "edges": [
+        {
+            "source": "migration_project",
+            "target": "migration_project_radix_to_base_ui_migration",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/project.md",
+            "source_location": "L3",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_project",
+            "target": "migration_project_transformation_engine",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/project.md",
+            "source_location": "L3",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_project",
+            "target": "migration_project_base_ui_react",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/project.md",
+            "source_location": "L7",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_project",
+            "target": "migration_project_radix_ui",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/project.md",
+            "source_location": "L7",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_project",
+            "target": "migration_project_aschild_to_render",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/project.md",
+            "source_location": "L8",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_project",
+            "target": "migration_project_new_york_style",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/project.md",
+            "source_location": "L3",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_project",
+            "target": "migration_project_data_starting_ending_style",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/project.md",
+            "source_location": "L17",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_project",
+            "target": "migration_project_non_primitive_wrappers",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/project.md",
+            "source_location": "L13",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_project",
+            "target": "components",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/project.md",
+            "source_location": "L9",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_project_radix_to_base_ui_migration",
+            "target": "migration_project_base_ui_react",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/project.md",
+            "source_location": "L7",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_project_radix_to_base_ui_migration",
+            "target": "migration_project_radix_ui",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/project.md",
+            "source_location": "L7",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_project_transformation_engine",
+            "target": "migration_project_radix_to_base_ui_migration",
+            "relation": "implements",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/project.md",
+            "source_location": "L3",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_project_aschild_to_render",
+            "target": "migration_project_radix_to_base_ui_migration",
+            "relation": "implements",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/project.md",
+            "source_location": "L8",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_project_new_york_style",
+            "target": "migration_project_radix_to_base_ui_migration",
+            "relation": "rationale_for",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/project.md",
+            "source_location": "L3",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_project_data_starting_ending_style",
+            "target": "migration_project_radix_to_base_ui_migration",
+            "relation": "conceptually_related_to",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/project.md",
+            "source_location": "L17",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_project_radix_to_base_ui_migration",
+            "target": "components",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/project.md",
+            "source_location": "L9",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_project_new_york_style",
+            "target": "components",
+            "relation": "references",
+            "confidence": "INFERRED",
+            "confidence_score": 0.95,
+            "source_file": ".migration/project.md",
+            "source_location": "L9",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_project",
+            "target": "resources_js_components_ui_sonner",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/project.md",
+            "source_location": "L13",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_project_non_primitive_wrappers",
+            "target": "resources_js_components_ui_sonner",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/project.md",
+            "source_location": "L13",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_project",
+            "target": "resources_js_components_ui_input_otp",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/project.md",
+            "source_location": "L13",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_project_non_primitive_wrappers",
+            "target": "resources_js_components_ui_input_otp",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/project.md",
+            "source_location": "L13",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_project",
+            "target": "resources_js_components_ui_alert",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/project.md",
+            "source_location": "L13",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_project_non_primitive_wrappers",
+            "target": "resources_js_components_ui_alert",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/project.md",
+            "source_location": "L13",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_project",
+            "target": "resources_js_components_ui_card",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/project.md",
+            "source_location": "L13",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_project_non_primitive_wrappers",
+            "target": "resources_js_components_ui_card",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/project.md",
+            "source_location": "L13",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_project",
+            "target": "resources_js_components_ui_input",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/project.md",
+            "source_location": "L13",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_project_non_primitive_wrappers",
+            "target": "resources_js_components_ui_input",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/project.md",
+            "source_location": "L13",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_project",
+            "target": "resources_js_components_ui_skeleton",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/project.md",
+            "source_location": "L13",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_project_non_primitive_wrappers",
+            "target": "resources_js_components_ui_skeleton",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/project.md",
+            "source_location": "L13",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_project",
+            "target": "resources_js_components_ui_spinner",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/project.md",
+            "source_location": "L13",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_project_non_primitive_wrappers",
+            "target": "resources_js_components_ui_spinner",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/project.md",
+            "source_location": "L13",
+            "weight": 1.0
+        }
+    ],
+    "hyperedges": [
+        {
+            "id": "aschild_to_render_call_site_migration",
+            "label": "asChild to render call-site migration",
+            "nodes": [
+                "migration_project_aschild_to_render",
+                "migration_breadcrumb_render_link",
+                "migration_button_base_ui_button",
+                "migration_sidebar_menu_button_composition",
+                "resources_js_components_breadcrumbs",
+                "resources_js_components_delete_user",
+                "resources_js_components_app_header"
+            ],
+            "relation": "participate_in",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/project.md"
+        }
+    ]
+}

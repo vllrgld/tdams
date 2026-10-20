@@ -1,1 +1,305 @@
-{"nodes": [{"id": "migration_dropdown_menu", "label": "dropdown-menu.md", "file_type": "document", "source_file": ".migration/dropdown-menu.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "migration_dropdown_menu_base_ui_menu", "label": "@base-ui/react/menu", "file_type": "concept", "source_file": ".migration/dropdown-menu.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "Radix dropdown menu became Base UI menu with Portal, Positioner, and Popup."}, {"id": "migration_dropdown_menu_portal_positioner_popup", "label": "Portal / Positioner / Popup structure", "file_type": "rationale", "source_file": ".migration/dropdown-menu.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "migration_dropdown_menu_anchor_width", "label": "--anchor-width CSS variable", "file_type": "concept", "source_file": ".migration/dropdown-menu.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "Replaces --radix-dropdown-menu-trigger-width for menu width."}, {"id": "migration_dropdown_menu_closeonclick_default", "label": "closeOnClick defaults to false", "file_type": "concept", "source_file": ".migration/dropdown-menu.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "Checkbox and radio items do not close the menu on click; the app only uses regular items and links."}, {"id": "resources_js_components_ui_dropdown_menu", "label": "dropdown-menu.tsx", "file_type": "code", "source_file": ".migration/dropdown-menu.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "resources_js_components_app_header", "label": "app-header.tsx", "file_type": "code", "source_file": ".migration/dropdown-menu.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "resources_js_components_nav_user", "label": "nav-user.tsx", "file_type": "code", "source_file": ".migration/dropdown-menu.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "resources_js_components_user_menu_content", "label": "user-menu-content.tsx", "file_type": "code", "source_file": ".migration/dropdown-menu.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [{"source": "migration_dropdown_menu", "target": "migration_dropdown_menu_base_ui_menu", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/dropdown-menu.md", "source_location": "L3", "weight": 1.0}, {"source": "migration_dropdown_menu_base_ui_menu", "target": "migration_project_base_ui_react", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.95, "source_file": ".migration/dropdown-menu.md", "source_location": "L3", "weight": 1.0}, {"source": "migration_dropdown_menu", "target": "migration_dropdown_menu_portal_positioner_popup", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/dropdown-menu.md", "source_location": "L3", "weight": 1.0}, {"source": "migration_dropdown_menu", "target": "migration_dropdown_menu_anchor_width", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/dropdown-menu.md", "source_location": "L9", "weight": 1.0}, {"source": "migration_dropdown_menu", "target": "migration_dropdown_menu_closeonclick_default", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/dropdown-menu.md", "source_location": "L17", "weight": 1.0}, {"source": "migration_dropdown_menu", "target": "migration_project_transformation_engine", "relation": "references", "confidence": "INFERRED", "confidence_score": 0.95, "source_file": ".migration/dropdown-menu.md", "source_location": "L3", "weight": 1.0}, {"source": "migration_dropdown_menu", "target": "resources_js_components_ui_dropdown_menu", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/dropdown-menu.md", "source_location": "L7", "weight": 1.0}, {"source": "migration_dropdown_menu", "target": "resources_js_components_app_header", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/dropdown-menu.md", "source_location": "L8", "weight": 1.0}, {"source": "migration_dropdown_menu", "target": "resources_js_components_nav_user", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/dropdown-menu.md", "source_location": "L8", "weight": 1.0}, {"source": "migration_dropdown_menu", "target": "resources_js_components_user_menu_content", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/dropdown-menu.md", "source_location": "L8", "weight": 1.0}, {"source": "resources_js_components_ui_dropdown_menu", "target": "migration_dropdown_menu_base_ui_menu", "relation": "implements", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/dropdown-menu.md", "source_location": "L3", "weight": 1.0}, {"source": "migration_dropdown_menu_base_ui_menu", "target": "migration_dropdown_menu_portal_positioner_popup", "relation": "implements", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/dropdown-menu.md", "source_location": "L3", "weight": 1.0}, {"source": "resources_js_components_ui_dropdown_menu", "target": "migration_dropdown_menu_anchor_width", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/dropdown-menu.md", "source_location": "L9", "weight": 1.0}, {"source": "migration_dropdown_menu_base_ui_menu", "target": "migration_dropdown_menu_closeonclick_default", "relation": "conceptually_related_to", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/dropdown-menu.md", "source_location": "L17", "weight": 1.0}, {"source": "migration_dropdown_menu_closeonclick_default", "target": "migration_project_radix_to_base_ui_migration", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.95, "source_file": ".migration/dropdown-menu.md", "source_location": "L17", "weight": 1.0}, {"source": "resources_js_components_app_header", "target": "resources_js_components_ui_dropdown_menu", "relation": "calls", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": ".migration/dropdown-menu.md", "source_location": "L8", "weight": 1.0}, {"source": "resources_js_components_nav_user", "target": "resources_js_components_ui_dropdown_menu", "relation": "calls", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": ".migration/dropdown-menu.md", "source_location": "L8", "weight": 1.0}, {"source": "resources_js_components_user_menu_content", "target": "resources_js_components_ui_dropdown_menu", "relation": "calls", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": ".migration/dropdown-menu.md", "source_location": "L8", "weight": 1.0}], "hyperedges": [{"id": "base_ui_portal_positioner_popup_pattern", "label": "Base UI Portal/Positioner/Popup pattern", "nodes": ["migration_dropdown_menu_portal_positioner_popup", "migration_dropdown_menu_base_ui_menu", "migration_select_base_ui_select", "migration_tooltip_base_ui_tooltip", "migration_navigation_menu_base_ui_navigation_menu"], "relation": "implement", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".migration/dropdown-menu.md"}]}
+{
+    "nodes": [
+        {
+            "id": "migration_dropdown_menu",
+            "label": "dropdown-menu.md",
+            "file_type": "document",
+            "source_file": ".migration/dropdown-menu.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "migration_dropdown_menu_base_ui_menu",
+            "label": "@base-ui/react/menu",
+            "file_type": "concept",
+            "source_file": ".migration/dropdown-menu.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null,
+            "rationale": "Radix dropdown menu became Base UI menu with Portal, Positioner, and Popup."
+        },
+        {
+            "id": "migration_dropdown_menu_portal_positioner_popup",
+            "label": "Portal / Positioner / Popup structure",
+            "file_type": "rationale",
+            "source_file": ".migration/dropdown-menu.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "migration_dropdown_menu_anchor_width",
+            "label": "--anchor-width CSS variable",
+            "file_type": "concept",
+            "source_file": ".migration/dropdown-menu.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null,
+            "rationale": "Replaces --radix-dropdown-menu-trigger-width for menu width."
+        },
+        {
+            "id": "migration_dropdown_menu_closeonclick_default",
+            "label": "closeOnClick defaults to false",
+            "file_type": "concept",
+            "source_file": ".migration/dropdown-menu.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null,
+            "rationale": "Checkbox and radio items do not close the menu on click; the app only uses regular items and links."
+        },
+        {
+            "id": "resources_js_components_ui_dropdown_menu",
+            "label": "dropdown-menu.tsx",
+            "file_type": "code",
+            "source_file": ".migration/dropdown-menu.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "resources_js_components_app_header",
+            "label": "app-header.tsx",
+            "file_type": "code",
+            "source_file": ".migration/dropdown-menu.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "resources_js_components_nav_user",
+            "label": "nav-user.tsx",
+            "file_type": "code",
+            "source_file": ".migration/dropdown-menu.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "resources_js_components_user_menu_content",
+            "label": "user-menu-content.tsx",
+            "file_type": "code",
+            "source_file": ".migration/dropdown-menu.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        }
+    ],
+    "edges": [
+        {
+            "source": "migration_dropdown_menu",
+            "target": "migration_dropdown_menu_base_ui_menu",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/dropdown-menu.md",
+            "source_location": "L3",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_dropdown_menu_base_ui_menu",
+            "target": "migration_project_base_ui_react",
+            "relation": "conceptually_related_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.95,
+            "source_file": ".migration/dropdown-menu.md",
+            "source_location": "L3",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_dropdown_menu",
+            "target": "migration_dropdown_menu_portal_positioner_popup",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/dropdown-menu.md",
+            "source_location": "L3",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_dropdown_menu",
+            "target": "migration_dropdown_menu_anchor_width",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/dropdown-menu.md",
+            "source_location": "L9",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_dropdown_menu",
+            "target": "migration_dropdown_menu_closeonclick_default",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/dropdown-menu.md",
+            "source_location": "L17",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_dropdown_menu",
+            "target": "migration_project_transformation_engine",
+            "relation": "references",
+            "confidence": "INFERRED",
+            "confidence_score": 0.95,
+            "source_file": ".migration/dropdown-menu.md",
+            "source_location": "L3",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_dropdown_menu",
+            "target": "resources_js_components_ui_dropdown_menu",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/dropdown-menu.md",
+            "source_location": "L7",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_dropdown_menu",
+            "target": "resources_js_components_app_header",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/dropdown-menu.md",
+            "source_location": "L8",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_dropdown_menu",
+            "target": "resources_js_components_nav_user",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/dropdown-menu.md",
+            "source_location": "L8",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_dropdown_menu",
+            "target": "resources_js_components_user_menu_content",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/dropdown-menu.md",
+            "source_location": "L8",
+            "weight": 1.0
+        },
+        {
+            "source": "resources_js_components_ui_dropdown_menu",
+            "target": "migration_dropdown_menu_base_ui_menu",
+            "relation": "implements",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/dropdown-menu.md",
+            "source_location": "L3",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_dropdown_menu_base_ui_menu",
+            "target": "migration_dropdown_menu_portal_positioner_popup",
+            "relation": "implements",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/dropdown-menu.md",
+            "source_location": "L3",
+            "weight": 1.0
+        },
+        {
+            "source": "resources_js_components_ui_dropdown_menu",
+            "target": "migration_dropdown_menu_anchor_width",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/dropdown-menu.md",
+            "source_location": "L9",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_dropdown_menu_base_ui_menu",
+            "target": "migration_dropdown_menu_closeonclick_default",
+            "relation": "conceptually_related_to",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/dropdown-menu.md",
+            "source_location": "L17",
+            "weight": 1.0
+        },
+        {
+            "source": "migration_dropdown_menu_closeonclick_default",
+            "target": "migration_project_radix_to_base_ui_migration",
+            "relation": "conceptually_related_to",
+            "confidence": "INFERRED",
+            "confidence_score": 0.95,
+            "source_file": ".migration/dropdown-menu.md",
+            "source_location": "L17",
+            "weight": 1.0
+        },
+        {
+            "source": "resources_js_components_app_header",
+            "target": "resources_js_components_ui_dropdown_menu",
+            "relation": "calls",
+            "confidence": "INFERRED",
+            "confidence_score": 0.85,
+            "source_file": ".migration/dropdown-menu.md",
+            "source_location": "L8",
+            "weight": 1.0
+        },
+        {
+            "source": "resources_js_components_nav_user",
+            "target": "resources_js_components_ui_dropdown_menu",
+            "relation": "calls",
+            "confidence": "INFERRED",
+            "confidence_score": 0.85,
+            "source_file": ".migration/dropdown-menu.md",
+            "source_location": "L8",
+            "weight": 1.0
+        },
+        {
+            "source": "resources_js_components_user_menu_content",
+            "target": "resources_js_components_ui_dropdown_menu",
+            "relation": "calls",
+            "confidence": "INFERRED",
+            "confidence_score": 0.85,
+            "source_file": ".migration/dropdown-menu.md",
+            "source_location": "L8",
+            "weight": 1.0
+        }
+    ],
+    "hyperedges": [
+        {
+            "id": "base_ui_portal_positioner_popup_pattern",
+            "label": "Base UI Portal/Positioner/Popup pattern",
+            "nodes": [
+                "migration_dropdown_menu_portal_positioner_popup",
+                "migration_dropdown_menu_base_ui_menu",
+                "migration_select_base_ui_select",
+                "migration_tooltip_base_ui_tooltip",
+                "migration_navigation_menu_base_ui_navigation_menu"
+            ],
+            "relation": "implement",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".migration/dropdown-menu.md"
+        }
+    ]
+}

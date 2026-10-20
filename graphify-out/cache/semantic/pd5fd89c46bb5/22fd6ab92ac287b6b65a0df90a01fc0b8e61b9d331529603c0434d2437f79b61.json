@@ -1,1 +1,61 @@
-{"nodes": [{"id": "pnpm_workspace", "label": "pnpm-workspace.yaml", "file_type": "document", "source_file": "pnpm-workspace.yaml", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "pnpm_workspace_root_package", "label": "Root workspace package '.'", "file_type": "concept", "source_file": "pnpm-workspace.yaml", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "pnpm_workspace_publichoistpattern_inertiajs_core", "label": "publicHoistPattern @inertiajs/core", "file_type": "concept", "source_file": "pnpm-workspace.yaml", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": "Publicly hoists @inertiajs/core so it is resolvable at the top-level node_modules."}], "edges": [{"source": "pnpm_workspace", "target": "pnpm_workspace_root_package", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "pnpm-workspace.yaml", "source_location": "L1-L2", "weight": 1.0}, {"source": "pnpm_workspace", "target": "pnpm_workspace_publichoistpattern_inertiajs_core", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "pnpm-workspace.yaml", "source_location": "L4-L5", "weight": 1.0}], "hyperedges": []}
+{
+    "nodes": [
+        {
+            "id": "pnpm_workspace",
+            "label": "pnpm-workspace.yaml",
+            "file_type": "document",
+            "source_file": "pnpm-workspace.yaml",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "pnpm_workspace_root_package",
+            "label": "Root workspace package '.'",
+            "file_type": "concept",
+            "source_file": "pnpm-workspace.yaml",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "pnpm_workspace_publichoistpattern_inertiajs_core",
+            "label": "publicHoistPattern @inertiajs/core",
+            "file_type": "concept",
+            "source_file": "pnpm-workspace.yaml",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null,
+            "rationale": "Publicly hoists @inertiajs/core so it is resolvable at the top-level node_modules."
+        }
+    ],
+    "edges": [
+        {
+            "source": "pnpm_workspace",
+            "target": "pnpm_workspace_root_package",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": "pnpm-workspace.yaml",
+            "source_location": "L1-L2",
+            "weight": 1.0
+        },
+        {
+            "source": "pnpm_workspace",
+            "target": "pnpm_workspace_publichoistpattern_inertiajs_core",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": "pnpm-workspace.yaml",
+            "source_location": "L4-L5",
+            "weight": 1.0
+        }
+    ],
+    "hyperedges": []
+}

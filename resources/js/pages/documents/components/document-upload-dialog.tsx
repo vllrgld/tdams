@@ -43,7 +43,7 @@ export default function DocumentUploadDialog({
             </Button>
 
             <Dialog open={open} onOpenChange={onOpenChange}>
-                <DialogContent className="max-h-[90vh] overflow-y-auto rounded-none sm:max-w-2xl">
+                <DialogContent className="max-h-[90vh] overflow-y-auto rounded-none sm:max-w-2xl dark:border-neutral-800 dark:bg-black">
                     <DialogHeader>
                         <DialogTitle>Add document to archive</DialogTitle>
                         <DialogDescription>
@@ -74,7 +74,7 @@ export default function DocumentUploadDialog({
                                 }
                                 className="h-auto rounded-none border-dashed p-3 file:mr-3 file:rounded-none file:border-0 file:bg-blue-50 file:px-3 file:py-1.5 file:font-medium file:text-blue-950 dark:file:bg-blue-950 dark:file:text-blue-100"
                             />
-                            <p className="text-xs text-slate-500 dark:text-slate-400">
+                            <p className="text-xs text-slate-500 dark:text-neutral-400">
                                 PDF, JPEG, PNG, or TIFF · maximum file size 50
                                 MB
                             </p>
@@ -87,7 +87,7 @@ export default function DocumentUploadDialog({
                                     key={section.title}
                                     className="mb-5 last:mb-0"
                                 >
-                                    <h3 className="mb-3 border-b border-slate-200 pb-2 text-sm font-semibold text-slate-900 dark:border-slate-800 dark:text-slate-100">
+                                    <h3 className="mb-3 border-b border-slate-200 pb-2 text-sm font-semibold text-slate-900 dark:border-neutral-800 dark:text-neutral-100">
                                         {section.title}
                                     </h3>
                                     <div className="grid gap-4 sm:grid-cols-2">
@@ -215,7 +215,7 @@ export default function DocumentUploadDialog({
 
                         {form.progress && (
                             <div
-                                className="h-2 bg-slate-100 dark:bg-slate-800"
+                                className="h-2 bg-slate-100 dark:bg-neutral-800"
                                 role="progressbar"
                                 aria-label="Upload progress"
                                 aria-valuemin={0}

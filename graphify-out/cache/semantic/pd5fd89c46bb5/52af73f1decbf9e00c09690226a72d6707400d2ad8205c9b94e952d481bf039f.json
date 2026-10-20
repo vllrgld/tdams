@@ -1,1 +1,246 @@
-{"nodes": [{"id": "github_prompts_design_references_slides_copywriting_formulas", "label": "slides-copywriting-formulas.md", "file_type": "document", "source_file": ".github/prompts/design/references/slides-copywriting-formulas.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_design_references_slides_copywriting_formulas_pas", "label": "PAS (Problem-Agitate-Solution)", "file_type": "concept", "source_file": ".github/prompts/design/references/slides-copywriting-formulas.md", "source_location": "L7-L10", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_design_references_slides_copywriting_formulas_aida", "label": "AIDA (Attention-Interest-Desire-Action)", "file_type": "concept", "source_file": ".github/prompts/design/references/slides-copywriting-formulas.md", "source_location": "L12-L15", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_design_references_slides_copywriting_formulas_fab", "label": "FAB (Features-Advantages-Benefits)", "file_type": "concept", "source_file": ".github/prompts/design/references/slides-copywriting-formulas.md", "source_location": "L17-L20", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_design_references_slides_copywriting_formulas_cost_of_inaction", "label": "Cost of Inaction", "file_type": "concept", "source_file": ".github/prompts/design/references/slides-copywriting-formulas.md", "source_location": "L22-L25", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_design_references_slides_copywriting_formulas_before_after_bridge", "label": "Before-After-Bridge", "file_type": "concept", "source_file": ".github/prompts/design/references/slides-copywriting-formulas.md", "source_location": "L27-L30", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_design_references_slides_copywriting_formulas_formula_to_slide_mapping", "label": "Formula-to-Slide Mapping", "file_type": "concept", "source_file": ".github/prompts/design/references/slides-copywriting-formulas.md", "source_location": "L32-L44", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_design_references_slides_copywriting_formulas_headline_patterns", "label": "Headline Patterns", "file_type": "concept", "source_file": ".github/prompts/design/references/slides-copywriting-formulas.md", "source_location": "L46-L63", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "github_prompts_design_references_slides_copywriting_formulas_search_slides_script", "label": "search-slides.py (design-system)", "file_type": "concept", "source_file": ".github/prompts/design/references/slides-copywriting-formulas.md", "source_location": "L65-L72", "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [{"source": "github_prompts_design_references_slides_copywriting_formulas", "target": "github_prompts_design_references_slides_copywriting_formulas_pas", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design/references/slides-copywriting-formulas.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_references_slides_copywriting_formulas", "target": "github_prompts_design_references_slides_copywriting_formulas_aida", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design/references/slides-copywriting-formulas.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_references_slides_copywriting_formulas", "target": "github_prompts_design_references_slides_copywriting_formulas_fab", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design/references/slides-copywriting-formulas.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_references_slides_copywriting_formulas", "target": "github_prompts_design_references_slides_copywriting_formulas_cost_of_inaction", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design/references/slides-copywriting-formulas.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_references_slides_copywriting_formulas", "target": "github_prompts_design_references_slides_copywriting_formulas_before_after_bridge", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design/references/slides-copywriting-formulas.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_references_slides_copywriting_formulas", "target": "github_prompts_design_references_slides_copywriting_formulas_formula_to_slide_mapping", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design/references/slides-copywriting-formulas.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_references_slides_copywriting_formulas", "target": "github_prompts_design_references_slides_copywriting_formulas_headline_patterns", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design/references/slides-copywriting-formulas.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_references_slides_copywriting_formulas", "target": "github_prompts_design_references_slides_copywriting_formulas_search_slides_script", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design/references/slides-copywriting-formulas.md", "source_location": "L69", "weight": 1.0}, {"source": "github_prompts_design_references_slides_copywriting_formulas_formula_to_slide_mapping", "target": "github_prompts_design_references_slides_copywriting_formulas_pas", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design/references/slides-copywriting-formulas.md", "source_location": "L37", "weight": 1.0}, {"source": "github_prompts_design_references_slides_copywriting_formulas_formula_to_slide_mapping", "target": "github_prompts_design_references_slides_copywriting_formulas_aida", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design/references/slides-copywriting-formulas.md", "source_location": "L36", "weight": 1.0}, {"source": "github_prompts_design_references_slides_copywriting_formulas_formula_to_slide_mapping", "target": "github_prompts_design_references_slides_copywriting_formulas_fab", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design/references/slides-copywriting-formulas.md", "source_location": "L39", "weight": 1.0}, {"source": "github_prompts_design_references_slides_copywriting_formulas_formula_to_slide_mapping", "target": "github_prompts_design_references_slides_copywriting_formulas_cost_of_inaction", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design/references/slides-copywriting-formulas.md", "source_location": "L38", "weight": 1.0}, {"source": "github_prompts_design_references_slides_copywriting_formulas_formula_to_slide_mapping", "target": "github_prompts_design_references_slides_strategies_emotion_arc", "relation": "shares_data_with", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": ".github/prompts/design/references/slides-copywriting-formulas.md", "source_location": null, "weight": 1.0}, {"source": "github_prompts_design_references_slides_copywriting_formulas_search_slides_script", "target": "github_prompts_design_skill_design_system_skill", "relation": "conceptually_related_to", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": ".github/prompts/design/references/slides-copywriting-formulas.md", "source_location": "L69", "weight": 1.0}], "hyperedges": []}
+{
+    "nodes": [
+        {
+            "id": "github_prompts_design_references_slides_copywriting_formulas",
+            "label": "slides-copywriting-formulas.md",
+            "file_type": "document",
+            "source_file": ".github/prompts/design/references/slides-copywriting-formulas.md",
+            "source_location": null,
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_design_references_slides_copywriting_formulas_pas",
+            "label": "PAS (Problem-Agitate-Solution)",
+            "file_type": "concept",
+            "source_file": ".github/prompts/design/references/slides-copywriting-formulas.md",
+            "source_location": "L7-L10",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_design_references_slides_copywriting_formulas_aida",
+            "label": "AIDA (Attention-Interest-Desire-Action)",
+            "file_type": "concept",
+            "source_file": ".github/prompts/design/references/slides-copywriting-formulas.md",
+            "source_location": "L12-L15",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_design_references_slides_copywriting_formulas_fab",
+            "label": "FAB (Features-Advantages-Benefits)",
+            "file_type": "concept",
+            "source_file": ".github/prompts/design/references/slides-copywriting-formulas.md",
+            "source_location": "L17-L20",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_design_references_slides_copywriting_formulas_cost_of_inaction",
+            "label": "Cost of Inaction",
+            "file_type": "concept",
+            "source_file": ".github/prompts/design/references/slides-copywriting-formulas.md",
+            "source_location": "L22-L25",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_design_references_slides_copywriting_formulas_before_after_bridge",
+            "label": "Before-After-Bridge",
+            "file_type": "concept",
+            "source_file": ".github/prompts/design/references/slides-copywriting-formulas.md",
+            "source_location": "L27-L30",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_design_references_slides_copywriting_formulas_formula_to_slide_mapping",
+            "label": "Formula-to-Slide Mapping",
+            "file_type": "concept",
+            "source_file": ".github/prompts/design/references/slides-copywriting-formulas.md",
+            "source_location": "L32-L44",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_design_references_slides_copywriting_formulas_headline_patterns",
+            "label": "Headline Patterns",
+            "file_type": "concept",
+            "source_file": ".github/prompts/design/references/slides-copywriting-formulas.md",
+            "source_location": "L46-L63",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        },
+        {
+            "id": "github_prompts_design_references_slides_copywriting_formulas_search_slides_script",
+            "label": "search-slides.py (design-system)",
+            "file_type": "concept",
+            "source_file": ".github/prompts/design/references/slides-copywriting-formulas.md",
+            "source_location": "L65-L72",
+            "source_url": null,
+            "captured_at": null,
+            "author": null,
+            "contributor": null
+        }
+    ],
+    "edges": [
+        {
+            "source": "github_prompts_design_references_slides_copywriting_formulas",
+            "target": "github_prompts_design_references_slides_copywriting_formulas_pas",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design/references/slides-copywriting-formulas.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_references_slides_copywriting_formulas",
+            "target": "github_prompts_design_references_slides_copywriting_formulas_aida",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design/references/slides-copywriting-formulas.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_references_slides_copywriting_formulas",
+            "target": "github_prompts_design_references_slides_copywriting_formulas_fab",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design/references/slides-copywriting-formulas.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_references_slides_copywriting_formulas",
+            "target": "github_prompts_design_references_slides_copywriting_formulas_cost_of_inaction",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design/references/slides-copywriting-formulas.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_references_slides_copywriting_formulas",
+            "target": "github_prompts_design_references_slides_copywriting_formulas_before_after_bridge",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design/references/slides-copywriting-formulas.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_references_slides_copywriting_formulas",
+            "target": "github_prompts_design_references_slides_copywriting_formulas_formula_to_slide_mapping",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design/references/slides-copywriting-formulas.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_references_slides_copywriting_formulas",
+            "target": "github_prompts_design_references_slides_copywriting_formulas_headline_patterns",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design/references/slides-copywriting-formulas.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_references_slides_copywriting_formulas",
+            "target": "github_prompts_design_references_slides_copywriting_formulas_search_slides_script",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design/references/slides-copywriting-formulas.md",
+            "source_location": "L69",
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_references_slides_copywriting_formulas_formula_to_slide_mapping",
+            "target": "github_prompts_design_references_slides_copywriting_formulas_pas",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design/references/slides-copywriting-formulas.md",
+            "source_location": "L37",
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_references_slides_copywriting_formulas_formula_to_slide_mapping",
+            "target": "github_prompts_design_references_slides_copywriting_formulas_aida",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design/references/slides-copywriting-formulas.md",
+            "source_location": "L36",
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_references_slides_copywriting_formulas_formula_to_slide_mapping",
+            "target": "github_prompts_design_references_slides_copywriting_formulas_fab",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design/references/slides-copywriting-formulas.md",
+            "source_location": "L39",
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_references_slides_copywriting_formulas_formula_to_slide_mapping",
+            "target": "github_prompts_design_references_slides_copywriting_formulas_cost_of_inaction",
+            "relation": "references",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design/references/slides-copywriting-formulas.md",
+            "source_location": "L38",
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_references_slides_copywriting_formulas_formula_to_slide_mapping",
+            "target": "github_prompts_design_references_slides_strategies_emotion_arc",
+            "relation": "shares_data_with",
+            "confidence": "INFERRED",
+            "confidence_score": 0.85,
+            "source_file": ".github/prompts/design/references/slides-copywriting-formulas.md",
+            "source_location": null,
+            "weight": 1.0
+        },
+        {
+            "source": "github_prompts_design_references_slides_copywriting_formulas_search_slides_script",
+            "target": "github_prompts_design_skill_design_system_skill",
+            "relation": "conceptually_related_to",
+            "confidence": "EXTRACTED",
+            "confidence_score": 1.0,
+            "source_file": ".github/prompts/design/references/slides-copywriting-formulas.md",
+            "source_location": "L69",
+            "weight": 1.0
+        }
+    ],
+    "hyperedges": []
+}
