@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Link } from 'lucide-react';
 import DocumentChain from '../document-chain';
@@ -26,11 +25,11 @@ export default function DocumentCardView({
 
     return (
         <>
-            <div className="grid gap-2.5 p-2.5 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 2xl:grid-cols-6">
+            <div className="grid gap-3 overflow-visible p-3 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 2xl:grid-cols-6">
                 {documents.map((document) => (
                     <article
                         key={document.id}
-                        className="group relative aspect-[3/4] min-w-0 overflow-hidden border border-slate-200 bg-blue-900 shadow-sm transition-shadow hover:shadow-md dark:border-slate-800"
+                        className="group relative z-0 aspect-[3/4] min-w-0 origin-center overflow-hidden border border-slate-200 bg-blue-900 shadow-sm transition duration-200 ease-out hover:z-20 hover:-translate-y-1.5 hover:scale-105 hover:border-blue-800 hover:shadow-xl hover:ring-2 hover:ring-blue-800/20 focus-within:z-20 focus-within:-translate-y-1.5 focus-within:scale-105 focus-within:border-blue-800 focus-within:shadow-xl focus-within:ring-2 focus-within:ring-blue-800/20 motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:hover:scale-100 motion-reduce:focus-within:translate-y-0 motion-reduce:focus-within:scale-100 dark:border-slate-800 dark:hover:border-blue-300 dark:hover:ring-blue-300/20 dark:focus-within:border-blue-300 dark:focus-within:ring-blue-300/20"
                     >
                         <DocumentThumbnail
                             mimeType={document.mimeType}
@@ -46,23 +45,18 @@ export default function DocumentCardView({
                             title={`Open ${document.originalFilename}`}
                             className="absolute inset-0 z-10 cursor-pointer focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:outline-none focus-visible:ring-inset"
                         />
-                        <Badge
-                            variant="outline"
-                            className="pointer-events-none absolute top-2 right-2 z-20 rounded-none bg-white/90 text-xs uppercase dark:bg-slate-950/90"
-                        >
-                            {document.mimeType.split('/').pop() ?? 'file'}
-                        </Badge>
                         <Button
                             type="button"
+                            variant="ghost"
                             size="icon"
                             onClick={() => setChainDocument(document)}
                             aria-label={`Show document chain for ${document.originalFilename}`}
                             title="Show document chain"
-                            className="absolute top-2 left-2 z-20 size-8 rounded-full shadow transition-transform group-hover:scale-110"
+                            className="absolute top-2 right-2 z-20 size-8 cursor-pointer rounded-none bg-transparent text-blue-900 shadow-none transition-transform duration-200 ease-out hover:bg-transparent hover:text-blue-950 hover:scale-150 focus-visible:ring-blue-700 motion-reduce:transition-none motion-reduce:hover:scale-100 [filter:drop-shadow(0_0_2px_rgb(255_255_255))_drop-shadow(0_1px_2px_rgb(255_255_255_/_0.9))]"
                         >
-                            <Link aria-hidden="true" className="size-3.5" />
+                            <Link aria-hidden="true" className="size-4" />
                         </Button>
-                        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 bg-gradient-to-t from-blue-900 via-blue-900/75 to-transparent px-2.5 pt-12 pb-2.5">
+                        <div className="document-card-overlay pointer-events-none absolute inset-x-0 bottom-0 z-20 px-2.5 pt-20 pb-2.5">
                             <dl className="grid gap-1 text-[11px] text-white">
                                 <DocumentCardField
                                     label="Tax declaration"
@@ -85,7 +79,7 @@ export default function DocumentCardView({
                                     tone="on-image"
                                 />
                             </dl>
-                            <div className="mt-1.5 flex items-center justify-between gap-3 text-[11px] text-blue-100">
+                            <div className="mt-1.5 flex items-center justify-between gap-3 text-[11px] text-white">
                                 <span className="shrink-0 font-medium">
                                     Date added
                                 </span>

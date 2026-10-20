@@ -1,7 +1,7 @@
 # Graph Report - dtms  (2026-10-19)
 
 ## Corpus Check
-- 308 files · ~347,109 words
+- 308 files · ~347,264 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 74 file(s) not represented in the graph (top: .csv 53, (none) 16, .example 1)
 
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `04ba3c08`
+- Built from commit: `1ce4112f`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -190,12 +190,12 @@
   .github/skills/ui-ux-pro-max/SKILL.md → .github/prompts/ui-styling/SKILL.md
 - `Button Component Classes (@apply)` --semantically_similar_to--> `Button Tokens`  [INFERRED] [semantically similar]
   .github/prompts/design-system/references/tailwind-integration.md → .github/prompts/design-system/references/component-tokens.md
+- `Multi-Skill Workflows` --semantically_similar_to--> `Complete Brand Package Workflow`  [INFERRED] [semantically similar]
+  .github/prompts/design/references/design-routing.md → .github/prompts/design/SKILL.md
 - `Banner Output Path Convention` --semantically_similar_to--> `Asset Naming Convention`  [INFERRED] [semantically similar]
   .github/prompts/banner-design/SKILL.md → .github/prompts/brand/references/asset-organization.md
 - `Token Compliance Rule` --semantically_similar_to--> `Brand Color Compliance Validation`  [INFERRED] [semantically similar]
   .github/prompts/design-system/SKILL.md → .github/prompts/brand/references/color-palette-management.md
-- `MIT License (frontmatter)` --conceptually_related_to--> `Apache License 2.0`  [AMBIGUOUS]
-  .github/prompts/ui-styling/SKILL.md → .github/prompts/ui-styling/LICENSE.txt
 
 ## Import Cycles
 - None detected.
@@ -723,7 +723,7 @@ Nodes (3): secondary-foreground, $type, $value
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `SKILL.md (design-system)` connect `Token Generation Pipeline` to `Token Architecture Layers`, `Brand Context Sync`, `component-tokens.md`, `Token Usage Validator`?**
-  _High betweenness centrality (0.070) - this node is a cross-community bridge._
+  _High betweenness centrality (0.081) - this node is a cross-community bridge._
 - **Are the 2 inferred relationships involving `TailwindConfigGenerator` (e.g. with `TestGeneratedConfigIsValidJs` and `TestTailwindConfigGenerator`) actually correct?**
   _`TailwindConfigGenerator` has 2 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `@types/react`, `@types/react-dom`, `concurrently` to the rest of the system?**
@@ -731,7 +731,7 @@ _Questions this graph is uniquely positioned to answer:_
 - **Should `TestShadcnInstaller` be split into smaller, more focused modules?**
   _Cohesion score 0.11578947368421053 - nodes in this community are weakly interconnected._
 - **Why does `SKILL.md (brand)` connect `Brand Context Sync` to `Brand Asset Validator`, `Token Generation Pipeline`, `Brand Accessibility Checklists`, `Brand Typography & Voice`, `Token Architecture Layers`, `Brand Asset Organization`, `messaging-framework.md`, `Brand Color Extraction Scripts`?**
-  _High betweenness centrality (0.036) - this node is a cross-community bridge._
+  _High betweenness centrality (0.032) - this node is a cross-community bridge._
 
 ### Low-confidence Hints
 _AMBIGUOUS edges — the extractor was unsure. Verify before acting on these._

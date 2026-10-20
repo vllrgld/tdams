@@ -24,6 +24,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configureDefaults();
+        $this->syncViteHotFile();
     }
 
     /**
@@ -46,5 +47,42 @@ class AppServiceProvider extends ServiceProvider
                 ->uncompromised()
             : null,
         );
+    }
+
+    /**
+     * Prefer Vite HMR while the dev server is up; use public/build otherwise.
+     */
+    protected function syncViteHotFile(): void
+    {
+        if (! app()->isLocal() || app()->runningInConsole()) {
+            return;
+        }
+
+        $hotFile = public_path('hot');
+
+        if ($this->viteDevServerIsRunning()) {
+            if (! is_file($hotFile)) {
+                file_put_contents($hotFile, 'http://127.0.0.1:5173');
+            }
+
+            return;
+        }
+
+        if (is_file($hotFile)) {
+            @unlink($hotFile);
+        }
+    }
+
+    protected function viteDevServerIsRunning(): bool
+    {
+        $connection = @fsockopen('127.0.0.1', 5173, $errno, $errstr, 0.2);
+
+        if (! is_resource($connection)) {
+            return false;
+        }
+
+        fclose($connection);
+
+        return true;
     }
 }

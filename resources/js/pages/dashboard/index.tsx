@@ -108,7 +108,7 @@ export default function Dashboard() {
         <>
             <Head title="Archive Analytics" />
 
-            <main className="min-h-full bg-slate-50/70 p-4 sm:p-6 xl:p-8 dark:bg-background">
+            <main className="min-h-full bg-background p-4 sm:p-6 xl:p-8">
                 <div className="mx-auto flex w-full max-w-[1600px] flex-col gap-6">
                     <header className="flex flex-col justify-between gap-4 border-b-2 border-amber-700/70 pb-5 sm:flex-row sm:items-end dark:border-amber-500/60">
                         <div>

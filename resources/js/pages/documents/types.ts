@@ -32,6 +32,11 @@ export type ArchivedDocument = {
     remarks: string | null;
 };
 
+export type SearchFieldOption = {
+    value: string;
+    label: string;
+};
+
 export type DocumentsPageProps = {
     documents: {
         data: ArchivedDocument[];
@@ -41,6 +46,11 @@ export type DocumentsPageProps = {
         to: number | null;
         total: number;
     };
+    filters: {
+        q: string;
+        field: string;
+    };
+    searchFields: SearchFieldOption[];
 };
 
 export type UploadForm = {

@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { ArrowDown, ArrowUpRight, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
@@ -171,16 +172,12 @@ export default function DocumentChain({
         };
     }, [document]);
 
-    useEffect(() => {
-        if (loadingPrevious || !originCardRef.current) {
-            return;
-        }
-
-        originCardRef.current.scrollIntoView({
+    useLayoutEffect(() => {
+        originCardRef.current?.scrollIntoView({
             inline: 'center',
             block: 'nearest',
         });
-    }, [chainCards, loadingPrevious]);
+    }, [chainCards]);
 
     const stopDrag = (pointerId: number, withMomentum: boolean) => {
         const scroller = scrollerRef.current;
@@ -214,8 +211,9 @@ export default function DocumentChain({
 
     const cards =
         chainCards.length > 0 ? chainCards : [toCurrentCard(document)];
+    const originIndex = cards.findIndex((card) => card.isOrigin);
 
-    return (
+    const overlay = (
         <div
             onClick={(event) => {
                 if (event.target === event.currentTarget) {
@@ -223,7 +221,7 @@ export default function DocumentChain({
                     setSelectedId(null);
                 }
             }}
-            className="fixed inset-0 z-[60] flex items-center justify-center overflow-hidden backdrop-blur-[2px]"
+            className="fixed inset-0 z-[80] flex items-center justify-center overflow-hidden backdrop-blur-[4px]"
         >
             <div
                 ref={scrollerRef}
@@ -316,34 +314,25 @@ export default function DocumentChain({
                 }}
                 onPointerUp={(event) => stopDrag(event.pointerId, true)}
                 onPointerCancel={(event) => stopDrag(event.pointerId, false)}
-                className={`document-chain-scroller flex max-w-[94vw] shrink-0 touch-none items-center gap-3 overflow-x-auto overflow-y-hidden px-4 py-10 select-none [&_canvas]:pointer-events-none [&_img]:pointer-events-none ${
+                className={`document-chain-scroller flex max-w-[94vw] shrink-0 touch-none items-center gap-3 overflow-x-auto overflow-y-hidden px-4 pt-10 pb-16 select-none [&_canvas]:pointer-events-none [&_img]:pointer-events-none ${
                     isDragging ? 'cursor-grabbing' : 'cursor-grab'
                 }`}
             >
-                {loadingPrevious && (
-                    <div
-                        role="status"
-                        className="flex shrink-0 items-center gap-2 pr-1 text-sm text-slate-700 dark:text-slate-200"
-                    >
-                        <Spinner />
-                        Loading document chain…
-                    </div>
-                )}
                 {cards.map((item, index) => {
-                    const isSelected =
-                        !item.isOrigin && selectedId === item.id;
-                    const isHighlighted =
-                        isSelected || hoveredId === item.id;
+                    const isSelected = !item.isOrigin && selectedId === item.id;
+                    const isHighlighted = isSelected || hoveredId === item.id;
+                    const enterDelay =
+                        Math.abs(index - Math.max(originIndex, 0)) * 90;
 
                     return (
                         <div
                             key={item.id}
                             className="document-chain-card-enter flex shrink-0 items-center"
-                            style={{ animationDelay: `${index * 180}ms` }}
+                            style={{ animationDelay: `${enterDelay}ms` }}
                         >
                             <div
                                 ref={item.isOrigin ? originCardRef : undefined}
-                                className="flex shrink-0 flex-col items-center gap-1.5"
+                                className="relative flex shrink-0 flex-col items-center gap-1.5"
                                 onMouseEnter={() => setHoveredId(item.id)}
                                 onMouseLeave={() => setHoveredId(null)}
                             >
@@ -416,7 +405,7 @@ export default function DocumentChain({
                                                 }}
                                                 aria-label={`Open ${item.title}`}
                                                 title={`Open ${item.title}`}
-                                                className={`absolute top-2 right-2 z-20 h-8 cursor-pointer rounded-none bg-white/95 px-2 text-xs shadow-sm dark:bg-slate-950/95 ${
+                                                className={`absolute top-2 right-2 z-20 h-8 cursor-pointer rounded-none bg-card/95 px-2 text-xs shadow-sm dark:bg-slate-950/95 ${
                                                     isDragging
                                                         ? 'pointer-events-none opacity-0'
                                                         : isHighlighted
@@ -439,7 +428,7 @@ export default function DocumentChain({
                                             />
                                         </div>
                                     )}
-                                    <div className="flex min-h-0 flex-1 flex-col justify-center border-t border-slate-100 bg-white p-4 dark:border-slate-800 dark:bg-slate-950">
+                                    <div className="flex min-h-0 flex-1 flex-col justify-center border-t border-slate-100 bg-card p-4 dark:border-slate-800 dark:bg-slate-950">
                                         <p className="text-[10px] font-semibold tracking-wide text-slate-500 uppercase dark:text-slate-400">
                                             {item.label}
                                         </p>
@@ -448,6 +437,15 @@ export default function DocumentChain({
                                         </p>
                                     </div>
                                 </article>
+                                {item.isOrigin && loadingPrevious ? (
+                                    <div
+                                        role="status"
+                                        className="absolute top-full left-1/2 mt-4 flex -translate-x-1/2 items-center gap-2 text-sm whitespace-nowrap text-slate-700 dark:text-slate-200"
+                                    >
+                                        <Spinner />
+                                        Loading document chain…
+                                    </div>
+                                ) : null}
                             </div>
                             {index < cards.length - 1 && (
                                 <div
@@ -494,6 +492,12 @@ export default function DocumentChain({
             </div>
         </div>
     );
+
+    if (typeof window === 'undefined') {
+        return overlay;
+    }
+
+    return createPortal(overlay, window.document.body);
 }
 
 function chainArrowDots(index: number): [number, number][] {
@@ -557,10 +561,7 @@ function cubicBezierPoint(
         3 * u * t ** 2 * curve.c2[1] +
         t ** 3 * curve.p3[1];
 
-    return [
-        roundCoord(x),
-        roundCoord(Math.min(37, Math.max(3.5, y))),
-    ];
+    return [roundCoord(x), roundCoord(Math.min(37, Math.max(3.5, y)))];
 }
 
 function roundCoord(value: number): number {

@@ -46,7 +46,7 @@ export function DocumentCardField({
             <dt
                 className={
                     onImage
-                        ? 'text-[10px] font-medium tracking-wide text-blue-100/80 uppercase'
+                        ? 'text-[10px] font-medium tracking-wide text-white uppercase'
                         : 'text-xs font-medium text-slate-500 dark:text-slate-400'
                 }
             >

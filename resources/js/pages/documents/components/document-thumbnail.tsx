@@ -1,7 +1,41 @@
-import { lazy, Suspense, useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { FileImage, FileText } from 'lucide-react';
+import ClientOnly from '@/components/client-only';
+import { useClientComponent } from '@/hooks/use-client-component';
 
-const PdfThumbnail = lazy(() => import('./pdf-thumbnail'));
+function loadPdfThumbnail() {
+    return import('./pdf-thumbnail');
+}
+
+function pdfFallback(): ReactNode {
+    return (
+        <div
+            className="flex h-full w-full items-center justify-center"
+            aria-busy="true"
+        >
+            <FileText
+                aria-hidden="true"
+                className="size-10 animate-pulse text-slate-400 motion-reduce:animate-none"
+            />
+        </div>
+    );
+}
+
+function ClientPdfThumbnail({
+    url,
+    fit,
+}: {
+    url: string;
+    fit: 'contain' | 'cover';
+}) {
+    const PdfThumbnail = useClientComponent(loadPdfThumbnail);
+
+    if (!PdfThumbnail) {
+        return pdfFallback();
+    }
+
+    return <PdfThumbnail url={url} fit={fit} />;
+}
 
 type DocumentThumbnailProps = {
     mimeType: string;
@@ -31,18 +65,9 @@ export default function DocumentThumbnail({
             } ${className ?? ''}`}
         >
             {mimeType === 'application/pdf' ? (
-                <Suspense
-                    fallback={
-                        <div className="flex h-full w-full items-center justify-center">
-                            <FileText
-                                aria-hidden="true"
-                                className="size-10 text-slate-400"
-                            />
-                        </div>
-                    }
-                >
-                    <PdfThumbnail url={url} fit={fit} />
-                </Suspense>
+                <ClientOnly fallback={pdfFallback()}>
+                    <ClientPdfThumbnail url={url} fit={fit} />
+                </ClientOnly>
             ) : isImage && !imageError ? (
                 <img
                     src={url}

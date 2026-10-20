@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
@@ -77,6 +78,70 @@ use Illuminate\Support\Carbon;
 class Document extends Model
 {
     /**
+     * Text-like columns users can search from the archive.
+     *
+     * @var list<string>
+     */
+    public const SEARCHABLE_COLUMNS = [
+        'tax_declaration_number',
+        'declaration_date',
+        'lot_number',
+        'registered_owner',
+        'municipality',
+        'barangay',
+        'title_number',
+        'property_location_street',
+        'property_location_barangay',
+        'property_location_district',
+        'property_location_municipality',
+        'owner_address_street',
+        'owner_address_barangay',
+        'owner_address_district',
+        'owner_address_city_municipality',
+        'province',
+        'boundary_north',
+        'boundary_south',
+        'boundary_east',
+        'boundary_west',
+        'area',
+        'remarks',
+    ];
+
+    /**
+     * User-selectable search targets. Null columns means every searchable column.
+     *
+     * @var array<string, list<string>|null>
+     */
+    public const SEARCH_FIELDS = [
+        'all' => null,
+        'tax_declaration_number' => ['tax_declaration_number'],
+        'registered_owner' => ['registered_owner'],
+        'lot_number' => ['lot_number'],
+        'property_location' => [
+            'municipality',
+            'barangay',
+            'province',
+            'property_location_street',
+            'property_location_barangay',
+            'property_location_district',
+            'property_location_municipality',
+        ],
+        'remarks' => ['remarks'],
+    ];
+
+    /**
+     * @var array<string, string>
+     */
+    public const SEARCH_FIELD_LABELS = [
+        'all' => 'All fields',
+        'tax_declaration_number' => 'Tax declaration',
+        'registered_owner' => 'Owner',
+        'lot_number' => 'Lot number',
+        'property_location' => 'Location',
+        'remarks' => 'Remarks',
+    ];
+
+    /**
      * @return array<string, string>
      */
     protected function casts(): array
@@ -93,6 +158,60 @@ class Document extends Model
     public function uploader(): BelongsTo
     {
         return $this->belongsTo(User::class, 'uploaded_by');
+    }
+
+    /**
+     * Restrict the query to documents matching every search term in the selected columns.
+     *
+     * @param  Builder<Document>  $query
+     */
+    public function scopeSearch(Builder $query, string $search, string $field = 'all'): void
+    {
+        $terms = preg_split('/\s+/u', trim($search), -1, PREG_SPLIT_NO_EMPTY);
+        $columns = self::columnsForSearchField($field);
+
+        if ($terms === false || $terms === [] || $columns === []) {
+            return;
+        }
+
+        foreach ($terms as $term) {
+            $like = '%'.addcslashes($term, '%_\\').'%';
+
+            $query->where(function (Builder $group) use ($columns, $like): void {
+                foreach ($columns as $column) {
+                    $group->orWhere($column, 'like', $like);
+                }
+            });
+        }
+    }
+
+    /**
+     * @return list<string>
+     */
+    public static function columnsForSearchField(string $field): array
+    {
+        if (! array_key_exists($field, self::SEARCH_FIELDS) || self::SEARCH_FIELDS[$field] === null) {
+            return self::SEARCHABLE_COLUMNS;
+        }
+
+        return self::SEARCH_FIELDS[$field];
+    }
+
+    /**
+     * @return list<array{value: string, label: string}>
+     */
+    public static function searchFieldOptions(): array
+    {
+        $options = [];
+
+        foreach (array_keys(self::SEARCH_FIELDS) as $value) {
+            $options[] = [
+                'value' => $value,
+                'label' => self::SEARCH_FIELD_LABELS[$value] ?? $value,
+            ];
+        }
+
+        return $options;
     }
 
     /**

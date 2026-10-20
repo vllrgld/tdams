@@ -10,11 +10,6 @@ import { Document, Page, pdfjs } from 'react-pdf';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
-pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-    'pdfjs-dist/build/pdf.worker.min.mjs',
-    import.meta.url,
-).toString();
-
 type PdfPreviewProps = {
     url: string;
     title: string;
@@ -27,6 +22,15 @@ export default function PdfPreview({ url, title }: PdfPreviewProps) {
     const [pageCount, setPageCount] = useState(0);
     const [zoom, setZoom] = useState(1);
     const [loadError, setLoadError] = useState<string | null>(null);
+    const [workerReady, setWorkerReady] = useState(false);
+
+    useEffect(() => {
+        pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+            'pdfjs-dist/build/pdf.worker.min.mjs',
+            import.meta.url,
+        ).toString();
+        setWorkerReady(true);
+    }, []);
 
     useEffect(() => {
         const viewer = viewerRef.current;
@@ -108,7 +112,7 @@ export default function PdfPreview({ url, title }: PdfPreviewProps) {
     return (
         <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden border border-slate-200 dark:border-slate-800">
             <div
-                className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-b border-slate-200 bg-white px-2 py-2 dark:border-slate-800 dark:bg-slate-950"
+                className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-b border-slate-200 bg-card px-2 py-2 dark:border-slate-800 dark:bg-slate-950"
                 aria-label="PDF viewer controls"
             >
                 <div className="flex items-center gap-1">
@@ -229,66 +233,74 @@ export default function PdfPreview({ url, title }: PdfPreviewProps) {
                 ref={viewerRef}
                 className="min-h-0 flex-1 overflow-auto bg-slate-200 p-2 dark:bg-slate-900"
             >
-                <Document
-                    file={url}
-                    suspense={false}
-                    onLoadSuccess={({ numPages }) => {
-                        setPageCount(numPages);
-                        setPageNumber(1);
-                        setLoadError(null);
-                    }}
-                    onLoadError={(error) => setLoadError(error.message)}
-                    loading={
-                        <p className="p-6 text-center text-sm text-slate-600 dark:text-slate-300">
-                            Loading PDF…
-                        </p>
-                    }
-                    error={
-                        <p
-                            role="alert"
-                            className="max-w-lg p-6 text-center text-sm text-red-800 dark:text-red-300"
-                        >
-                            {loadError
-                                ? `Could not load this PDF: ${loadError}`
-                                : 'Could not load this PDF.'}
-                        </p>
-                    }
-                    className="flex w-full flex-col items-center gap-4"
-                >
-                    {Array.from(
-                        { length: pageCount },
-                        (_, index) => index + 1,
-                    ).map((page) => (
-                        <Page
-                            key={page}
-                            pageNumber={page}
-                            width={pageWidth}
-                            suspense={false}
-                            renderTextLayer={false}
-                            renderAnnotationLayer={false}
-                            onLoadError={(error) => setLoadError(error.message)}
-                            onRenderError={(error) =>
-                                setLoadError(error.message)
-                            }
-                            loading={
-                                <p className="p-6 text-center text-sm text-slate-600 dark:text-slate-300">
-                                    Rendering page {page}…
-                                </p>
-                            }
-                            error={
-                                <p
-                                    role="alert"
-                                    className="max-w-lg p-6 text-center text-sm text-red-800 dark:text-red-300"
-                                >
-                                    {loadError
-                                        ? `Could not render page ${page}: ${loadError}`
-                                        : `Could not render page ${page}.`}
-                                </p>
-                            }
-                            className="scroll-m-2 shadow-lg [&_canvas]:block"
-                        />
-                    ))}
-                </Document>
+                {!workerReady ? (
+                    <p className="p-6 text-center text-sm text-slate-600 dark:text-slate-300">
+                        Loading PDF…
+                    </p>
+                ) : (
+                    <Document
+                        file={url}
+                        suspense={false}
+                        onLoadSuccess={({ numPages }) => {
+                            setPageCount(numPages);
+                            setPageNumber(1);
+                            setLoadError(null);
+                        }}
+                        onLoadError={(error) => setLoadError(error.message)}
+                        loading={
+                            <p className="p-6 text-center text-sm text-slate-600 dark:text-slate-300">
+                                Loading PDF…
+                            </p>
+                        }
+                        error={
+                            <p
+                                role="alert"
+                                className="max-w-lg p-6 text-center text-sm text-red-800 dark:text-red-300"
+                            >
+                                {loadError
+                                    ? `Could not load this PDF: ${loadError}`
+                                    : 'Could not load this PDF.'}
+                            </p>
+                        }
+                        className="flex w-full flex-col items-center gap-4"
+                    >
+                        {Array.from(
+                            { length: pageCount },
+                            (_, index) => index + 1,
+                        ).map((page) => (
+                            <Page
+                                key={page}
+                                pageNumber={page}
+                                width={pageWidth}
+                                suspense={false}
+                                renderTextLayer={false}
+                                renderAnnotationLayer={false}
+                                onLoadError={(error) =>
+                                    setLoadError(error.message)
+                                }
+                                onRenderError={(error) =>
+                                    setLoadError(error.message)
+                                }
+                                loading={
+                                    <p className="p-6 text-center text-sm text-slate-600 dark:text-slate-300">
+                                        Rendering page {page}…
+                                    </p>
+                                }
+                                error={
+                                    <p
+                                        role="alert"
+                                        className="max-w-lg p-6 text-center text-sm text-red-800 dark:text-red-300"
+                                    >
+                                        {loadError
+                                            ? `Could not render page ${page}: ${loadError}`
+                                            : `Could not render page ${page}.`}
+                                    </p>
+                                }
+                                className="scroll-m-2 shadow-lg [&_canvas]:block"
+                            />
+                        ))}
+                    </Document>
+                )}
             </div>
             <span className="sr-only">{title}</span>
         </div>

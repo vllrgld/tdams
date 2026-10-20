@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import {
     ArrowUpRight,
     ChevronLeft,
@@ -6,12 +6,35 @@ import {
     FileText,
     History,
 } from 'lucide-react';
+import ClientOnly from '@/components/client-only';
 import { Button } from '@/components/ui/button';
+import { useClientComponent } from '@/hooks/use-client-component';
 import { Spinner } from '@/components/ui/spinner';
 import { formatDate } from '../lib/formatters';
 import type { ArchivedDocument, PreviousDeclarationEntry } from '../types';
 
-const PdfPreview = lazy(() => import('@/components/pdf-preview'));
+function loadPdfPreview() {
+    return import('@/components/pdf-preview');
+}
+
+function pdfViewerFallback(): ReactNode {
+    return (
+        <div className="flex h-full items-center justify-center gap-2 border border-slate-200 bg-slate-100 text-sm text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300">
+            <Spinner />
+            Loading PDF viewer…
+        </div>
+    );
+}
+
+function ClientPdfPreview({ url, title }: { url: string; title: string }) {
+    const PdfPreview = useClientComponent(loadPdfPreview);
+
+    if (!PdfPreview) {
+        return pdfViewerFallback();
+    }
+
+    return <PdfPreview url={url} title={title} />;
+}
 
 type DocumentHistoryProps = {
     document: ArchivedDocument;
@@ -116,7 +139,7 @@ export default function DocumentHistory({
                             <>
                                 <div
                                     aria-label="Document navigation"
-                                    className="mb-3 flex items-center justify-between border border-slate-200 bg-white p-2 dark:border-slate-800 dark:bg-slate-950"
+                                    className="mb-3 flex items-center justify-between border border-slate-200 bg-card p-2 dark:border-slate-800 dark:bg-slate-950"
                                 >
                                     <Button
                                         type="button"
@@ -164,7 +187,7 @@ export default function DocumentHistory({
                                 </div>
 
                                 {currentEntry && (
-                                    <article className="overflow-hidden border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-950">
+                                    <article className="overflow-hidden border border-slate-200 bg-card shadow-sm dark:border-slate-800 dark:bg-slate-950">
                                         <div className="flex items-start justify-between gap-3 border-b border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-900">
                                             <div className="flex min-w-0 items-start gap-3">
                                                 <span className="flex size-10 shrink-0 items-center justify-center bg-blue-50 text-blue-900 dark:bg-blue-950 dark:text-blue-200">
@@ -236,16 +259,10 @@ export default function DocumentHistory({
                                             {currentDocument?.mimeType ===
                                             'application/pdf' ? (
                                                 <div className="flex h-[54vh] min-h-72 flex-col">
-                                                    <Suspense
-                                                        fallback={
-                                                            <div className="flex h-full items-center justify-center gap-2 border border-slate-200 bg-slate-100 text-sm text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300">
-                                                                <Spinner />
-                                                                Loading PDF
-                                                                viewer…
-                                                            </div>
-                                                        }
+                                                    <ClientOnly
+                                                        fallback={pdfViewerFallback()}
                                                     >
-                                                        <PdfPreview
+                                                        <ClientPdfPreview
                                                             key={
                                                                 currentDocument.id
                                                             }
@@ -254,7 +271,7 @@ export default function DocumentHistory({
                                                             }
                                                             title={`Preview for ${currentEntry.taxDeclarationNumber}`}
                                                         />
-                                                    </Suspense>
+                                                    </ClientOnly>
                                                 </div>
                                             ) : currentDocument ? (
                                                 <div className="flex min-h-48 items-center justify-center overflow-auto border border-slate-200 bg-slate-100 p-2 dark:border-slate-800 dark:bg-slate-900">

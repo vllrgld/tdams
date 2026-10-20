@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -17,15 +18,34 @@ use Throwable;
 
 class DocumentController extends Controller
 {
-    public function index(): Response
+    public function index(Request $request): Response
     {
+        $validated = $request->validate([
+            'q' => ['sometimes', 'nullable', 'string', 'max:200'],
+            'field' => ['sometimes', 'nullable', 'string', Rule::in(array_keys(Document::SEARCH_FIELDS))],
+        ]);
+
+        $search = trim((string) ($validated['q'] ?? ''));
+        $field = $validated['field'] ?? 'all';
+
+        if (! is_string($field) || $field === '') {
+            $field = 'all';
+        }
+
         $documents = Document::query()
+            ->when($search !== '', fn ($query) => $query->search($search, $field))
             ->latest()
             ->paginate(20)
+            ->withQueryString()
             ->through(fn (Document $document): array => $document->toArchiveArray());
 
         return Inertia::render('documents/index', [
             'documents' => $documents,
+            'filters' => [
+                'q' => $search,
+                'field' => $field,
+            ],
+            'searchFields' => Document::searchFieldOptions(),
         ]);
     }
 

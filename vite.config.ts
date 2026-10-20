@@ -8,13 +8,13 @@ import laravel from 'laravel-vite-plugin';
 import { bunny } from 'laravel-vite-plugin/fonts';
 import { defineConfig, lazyPlugins } from 'vite-plus';
 
-const devServerHost =
-    process.env.VITE_DEV_SERVER_HOST ??
+const lanHost =
     Object.values(networkInterfaces())
         .flat()
         .find((address) => address?.family === 'IPv4' && !address.internal)
-        ?.address ??
-    '127.0.0.1';
+        ?.address ?? '127.0.0.1';
+
+const devServerHost = process.env.VITE_DEV_SERVER_HOST ?? '127.0.0.1';
 
 export default defineConfig({
     plugins: lazyPlugins(() => [
@@ -44,9 +44,13 @@ export default defineConfig({
         origin: `http://${devServerHost}:5173`,
         cors: {
             origin: [
-                `http://${devServerHost}`,
-                `http://${devServerHost}:8000`,
+                'http://127.0.0.1:8000',
+                'http://localhost:8000',
+                'http://127.0.0.1',
+                'http://localhost',
                 'http://dtms.test',
+                `http://${lanHost}`,
+                `http://${lanHost}:8000`,
             ],
         },
         hmr: {

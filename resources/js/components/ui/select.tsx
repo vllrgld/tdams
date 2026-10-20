@@ -88,7 +88,7 @@ function SelectContent({
             className={cn(
               "p-1",
               alignItemWithTrigger === false &&
-                "h-(--anchor-height) w-full min-w-(--anchor-width) scroll-my-1"
+                "w-full min-w-(--anchor-width)"
             )}
           >
             {children}

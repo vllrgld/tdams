@@ -1122,16 +1122,16 @@
     "semantic_hash": ""
   },
   "resources/js/pages/documents/components/document-info.tsx": {
-    "mtime": 1791947745.4137924,
-    "seen": 1792383666.774639,
-    "ast_hash": "5390f6c5629097291ea0585118efc7da",
-    "semantic_hash": "5390f6c5629097291ea0585118efc7da"
+    "mtime": 1792398837.1760967,
+    "seen": 1792399386.5520742,
+    "ast_hash": "d8b69e0d88243a5efe124de0009de181",
+    "semantic_hash": ""
   },
   "resources/js/pages/documents/components/document-thumbnail.tsx": {
-    "mtime": 1791954543.0064125,
-    "seen": 1792383666.7746403,
-    "ast_hash": "89da895444aee22e10206dda8faeb388",
-    "semantic_hash": "89da895444aee22e10206dda8faeb388"
+    "mtime": 1792397443.9474394,
+    "seen": 1792397966.7144084,
+    "ast_hash": "c716a46e020138d4b851619600b68d79",
+    "semantic_hash": ""
   },
   "resources/js/pages/documents/components/document-upload-dialog.tsx": {
     "mtime": 1792391365.9931266,
@@ -1146,15 +1146,15 @@
     "semantic_hash": ""
   },
   "resources/js/pages/documents/components/pdf-thumbnail.tsx": {
-    "mtime": 1791535802.1641846,
-    "seen": 1792383666.7746453,
-    "ast_hash": "828138b934191f0b8c0e4190311dd59b",
-    "semantic_hash": "828138b934191f0b8c0e4190311dd59b"
+    "mtime": 1792397803.1714602,
+    "seen": 1792397966.714431,
+    "ast_hash": "8d0cc4e9633ffd22d2f57c7dd274a03b",
+    "semantic_hash": ""
   },
   "resources/js/pages/documents/components/views/document-cardview.tsx": {
-    "mtime": 1792391535.142874,
-    "seen": 1792391927.9021962,
-    "ast_hash": "7ff7a2a97c2c4c723b9bd25f16a2c6f0",
+    "mtime": 1792399834.3591497,
+    "seen": 1792399936.329664,
+    "ast_hash": "53d2c951d47d0ec965cb65b9405e4a13",
     "semantic_hash": ""
   },
   "resources/js/pages/documents/components/views/document-listview.tsx": {
@@ -1164,10 +1164,10 @@
     "semantic_hash": "03fe31580e5a3a3620da125948215ad5"
   },
   "resources/js/pages/documents/components/views/document-view-helpers.tsx": {
-    "mtime": 1791947744.8901017,
-    "seen": 1792383666.77465,
-    "ast_hash": "ccba036308c396fb6d63b7e13175ecf8",
-    "semantic_hash": "ccba036308c396fb6d63b7e13175ecf8"
+    "mtime": 1792399289.4388375,
+    "seen": 1792399386.552095,
+    "ast_hash": "6d3189cdc7eb600b5862aef7c4d9e6d4",
+    "semantic_hash": ""
   },
   "resources/js/pages/documents/index.tsx": {
     "mtime": 1792391363.167042,

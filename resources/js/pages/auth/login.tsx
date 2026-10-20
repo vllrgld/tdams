@@ -1,6 +1,5 @@
 import { Form, Head, Link, usePage } from '@inertiajs/react';
 import InputError from '@/components/input-error';
-import PasskeyVerify from '@/components/passkey-verify';
 import PasswordInput from '@/components/password-input';
 import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
@@ -31,7 +30,7 @@ export default function Login({ status, canResetPassword }: Props) {
         <>
             <Head title="Log in" />
 
-            <main className="flex min-h-svh flex-col items-center justify-center gap-6 bg-white p-6 text-slate-900 [--color-accent-foreground:#0f172a] [--color-accent:#f1f5f9] [--color-background:#fff] [--color-border:#e2e8f0] [--color-card-foreground:#0f172a] [--color-card:#fff] [--color-foreground:#0f172a] [--color-input:#e2e8f0] [--color-muted-foreground:#64748b] [--color-muted:#f1f5f9] [--color-primary-foreground:#fff] [--color-primary:#1e3a8a] [--color-ring:#94a3b8] md:p-10">
+            <main className="flex min-h-svh flex-col items-center justify-center gap-6 bg-background p-6 text-slate-900 [--color-accent-foreground:#0f172a] [--color-accent:#f4f4f4] [--color-background:#fdfdfd] [--color-border:#e8e8e8] [--color-card-foreground:#0f172a] [--color-card:#fdfdfd] [--color-foreground:#0f172a] [--color-input:#e8e8e8] [--color-muted-foreground:#64748b] [--color-muted:#f4f4f4] [--color-primary-foreground:#fdfdfd] [--color-primary:#1e3a8a] [--color-ring:#94a3b8] md:p-10">
                 <div className="flex w-full max-w-3xl flex-col gap-6">
                     <div className="flex justify-center">
                         <Link
@@ -47,7 +46,7 @@ export default function Login({ status, canResetPassword }: Props) {
                         </Link>
                     </div>
 
-                    <Card className="mx-auto w-full max-w-sm rounded-none border-black bg-white text-slate-900 shadow-none [&_[data-slot=button]]:rounded-none [&_[data-slot=checkbox]]:rounded-none [&_[data-slot=input]]:rounded-none">
+                    <Card className="mx-auto w-full max-w-sm rounded-none border-black bg-card text-slate-900 shadow-none [&_[data-slot=button]]:rounded-none [&_[data-slot=checkbox]]:rounded-none [&_[data-slot=input]]:rounded-none">
                         <CardHeader className="text-center">
                             <CardTitle className="text-xl">
                                 Login to your account
@@ -141,11 +140,6 @@ export default function Login({ status, canResetPassword }: Props) {
                                                 Login
                                             </Button>
                                         </div>
-
-                                        <PasskeyVerify
-                                            separator="Or continue with"
-                                            separatorPosition="above"
-                                        />
 
                                         <p className="text-center text-sm text-muted-foreground">
                                             Don&apos;t have an account?{' '}

@@ -197,7 +197,7 @@ export default function DeclarationNumberSearch({
                     id={listboxId}
                     role="listbox"
                     aria-label="Available tax declaration numbers"
-                    className="absolute z-50 mt-1 max-h-56 w-full overflow-y-auto border border-slate-200 bg-white shadow-md dark:border-slate-700 dark:bg-slate-950"
+                    className="absolute z-50 mt-1 max-h-56 w-full overflow-y-auto border border-slate-200 bg-card shadow-md dark:border-slate-700 dark:bg-slate-950"
                 >
                     {loading && results.length === 0 ? (
                         <li className="px-3 py-2 text-sm text-slate-500 dark:text-slate-400">

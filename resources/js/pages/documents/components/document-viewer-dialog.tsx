@@ -1,15 +1,10 @@
-import {
-    lazy,
-    Suspense,
-    useEffect,
-    useState,
-    type FormEvent,
-    type ReactNode,
-} from 'react';
+import { useEffect, useState, type FormEvent, type ReactNode } from 'react';
 import { useForm } from '@inertiajs/react';
-import { History, Info } from 'lucide-react';
+import { History, Info, Link } from 'lucide-react';
 import { toast } from 'sonner';
+import ClientOnly from '@/components/client-only';
 import InputError from '@/components/input-error';
+import { useClientComponent } from '@/hooks/use-client-component';
 import { Spinner } from '@/components/ui/spinner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -24,9 +19,31 @@ import {
 import { formatDate, formatFileSize } from '../lib/formatters';
 import type { ArchivedDocument } from '../types';
 import DeclarationNumberSearch from './declaration-number-search';
+import DocumentChain from './document-chain';
 import DocumentHistory from './document-history';
 
-const PdfPreview = lazy(() => import('@/components/pdf-preview'));
+function loadPdfPreview() {
+    return import('@/components/pdf-preview');
+}
+
+function pdfViewerFallback(): ReactNode {
+    return (
+        <div className="flex min-h-0 flex-1 items-center justify-center gap-2 border border-slate-200 bg-slate-100 text-sm text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300">
+            <Spinner />
+            Loading PDF viewer…
+        </div>
+    );
+}
+
+function ClientPdfPreview({ url, title }: { url: string; title: string }) {
+    const PdfPreview = useClientComponent(loadPdfPreview);
+
+    if (!PdfPreview) {
+        return pdfViewerFallback();
+    }
+
+    return <PdfPreview url={url} title={title} />;
+}
 
 type DocumentViewerDialogProps = {
     document: ArchivedDocument | null;
@@ -42,12 +59,21 @@ export default function DocumentViewerDialog({
     onInfoOpenChange,
 }: DocumentViewerDialogProps) {
     const [panelView, setPanelView] = useState<'info' | 'history'>('info');
+    const [chainDocument, setChainDocument] = useState<ArchivedDocument | null>(
+        null,
+    );
 
     useEffect(() => {
         if (!infoOpen) {
             setPanelView('info');
         }
     }, [infoOpen]);
+
+    useEffect(() => {
+        if (!document) {
+            setChainDocument(null);
+        }
+    }, [document]);
 
     const handleInfoToggle = () => {
         if (infoOpen && panelView === 'info') {
@@ -79,8 +105,14 @@ export default function DocumentViewerDialog({
         <>
             <Dialog
                 open={document !== null}
+                modal={chainDocument === null}
+                disablePointerDismissal={chainDocument !== null}
                 onOpenChange={(open) => {
                     if (!open) {
+                        if (chainDocument) {
+                            return;
+                        }
+
                         onDocumentChange(null);
                         onInfoOpenChange(false);
                     }
@@ -147,26 +179,41 @@ export default function DocumentViewerDialog({
                             >
                                 <History aria-hidden="true" />
                             </Button>
+                            <Button
+                                type="button"
+                                variant={chainDocument ? 'secondary' : 'ghost'}
+                                size="icon"
+                                aria-label="Show document chain"
+                                aria-pressed={chainDocument !== null}
+                                title="Document chain"
+                                onClick={() => {
+                                    if (!document) {
+                                        return;
+                                    }
+
+                                    setChainDocument((current) =>
+                                        current?.id === document.id
+                                            ? null
+                                            : document,
+                                    );
+                                }}
+                                className="size-9 shrink-0 rounded-none border-0 focus-visible:ring-0 focus-visible:ring-transparent"
+                            >
+                                <Link aria-hidden="true" />
+                            </Button>
                         </div>
                     </div>
                     {document && (
                         <div className="flex min-h-0 flex-1 flex-col gap-4 md:flex-row">
                             <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-3">
                                 {document.mimeType === 'application/pdf' ? (
-                                    <Suspense
-                                        fallback={
-                                            <div className="flex min-h-0 flex-1 items-center justify-center gap-2 border border-slate-200 bg-slate-100 text-sm text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300">
-                                                <Spinner />
-                                                Loading PDF viewer…
-                                            </div>
-                                        }
-                                    >
-                                        <PdfPreview
+                                    <ClientOnly fallback={pdfViewerFallback()}>
+                                        <ClientPdfPreview
                                             key={document.id}
                                             url={document.viewUrl}
                                             title={document.originalFilename}
                                         />
-                                    </Suspense>
+                                    </ClientOnly>
                                 ) : (
                                     <div className="flex min-h-0 flex-1 items-center justify-center overflow-auto border border-slate-200 bg-slate-100 p-2 dark:border-slate-800 dark:bg-slate-900">
                                         <img
@@ -400,6 +447,15 @@ export default function DocumentViewerDialog({
                         ))}
                 </DialogContent>
             </Dialog>
+            <DocumentChain
+                document={chainDocument}
+                onViewDocument={onDocumentChange}
+                onOpenChange={(open) => {
+                    if (!open) {
+                        setChainDocument(null);
+                    }
+                }}
+            />
         </>
     );
 }

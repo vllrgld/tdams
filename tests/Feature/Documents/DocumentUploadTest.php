@@ -120,6 +120,8 @@ class DocumentUploadTest extends TestCase
             ->get(route('documents.index'))
             ->assertInertia(fn (Assert $page) => $page
                 ->component('documents/index')
+                ->where('filters.q', '')
+                ->where('filters.field', 'all')
                 ->where('documents.total', 1)
                 ->where('documents.data.0.taxDeclarationNumber', 'TD-2026-00481')
                 ->where('documents.data.0.previousTaxDeclarationNumber', 'TD-2020-00123')
