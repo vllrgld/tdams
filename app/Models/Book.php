@@ -1,0 +1,53 @@
+<?php
+
+namespace App\Models;
+
+use Database\Factories\BookFactory;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
+
+/**
+ * @property int $id
+ * @property int $drawer_id
+ * @property string $label
+ * @property int $position
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Drawer $drawer
+ * @property-read Collection<int, Document> $documents
+ * @property-read int|null $documents_count
+ */
+#[Fillable(['drawer_id', 'label', 'position'])]
+class Book extends Model
+{
+    /** @use HasFactory<BookFactory> */
+    use HasFactory;
+
+    public const MAX_PER_DRAWER = 8;
+
+    /**
+     * @return BelongsTo<Drawer, $this>
+     */
+    public function drawer(): BelongsTo
+    {
+        return $this->belongsTo(Drawer::class);
+    }
+
+    /**
+     * @return HasMany<Document, $this>
+     */
+    public function documents(): HasMany
+    {
+        return $this->hasMany(Document::class)->orderBy('position');
+    }
+
+    public function nextDocumentPosition(): int
+    {
+        return ((int) $this->documents()->max('position')) + 1;
+    }
+}

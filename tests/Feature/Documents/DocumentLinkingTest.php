@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\Documents;
 
+use App\Models\Book;
+use App\Models\Cabinet;
 use App\Models\Document;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -84,6 +86,7 @@ class DocumentLinkingTest extends TestCase
 
         $this->actingAs($user)->post(route('documents.store'), [
             'file' => UploadedFile::fake()->create('declaration.pdf', 1024, 'application/pdf'),
+            'book_id' => $this->bookForUpload()->id,
             'tax_declaration_number' => 'TD-2026-00481',
         ]);
 
@@ -129,6 +132,7 @@ class DocumentLinkingTest extends TestCase
             ->from(route('documents.index'))
             ->post(route('documents.store'), [
                 'file' => UploadedFile::fake()->create('declaration.pdf', 1024, 'application/pdf'),
+                'book_id' => $this->bookForUpload()->id,
                 'tax_declaration_number' => 'TD-2026-00481',
                 'previous_tax_declaration_number' => 'TD-2026-00481',
             ])
@@ -242,6 +246,16 @@ class DocumentLinkingTest extends TestCase
             ->assertJsonCount(1, 'entries')
             ->assertJsonPath('entries.0.document.id', $document->id)
             ->assertJsonPath('entries.0.taxDeclarationNumber', 'TD-2026-00481');
+    }
+
+    private function bookForUpload(): Book
+    {
+        $cabinet = Cabinet::factory()->withDrawers(1)->create();
+
+        return $cabinet->drawers()->firstOrFail()->books()->create([
+            'label' => 'Book 1',
+            'position' => 1,
+        ]);
     }
 
     /**

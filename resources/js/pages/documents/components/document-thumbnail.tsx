@@ -1,7 +1,9 @@
-import { useState, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { FileImage, FileText } from 'lucide-react';
 import ClientOnly from '@/components/client-only';
 import { useClientComponent } from '@/hooks/use-client-component';
+import { cn } from '@/lib/utils';
+import type { ThumbnailQuality } from './pdf-thumbnail-cache';
 
 function loadPdfThumbnail() {
     return import('./pdf-thumbnail');
@@ -24,17 +26,31 @@ function pdfFallback(): ReactNode {
 function ClientPdfThumbnail({
     url,
     fit,
+    pageNumber,
+    fill,
+    quality,
 }: {
     url: string;
     fit: 'contain' | 'cover';
+    pageNumber: number;
+    fill: boolean;
+    quality: ThumbnailQuality;
 }) {
     const PdfThumbnail = useClientComponent(loadPdfThumbnail);
 
     if (!PdfThumbnail) {
-        return pdfFallback();
+        return pageNumber > 1 ? null : pdfFallback();
     }
 
-    return <PdfThumbnail url={url} fit={fit} />;
+    return (
+        <PdfThumbnail
+            url={url}
+            fit={fit}
+            pageNumber={pageNumber}
+            fill={fill}
+            quality={quality}
+        />
+    );
 }
 
 type DocumentThumbnailProps = {
@@ -43,6 +59,9 @@ type DocumentThumbnailProps = {
     title: string;
     className?: string;
     fit?: 'contain' | 'cover';
+    pageNumber?: number;
+    fill?: boolean;
+    quality?: ThumbnailQuality;
 };
 
 export default function DocumentThumbnail({
@@ -51,36 +70,61 @@ export default function DocumentThumbnail({
     title,
     className,
     fit = 'contain',
+    pageNumber = 1,
+    fill = false,
+    quality = 'card',
 }: DocumentThumbnailProps) {
     const [imageError, setImageError] = useState(false);
     const isImage = mimeType.startsWith('image/');
     const TypeIcon = isImage ? FileImage : FileText;
 
+    useEffect(() => {
+        setImageError(false);
+    }, [url]);
+
     return (
         <div
-            className={`relative w-full overflow-hidden bg-slate-100 dark:bg-neutral-900 ${
+            className={cn(
+                'relative w-full overflow-hidden',
+                fill
+                    ? 'h-full bg-transparent dark:bg-transparent'
+                    : fit === 'cover'
+                      ? 'h-full bg-white'
+                      : 'bg-slate-100 dark:bg-neutral-900',
                 fit === 'cover'
                     ? 'h-full'
-                    : 'flex h-48 items-center justify-center'
-            } ${className ?? ''}`}
+                    : fill
+                      ? 'flex h-full items-center justify-center'
+                      : 'flex h-48 items-center justify-center',
+                className,
+            )}
         >
             {mimeType === 'application/pdf' ? (
-                <ClientOnly fallback={pdfFallback()}>
-                    <ClientPdfThumbnail url={url} fit={fit} />
+                <ClientOnly fallback={pageNumber > 1 ? null : pdfFallback()}>
+                    <ClientPdfThumbnail
+                        key={`${url}#${pageNumber}#${quality}`}
+                        url={url}
+                        fit={fit}
+                        pageNumber={pageNumber}
+                        fill={fill}
+                        quality={quality}
+                    />
                 </ClientOnly>
-            ) : isImage && !imageError ? (
+            ) : isImage && !imageError && pageNumber === 1 ? (
                 <img
                     src={url}
-                    alt={`First page preview of ${title}`}
+                    alt={`Page ${pageNumber} preview of ${title}`}
                     loading="lazy"
                     onError={() => setImageError(true)}
                     className={
                         fit === 'cover'
                             ? 'h-full w-full object-cover'
-                            : 'h-full w-full object-contain p-1.5'
+                            : fill
+                              ? 'h-full w-full object-contain'
+                              : 'h-full w-full object-contain p-1.5'
                     }
                 />
-            ) : (
+            ) : pageNumber > 1 ? null : (
                 <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-slate-400">
                     <TypeIcon aria-hidden="true" className="size-10" />
                     {imageError && (

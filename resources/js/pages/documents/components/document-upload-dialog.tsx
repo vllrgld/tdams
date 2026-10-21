@@ -1,4 +1,5 @@
 import type { FormEvent } from 'react';
+import { useMemo, useState } from 'react';
 import type { InertiaFormProps } from '@inertiajs/react';
 import { ScanLine, Upload } from 'lucide-react';
 import InputError from '@/components/input-error';
@@ -13,12 +14,20 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import { metadataSections } from '../lib/metadata';
-import type { UploadForm } from '../types';
+import type { ArchivePlacementCabinet, UploadForm } from '../types';
 import DeclarationNumberSearch from './declaration-number-search';
 
 type DocumentUploadDialogProps = {
     form: InertiaFormProps<UploadForm>;
+    archive: ArchivePlacementCabinet[];
     open: boolean;
     onOpenChange: (open: boolean) => void;
     onSubmit: (event: FormEvent<HTMLFormElement>) => void;
@@ -26,10 +35,43 @@ type DocumentUploadDialogProps = {
 
 export default function DocumentUploadDialog({
     form,
+    archive,
     open,
     onOpenChange,
     onSubmit,
 }: DocumentUploadDialogProps) {
+    const [cabinetId, setCabinetId] = useState('');
+    const [drawerId, setDrawerId] = useState('');
+    const cabinetsWithBooks = useMemo(
+        () =>
+            archive.filter((cabinet) =>
+                cabinet.drawers.some((drawer) => drawer.books.length > 0),
+            ),
+        [archive],
+    );
+    const selectedCabinet = cabinetsWithBooks.find(
+        (cabinet) => cabinet.id === cabinetId,
+    );
+    const drawersWithBooks = selectedCabinet?.drawers.filter(
+        (drawer) => drawer.books.length > 0,
+    );
+    const selectedDrawer = drawersWithBooks?.find(
+        (drawer) => drawer.id === drawerId,
+    );
+    const cabinetItems = cabinetsWithBooks.map((cabinet) => ({
+        value: cabinet.id,
+        label: cabinet.name,
+    }));
+    const drawerItems = (drawersWithBooks ?? []).map((drawer) => ({
+        value: drawer.id,
+        label: drawer.label,
+    }));
+    const bookItems = (selectedDrawer?.books ?? []).map((book) => ({
+        value: book.id,
+        label: book.label,
+    }));
+    const hasBooks = cabinetsWithBooks.length > 0;
+
     return (
         <>
             <Button
@@ -80,6 +122,128 @@ export default function DocumentUploadDialog({
                             </p>
                             <InputError message={form.errors.file} />
                         </div>
+
+                        <section className="grid gap-4">
+                            <h3 className="border-b border-slate-200 pb-2 text-sm font-semibold text-slate-900 dark:border-neutral-800 dark:text-neutral-100">
+                                Archive
+                            </h3>
+                            {hasBooks ? (
+                                <div className="grid gap-4 sm:grid-cols-3">
+                                    <div className="grid gap-2">
+                                        <Label htmlFor="document-cabinet">
+                                            Cabinet
+                                        </Label>
+                                        <Select
+                                            value={cabinetId}
+                                            onValueChange={(value) => {
+                                                const next = String(
+                                                    value ?? '',
+                                                );
+                                                setCabinetId(next);
+                                                setDrawerId('');
+                                                form.setData('book_id', '');
+                                            }}
+                                            items={cabinetItems}
+                                        >
+                                            <SelectTrigger
+                                                id="document-cabinet"
+                                                className="w-full rounded-none"
+                                            >
+                                                <SelectValue placeholder="Select cabinet" />
+                                            </SelectTrigger>
+                                            <SelectContent className="rounded-none">
+                                                {cabinetItems.map((item) => (
+                                                    <SelectItem
+                                                        key={item.value}
+                                                        value={item.value}
+                                                        className="rounded-none"
+                                                    >
+                                                        {item.label}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    <div className="grid gap-2">
+                                        <Label htmlFor="document-drawer">
+                                            Drawer
+                                        </Label>
+                                        <Select
+                                            value={drawerId}
+                                            onValueChange={(value) => {
+                                                const next = String(
+                                                    value ?? '',
+                                                );
+                                                setDrawerId(next);
+                                                form.setData('book_id', '');
+                                            }}
+                                            items={drawerItems}
+                                            disabled={!cabinetId}
+                                        >
+                                            <SelectTrigger
+                                                id="document-drawer"
+                                                className="w-full rounded-none"
+                                            >
+                                                <SelectValue placeholder="Select drawer" />
+                                            </SelectTrigger>
+                                            <SelectContent className="rounded-none">
+                                                {drawerItems.map((item) => (
+                                                    <SelectItem
+                                                        key={item.value}
+                                                        value={item.value}
+                                                        className="rounded-none"
+                                                    >
+                                                        {item.label}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    <div className="grid gap-2">
+                                        <Label htmlFor="document-book">
+                                            Book
+                                        </Label>
+                                        <Select
+                                            value={form.data.book_id}
+                                            onValueChange={(value) =>
+                                                form.setData(
+                                                    'book_id',
+                                                    String(value ?? ''),
+                                                )
+                                            }
+                                            items={bookItems}
+                                            disabled={!drawerId}
+                                        >
+                                            <SelectTrigger
+                                                id="document-book"
+                                                className="w-full rounded-none"
+                                            >
+                                                <SelectValue placeholder="Select book" />
+                                            </SelectTrigger>
+                                            <SelectContent className="rounded-none">
+                                                {bookItems.map((item) => (
+                                                    <SelectItem
+                                                        key={item.value}
+                                                        value={item.value}
+                                                        className="rounded-none"
+                                                    >
+                                                        {item.label}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                        <InputError
+                                            message={form.errors.book_id}
+                                        />
+                                    </div>
+                                </div>
+                            ) : (
+                                <p className="text-sm text-slate-600 dark:text-neutral-400">
+                                    Add a book from Manage Cabinets before
+                                    filing a document.
+                                </p>
+                            )}
+                        </section>
 
                         <div>
                             {metadataSections.map((section) => (
@@ -243,7 +407,11 @@ export default function DocumentUploadDialog({
                             </Button>
                             <Button
                                 type="submit"
-                                disabled={form.processing || !form.data.file}
+                                disabled={
+                                    form.processing ||
+                                    !form.data.file ||
+                                    !form.data.book_id
+                                }
                                 className="rounded-none bg-blue-900 text-white hover:bg-blue-800 dark:bg-blue-700 dark:hover:bg-blue-600"
                             >
                                 <Upload aria-hidden="true" />

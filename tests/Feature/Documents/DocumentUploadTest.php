@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\Documents;
 
+use App\Models\Book;
+use App\Models\Cabinet;
 use App\Models\Document;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -19,8 +21,11 @@ class DocumentUploadTest extends TestCase
         Storage::fake('local');
         $user = User::factory()->create();
 
+        $book = $this->bookForUpload();
+
         $response = $this->actingAs($user)->post(route('documents.store'), [
             'file' => UploadedFile::fake()->create('declaration.pdf', 1024, 'application/pdf'),
+            'book_id' => $book->id,
             'tax_declaration_number' => 'TD-2026-00481',
             'declaration_date' => '2026-03-15',
             'lot_number' => 'LOT-0182',
@@ -67,6 +72,8 @@ class DocumentUploadTest extends TestCase
         $this->assertSame('Road', $document->boundary_north);
         $this->assertSame('Sample remarks', $document->remarks);
         $this->assertSame($user->id, $document->uploaded_by);
+        $this->assertSame($book->id, $document->book_id);
+        $this->assertSame(1, $document->position);
         Storage::disk('local')->assertExists($document->storage_path);
     }
 
@@ -74,9 +81,12 @@ class DocumentUploadTest extends TestCase
     {
         Storage::fake('local');
 
+        $book = $this->bookForUpload();
+
         $response = $this->actingAs(User::factory()->create())
             ->post(route('documents.store'), [
                 'file' => UploadedFile::fake()->create('scan.pdf', 512, 'application/pdf'),
+                'book_id' => $book->id,
             ]);
 
         $response->assertRedirect(route('documents.index'));
@@ -105,8 +115,11 @@ class DocumentUploadTest extends TestCase
         Storage::fake('local');
         $user = User::factory()->create();
 
+        $book = $this->bookForUpload();
+
         $this->actingAs($user)->post(route('documents.store'), [
             'file' => UploadedFile::fake()->create('declaration.pdf', 1024, 'application/pdf'),
+            'book_id' => $book->id,
             'tax_declaration_number' => 'TD-2026-00481',
             'previous_tax_declaration_number' => 'TD-2020-00123',
             'property_location_barangay' => 'Barangay 2',
@@ -139,6 +152,7 @@ class DocumentUploadTest extends TestCase
         $user = User::factory()->create();
         $this->actingAs($user)->post(route('documents.store'), [
             'file' => UploadedFile::fake()->create('declaration.pdf', 1024, 'application/pdf'),
+            'book_id' => $this->bookForUpload()->id,
             'tax_declaration_number' => 'TD-2026-00481',
         ]);
         $document = Document::query()->sole();
@@ -156,11 +170,91 @@ class DocumentUploadTest extends TestCase
         $user = User::factory()->create();
         $this->actingAs($user)->post(route('documents.store'), [
             'file' => UploadedFile::fake()->create('declaration.pdf', 1024, 'application/pdf'),
+            'book_id' => $this->bookForUpload()->id,
         ]);
         $document = Document::query()->sole();
         auth()->logout();
 
         $this->get(route('documents.view', $document))
             ->assertRedirect(route('login'));
+    }
+
+    public function test_documents_in_a_book_are_ordered_by_upload_position(): void
+    {
+        Storage::fake('local');
+        $user = User::factory()->create();
+        $book = $this->bookForUpload();
+
+        $this->actingAs($user)->post(route('documents.store'), [
+            'file' => UploadedFile::fake()->create('first.pdf', 512, 'application/pdf'),
+            'book_id' => $book->id,
+            'tax_declaration_number' => 'TD-1',
+        ]);
+        $this->actingAs($user)->post(route('documents.store'), [
+            'file' => UploadedFile::fake()->create('second.pdf', 512, 'application/pdf'),
+            'book_id' => $book->id,
+            'tax_declaration_number' => 'TD-2',
+        ]);
+
+        $this->assertSame(
+            [1, 2],
+            $book->documents()->pluck('position')->all(),
+        );
+        $this->assertSame(
+            ['TD-1', 'TD-2'],
+            $book->documents()->pluck('tax_declaration_number')->all(),
+        );
+    }
+
+    public function test_upload_requires_a_book(): void
+    {
+        Storage::fake('local');
+
+        $this->actingAs(User::factory()->create())
+            ->post(route('documents.store'), [
+                'file' => UploadedFile::fake()->create('scan.pdf', 512, 'application/pdf'),
+            ])
+            ->assertSessionHasErrors('book_id');
+
+        $this->assertDatabaseCount('documents', 0);
+    }
+
+    public function test_upload_rejects_an_unknown_book(): void
+    {
+        Storage::fake('local');
+
+        $this->actingAs(User::factory()->create())
+            ->post(route('documents.store'), [
+                'file' => UploadedFile::fake()->create('scan.pdf', 512, 'application/pdf'),
+                'book_id' => 999,
+            ])
+            ->assertSessionHasErrors('book_id');
+
+        $this->assertDatabaseCount('documents', 0);
+    }
+
+    public function test_documents_page_includes_archive_placement_tree(): void
+    {
+        $user = User::factory()->create();
+        $book = $this->bookForUpload();
+
+        $this->actingAs($user)
+            ->get(route('documents.index'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('documents/index')
+                ->has('archive', 1)
+                ->where('archive.0.drawers.0.books.0.id', (string) $book->id)
+                ->where('archive.0.drawers.0.books.0.label', $book->label));
+    }
+
+    private function bookForUpload(): Book
+    {
+        $cabinet = Cabinet::factory()->withDrawers(1)->create();
+
+        return $cabinet->drawers()->firstOrFail()->books()->create([
+            'label' => 'Book 1',
+            'position' => 1,
+        ]);
     }
 }

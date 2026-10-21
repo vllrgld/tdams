@@ -10,6 +10,8 @@ use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
+ * @property int|null $book_id
+ * @property int|null $position
  * @property string|null $tax_declaration_number
  * @property Carbon|null $declaration_date
  * @property string|null $lot_number
@@ -42,8 +44,11 @@ use Illuminate\Support\Carbon;
  * @property int|null $uploaded_by
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property-read Book|null $book
  */
 #[Fillable([
+    'book_id',
+    'position',
     'tax_declaration_number',
     'declaration_date',
     'lot_number',
@@ -149,6 +154,8 @@ class Document extends Model
         return [
             'declaration_date' => 'date',
             'previous_declaration_date' => 'date',
+            'book_id' => 'integer',
+            'position' => 'integer',
         ];
     }
 
@@ -158,6 +165,14 @@ class Document extends Model
     public function uploader(): BelongsTo
     {
         return $this->belongsTo(User::class, 'uploaded_by');
+    }
+
+    /**
+     * @return BelongsTo<Book, $this>
+     */
+    public function book(): BelongsTo
+    {
+        return $this->belongsTo(Book::class);
     }
 
     /**

@@ -16,6 +16,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
+import { cn } from '@/lib/utils';
 import { formatDate, formatFileSize } from '../lib/formatters';
 import type { ArchivedDocument } from '../types';
 import DeclarationNumberSearch from './declaration-number-search';
@@ -62,6 +63,9 @@ export default function DocumentViewerDialog({
     const [chainDocument, setChainDocument] = useState<ArchivedDocument | null>(
         null,
     );
+    const [displayedDocument, setDisplayedDocument] =
+        useState<ArchivedDocument | null>(document);
+    const viewing = document ?? displayedDocument;
 
     useEffect(() => {
         if (!infoOpen) {
@@ -72,7 +76,10 @@ export default function DocumentViewerDialog({
     useEffect(() => {
         if (!document) {
             setChainDocument(null);
+            return;
         }
+
+        setDisplayedDocument(document);
     }, [document]);
 
     const handleInfoToggle = () => {
@@ -119,24 +126,26 @@ export default function DocumentViewerDialog({
                 }}
             >
                 <DialogContent
-                    className={`flex h-[90vh] max-h-[90vh] w-[calc(100%-1rem)] flex-col gap-3 overflow-hidden rounded-none p-4 transition-[left] duration-300 ease-in-out motion-reduce:transition-none sm:p-6 lg:!top-[5vh] lg:!h-[90vh] lg:!w-[66vw] lg:!max-w-none lg:!translate-x-0 lg:!translate-y-0 dark:border-neutral-800 dark:bg-black ${
+                    className={cn(
+                        'flex h-[90vh] max-h-[90vh] w-[calc(100%-1rem)] flex-col gap-3 overflow-hidden rounded-none p-4 sm:p-6 lg:!top-[5vh] lg:!h-[90vh] lg:!w-[66vw] lg:!max-w-none lg:!translate-x-0 lg:!translate-y-0 dark:border-neutral-800 dark:bg-black',
+                        'transition-[left] duration-300 ease-in-out motion-reduce:transition-none',
                         infoOpen
                             ? 'lg:!left-[2vw]'
-                            : '!max-w-none sm:!max-w-none lg:!left-[17vw]'
-                    }`}
+                            : '!max-w-none sm:!max-w-none lg:!left-[17vw]',
+                    )}
                 >
                     <div className="flex shrink-0 items-start justify-between gap-3 pr-8">
                         <DialogHeader className="min-w-0 text-left">
                             <DialogTitle className="truncate">
-                                {document?.originalFilename ??
+                                {viewing?.originalFilename ??
                                     'Document preview'}
                             </DialogTitle>
                             <DialogDescription>
-                                {document?.taxDeclarationNumber
-                                    ? `Tax declaration ${document.taxDeclarationNumber}`
+                                {viewing?.taxDeclarationNumber
+                                    ? `Tax declaration ${viewing.taxDeclarationNumber}`
                                     : 'Archived document'}
-                                {document?.registeredOwner
-                                    ? ` · ${document.registeredOwner}`
+                                {viewing?.registeredOwner
+                                    ? ` · ${viewing.registeredOwner}`
                                     : ''}
                             </DialogDescription>
                         </DialogHeader>
@@ -187,14 +196,14 @@ export default function DocumentViewerDialog({
                                 aria-pressed={chainDocument !== null}
                                 title="Document chain"
                                 onClick={() => {
-                                    if (!document) {
+                                    if (!viewing) {
                                         return;
                                     }
 
                                     setChainDocument((current) =>
-                                        current?.id === document.id
+                                        current?.id === viewing.id
                                             ? null
-                                            : document,
+                                            : viewing,
                                     );
                                 }}
                                 className="size-9 shrink-0 rounded-none border-0 focus-visible:ring-0 focus-visible:ring-transparent"
@@ -203,22 +212,22 @@ export default function DocumentViewerDialog({
                             </Button>
                         </div>
                     </div>
-                    {document && (
+                    {viewing && (
                         <div className="flex min-h-0 flex-1 flex-col gap-4 md:flex-row">
                             <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-3">
-                                {document.mimeType === 'application/pdf' ? (
+                                {viewing.mimeType === 'application/pdf' ? (
                                     <ClientOnly fallback={pdfViewerFallback()}>
                                         <ClientPdfPreview
-                                            key={document.id}
-                                            url={document.viewUrl}
-                                            title={document.originalFilename}
+                                            key={viewing.id}
+                                            url={viewing.viewUrl}
+                                            title={viewing.originalFilename}
                                         />
                                     </ClientOnly>
                                 ) : (
                                     <div className="flex min-h-0 flex-1 items-center justify-center overflow-auto border border-slate-200 bg-slate-100 p-2 dark:border-neutral-800 dark:bg-neutral-900">
                                         <img
-                                            src={document.viewUrl}
-                                            alt={document.originalFilename}
+                                            src={viewing.viewUrl}
+                                            alt={viewing.originalFilename}
                                             className="max-h-full max-w-full object-contain"
                                         />
                                     </div>
@@ -239,10 +248,10 @@ export default function DocumentViewerDialog({
                     overlayClassName="!pointer-events-none !bg-transparent"
                     className="flex h-[90vh] max-h-[90vh] w-[calc(100%-1rem)] max-w-lg flex-col gap-0 overflow-hidden rounded-none p-0 sm:w-[min(30vw,32rem)] sm:max-w-none lg:!top-[5vh] lg:!left-[68vw] lg:!h-[90vh] lg:!w-[30vw] lg:!max-w-none lg:!translate-x-0 lg:!translate-y-0 dark:border-neutral-800 dark:bg-black"
                 >
-                    {document &&
+                    {viewing &&
                         (panelView === 'history' ? (
                             <DocumentHistory
-                                document={document}
+                                document={viewing}
                                 onDocumentChange={onDocumentChange}
                                 onShowInfo={() => setPanelView('info')}
                             />
@@ -260,7 +269,7 @@ export default function DocumentViewerDialog({
                                             Document information
                                         </div>
                                         <div className="truncate text-xs text-slate-500 dark:text-neutral-400">
-                                            {document.originalFilename}
+                                            {viewing.originalFilename}
                                         </div>
                                     </div>
                                 </div>
@@ -270,21 +279,21 @@ export default function DocumentViewerDialog({
                                             <InfoField
                                                 label="Tax declaration number"
                                                 value={
-                                                    document.taxDeclarationNumber
+                                                    viewing.taxDeclarationNumber
                                                 }
                                             />
                                             <InfoField
                                                 label="Declaration date"
                                                 value={formatDate(
-                                                    document.declarationDate,
+                                                    viewing.declarationDate,
                                                 )}
                                             />
-                                            {document.previousTaxDeclarationNumber ? (
+                                            {viewing.previousTaxDeclarationNumber ? (
                                                 <>
                                                     <InfoField
                                                         label="Previous tax declaration number"
                                                         value={
-                                                            document.previousTaxDeclarationNumber
+                                                            viewing.previousTaxDeclarationNumber
                                                         }
                                                         onClick={() =>
                                                             setPanelView(
@@ -295,20 +304,20 @@ export default function DocumentViewerDialog({
                                                     <InfoField
                                                         label="Previous declaration date"
                                                         value={formatDate(
-                                                            document.previousDeclarationDate,
+                                                            viewing.previousDeclarationDate,
                                                         )}
                                                     />
                                                 </>
                                             ) : (
                                                 <PreviousDeclarationEditor
-                                                    key={document.id}
-                                                    document={document}
+                                                    key={viewing.id}
+                                                    document={viewing}
                                                     onSaved={(
                                                         previousNumber,
                                                         previousDeclarationDate,
                                                     ) =>
                                                         onDocumentChange({
-                                                            ...document,
+                                                            ...viewing,
                                                             previousTaxDeclarationNumber:
                                                                 previousNumber,
                                                             previousDeclarationDate,
@@ -318,19 +327,19 @@ export default function DocumentViewerDialog({
                                             )}
                                             <InfoField
                                                 label="Title number"
-                                                value={document.titleNumber}
+                                                value={viewing.titleNumber}
                                             />
                                             <InfoField
                                                 label="Lot number"
-                                                value={document.lotNumber}
+                                                value={viewing.lotNumber}
                                             />
                                             <InfoField
                                                 label="PIN"
-                                                value={document.pin}
+                                                value={viewing.pin}
                                             />
                                             <InfoField
                                                 label="Owner / property"
-                                                value={document.registeredOwner}
+                                                value={viewing.registeredOwner}
                                                 fullWidth
                                             />
                                         </InfoSection>
@@ -339,25 +348,25 @@ export default function DocumentViewerDialog({
                                             <InfoField
                                                 label="Street"
                                                 value={
-                                                    document.ownerAddressStreet
+                                                    viewing.ownerAddressStreet
                                                 }
                                             />
                                             <InfoField
                                                 label="Barangay"
                                                 value={
-                                                    document.ownerAddressBarangay
+                                                    viewing.ownerAddressBarangay
                                                 }
                                             />
                                             <InfoField
                                                 label="District"
                                                 value={
-                                                    document.ownerAddressDistrict
+                                                    viewing.ownerAddressDistrict
                                                 }
                                             />
                                             <InfoField
                                                 label="City / municipality"
                                                 value={
-                                                    document.ownerAddressCityMunicipality
+                                                    viewing.ownerAddressCityMunicipality
                                                 }
                                             />
                                         </InfoSection>
@@ -366,27 +375,27 @@ export default function DocumentViewerDialog({
                                             <InfoField
                                                 label="Street"
                                                 value={
-                                                    document.propertyLocationStreet
+                                                    viewing.propertyLocationStreet
                                                 }
                                             />
                                             <InfoField
                                                 label="Barangay"
                                                 value={
-                                                    document.propertyLocationBarangay ??
-                                                    document.barangay
+                                                    viewing.propertyLocationBarangay ??
+                                                    viewing.barangay
                                                 }
                                             />
                                             <InfoField
                                                 label="District"
                                                 value={
-                                                    document.propertyLocationDistrict
+                                                    viewing.propertyLocationDistrict
                                                 }
                                             />
                                             <InfoField
                                                 label="City / municipality"
                                                 value={
-                                                    document.propertyLocationMunicipality ??
-                                                    document.municipality
+                                                    viewing.propertyLocationMunicipality ??
+                                                    viewing.municipality
                                                 }
                                             />
                                         </InfoSection>
@@ -394,18 +403,18 @@ export default function DocumentViewerDialog({
                                         <InfoSection title="Land details">
                                             <InfoField
                                                 label="Province"
-                                                value={document.province}
+                                                value={viewing.province}
                                             />
                                             <InfoField
                                                 label="Area"
-                                                value={document.area}
+                                                value={viewing.area}
                                             />
                                             <BoundaryCompass
-                                                document={document}
+                                                document={viewing}
                                             />
                                             <InfoField
                                                 label="Remarks"
-                                                value={document.remarks}
+                                                value={viewing.remarks}
                                                 fullWidth
                                             />
                                         </InfoSection>
@@ -413,18 +422,18 @@ export default function DocumentViewerDialog({
                                         <InfoSection title="File details">
                                             <InfoField
                                                 label="File type"
-                                                value={document.mimeType}
+                                                value={viewing.mimeType}
                                             />
                                             <InfoField
                                                 label="File size"
                                                 value={formatFileSize(
-                                                    document.fileSize,
+                                                    viewing.fileSize,
                                                 )}
                                             />
                                             <InfoField
                                                 label="Date added"
                                                 value={formatDate(
-                                                    document.createdAt,
+                                                    viewing.createdAt,
                                                 )}
                                             />
                                         </InfoSection>

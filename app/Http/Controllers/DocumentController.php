@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Book;
+use App\Models\Cabinet;
 use App\Models\Document;
+use App\Models\Drawer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -41,6 +44,7 @@ class DocumentController extends Controller
 
         return Inertia::render('documents/index', [
             'documents' => $documents,
+            'archive' => $this->archivePlacementTree(),
             'filters' => [
                 'q' => $search,
                 'field' => $field,
@@ -53,6 +57,7 @@ class DocumentController extends Controller
     {
         $validated = $request->validate([
             'file' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png,tif,tiff', 'max:51200'],
+            'book_id' => ['required', 'integer', 'exists:books,id'],
             'tax_declaration_number' => ['nullable', 'string', 'max:100'],
             'declaration_date' => ['nullable', 'date'],
             'lot_number' => ['nullable', 'string', 'max:100'],
@@ -114,7 +119,11 @@ class DocumentController extends Controller
                     throw new RuntimeException('The document could not be saved to private storage.');
                 }
 
+                $book = Book::query()->findOrFail($validated['book_id']);
+
                 Document::query()->create([
+                    'book_id' => $book->id,
+                    'position' => $book->nextDocumentPosition(),
                     'tax_declaration_number' => $validated['tax_declaration_number'] ?? null,
                     'declaration_date' => $validated['declaration_date'] ?? null,
                     'lot_number' => $validated['lot_number'] ?? null,
@@ -249,6 +258,37 @@ class DocumentController extends Controller
             ],
             'inline',
         );
+    }
+
+    /**
+     * @return list<array{id: string, name: string, drawers: list<array{id: string, label: string, books: list<array{id: string, label: string}>}>}>
+     */
+    private function archivePlacementTree(): array
+    {
+        return Cabinet::query()
+            ->with('drawers.books')
+            ->orderBy('name')
+            ->get()
+            ->map(fn (Cabinet $cabinet): array => [
+                'id' => (string) $cabinet->id,
+                'name' => $cabinet->name,
+                'drawers' => $cabinet->drawers
+                    ->map(fn (Drawer $drawer): array => [
+                        'id' => (string) $drawer->id,
+                        'label' => $drawer->label,
+                        'books' => $drawer->books
+                            ->map(fn (Book $book): array => [
+                                'id' => (string) $book->id,
+                                'label' => $book->label,
+                            ])
+                            ->values()
+                            ->all(),
+                    ])
+                    ->values()
+                    ->all(),
+            ])
+            ->values()
+            ->all();
     }
 
     private function assertPreviousDeclarationIsNotSelf(?string $previousNumber, ?string $taxDeclarationNumber): void

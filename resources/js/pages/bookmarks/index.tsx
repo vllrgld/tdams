@@ -1,9 +1,9 @@
 import { Head } from '@inertiajs/react';
 
-export default function FilingCabinets() {
+export default function Bookmarks() {
     return (
         <>
-            <Head title="Filing Cabinets" />
+            <Head title="Bookmarks" />
             <main className="min-h-full flex-1 bg-background" />
         </>
     );

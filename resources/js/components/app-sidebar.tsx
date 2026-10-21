@@ -1,12 +1,16 @@
 import { Link } from '@inertiajs/react';
 import {
+    Archive,
+    Bookmark,
+    BookMarked,
     FileSearch,
-    FolderClosed,
     LayoutGrid,
     Palette,
+    Settings2,
     Shield,
     UserRound,
 } from 'lucide-react';
+import DrawerIcon from '@/components/drawer-icon';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import {
@@ -37,13 +41,35 @@ const mainNavItems: NavItem[] = [
         icon: FileSearch,
     },
     {
-        title: 'Filing Cabinets',
-        href: '/filing-cabinets',
-        icon: FolderClosed,
+        title: 'Archive',
+        href: '/archive',
+        icon: Archive,
+    },
+    {
+        title: 'Manage',
+        href: '/manage/cabinets',
+        icon: Settings2,
+        items: [
+            {
+                title: 'Cabinets',
+                href: '/manage/cabinets',
+                icon: DrawerIcon,
+            },
+            {
+                title: 'Books',
+                href: '/manage/books',
+                icon: BookMarked,
+            },
+        ],
     },
 ];
 
 const accountNavItems: NavItem[] = [
+    {
+        title: 'Bookmarks',
+        href: '/bookmarks',
+        icon: Bookmark,
+    },
     {
         title: 'Profile',
         href: editProfile(),

@@ -37,6 +37,23 @@ export type SearchFieldOption = {
     label: string;
 };
 
+export type ArchivePlacementBook = {
+    id: string;
+    label: string;
+};
+
+export type ArchivePlacementDrawer = {
+    id: string;
+    label: string;
+    books: ArchivePlacementBook[];
+};
+
+export type ArchivePlacementCabinet = {
+    id: string;
+    name: string;
+    drawers: ArchivePlacementDrawer[];
+};
+
 export type DocumentsPageProps = {
     documents: {
         data: ArchivedDocument[];
@@ -46,6 +63,7 @@ export type DocumentsPageProps = {
         to: number | null;
         total: number;
     };
+    archive: ArchivePlacementCabinet[];
     filters: {
         q: string;
         field: string;
@@ -55,6 +73,7 @@ export type DocumentsPageProps = {
 
 export type UploadForm = {
     file: File | null;
+    book_id: string;
     tax_declaration_number: string;
     declaration_date: string;
     lot_number: string;
@@ -80,7 +99,7 @@ export type UploadForm = {
     remarks: string;
 };
 
-export type MetadataField = Exclude<keyof UploadForm, 'file'>;
+export type MetadataField = Exclude<keyof UploadForm, 'file' | 'book_id'>;
 
 export type DeclarationNumberMatch = {
     id: number;

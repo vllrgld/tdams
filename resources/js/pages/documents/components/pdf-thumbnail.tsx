@@ -1,51 +1,20 @@
 import { useEffect, useRef, useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import { FileText } from 'lucide-react';
+import {
+    acquireThumbnailSlot,
+    cacheRenderedThumbnail,
+    getCachedThumbnail,
+    releaseThumbnailSlot,
+    thumbnailCacheKey,
+    type ThumbnailQuality,
+} from './pdf-thumbnail-cache';
 
 const A4_WIDTH_RATIO = 210 / 297;
-const MAX_CONCURRENT_THUMBNAILS = 3;
-const thumbnailObjectUrls = new Map<string, string>();
-let activeThumbnails = 0;
-const thumbnailQueue: Array<() => void> = [];
-
-function acquireThumbnailSlot(): Promise<void> {
-    return new Promise((resolve) => {
-        const start = () => {
-            activeThumbnails += 1;
-            resolve();
-        };
-
-        if (activeThumbnails < MAX_CONCURRENT_THUMBNAILS) {
-            start();
-            return;
-        }
-
-        thumbnailQueue.push(start);
-    });
-}
-
-function releaseThumbnailSlot() {
-    activeThumbnails = Math.max(0, activeThumbnails - 1);
-    thumbnailQueue.shift()?.();
-}
-
-function cacheRenderedThumbnail(url: string, canvas: HTMLCanvasElement) {
-    if (thumbnailObjectUrls.has(url)) {
-        return;
-    }
-
-    canvas.toBlob(
-        (blob) => {
-            if (!blob || thumbnailObjectUrls.has(url)) {
-                return;
-            }
-
-            thumbnailObjectUrls.set(url, URL.createObjectURL(blob));
-        },
-        'image/jpeg',
-        0.72,
-    );
-}
+const DEVICE_PIXEL_RATIO: Record<ThumbnailQuality, number> = {
+    card: 1,
+    book: 1.75,
+};
 
 function PlaceholderIcon() {
     return (
@@ -59,9 +28,15 @@ function PlaceholderIcon() {
 export default function PdfThumbnail({
     url,
     fit = 'contain',
+    pageNumber = 1,
+    fill = false,
+    quality = 'card',
 }: {
     url: string;
     fit?: 'contain' | 'cover';
+    pageNumber?: number;
+    fill?: boolean;
+    quality?: ThumbnailQuality;
 }) {
     const containerRef = useRef<HTMLDivElement>(null);
     const slotHeldRef = useRef(false);
@@ -69,9 +44,26 @@ export default function PdfThumbnail({
     const [height, setHeight] = useState(0);
     const [pageWidthRatio, setPageWidthRatio] = useState(A4_WIDTH_RATIO);
     const [error, setError] = useState(false);
+    const [missingPage, setMissingPage] = useState(false);
+    const [pageCount, setPageCount] = useState<number | null>(null);
     const [isVisible, setIsVisible] = useState(false);
     const [canLoad, setCanLoad] = useState(false);
-    const [cachedSrc] = useState(() => thumbnailObjectUrls.get(url) ?? null);
+    const [cachedSrc, setCachedSrc] = useState<string | null>(null);
+    const quiet = pageNumber > 1;
+    const containImageClass = fill
+        ? 'h-full w-full object-contain'
+        : 'h-full w-full object-contain p-1.5';
+    const containPageClass = fill
+        ? 'max-h-full max-w-full [&_canvas]:max-h-full [&_canvas]:max-w-full [&_canvas]:object-contain'
+        : 'max-w-full shadow-md [&_canvas]:h-auto [&_canvas]:max-w-full';
+    const pageWidth =
+        width > 0 && height > 0
+            ? Math.floor(
+                  fit === 'cover'
+                      ? Math.max(width, height * pageWidthRatio)
+                      : Math.min(width, height * pageWidthRatio),
+              )
+            : 0;
 
     useEffect(() => {
         pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -150,12 +142,26 @@ export default function PdfThumbnail({
                 releaseThumbnailSlot();
             }
         };
-    }, [cachedSrc, isVisible]);
+    }, [cachedSrc, isVisible, url, pageNumber, quality]);
 
     useEffect(() => {
         setError(false);
+        setMissingPage(false);
+        setPageCount(null);
         setPageWidthRatio(A4_WIDTH_RATIO);
-    }, [url]);
+    }, [url, pageNumber, quality]);
+
+    useEffect(() => {
+        if (width <= 0) {
+            return;
+        }
+
+        setCachedSrc(
+            getCachedThumbnail(
+                thumbnailCacheKey(url, pageNumber, quality, width),
+            ),
+        );
+    }, [url, pageNumber, quality, width]);
 
     const releaseSlot = () => {
         if (!slotHeldRef.current) {
@@ -183,28 +189,38 @@ export default function PdfThumbnail({
                     className={
                         fit === 'cover'
                             ? 'h-full w-full object-cover object-top'
-                            : 'h-full w-full object-contain p-1.5'
+                            : containImageClass
                     }
                 />
             ) : !isVisible || !canLoad ? (
-                <div className="flex h-full w-full items-center justify-center">
-                    <PlaceholderIcon />
-                </div>
+                quiet ? null : (
+                    <div className="flex h-full w-full items-center justify-center">
+                        <PlaceholderIcon />
+                    </div>
+                )
             ) : error ? (
-                <p
-                    role="img"
-                    aria-label="PDF preview unavailable"
-                    className="pt-16 text-center text-xs text-slate-500 dark:text-neutral-400"
-                >
-                    Preview unavailable
-                </p>
-            ) : (
+                quiet ? null : (
+                    <p
+                        role="img"
+                        aria-label="PDF preview unavailable"
+                        className="pt-16 text-center text-xs text-slate-500 dark:text-neutral-400"
+                    >
+                        Preview unavailable
+                    </p>
+                )
+            ) : missingPage ? null : (
                 <Document
                     file={url}
                     onLoadSuccess={async (pdf) => {
                         releaseSlot();
+                        setPageCount(pdf.numPages);
 
-                        const page = await pdf.getPage(1);
+                        if (pageNumber > pdf.numPages) {
+                            setMissingPage(true);
+                            return;
+                        }
+
+                        const page = await pdf.getPage(pageNumber);
                         const viewport = page.getViewport({ scale: 1 });
                         setPageWidthRatio(viewport.width / viewport.height);
                     }}
@@ -213,45 +229,67 @@ export default function PdfThumbnail({
                         setError(true);
                     }}
                     loading={
-                        <div className="flex h-full w-full items-center justify-center">
-                            <PlaceholderIcon />
-                        </div>
+                        quiet ? null : (
+                            <div className="flex h-full w-full items-center justify-center">
+                                <PlaceholderIcon />
+                            </div>
+                        )
                     }
                     error={null}
                     className={
                         fit === 'cover'
-                            ? 'absolute inset-0 flex h-full w-full items-center justify-center'
+                            ? 'absolute inset-0 overflow-hidden'
                             : 'flex h-full w-full items-center justify-center'
                     }
                 >
-                    {width > 0 && height > 0 && (
-                        <Page
-                            pageNumber={1}
-                            width={Math.floor(
-                                fit === 'cover'
-                                    ? Math.max(width, height * pageWidthRatio)
-                                    : Math.min(width, height * pageWidthRatio),
-                            )}
-                            devicePixelRatio={1}
-                            renderTextLayer={false}
-                            renderAnnotationLayer={false}
-                            onRenderSuccess={() => {
-                                const canvas =
-                                    containerRef.current?.querySelector(
-                                        'canvas',
-                                    );
-
-                                if (canvas) {
-                                    cacheRenderedThumbnail(url, canvas);
+                    {pageWidth > 0 &&
+                        pageCount !== null &&
+                        pageNumber <= pageCount &&
+                        !missingPage && (
+                            <div
+                                className={
+                                    fit === 'cover'
+                                        ? 'absolute top-0 left-1/2 -translate-x-1/2'
+                                        : undefined
                                 }
-                            }}
-                            className={
-                                fit === 'cover'
-                                    ? '!absolute !inset-0 !h-full !w-full [&_canvas]:!h-full [&_canvas]:!w-full [&_canvas]:max-w-none [&_canvas]:object-cover [&_canvas]:object-top'
-                                    : 'max-w-full shadow-md [&_canvas]:h-auto [&_canvas]:max-w-full'
-                            }
-                        />
-                    )}
+                                style={
+                                    fit === 'cover'
+                                        ? { width: pageWidth }
+                                        : undefined
+                                }
+                            >
+                                <Page
+                                    pageNumber={pageNumber}
+                                    width={pageWidth}
+                                    devicePixelRatio={
+                                        DEVICE_PIXEL_RATIO[quality]
+                                    }
+                                    renderTextLayer={false}
+                                    renderAnnotationLayer={false}
+                                    onRenderSuccess={() => {
+                                        const canvas =
+                                            containerRef.current?.querySelector(
+                                                'canvas',
+                                            );
+
+                                        if (canvas) {
+                                            cacheRenderedThumbnail(
+                                                url,
+                                                pageNumber,
+                                                quality,
+                                                width,
+                                                canvas,
+                                            );
+                                        }
+                                    }}
+                                    className={
+                                        fit === 'cover'
+                                            ? '[&_canvas]:max-w-none'
+                                            : containPageClass
+                                    }
+                                />
+                            </div>
+                        )}
                 </Document>
             )}
         </div>

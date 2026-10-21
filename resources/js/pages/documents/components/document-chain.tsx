@@ -361,7 +361,7 @@ export default function DocumentChain({
 
                                         setSelectedId(item.id);
                                     }}
-                                    className={`group relative flex h-88 w-80 shrink-0 origin-center flex-col overflow-hidden border text-left shadow-sm transition duration-200 ${
+                                    className={`group relative h-88 w-80 shrink-0 origin-center overflow-hidden border bg-blue-900 text-left shadow-sm transition duration-200 ${
                                         isDragging
                                             ? ''
                                             : 'hover:z-10 hover:scale-105 hover:border-blue-800 hover:shadow-lg hover:ring-2 hover:ring-blue-800/20 dark:hover:border-blue-800 dark:hover:ring-blue-800/20'
@@ -372,67 +372,63 @@ export default function DocumentChain({
                                     }`}
                                 >
                                     {item.archived ? (
-                                        <div className="relative shrink-0">
-                                            <DocumentThumbnail
-                                                mimeType={
-                                                    item.archived.mimeType
-                                                }
-                                                url={item.archived.viewUrl}
-                                                title={
-                                                    item.archived
-                                                        .originalFilename
-                                                }
-                                                className="!h-60"
-                                            />
-                                            <Button
-                                                type="button"
-                                                variant="outline"
-                                                size="sm"
-                                                onPointerDown={(event) => {
-                                                    event.stopPropagation();
-                                                }}
-                                                onClick={(event) => {
-                                                    event.stopPropagation();
-
-                                                    if (!item.archived) {
-                                                        return;
-                                                    }
-
-                                                    onViewDocument(
-                                                        item.archived,
-                                                    );
-                                                    onOpenChange(false);
-                                                }}
-                                                aria-label={`Open ${item.title}`}
-                                                title={`Open ${item.title}`}
-                                                className={`absolute top-2 right-2 z-20 h-8 cursor-pointer rounded-none bg-card/95 px-2 text-xs shadow-sm dark:bg-black/95 ${
-                                                    isDragging
-                                                        ? 'pointer-events-none opacity-0'
-                                                        : isHighlighted
-                                                          ? 'opacity-100'
-                                                          : 'pointer-events-none opacity-0 group-hover:pointer-events-auto group-hover:opacity-100 focus-visible:pointer-events-auto focus-visible:opacity-100'
-                                                }`}
-                                            >
-                                                Open
-                                                <ArrowUpRight
-                                                    aria-hidden="true"
-                                                    className="size-3.5"
-                                                />
-                                            </Button>
-                                        </div>
+                                        <DocumentThumbnail
+                                            mimeType={item.archived.mimeType}
+                                            url={item.archived.viewUrl}
+                                            title={
+                                                item.archived.originalFilename
+                                            }
+                                            fit="cover"
+                                            className="absolute inset-0 h-full"
+                                        />
                                     ) : (
-                                        <div className="flex h-60 w-full shrink-0 items-center justify-center bg-slate-100 text-slate-400 dark:bg-neutral-900 dark:text-neutral-500">
+                                        <div className="flex h-full w-full items-center justify-center text-blue-200">
                                             <FileText
                                                 aria-hidden="true"
                                                 className="size-10"
                                             />
                                         </div>
                                     )}
-                                    <div className="flex min-h-0 flex-1 flex-col justify-center border-t border-slate-100 bg-card p-4 dark:border-neutral-800 dark:bg-black">
-                                        <p className="text-[10px] font-semibold tracking-wide text-slate-500 uppercase dark:text-neutral-400">
+                                    {item.archived ? (
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            size="sm"
+                                            onPointerDown={(event) => {
+                                                event.stopPropagation();
+                                            }}
+                                            onClick={(event) => {
+                                                event.stopPropagation();
+
+                                                if (!item.archived) {
+                                                    return;
+                                                }
+
+                                                onViewDocument(item.archived);
+                                                onOpenChange(false);
+                                            }}
+                                            aria-label={`Open ${item.title}`}
+                                            title={`Open ${item.title}`}
+                                            className={`absolute top-2 right-2 z-20 h-8 cursor-pointer rounded-none bg-card/95 px-2 text-xs shadow-sm dark:bg-black/95 ${
+                                                isDragging
+                                                    ? 'pointer-events-none opacity-0'
+                                                    : isHighlighted
+                                                      ? 'opacity-100'
+                                                      : 'pointer-events-none opacity-0 group-hover:pointer-events-auto group-hover:opacity-100 focus-visible:pointer-events-auto focus-visible:opacity-100'
+                                            }`}
+                                        >
+                                            Open
+                                            <ArrowUpRight
+                                                aria-hidden="true"
+                                                className="size-3.5"
+                                            />
+                                        </Button>
+                                    ) : null}
+                                    <div className="document-card-overlay pointer-events-none absolute inset-x-0 bottom-0 z-20 px-2.5 pt-16 pb-2.5">
+                                        <p className="text-[10px] font-semibold tracking-wide text-white uppercase">
                                             {item.label}
                                         </p>
-                                        <p className="mt-1 truncate text-sm font-semibold text-slate-900 dark:text-neutral-100">
+                                        <p className="mt-1 truncate text-sm font-semibold text-white">
                                             {item.title}
                                         </p>
                                     </div>

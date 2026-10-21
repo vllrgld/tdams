@@ -9,6 +9,7 @@ import type { ArchivedDocument, DocumentsPageProps, UploadForm } from './types';
 
 export default function Documents({
     documents,
+    archive,
     filters,
     searchFields,
 }: DocumentsPageProps) {
@@ -19,6 +20,7 @@ export default function Documents({
     const [documentInfoOpen, setDocumentInfoOpen] = useState(false);
     const form = useForm<UploadForm>({
         file: null,
+        book_id: '',
         tax_declaration_number: '',
         declaration_date: '',
         lot_number: '',
@@ -75,6 +77,7 @@ export default function Documents({
             </main>
             <DocumentUploadDialog
                 form={form}
+                archive={archive}
                 open={uploadOpen}
                 onOpenChange={setUploadOpen}
                 onSubmit={submitUpload}

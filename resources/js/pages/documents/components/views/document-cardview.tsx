@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Link } from 'lucide-react';
+import { Bookmark, Link } from 'lucide-react';
 import DocumentChain from '../document-chain';
 import DocumentThumbnail from '../document-thumbnail';
 import { formatDate } from '../../lib/formatters';
@@ -22,6 +22,23 @@ export default function DocumentCardView({
     const [chainDocument, setChainDocument] = useState<ArchivedDocument | null>(
         null,
     );
+    const [bookmarkedIds, setBookmarkedIds] = useState<Set<number>>(
+        () => new Set(),
+    );
+
+    function toggleBookmark(id: number) {
+        setBookmarkedIds((current) => {
+            const next = new Set(current);
+
+            if (next.has(id)) {
+                next.delete(id);
+            } else {
+                next.add(id);
+            }
+
+            return next;
+        });
+    }
 
     return (
         <>
@@ -45,6 +62,30 @@ export default function DocumentCardView({
                             title={`Open ${document.originalFilename}`}
                             className="absolute inset-0 z-10 cursor-pointer focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:outline-none focus-visible:ring-inset"
                         />
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => toggleBookmark(document.id)}
+                            aria-label={`Bookmark ${document.originalFilename}`}
+                            aria-pressed={bookmarkedIds.has(document.id)}
+                            title={
+                                bookmarkedIds.has(document.id)
+                                    ? 'Remove bookmark'
+                                    : 'Bookmark'
+                            }
+                            className="absolute top-2 left-2 z-20 size-8 cursor-pointer rounded-none bg-transparent text-blue-900 shadow-none [filter:drop-shadow(0_0_2px_rgb(255_255_255))_drop-shadow(0_1px_2px_rgb(255_255_255_/_0.9))] transition-transform duration-200 ease-out hover:scale-150 hover:bg-transparent hover:text-blue-950 focus-visible:ring-blue-700 motion-reduce:transition-none motion-reduce:hover:scale-100"
+                        >
+                            <Bookmark
+                                aria-hidden="true"
+                                className="size-4"
+                                fill={
+                                    bookmarkedIds.has(document.id)
+                                        ? 'currentColor'
+                                        : 'none'
+                                }
+                            />
+                        </Button>
                         <Button
                             type="button"
                             variant="ghost"
