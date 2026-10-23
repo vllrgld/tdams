@@ -31,7 +31,10 @@ class CabinetsTest extends TestCase
 
         $this->get(route('manage.books.index'))
             ->assertOk()
-            ->assertInertia(fn (Assert $page) => $page->component('manage/books/index'));
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('manage/books/index')
+                ->has('books', 0)
+                ->where('coverTitle', Book::DEFAULT_COVER_TITLE));
     }
 
     public function test_authenticated_user_can_add_a_cabinet_with_drawers(): void
@@ -202,6 +205,7 @@ class CabinetsTest extends TestCase
         $book = $drawer->books()->sole();
 
         $this->assertSame('TD 0001–0100', $book->label);
+        $this->assertSame(Book::DEFAULT_COVER_TITLE, $book->cover_title);
         $this->assertSame(1, $book->position);
     }
 
@@ -218,7 +222,7 @@ class CabinetsTest extends TestCase
         $this->assertSame(0, $drawer->books()->count());
     }
 
-    public function test_drawer_cannot_hold_more_than_eight_books(): void
+    public function test_drawer_cannot_hold_more_than_the_book_limit(): void
     {
         $user = User::factory()->create();
         $cabinet = Cabinet::factory()->withDrawers(1)->create();
@@ -233,7 +237,7 @@ class CabinetsTest extends TestCase
 
         $this->actingAs($user)->from(route('manage.cabinets.index'))->post(
             route('manage.drawers.books.store', $drawer),
-            ['label' => 'Book 9'],
+            ['label' => 'Extra book'],
         )->assertSessionHasErrors('label');
 
         $this->assertSame(Book::MAX_PER_DRAWER, $drawer->books()->count());
@@ -256,6 +260,101 @@ class CabinetsTest extends TestCase
 
         $response->assertRedirect(route('manage.cabinets.index'));
         $this->assertSame('TD 0001–0100', $book->fresh()?->label);
+        $this->assertSame(Book::DEFAULT_COVER_TITLE, $book->fresh()?->cover_title);
+    }
+
+    public function test_books_index_lists_a_shared_cover_title(): void
+    {
+        $user = User::factory()->create();
+        $cabinet = Cabinet::factory()->withDrawers(1)->create([
+            'name' => 'Laoag City',
+        ]);
+        $drawer = $cabinet->drawers()->firstOrFail();
+        $drawer->books()->create([
+            'label' => 'TD 0001–0100',
+            'cover_title' => 'Land Tax',
+            'position' => 1,
+        ]);
+
+        $this->actingAs($user);
+
+        $this->get(route('manage.books.index'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('manage/books/index')
+                ->has('books', 1)
+                ->where('books.0.label', 'TD 0001–0100')
+                ->missing('books.0.coverTitle')
+                ->where('coverTitle', 'Land Tax')
+                ->where('books.0.cabinetName', 'Laoag City')
+                ->where('books.0.drawerLabel', $drawer->label));
+    }
+
+    public function test_books_index_accepts_a_drawer_query_string(): void
+    {
+        $user = User::factory()->create();
+        $cabinet = Cabinet::factory()->withDrawers(1)->create();
+        $drawer = $cabinet->drawers()->firstOrFail();
+        $drawer->books()->create([
+            'label' => 'Book 1',
+            'position' => 1,
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('manage.books.index', ['drawer' => $drawer->id]))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('manage/books/index')
+                ->has('books', 1)
+                ->where('books.0.drawerId', (string) $drawer->id));
+    }
+
+    public function test_updating_cover_title_applies_to_every_book(): void
+    {
+        $user = User::factory()->create();
+        $cabinet = Cabinet::factory()->withDrawers(1)->create();
+        $drawer = $cabinet->drawers()->firstOrFail();
+        $first = $drawer->books()->create([
+            'label' => 'Book 1',
+            'position' => 1,
+        ]);
+        $second = $drawer->books()->create([
+            'label' => 'Book 2',
+            'position' => 2,
+        ]);
+
+        $response = $this->actingAs($user)->from(route('manage.books.index'))->patch(
+            route('manage.books.update', $first),
+            [
+                'label' => 'TD 0001–0100',
+                'cover_title' => 'Land Tax',
+            ],
+        );
+
+        $response->assertRedirect(route('manage.books.index'));
+        $this->assertSame('TD 0001–0100', $first->fresh()?->label);
+        $this->assertSame('Book 2', $second->fresh()?->label);
+        $this->assertSame('Land Tax', $first->fresh()?->cover_title);
+        $this->assertSame('Land Tax', $second->fresh()?->cover_title);
+    }
+
+    public function test_new_books_inherit_the_shared_cover_title(): void
+    {
+        $user = User::factory()->create();
+        $cabinet = Cabinet::factory()->withDrawers(1)->create();
+        $drawer = $cabinet->drawers()->firstOrFail();
+        $drawer->books()->create([
+            'label' => 'Book 1',
+            'cover_title' => 'Land Tax',
+            'position' => 1,
+        ]);
+
+        $this->actingAs($user)->from(route('manage.cabinets.index'))->post(
+            route('manage.drawers.books.store', $drawer),
+            ['label' => 'Book 2'],
+        );
+
+        $this->assertSame('Land Tax', $drawer->books()->where('label', 'Book 2')->value('cover_title'));
     }
 
     public function test_guests_cannot_add_or_rename_a_book(): void

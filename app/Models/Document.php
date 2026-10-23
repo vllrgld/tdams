@@ -138,7 +138,7 @@ class Document extends Model
      * @var array<string, string>
      */
     public const SEARCH_FIELD_LABELS = [
-        'all' => 'All fields',
+        'all' => 'All',
         'tax_declaration_number' => 'Tax declaration',
         'registered_owner' => 'Owner',
         'lot_number' => 'Lot number',

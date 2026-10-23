@@ -31,12 +31,14 @@ export default function PdfThumbnail({
     pageNumber = 1,
     fill = false,
     quality = 'card',
+    eager = false,
 }: {
     url: string;
     fit?: 'contain' | 'cover';
     pageNumber?: number;
     fill?: boolean;
     quality?: ThumbnailQuality;
+    eager?: boolean;
 }) {
     const containerRef = useRef<HTMLDivElement>(null);
     const slotHeldRef = useRef(false);
@@ -46,7 +48,7 @@ export default function PdfThumbnail({
     const [error, setError] = useState(false);
     const [missingPage, setMissingPage] = useState(false);
     const [pageCount, setPageCount] = useState<number | null>(null);
-    const [isVisible, setIsVisible] = useState(false);
+    const [isVisible, setIsVisible] = useState(eager);
     const [canLoad, setCanLoad] = useState(false);
     const [cachedSrc, setCachedSrc] = useState<string | null>(null);
     const quiet = pageNumber > 1;
@@ -102,6 +104,11 @@ export default function PdfThumbnail({
             return;
         }
 
+        if (eager) {
+            setIsVisible(true);
+            return;
+        }
+
         const observer = new IntersectionObserver(
             ([entry]) => {
                 if (entry?.isIntersecting) {
@@ -115,7 +122,7 @@ export default function PdfThumbnail({
         observer.observe(container);
 
         return () => observer.disconnect();
-    }, [cachedSrc]);
+    }, [cachedSrc, eager]);
 
     useEffect(() => {
         if (cachedSrc || !isVisible) {

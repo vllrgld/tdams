@@ -1,28 +1,167 @@
 import { Maximize2 } from 'lucide-react';
 import { motion, useReducedMotion, type Transition } from 'motion/react';
-import { useEffect, useRef, useState } from 'react';
-import { cn } from '@/lib/utils';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { formatDate } from '@/pages/documents/lib/formatters';
+import { cn } from '@/lib/utils';
 import DocumentThumbnail from '@/pages/documents/components/document-thumbnail';
+import { formatDate } from '@/pages/documents/lib/formatters';
 import type { ArchivedDocument } from '@/pages/documents/types';
-import type { BookCover, CabinetBook } from '../data/cabinets';
+import BookCoverFace from '@/pages/manage/books/book-cover-face';
+import type { BookCover, BookOrigin, CabinetBook } from '../data/cabinets';
+import { useBookPortal } from './book-portal';
+import {
+    measureSlotPose,
+    poseFromMatrix,
+    type FlyerPose,
+} from './book-world-pose';
 
-const PAGE_W = 400;
-const PAGE_H = 540;
-const OPEN: Transition = { duration: 0.85, ease: [0.4, 0, 0.2, 1] };
-const FLIP: Transition = { duration: 0.7, ease: [0.4, 0, 0.2, 1] };
+const PAGE_W = 440;
+const PAGE_H = 595;
+const COVER_THICKNESS = 56;
+const RISE = 210;
+const OPEN: Transition = {
+    duration: 0.85,
+    delay: 0.7,
+    ease: [0.4, 0, 0.2, 1],
+};
+const OPEN_AFTER_PICKUP: Transition = {
+    duration: 0.85,
+    ease: [0.4, 0, 0.2, 1],
+};
+const COVER_CLOSE: Transition = {
+    duration: 0.45,
+    ease: [0.4, 0, 0.2, 1],
+};
+const RISE_MOVE: Transition = {
+    duration: 0.42,
+    ease: [0.22, 1, 0.36, 1],
+};
+const TRAVEL_MOVE: Transition = {
+    duration: 0.6,
+    ease: [0.22, 1, 0.36, 1],
+    transformOrigin: { duration: 0 },
+};
+const TRAVEL_YAW: Transition = {
+    duration: 0.48,
+    delay: 0.1,
+    ease: [0.22, 1, 0.36, 1],
+};
+const RETURN_EASE = [0.22, 1, 0.36, 1] as const;
+const RETURN_FIT_S = 0.32;
+const RETURN_MOVE_S = 1;
+const RETURN_PARK_AT = 0.7;
+const INSERT_LIFT_RATIO = 1.4;
 const INSTANT: Transition = { duration: 0 };
+const RETURN_FIT: Transition = {
+    duration: RETURN_FIT_S,
+    ease: RETURN_EASE,
+};
+const RETURN_MOVE: Transition = {
+    duration: RETURN_MOVE_S,
+    ease: [0.4, 0, 0.2, 1],
+    times: [0, RETURN_PARK_AT, 1],
+    transformOrigin: INSTANT,
+    width: RETURN_FIT,
+    height: RETURN_FIT,
+    ['--book-depth' as string]: RETURN_FIT,
+    ['--cover-scale' as string]: RETURN_FIT,
+};
+const BACKDROP: Transition = {
+    duration: 0.55,
+    ease: [0.22, 1, 0.36, 1],
+};
+const FLIP: Transition = { duration: 0.7, ease: [0.4, 0, 0.2, 1] };
 const FADE: Transition = { duration: 0.35, ease: [0.22, 1, 0.36, 1] };
+
+export type { BookOrigin };
 
 export type OpenedBook = {
     book: CabinetBook;
     cabinetName: string;
     drawerLabel: string;
     cover: BookCover;
+    origin: BookOrigin | null;
 };
 
-function BookPage({ document }: { document: ArchivedDocument }) {
+type BookPhase = 'rise' | 'travel' | 'open' | 'closing' | 'return' | 'drop';
+
+const VOLUME_ORIGIN = '50% 50% calc(-0.5 * var(--book-depth, 0px))';
+
+function risenPose(pose: FlyerPose): FlyerPose {
+    const matrix = new DOMMatrix(pose.transform).translateSelf(0, -RISE);
+
+    return poseFromMatrix(matrix, pose);
+}
+
+function standingPose(): FlyerPose {
+    const width = COVER_THICKNESS;
+    const height = PAGE_W;
+    const depth = PAGE_H;
+    const x = (window.innerWidth - width) / 2;
+    const y = (window.innerHeight - height) / 2;
+    const originX = width / 2;
+    const originY = height / 2;
+    const originZ = -depth / 2;
+    const matrix = new DOMMatrix()
+        .translateSelf(x, y)
+        .translateSelf(originX, originY, originZ)
+        .rotateSelf(0, 0, -90)
+        .translateSelf(-originX, -originY, -originZ);
+
+    return poseFromMatrix(matrix, {
+        width,
+        height,
+        depth,
+        rotateY: -90,
+    });
+}
+
+function flyerOuterMotion(pose: FlyerPose) {
+    return {
+        width: pose.width,
+        height: pose.height,
+        transformOrigin: pose.origin,
+        transform: pose.transform,
+        ['--book-depth' as string]: `${pose.depth}px`,
+        ['--cover-scale' as string]: Math.min(
+            pose.height / PAGE_W,
+            pose.depth / PAGE_H,
+        ),
+    };
+}
+
+function liftPose(pose: FlyerPose, lift: number): FlyerPose {
+    const matrix = new DOMMatrix(pose.transform).translateSelf(0, -lift);
+
+    return poseFromMatrix(matrix, pose);
+}
+
+function insertLift(height: number): number {
+    return Math.round(height * INSERT_LIFT_RATIO);
+}
+
+function parkedAboveSlot(rest: FlyerPose): FlyerPose {
+    return liftPose(rest, insertLift(rest.height));
+}
+
+function returnOuterMotion(
+    to: FlyerPose,
+    above: FlyerPose,
+    fromTransform: string,
+) {
+    return {
+        ...flyerOuterMotion(to),
+        transform: [fromTransform, above.transform, to.transform],
+    };
+}
+
+function BookPage({
+    document,
+    eager = false,
+}: {
+    document: ArchivedDocument;
+    eager?: boolean;
+}) {
     return (
         <DocumentThumbnail
             mimeType={document.mimeType}
@@ -32,6 +171,7 @@ function BookPage({ document }: { document: ArchivedDocument }) {
             fit="contain"
             fill
             quality="book"
+            eager={eager}
             className="h-full bg-transparent dark:bg-transparent"
         />
     );
@@ -50,9 +190,16 @@ function DetailRow({ label, value }: { label: string; value: string | null }) {
     );
 }
 
-function DocumentDetails({ document }: { document: ArchivedDocument }) {
+function DocumentDetails({
+    document,
+    onOpenPrevious,
+}: {
+    document: ArchivedDocument;
+    onOpenPrevious?: (number: string) => void;
+}) {
     const title = document.taxDeclarationNumber || document.originalFilename;
     const showFilename = Boolean(document.taxDeclarationNumber);
+    const previous = document.previousTaxDeclarationNumber;
 
     return (
         <div className="flex h-full flex-col justify-between p-6">
@@ -61,6 +208,28 @@ function DocumentDetails({ document }: { document: ArchivedDocument }) {
                     {title}
                 </p>
                 <div className="space-y-3">
+                    {previous && onOpenPrevious ? (
+                        <div>
+                            <p className="text-[10px] font-medium tracking-wide text-neutral-500 uppercase">
+                                Previous declaration
+                            </p>
+                            <button
+                                type="button"
+                                onClick={(event) => {
+                                    event.stopPropagation();
+                                    onOpenPrevious(previous);
+                                }}
+                                className="mt-0.5 text-left text-sm break-words text-blue-900 underline-offset-2 hover:underline focus-visible:underline focus-visible:outline-none"
+                            >
+                                {previous}
+                            </button>
+                        </div>
+                    ) : (
+                        <DetailRow
+                            label="Previous declaration"
+                            value={previous}
+                        />
+                    )}
                     <DetailRow label="Owner" value={document.registeredOwner} />
                     <DetailRow label="Lot" value={document.lotNumber} />
                     <DetailRow
@@ -82,14 +251,13 @@ function DocumentDetails({ document }: { document: ArchivedDocument }) {
     );
 }
 
-function EmptyDocuments() {
+function EmptyDocuments({ loading }: { loading?: boolean }) {
     return (
-        <div className="flex h-full flex-col gap-3 p-6">
-            <p className="text-[10px] font-medium tracking-wide text-neutral-500 uppercase">
-                Documents
-            </p>
-            <p className="text-sm text-neutral-700">
-                Saved documents in this book will appear here.
+        <div className="flex h-full items-center justify-center p-6">
+            <p className="text-center text-sm text-neutral-700">
+                {loading
+                    ? 'Loading documents…'
+                    : 'Saved documents in this book will appear here.'}
             </p>
         </div>
     );
@@ -98,35 +266,298 @@ function EmptyDocuments() {
 export default function OpenBook({
     opened,
     dimmed,
+    initialDocumentId,
     onClose,
     onOpenDocument,
+    onOpenPrevious,
+    onInitialDocumentConsumed,
 }: {
     opened: OpenedBook;
     dimmed?: boolean;
+    initialDocumentId?: string | null;
     onClose: () => void;
     onOpenDocument: (document: ArchivedDocument) => void;
+    onOpenPrevious?: (number: string) => void;
+    onInitialDocumentConsumed?: () => void;
 }) {
     const reduceMotion = useReducedMotion();
+    const portal = useBookPortal();
+    const setHost = portal?.setHost;
+    const getSlot = portal?.getSlot;
     const dialogRef = useRef<HTMLDivElement>(null);
-    const documents = opened.book.documents;
+    const consumedInitialRef = useRef(false);
+    const initialDocumentIdRef = useRef(initialDocumentId);
+    const onInitialDocumentConsumedRef = useRef(onInitialDocumentConsumed);
+    const onCloseRef = useRef(onClose);
+    initialDocumentIdRef.current = initialDocumentId;
+    onInitialDocumentConsumedRef.current = onInitialDocumentConsumed;
+    onCloseRef.current = onClose;
+    const origin = opened.origin;
+    const hasPickup = Boolean(origin) && reduceMotion !== true;
+    const [hover] = useState(() => origin?.hover ?? null);
+    const [rest, setRest] = useState(() => origin?.rest ?? null);
+    const [above, setAbove] = useState(() =>
+        origin?.rest ? parkedAboveSlot(origin.rest) : null,
+    );
+    const [risenHover] = useState(() =>
+        origin?.hover ? risenPose(origin.hover) : null,
+    );
+    const [standing] = useState(() => (origin ? standingPose() : null));
+    const [phase, setPhase] = useState<BookPhase>(hasPickup ? 'rise' : 'open');
+    const phaseRef = useRef(phase);
+    phaseRef.current = phase;
+    const returnFromRef = useRef(hover?.transform ?? '');
+    const [returnFrom, setReturnFrom] = useState(returnFromRef.current);
+
+    function liveInsertPoses(): { rest: FlyerPose; above: FlyerPose } | null {
+        const slot = getSlot?.(opened.book.id);
+
+        if (!slot || !origin) {
+            return null;
+        }
+
+        const restPose = measureSlotPose(slot, origin.rest.depth);
+
+        return {
+            rest: restPose,
+            above: liftPose(restPose, insertLift(slot.offsetHeight)),
+        };
+    }
+
+    function goToPhase(next: BookPhase) {
+        if (next === 'open' && standing) {
+            returnFromRef.current = standing.transform;
+        }
+
+        if (next === 'return' || next === 'drop') {
+            setReturnFrom(returnFromRef.current);
+            const live = liveInsertPoses();
+
+            if (live) {
+                setRest(live.rest);
+                setAbove(live.above);
+            }
+        }
+
+        phaseRef.current = next;
+        setPhase(next);
+    }
+    const [documents, setDocuments] = useState<ArchivedDocument[]>([]);
+    const [loading, setLoading] = useState(true);
     const lastIndex = Math.max(0, documents.length - 1);
     const [index, setIndex] = useState(0);
     const [flip, setFlip] = useState<'next' | 'prev' | null>(null);
     const current = documents[index] ?? null;
     const nextDoc = documents[index + 1] ?? null;
+    const upcomingDoc = documents[index + 2] ?? null;
     const prevDoc = index > 0 ? (documents[index - 1] ?? null) : null;
-    const canGoNext = current !== null && index < lastIndex && !flip;
-    const canGoPrev = index > 0 && !flip;
+    const prefetchDocs = [nextDoc, upcomingDoc, prevDoc].filter(
+        (document): document is ArchivedDocument => document !== null,
+    );
+    const canInteract = phase === 'open';
+    const flying =
+        phase === 'rise' ||
+        phase === 'travel' ||
+        phase === 'closing' ||
+        phase === 'return' ||
+        phase === 'drop';
+    const showSpread = !hasPickup || phase === 'open' || phase === 'closing';
+    const canGoNext =
+        canInteract && current !== null && index < lastIndex && !flip;
+    const canGoPrev = canInteract && index > 0 && !flip;
     const coverOpen = 'rotateY(-158deg)';
     const coverClosed = 'rotateY(0deg)';
-    const motionTransition = reduceMotion ? INSTANT : OPEN;
+    const coverIsOpen = phase === 'open';
+    const motionTransition = reduceMotion
+        ? INSTANT
+        : phase === 'closing'
+          ? COVER_CLOSE
+          : origin
+            ? OPEN_AFTER_PICKUP
+            : OPEN;
     const flipTransition = reduceMotion ? INSTANT : FLIP;
+    const flyerAnimate =
+        phase === 'rise'
+            ? risenHover
+            : phase === 'return' || phase === 'drop'
+              ? rest
+              : standing;
+    const flyerTransition = reduceMotion
+        ? INSTANT
+        : phase === 'rise'
+          ? RISE_MOVE
+          : phase === 'return' || phase === 'drop'
+            ? RETURN_MOVE
+            : phase === 'travel'
+              ? TRAVEL_MOVE
+              : INSTANT;
+    const flyerYawTransition = reduceMotion
+        ? INSTANT
+        : phase === 'return' || phase === 'drop'
+          ? RETURN_FIT
+          : phase === 'travel'
+            ? TRAVEL_YAW
+            : flyerTransition;
+    const flyerOuterAnimate = useMemo(() => {
+        if ((phase === 'return' || phase === 'drop') && rest && above) {
+            return returnOuterMotion(rest, above, returnFrom);
+        }
+
+        return flyerAnimate ? flyerOuterMotion(flyerAnimate) : null;
+    }, [phase, rest, above, returnFrom, flyerAnimate]);
+    const assignFlyerHost = useCallback(
+        (node: HTMLDivElement | null) => {
+            setHost?.(node);
+        },
+        [setHost],
+    );
 
     useEffect(() => {
         dialogRef.current?.focus({ preventScroll: true });
+        consumedInitialRef.current = false;
         setIndex(0);
         setFlip(null);
+        setDocuments([]);
+        setLoading(true);
+
+        const controller = new AbortController();
+
+        fetch(`/archive/books/${opened.book.id}`, {
+            headers: { Accept: 'application/json' },
+            credentials: 'same-origin',
+            signal: controller.signal,
+        })
+            .then(async (response) => {
+                if (!response.ok) {
+                    throw new Error('Failed to load documents');
+                }
+
+                return (await response.json()) as {
+                    documents: ArchivedDocument[];
+                };
+            })
+            .then((data) => {
+                const loaded = data.documents;
+                setDocuments(loaded);
+                setLoading(false);
+
+                const pendingId = initialDocumentIdRef.current;
+
+                if (consumedInitialRef.current || !pendingId) {
+                    return;
+                }
+
+                const matchIndex = loaded.findIndex(
+                    (document) => String(document.id) === pendingId,
+                );
+
+                if (matchIndex < 0) {
+                    onInitialDocumentConsumedRef.current?.();
+                    return;
+                }
+
+                consumedInitialRef.current = true;
+                setIndex(matchIndex);
+                onInitialDocumentConsumedRef.current?.();
+            })
+            .catch((error: unknown) => {
+                if (
+                    error instanceof DOMException &&
+                    error.name === 'AbortError'
+                ) {
+                    return;
+                }
+
+                setDocuments([]);
+                setLoading(false);
+            });
+
+        return () => controller.abort();
     }, [opened.book.id]);
+
+    function requestClose() {
+        if (dimmed) {
+            return;
+        }
+
+        if (reduceMotion || !opened.origin) {
+            onCloseRef.current();
+            return;
+        }
+
+        const currentPhase = phaseRef.current;
+
+        if (
+            currentPhase === 'closing' ||
+            currentPhase === 'return' ||
+            currentPhase === 'drop'
+        ) {
+            return;
+        }
+
+        if (currentPhase === 'open') {
+            goToPhase('closing');
+            return;
+        }
+
+        goToPhase('return');
+    }
+
+    useEffect(() => {
+        if (reduceMotion) {
+            return;
+        }
+
+        const nextByPhase: Partial<Record<BookPhase, BookPhase | 'close'>> = {
+            rise: 'travel',
+            travel: 'open',
+            closing: 'return',
+            return: 'close',
+            drop: 'close',
+        };
+        const durationByPhase: Partial<Record<BookPhase, number>> = {
+            rise: (RISE_MOVE.duration ?? 0.3) * 1000,
+            travel: (TRAVEL_MOVE.duration ?? 0.55) * 1000,
+            closing: (COVER_CLOSE.duration ?? 0.45) * 1000,
+            return: RETURN_MOVE_S * 1000,
+            drop: RETURN_MOVE_S * 1000,
+        };
+        const next = nextByPhase[phase];
+        const duration = durationByPhase[phase];
+
+        if (!next || duration === undefined) {
+            return;
+        }
+
+        const timeoutId = window.setTimeout(() => {
+            if (phaseRef.current !== phase) {
+                return;
+            }
+
+            if (next === 'close') {
+                onCloseRef.current();
+                return;
+            }
+
+            goToPhase(next);
+        }, duration);
+
+        return () => window.clearTimeout(timeoutId);
+    }, [phase, reduceMotion]);
+
+    useEffect(() => {
+        function handleKeyDown(event: KeyboardEvent) {
+            if (event.key !== 'Escape') {
+                return;
+            }
+
+            requestClose();
+        }
+
+        window.addEventListener('keydown', handleKeyDown);
+
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [dimmed, opened.origin, reduceMotion]);
 
     function finishFlip(direction: 'next' | 'prev') {
         setIndex((currentIndex) =>
@@ -171,216 +602,341 @@ export default function OpenBook({
         onOpenDocument(current);
     }
 
+    function openPreviousDeclaration(number: string) {
+        const matchIndex = documents.findIndex(
+            (document) =>
+                document.taxDeclarationNumber?.toLowerCase() ===
+                number.toLowerCase(),
+        );
+
+        if (matchIndex >= 0) {
+            setIndex(matchIndex);
+            return;
+        }
+
+        onOpenPrevious?.(number);
+    }
+
     return (
         <motion.div
             role="dialog"
             aria-modal="true"
             aria-labelledby="open-book-title"
+            data-book-phase={phase}
             tabIndex={-1}
             ref={dialogRef}
             className={cn(
                 'fixed inset-0 grid place-items-center outline-none',
                 dimmed ? 'z-40' : 'z-[60]',
             )}
-            initial={reduceMotion ? false : { opacity: 0 }}
+            style={{ perspective: '1200px' }}
+            initial={hasPickup || reduceMotion ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={reduceMotion ? undefined : { opacity: 0 }}
-            transition={reduceMotion ? INSTANT : FADE}
+            exit={
+                hasPickup
+                    ? { opacity: 0, transition: INSTANT }
+                    : reduceMotion
+                      ? undefined
+                      : { opacity: 0 }
+            }
+            transition={reduceMotion || hasPickup ? INSTANT : FADE}
         >
-            <button
+            <motion.button
                 type="button"
                 aria-label="Close book"
                 className="absolute inset-0 bg-black/70 focus-visible:outline-2 focus-visible:outline-offset-[-4px] focus-visible:outline-blue-300"
-                onClick={onClose}
-            />
-            <div
-                className="group/book relative z-10"
-                style={{
-                    width: PAGE_W * 2,
-                    height: PAGE_H,
-                    transform: `translateX(-${PAGE_W / 2}px)`,
+                initial={hasPickup ? { opacity: 0 } : false}
+                animate={{
+                    opacity:
+                        phase === 'rise' ||
+                        phase === 'return' ||
+                        phase === 'drop'
+                            ? 0
+                            : 1,
                 }}
-            >
-                {current && (
-                    <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        onClick={openCurrentDocument}
-                        aria-label={`Open ${current.originalFilename}`}
-                        title="Open document"
-                        className="absolute top-2 right-2 z-30 size-8 cursor-pointer rounded-none bg-transparent text-blue-900 opacity-0 shadow-none [filter:drop-shadow(0_0_2px_rgb(255_255_255))_drop-shadow(0_1px_2px_rgb(255_255_255_/_0.9))] transition-transform duration-200 ease-out group-focus-within/book:opacity-100 group-hover/book:opacity-100 hover:scale-150 hover:bg-transparent hover:text-blue-950 focus-visible:opacity-100 focus-visible:ring-blue-700 motion-reduce:transition-none motion-reduce:hover:scale-100"
-                    >
-                        <Maximize2 aria-hidden="true" className="size-4" />
-                    </Button>
-                )}
-                <div
-                    className="absolute top-0 left-1/2 origin-left"
+                transition={
+                    reduceMotion ? INSTANT : hasPickup ? BACKDROP : INSTANT
+                }
+                onClick={requestClose}
+            />
+            {hasPickup && origin && flyerAnimate && flyerOuterAnimate ? (
+                <motion.div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute top-0 left-0 z-0"
                     style={{
-                        width: PAGE_W,
-                        height: PAGE_H,
-                        perspective: '1400px',
                         transformStyle: 'preserve-3d',
+                        opacity: flying ? 1 : 0,
+                        visibility: flying ? 'visible' : 'hidden',
+                    }}
+                    initial={hover ? flyerOuterMotion(hover) : false}
+                    animate={flyerOuterAnimate}
+                    transition={flyerTransition}
+                    onUpdate={(latest) => {
+                        if (typeof latest.transform === 'string') {
+                            returnFromRef.current = latest.transform;
+                        }
                     }}
                 >
-                    <div
-                        className="absolute inset-0 overflow-hidden border border-neutral-300 bg-neutral-50 shadow-2xl dark:border-neutral-400 dark:bg-neutral-100"
-                        style={{ transform: 'translateZ(0px)' }}
-                    >
-                        {current ? (
-                            <button
-                                type="button"
-                                onClick={goNext}
-                                disabled={!canGoNext}
-                                aria-label="Next page"
-                                className="h-full w-full disabled:cursor-default"
-                            >
-                                <BookPage key={current.id} document={current} />
-                            </button>
-                        ) : (
-                            <EmptyDocuments />
-                        )}
-                    </div>
-
-                    {flip === 'next' && current && nextDoc && (
-                        <motion.div
-                            className="absolute inset-0 z-10"
-                            style={{
-                                transformOrigin: 'left center',
-                                transformStyle: 'preserve-3d',
-                            }}
-                            initial={{ transform: 'rotateY(0deg)' }}
-                            animate={{ transform: 'rotateY(-180deg)' }}
-                            transition={flipTransition}
-                            onAnimationComplete={() => finishFlip('next')}
-                        >
-                            <div
-                                className="absolute inset-0 overflow-hidden border border-neutral-300 bg-neutral-50"
-                                style={{
-                                    backfaceVisibility: 'hidden',
-                                    transform: 'translateZ(1px)',
-                                }}
-                            >
-                                <BookPage key={current.id} document={current} />
-                            </div>
-                            <div
-                                className="absolute inset-0 overflow-hidden border border-neutral-300 bg-amber-50 text-left dark:border-neutral-400 dark:bg-amber-100"
-                                style={{
-                                    transform:
-                                        'rotateY(180deg) translateZ(1px)',
-                                    backfaceVisibility: 'hidden',
-                                }}
-                            >
-                                <DocumentDetails
-                                    key={nextDoc.id}
-                                    document={nextDoc}
-                                />
-                            </div>
-                        </motion.div>
-                    )}
-
                     <motion.div
-                        className="absolute inset-0"
+                        className="h-full w-full"
                         style={{
-                            transformOrigin: 'left center',
                             transformStyle: 'preserve-3d',
+                            transformOrigin: VOLUME_ORIGIN,
                         }}
-                        initial={
-                            reduceMotion ? false : { transform: coverClosed }
-                        }
-                        animate={{ transform: coverOpen }}
-                        transition={motionTransition}
+                        initial={hover ? { rotateY: hover.rotateY } : false}
+                        animate={{ rotateY: flyerAnimate.rotateY }}
+                        transition={flyerYawTransition}
                     >
                         <div
-                            className={cn(
-                                'absolute inset-0 flex items-center justify-center border border-black/25 px-6 text-center shadow-lg',
-                                opened.cover.cover,
-                                opened.cover.text,
-                            )}
-                            style={{
-                                backfaceVisibility: 'hidden',
-                                transform: 'translateZ(1px)',
-                            }}
+                            ref={assignFlyerHost}
+                            data-book-flyer-host=""
+                            className="h-full w-full"
+                            style={{ transformStyle: 'preserve-3d' }}
+                        />
+                    </motion.div>
+                </motion.div>
+            ) : null}
+            {showSpread ? (
+                <div
+                    className="group/book relative z-10"
+                    style={{
+                        width: PAGE_W * 2,
+                        height: PAGE_H,
+                        perspective: '1540px',
+                        transform: `translateX(-${PAGE_W / 2}px)`,
+                    }}
+                >
+                    {prefetchDocs.length > 0 && (
+                        <div
+                            aria-hidden
+                            className="pointer-events-none absolute top-0 left-0 overflow-hidden opacity-0"
+                            style={{ width: PAGE_W, height: PAGE_H }}
                         >
-                            <div className="flex flex-col items-center gap-4">
-                                <img
-                                    src="/logo.png"
-                                    alt=""
-                                    className="size-24 object-contain"
-                                />
-                                <p className="text-lg font-semibold tracking-wide">
-                                    {opened.book.label}
-                                </p>
-                            </div>
+                            {prefetchDocs.map((document) => (
+                                <div
+                                    key={document.id}
+                                    className="absolute inset-0"
+                                >
+                                    <BookPage document={document} eager />
+                                </div>
+                            ))}
                         </div>
-                        <button
+                    )}
+                    {current && canInteract && (
+                        <Button
                             type="button"
-                            id="open-book-title"
-                            onClick={goPrev}
-                            disabled={!canGoPrev}
-                            aria-label={
-                                prevDoc
-                                    ? `Previous page, ${prevDoc.originalFilename}`
-                                    : opened.book.label
-                            }
-                            className="absolute inset-0 overflow-hidden border border-neutral-300 bg-amber-50 text-left disabled:cursor-default dark:border-neutral-400 dark:bg-amber-100"
-                            style={{
-                                transform: 'rotateY(180deg) translateZ(1px)',
-                                backfaceVisibility: 'hidden',
-                            }}
+                            variant="ghost"
+                            size="icon"
+                            onClick={openCurrentDocument}
+                            aria-label={`Open ${current.originalFilename}`}
+                            title="Open document"
+                            className="absolute top-2 right-2 z-30 size-8 cursor-pointer rounded-none bg-transparent text-blue-900 opacity-0 shadow-none [filter:drop-shadow(0_0_2px_rgb(255_255_255))_drop-shadow(0_1px_2px_rgb(255_255_255_/_0.9))] transition-transform duration-200 ease-out group-focus-within/book:opacity-100 group-hover/book:opacity-100 hover:scale-150 hover:bg-transparent hover:text-blue-950 focus-visible:opacity-100 focus-visible:ring-blue-700 motion-reduce:transition-none motion-reduce:hover:scale-100"
+                        >
+                            <Maximize2 aria-hidden="true" className="size-4" />
+                        </Button>
+                    )}
+                    <div
+                        className="absolute top-0 left-1/2 origin-left"
+                        style={{
+                            width: PAGE_W,
+                            height: PAGE_H,
+                            perspective: '1540px',
+                            transformStyle: 'preserve-3d',
+                        }}
+                    >
+                        <div
+                            className="absolute inset-0 overflow-hidden border border-neutral-300 bg-neutral-50 shadow-2xl dark:border-neutral-400 dark:bg-neutral-100"
+                            style={{ transform: 'translateZ(0px)' }}
                         >
                             {current ? (
-                                <DocumentDetails
-                                    key={current.id}
-                                    document={current}
-                                />
-                            ) : null}
-                        </button>
-                    </motion.div>
+                                <button
+                                    type="button"
+                                    onClick={goNext}
+                                    disabled={!canGoNext}
+                                    aria-label="Next page"
+                                    className="h-full w-full disabled:cursor-default"
+                                >
+                                    <BookPage
+                                        key={current.id}
+                                        document={current}
+                                        eager
+                                    />
+                                </button>
+                            ) : (
+                                <EmptyDocuments loading={loading} />
+                            )}
+                        </div>
 
-                    {flip === 'prev' && prevDoc && current && (
+                        {flip === 'next' && current && nextDoc && (
+                            <motion.div
+                                className="absolute inset-0 z-10"
+                                style={{
+                                    transformOrigin: 'left center',
+                                    transformStyle: 'preserve-3d',
+                                }}
+                                initial={{ transform: 'rotateY(0deg)' }}
+                                animate={{ transform: 'rotateY(-180deg)' }}
+                                transition={flipTransition}
+                                onAnimationComplete={() => finishFlip('next')}
+                            >
+                                <div
+                                    className="absolute inset-0 overflow-hidden border border-neutral-300 bg-neutral-50"
+                                    style={{
+                                        backfaceVisibility: 'hidden',
+                                        transform: 'translateZ(1px)',
+                                    }}
+                                >
+                                    <BookPage
+                                        key={current.id}
+                                        document={current}
+                                        eager
+                                    />
+                                </div>
+                                <div
+                                    className="absolute inset-0 overflow-hidden border border-neutral-300 bg-amber-50 text-left dark:border-neutral-400 dark:bg-amber-100"
+                                    style={{
+                                        transform:
+                                            'rotateY(180deg) translateZ(1px)',
+                                        backfaceVisibility: 'hidden',
+                                    }}
+                                >
+                                    <DocumentDetails
+                                        key={nextDoc.id}
+                                        document={nextDoc}
+                                        onOpenPrevious={openPreviousDeclaration}
+                                    />
+                                </div>
+                            </motion.div>
+                        )}
+
                         <motion.div
-                            className="absolute inset-0 z-20"
+                            className="absolute inset-0"
                             style={{
                                 transformOrigin: 'left center',
                                 transformStyle: 'preserve-3d',
                             }}
-                            initial={{ transform: 'rotateY(-180deg)' }}
-                            animate={{ transform: 'rotateY(0deg)' }}
-                            transition={flipTransition}
-                            onAnimationComplete={() => finishFlip('prev')}
+                            initial={
+                                reduceMotion
+                                    ? false
+                                    : { transform: coverClosed }
+                            }
+                            animate={{
+                                transform: coverIsOpen
+                                    ? coverOpen
+                                    : coverClosed,
+                            }}
+                            transition={motionTransition}
                         >
                             <div
-                                className="absolute inset-0 overflow-hidden border border-neutral-300 bg-neutral-50"
+                                className={cn(
+                                    'absolute inset-0 overflow-hidden border border-black/25 shadow-lg',
+                                    opened.cover.cover,
+                                    opened.cover.text,
+                                )}
                                 style={{
                                     backfaceVisibility: 'hidden',
                                     transform: 'translateZ(1px)',
                                 }}
                             >
-                                <BookPage key={prevDoc.id} document={prevDoc} />
+                                <BookCoverFace title={opened.book.coverTitle} />
                             </div>
                             <div
-                                className="absolute inset-0 overflow-hidden border border-neutral-300 bg-amber-50 text-left dark:border-neutral-400 dark:bg-amber-100"
+                                id="open-book-title"
+                                role={canGoPrev ? 'button' : undefined}
+                                tabIndex={canGoPrev ? 0 : undefined}
+                                onClick={canGoPrev ? goPrev : undefined}
+                                onKeyDown={(event) => {
+                                    if (
+                                        !canGoPrev ||
+                                        (event.key !== 'Enter' &&
+                                            event.key !== ' ')
+                                    ) {
+                                        return;
+                                    }
+
+                                    event.preventDefault();
+                                    goPrev();
+                                }}
+                                aria-label={
+                                    prevDoc
+                                        ? `Previous page, ${prevDoc.originalFilename}`
+                                        : opened.book.label
+                                }
+                                className={cn(
+                                    'absolute inset-0 overflow-hidden border border-neutral-300 bg-amber-50 text-left dark:border-neutral-400 dark:bg-amber-100',
+                                    canGoPrev
+                                        ? 'cursor-pointer'
+                                        : 'cursor-default',
+                                )}
                                 style={{
                                     transform:
                                         'rotateY(180deg) translateZ(1px)',
                                     backfaceVisibility: 'hidden',
                                 }}
                             >
-                                <DocumentDetails
-                                    key={current.id}
-                                    document={current}
-                                />
+                                {current ? (
+                                    <DocumentDetails
+                                        key={current.id}
+                                        document={current}
+                                        onOpenPrevious={openPreviousDeclaration}
+                                    />
+                                ) : null}
                             </div>
                         </motion.div>
-                    )}
+
+                        {flip === 'prev' && prevDoc && current && (
+                            <motion.div
+                                className="absolute inset-0 z-20"
+                                style={{
+                                    transformOrigin: 'left center',
+                                    transformStyle: 'preserve-3d',
+                                }}
+                                initial={{ transform: 'rotateY(-180deg)' }}
+                                animate={{ transform: 'rotateY(0deg)' }}
+                                transition={flipTransition}
+                                onAnimationComplete={() => finishFlip('prev')}
+                            >
+                                <div
+                                    className="absolute inset-0 overflow-hidden border border-neutral-300 bg-neutral-50"
+                                    style={{
+                                        backfaceVisibility: 'hidden',
+                                        transform: 'translateZ(1px)',
+                                    }}
+                                >
+                                    <BookPage
+                                        key={prevDoc.id}
+                                        document={prevDoc}
+                                        eager
+                                    />
+                                </div>
+                                <div
+                                    className="absolute inset-0 overflow-hidden border border-neutral-300 bg-amber-50 text-left dark:border-neutral-400 dark:bg-amber-100"
+                                    style={{
+                                        transform:
+                                            'rotateY(180deg) translateZ(1px)',
+                                        backfaceVisibility: 'hidden',
+                                    }}
+                                >
+                                    <DocumentDetails
+                                        key={current.id}
+                                        document={current}
+                                        onOpenPrevious={openPreviousDeclaration}
+                                    />
+                                </div>
+                            </motion.div>
+                        )}
+                    </div>
                 </div>
-            </div>
-            <p className="pointer-events-none absolute bottom-8 z-10 text-center text-xs text-neutral-300">
-                {documents.length > 0
-                    ? `${index + 1} / ${documents.length} · click a page to flip · Esc to close`
-                    : 'Esc or click outside to close'}
-            </p>
+            ) : null}
+            {canInteract ? (
+                <p className="pointer-events-none absolute bottom-8 z-10 text-center text-xs text-neutral-300">
+                    {loading
+                        ? 'Loading documents…'
+                        : documents.length > 0
+                          ? `${index + 1} / ${documents.length} · click a page to flip · Esc to close`
+                          : 'Esc or click outside to close'}
+                </p>
+            ) : null}
         </motion.div>
     );
 }

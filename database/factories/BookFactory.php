@@ -19,6 +19,7 @@ class BookFactory extends Factory
         return [
             'drawer_id' => Drawer::factory(),
             'label' => 'Book 1',
+            'cover_title' => Book::DEFAULT_COVER_TITLE,
             'position' => 1,
         ];
     }

@@ -68,7 +68,7 @@ function CollapsibleNavItem({
         <Collapsible defaultOpen={open} className="group/collapsible">
             <SidebarMenuItem>
                 <SidebarMenuButton
-                    isActive={open}
+                    isActive={false}
                     tooltip={{ children: item.title }}
                     className={activeButtonClass}
                     render={<CollapsibleTrigger />}

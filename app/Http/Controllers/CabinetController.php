@@ -32,6 +32,9 @@ class CabinetController extends Controller
                             ->map(fn (Book $book): array => [
                                 'id' => (string) $book->id,
                                 'label' => $book->label,
+                                'coverTitle' => $book->cover_title !== ''
+                                    ? $book->cover_title
+                                    : Book::DEFAULT_COVER_TITLE,
                                 'position' => $book->position,
                             ])
                             ->values()

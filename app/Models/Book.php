@@ -15,6 +15,7 @@ use Illuminate\Support\Collection;
  * @property int $id
  * @property int $drawer_id
  * @property string $label
+ * @property string $cover_title
  * @property int $position
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -22,13 +23,31 @@ use Illuminate\Support\Collection;
  * @property-read Collection<int, Document> $documents
  * @property-read int|null $documents_count
  */
-#[Fillable(['drawer_id', 'label', 'position'])]
+#[Fillable(['drawer_id', 'label', 'cover_title', 'position'])]
 class Book extends Model
 {
     /** @use HasFactory<BookFactory> */
     use HasFactory;
 
-    public const MAX_PER_DRAWER = 8;
+    public const MAX_PER_DRAWER = 16;
+
+    public const DEFAULT_COVER_TITLE = 'Tax Declaration';
+
+    /**
+     * @var array<string, mixed>
+     */
+    protected $attributes = [
+        'cover_title' => 'Tax Declaration',
+    ];
+
+    public static function coverTitle(): string
+    {
+        $title = self::query()->value('cover_title');
+
+        return is_string($title) && $title !== ''
+            ? $title
+            : self::DEFAULT_COVER_TITLE;
+    }
 
     /**
      * @return BelongsTo<Drawer, $this>

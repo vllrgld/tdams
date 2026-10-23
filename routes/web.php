@@ -19,13 +19,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('documents/{document}', [DocumentController::class, 'update'])->name('documents.update');
     Route::get('documents/{document}/view', [DocumentController::class, 'view'])->name('documents.view');
     Route::get('archive', [ArchiveController::class, 'index'])->name('archive.index');
+    Route::get('archive/books/{book}', [ArchiveController::class, 'book'])->name('archive.books.show');
+    Route::get('archive/documents', [ArchiveController::class, 'locate'])->name('archive.documents.locate');
     Route::get('manage/cabinets', [CabinetController::class, 'index'])->name('manage.cabinets.index');
     Route::post('manage/cabinets', [CabinetController::class, 'store'])->name('manage.cabinets.store');
     Route::patch('manage/cabinets/{cabinet}', [CabinetController::class, 'update'])->name('manage.cabinets.update');
     Route::patch('manage/drawers/{drawer}', [DrawerController::class, 'update'])->name('manage.drawers.update');
     Route::post('manage/drawers/{drawer}/books', [BookController::class, 'store'])->name('manage.drawers.books.store');
+    Route::get('manage/books', [BookController::class, 'index'])->name('manage.books.index');
     Route::patch('manage/books/{book}', [BookController::class, 'update'])->name('manage.books.update');
-    Route::inertia('manage/books', 'manage/books/index')->name('manage.books.index');
     Route::redirect('archive/cabinets', '/manage/cabinets');
     Route::redirect('archive/books', '/manage/books');
     Route::redirect('filing-cabinets', '/archive');

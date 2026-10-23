@@ -4,9 +4,9 @@ import {
     Bookmark,
     BookMarked,
     FileSearch,
-    LayoutGrid,
+    Folders,
+    LayoutDashboard,
     Palette,
-    Settings2,
     Shield,
     UserRound,
 } from 'lucide-react';
@@ -33,7 +33,7 @@ const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
         href: dashboard(),
-        icon: LayoutGrid,
+        icon: LayoutDashboard,
     },
     {
         title: 'Documents',
@@ -46,9 +46,14 @@ const mainNavItems: NavItem[] = [
         icon: Archive,
     },
     {
+        title: 'Bookmarks',
+        href: '/bookmarks',
+        icon: Bookmark,
+    },
+    {
         title: 'Manage',
         href: '/manage/cabinets',
-        icon: Settings2,
+        icon: Folders,
         items: [
             {
                 title: 'Cabinets',
@@ -65,11 +70,6 @@ const mainNavItems: NavItem[] = [
 ];
 
 const accountNavItems: NavItem[] = [
-    {
-        title: 'Bookmarks',
-        href: '/bookmarks',
-        icon: Bookmark,
-    },
     {
         title: 'Profile',
         href: editProfile(),

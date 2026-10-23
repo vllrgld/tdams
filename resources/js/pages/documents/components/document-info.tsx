@@ -75,7 +75,7 @@ export default function DocumentInfo({
     const selectedField =
         searchFields.find((option) => option.value === field) ??
         searchFields[0];
-    const selectedLabel = selectedField?.label ?? 'All fields';
+    const selectedLabel = selectedField?.label ?? 'All';
     const placeholder =
         field === 'all'
             ? 'Search documents…'
@@ -195,7 +195,7 @@ export default function DocumentInfo({
                                     aria-label="Search in"
                                     className="h-full w-40 shrink-0 rounded-none border-0 border-r border-slate-300 bg-transparent px-3 shadow-none focus-visible:border-transparent focus-visible:ring-0 *:data-[slot=select-value]:min-w-0 *:data-[slot=select-value]:flex-1 *:data-[slot=select-value]:truncate dark:border-neutral-700 dark:bg-transparent"
                                 >
-                                    <SelectValue placeholder="All fields" />
+                                    <SelectValue placeholder="All" />
                                 </SelectTrigger>
                                 <SelectContent
                                     align="start"

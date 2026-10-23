@@ -4,11 +4,12 @@ import {
     useReducedMotion,
     type Transition,
 } from 'motion/react';
-import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useRef, type CSSProperties } from 'react';
 import { createPortal } from 'react-dom';
 import { cn } from '@/lib/utils';
 import type {
     BookCover,
+    BookOrigin,
     CabinetBook,
     FilingCabinet as FilingCabinetData,
 } from '../data/cabinets';
@@ -20,17 +21,34 @@ const DEPTH = 160;
 const FRAME_PADDING = 10;
 const DRAWER_GAP = 8;
 const DRAWER_DEPTH = DEPTH - 12;
-const DRAWER_TRAVEL = Math.round(DEPTH * 0.65);
+const DRAWER_TRAVEL = Math.round(DEPTH * 0.82);
 const PERSPECTIVE = 1000;
 const REST_ROTATE_X = -12;
 const REST_ROTATE_Y = 30;
 const REST_TRANSFORM = `rotateX(${REST_ROTATE_X}deg) rotateY(${REST_ROTATE_Y}deg)`;
+const SLOT_PAD_LEFT = Math.round(
+    DEPTH * Math.sin((REST_ROTATE_Y * Math.PI) / 180),
+);
+const SLOT_PAD_RIGHT = Math.round(
+    DRAWER_TRAVEL * Math.sin((REST_ROTATE_Y * Math.PI) / 180) * 1.2,
+);
+const SLOT_PAD_TOP = 40;
+const SLOT_PAD_BOTTOM =
+    56 +
+    Math.round(
+        DRAWER_TRAVEL *
+            Math.sin((Math.abs(REST_ROTATE_X) * Math.PI) / 180) *
+            1.2,
+    );
+const SLOT_CAPTION = 40;
+const SLOT_WIDTH = SLOT_PAD_LEFT + WIDTH + SLOT_PAD_RIGHT;
+const SLOT_HEIGHT = SLOT_PAD_TOP + HEIGHT + SLOT_PAD_BOTTOM + SLOT_CAPTION;
 
-const CLOSEUP_WIDTH = 520;
-const CLOSEUP_HEIGHT = 140;
-const CLOSEUP_DEPTH = 440;
+const CLOSEUP_WIDTH = 806;
+const CLOSEUP_HEIGHT = 420;
+const CLOSEUP_DEPTH = 682;
 const CLOSEUP_SCALE_FROM = 0.72;
-const CLOSEUP_SCALE_TO = 1.55;
+const CLOSEUP_SCALE_TO = 1;
 const CLOSEUP_TILT_FROM = -32;
 const CLOSEUP_TILT_TO = -62;
 
@@ -49,6 +67,7 @@ function closeupPose(scale: number, tiltDeg: number): string {
     const ys = [
         rotatedDrawerY(-halfH, 0, tiltDeg),
         rotatedDrawerY(halfH, 0, tiltDeg),
+        rotatedDrawerY(-halfH, -CLOSEUP_DEPTH, tiltDeg),
         rotatedDrawerY(halfH, -CLOSEUP_DEPTH, tiltDeg),
     ];
     const centerY = ((Math.min(...ys) + Math.max(...ys)) / 2) * scale;
@@ -83,21 +102,27 @@ function Face({
 type FilingCabinetProps = {
     cabinet: FilingCabinetData;
     zoomed: boolean;
+    openDrawerId: string | null;
+    onOpenDrawerChange: (drawerId: string | null) => void;
     onZoomChange: (zoomed: boolean) => void;
+    openedBookId?: string | null;
     onOpenBook: (
         book: CabinetBook,
         cover: BookCover,
         drawerLabel: string,
+        origin: BookOrigin,
     ) => void;
 };
 
 export default function FilingCabinet({
     cabinet,
     zoomed,
+    openDrawerId,
+    onOpenDrawerChange,
     onZoomChange,
+    openedBookId,
     onOpenBook,
 }: FilingCabinetProps) {
-    const [openDrawerId, setOpenDrawerId] = useState<string | null>(null);
     const reduceMotion = useReducedMotion();
     const transition = reduceMotion ? INSTANT : SLIDE;
     const insideRef = useRef<HTMLButtonElement>(null);
@@ -125,18 +150,39 @@ export default function FilingCabinet({
     }, [zoomed]);
 
     function toggleDrawer(id: string) {
-        setOpenDrawerId((current) => (current === id ? null : id));
+        onOpenDrawerChange(openDrawerId === id ? null : id);
     }
+
+    const showLocation =
+        cabinet.location !== '' && cabinet.location !== cabinet.name;
 
     return (
         <div
+            id={`cabinet-${cabinet.id}`}
             role="group"
             aria-label={cabinet.name}
-            className="relative flex min-w-0 flex-col items-center gap-4"
+            className={cn(
+                'relative flex shrink-0 flex-col overflow-visible',
+                openDrawer && 'z-10',
+            )}
+            style={{
+                width: SLOT_WIDTH,
+                height: SLOT_HEIGHT,
+                contentVisibility: openDrawer ? 'visible' : 'auto',
+                containIntrinsicSize: `${SLOT_WIDTH}px ${SLOT_HEIGHT}px`,
+            }}
         >
             <div
-                className="flex w-full items-center justify-center pt-10 pb-14"
-                style={{ perspective: `${PERSPECTIVE}px` }}
+                className="relative shrink-0 overflow-visible"
+                style={{
+                    width: SLOT_WIDTH,
+                    height: SLOT_PAD_TOP + HEIGHT + SLOT_PAD_BOTTOM,
+                    paddingTop: SLOT_PAD_TOP,
+                    paddingBottom: SLOT_PAD_BOTTOM,
+                    paddingLeft: SLOT_PAD_LEFT,
+                    paddingRight: SLOT_PAD_RIGHT,
+                    perspective: `${PERSPECTIVE}px`,
+                }}
             >
                 <div
                     className="relative"
@@ -156,6 +202,11 @@ export default function FilingCabinet({
                         <p className="text-sm font-semibold text-slate-950 dark:text-white">
                             {cabinet.name}
                         </p>
+                        {showLocation ? (
+                            <p className="text-[10px] font-normal text-slate-500 dark:text-neutral-400">
+                                {cabinet.location}
+                            </p>
+                        ) : null}
                     </div>
                     <Face
                         className="inset-0 bg-neutral-500 dark:bg-black"
@@ -240,18 +291,23 @@ export default function FilingCabinet({
                 </div>
             </div>
 
-            {openDrawer && (
-                <div className="text-center" aria-live="polite">
-                    <p className="text-xs text-slate-700 tabular-nums dark:text-neutral-300">
-                        {`${openDrawer.label} · ${openDrawer.range} · ${openDrawer.books.length} books`}
-                    </p>
-                    {!zoomed && (
-                        <p className="text-xs text-slate-500 dark:text-neutral-500">
-                            Click inside the drawer to look closer
+            <div
+                className="flex h-10 flex-col justify-start text-center"
+                aria-live="polite"
+            >
+                {openDrawer ? (
+                    <>
+                        <p className="text-xs text-slate-700 tabular-nums dark:text-neutral-300">
+                            {`${openDrawer.label} · ${openDrawer.range} · ${openDrawer.books.length} books`}
                         </p>
-                    )}
-                </div>
-            )}
+                        {!zoomed && (
+                            <p className="text-xs text-slate-500 dark:text-neutral-500">
+                                Click inside the drawer to look closer
+                            </p>
+                        )}
+                    </>
+                ) : null}
+            </div>
 
             {typeof document !== 'undefined' &&
                 createPortal(
@@ -303,11 +359,13 @@ export default function FilingCabinet({
                                         transition={INSTANT}
                                         onToggle={() => undefined}
                                         onViewInside={() => undefined}
-                                        onOpenBook={(book, cover) =>
+                                        openedBookId={openedBookId}
+                                        onOpenBook={(book, cover, origin) =>
                                             onOpenBook(
                                                 book,
                                                 cover,
                                                 openDrawer.label,
+                                                origin,
                                             )
                                         }
                                     />
@@ -332,8 +390,8 @@ export default function FilingCabinet({
                                 >
                                     {openDrawer.books.map((book) => (
                                         <li key={book.id}>
-                                            {book.label},{' '}
-                                            {book.documents.length} documents
+                                            {book.label}, {book.documentCount}{' '}
+                                            documents
                                         </li>
                                     ))}
                                 </ul>

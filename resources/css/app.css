@@ -101,6 +101,45 @@
     text-shadow: 0 1px 2px rgb(15 23 42 / 0.55);
 }
 
+.book-cover-linen {
+    background-image:
+        repeating-linear-gradient(
+            90deg,
+            rgb(255 255 255 / 0.04) 0px,
+            rgb(255 255 255 / 0.04) 1px,
+            transparent 1px,
+            transparent 3px
+        ),
+        repeating-linear-gradient(
+            0deg,
+            rgb(0 0 0 / 0.12) 0px,
+            transparent 1px,
+            transparent 5px
+        );
+}
+
+.book-page-edge {
+    background-color: rgb(250 245 230);
+    background-image: repeating-linear-gradient(
+        to right,
+        rgb(250 245 230) 0px,
+        rgb(250 245 230) 2px,
+        rgb(214 199 168) 2px,
+        rgb(214 199 168) 3px
+    );
+}
+
+.book-page-edge-head {
+    background-color: rgb(250 245 230);
+    background-image: repeating-linear-gradient(
+        to bottom,
+        rgb(250 245 230) 0px,
+        rgb(250 245 230) 2px,
+        rgb(214 199 168) 2px,
+        rgb(214 199 168) 3px
+    );
+}
+
 @media (prefers-reduced-motion: reduce) {
     .document-chain-card-enter,
     .document-chain-arrow-dot,
@@ -115,6 +154,7 @@
         'Instrument Sans', ui-sans-serif, system-ui, sans-serif,
         'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
         'Noto Color Emoji';
+    --font-cinzel: Cinzel, ui-serif, Georgia, serif;
 
     --radius-lg: var(--radius);
     --radius-md: calc(var(--radius) - 2px);

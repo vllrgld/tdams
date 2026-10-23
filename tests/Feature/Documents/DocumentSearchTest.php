@@ -158,7 +158,7 @@ class DocumentSearchTest extends TestCase
                 ->where('documents.total', 1)
                 ->where('documents.data.0.id', $match->id)
                 ->where('searchFields.0.value', 'all')
-                ->where('searchFields.0.label', 'All fields')
+                ->where('searchFields.0.label', 'All')
                 ->where('searchFields.1.label', 'Tax declaration')
                 ->where('searchFields.2.label', 'Owner'));
     }

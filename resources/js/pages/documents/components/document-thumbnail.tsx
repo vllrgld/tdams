@@ -29,12 +29,14 @@ function ClientPdfThumbnail({
     pageNumber,
     fill,
     quality,
+    eager,
 }: {
     url: string;
     fit: 'contain' | 'cover';
     pageNumber: number;
     fill: boolean;
     quality: ThumbnailQuality;
+    eager?: boolean;
 }) {
     const PdfThumbnail = useClientComponent(loadPdfThumbnail);
 
@@ -49,6 +51,7 @@ function ClientPdfThumbnail({
             pageNumber={pageNumber}
             fill={fill}
             quality={quality}
+            eager={eager}
         />
     );
 }
@@ -62,6 +65,7 @@ type DocumentThumbnailProps = {
     pageNumber?: number;
     fill?: boolean;
     quality?: ThumbnailQuality;
+    eager?: boolean;
 };
 
 export default function DocumentThumbnail({
@@ -73,6 +77,7 @@ export default function DocumentThumbnail({
     pageNumber = 1,
     fill = false,
     quality = 'card',
+    eager = false,
 }: DocumentThumbnailProps) {
     const [imageError, setImageError] = useState(false);
     const isImage = mimeType.startsWith('image/');
@@ -108,13 +113,14 @@ export default function DocumentThumbnail({
                         pageNumber={pageNumber}
                         fill={fill}
                         quality={quality}
+                        eager={eager}
                     />
                 </ClientOnly>
             ) : isImage && !imageError && pageNumber === 1 ? (
                 <img
                     src={url}
                     alt={`Page ${pageNumber} preview of ${title}`}
-                    loading="lazy"
+                    loading={eager ? 'eager' : 'lazy'}
                     onError={() => setImageError(true)}
                     className={
                         fit === 'cover'
