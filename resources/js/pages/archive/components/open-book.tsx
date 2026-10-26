@@ -1,6 +1,6 @@
 import { Maximize2 } from 'lucide-react';
 import { motion, useReducedMotion, type Transition } from 'motion/react';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import DocumentThumbnail from '@/pages/documents/components/document-thumbnail';
@@ -155,6 +155,81 @@ function returnOuterMotion(
     };
 }
 
+type FlyerOuterAnimate =
+    | ReturnType<typeof flyerOuterMotion>
+    | ReturnType<typeof returnOuterMotion>;
+
+function isReturnOuterAnimate(definition: unknown): boolean {
+    return Boolean(
+        definition &&
+        typeof definition === 'object' &&
+        'transform' in definition &&
+        Array.isArray((definition as { transform: unknown }).transform),
+    );
+}
+
+const BookFlyer = memo(function BookFlyer({
+    hover,
+    outerAnimate,
+    outerTransition,
+    yawTransition,
+    rotateY,
+    flying,
+    assignHost,
+    onOuterComplete,
+    onTransformUpdate,
+}: {
+    hover: FlyerPose | null;
+    outerAnimate: FlyerOuterAnimate;
+    outerTransition: Transition;
+    yawTransition: Transition;
+    rotateY: number;
+    flying: boolean;
+    assignHost: (node: HTMLDivElement | null) => void;
+    onOuterComplete: (definition?: unknown) => void;
+    onTransformUpdate: (transform: string) => void;
+}) {
+    return (
+        <motion.div
+            aria-hidden="true"
+            className="pointer-events-none absolute top-0 left-0 z-0"
+            style={{
+                transformStyle: 'preserve-3d',
+                opacity: flying ? 1 : 0,
+                visibility: flying ? 'visible' : 'hidden',
+                willChange: flying ? 'transform' : 'auto',
+            }}
+            initial={hover ? flyerOuterMotion(hover) : false}
+            animate={outerAnimate}
+            transition={outerTransition}
+            onUpdate={(latest) => {
+                if (typeof latest.transform === 'string') {
+                    onTransformUpdate(latest.transform);
+                }
+            }}
+            onAnimationComplete={onOuterComplete}
+        >
+            <motion.div
+                className="h-full w-full"
+                style={{
+                    transformStyle: 'preserve-3d',
+                    transformOrigin: VOLUME_ORIGIN,
+                }}
+                initial={hover ? { rotateY: hover.rotateY } : false}
+                animate={{ rotateY }}
+                transition={yawTransition}
+            >
+                <div
+                    ref={assignHost}
+                    data-book-flyer-host=""
+                    className="h-full w-full"
+                    style={{ transformStyle: 'preserve-3d' }}
+                />
+            </motion.div>
+        </motion.div>
+    );
+});
+
 function BookPage({
     document,
     eager = false,
@@ -306,42 +381,38 @@ export default function OpenBook({
     const [phase, setPhase] = useState<BookPhase>(hasPickup ? 'rise' : 'open');
     const phaseRef = useRef(phase);
     phaseRef.current = phase;
+    const allowCompleteRef = useRef(true);
     const returnFromRef = useRef(hover?.transform ?? '');
     const [returnFrom, setReturnFrom] = useState(returnFromRef.current);
 
-    function liveInsertPoses(): { rest: FlyerPose; above: FlyerPose } | null {
-        const slot = getSlot?.(opened.book.id);
+    const goToPhase = useCallback(
+        (next: BookPhase) => {
+            allowCompleteRef.current = false;
 
-        if (!slot || !origin) {
-            return null;
-        }
-
-        const restPose = measureSlotPose(slot, origin.rest.depth);
-
-        return {
-            rest: restPose,
-            above: liftPose(restPose, insertLift(slot.offsetHeight)),
-        };
-    }
-
-    function goToPhase(next: BookPhase) {
-        if (next === 'open' && standing) {
-            returnFromRef.current = standing.transform;
-        }
-
-        if (next === 'return' || next === 'drop') {
-            setReturnFrom(returnFromRef.current);
-            const live = liveInsertPoses();
-
-            if (live) {
-                setRest(live.rest);
-                setAbove(live.above);
+            if (next === 'open' && standing) {
+                returnFromRef.current = standing.transform;
             }
-        }
 
-        phaseRef.current = next;
-        setPhase(next);
-    }
+            if (next === 'return' || next === 'drop') {
+                setReturnFrom(returnFromRef.current);
+                const slot = getSlot?.(opened.book.id);
+
+                if (slot && origin) {
+                    const restPose = measureSlotPose(slot, origin.rest.depth);
+
+                    setRest(restPose);
+                    setAbove(liftPose(restPose, insertLift(slot.offsetHeight)));
+                }
+            }
+
+            phaseRef.current = next;
+            setPhase(next);
+            requestAnimationFrame(() => {
+                allowCompleteRef.current = true;
+            });
+        },
+        [standing, getSlot, opened.book.id, origin],
+    );
     const [documents, setDocuments] = useState<ArchivedDocument[]>([]);
     const [loading, setLoading] = useState(true);
     const lastIndex = Math.max(0, documents.length - 1);
@@ -411,6 +482,65 @@ export default function OpenBook({
         },
         [setHost],
     );
+    const handleFlyerComplete = useCallback(
+        (definition?: unknown) => {
+            if (!allowCompleteRef.current) {
+                return;
+            }
+
+            const current = phaseRef.current;
+
+            if (current === 'rise') {
+                goToPhase('travel');
+                return;
+            }
+
+            if (current === 'travel') {
+                goToPhase('open');
+                return;
+            }
+
+            if (current === 'return' || current === 'drop') {
+                if (
+                    definition !== undefined &&
+                    !isReturnOuterAnimate(definition)
+                ) {
+                    return;
+                }
+
+                onCloseRef.current();
+            }
+        },
+        [goToPhase],
+    );
+    const handleCoverComplete = useCallback(
+        (definition?: unknown) => {
+            if (!allowCompleteRef.current) {
+                return;
+            }
+
+            if (phaseRef.current !== 'closing') {
+                return;
+            }
+
+            const transform =
+                definition &&
+                typeof definition === 'object' &&
+                'transform' in definition
+                    ? (definition as { transform: unknown }).transform
+                    : null;
+
+            if (transform != null && transform !== coverClosed) {
+                return;
+            }
+
+            goToPhase('return');
+        },
+        [coverClosed, goToPhase],
+    );
+    const onFlyerTransformUpdate = useCallback((transform: string) => {
+        returnFromRef.current = transform;
+    }, []);
 
     useEffect(() => {
         dialogRef.current?.focus({ preventScroll: true });
@@ -502,48 +632,6 @@ export default function OpenBook({
 
         goToPhase('return');
     }
-
-    useEffect(() => {
-        if (reduceMotion) {
-            return;
-        }
-
-        const nextByPhase: Partial<Record<BookPhase, BookPhase | 'close'>> = {
-            rise: 'travel',
-            travel: 'open',
-            closing: 'return',
-            return: 'close',
-            drop: 'close',
-        };
-        const durationByPhase: Partial<Record<BookPhase, number>> = {
-            rise: (RISE_MOVE.duration ?? 0.3) * 1000,
-            travel: (TRAVEL_MOVE.duration ?? 0.55) * 1000,
-            closing: (COVER_CLOSE.duration ?? 0.45) * 1000,
-            return: RETURN_MOVE_S * 1000,
-            drop: RETURN_MOVE_S * 1000,
-        };
-        const next = nextByPhase[phase];
-        const duration = durationByPhase[phase];
-
-        if (!next || duration === undefined) {
-            return;
-        }
-
-        const timeoutId = window.setTimeout(() => {
-            if (phaseRef.current !== phase) {
-                return;
-            }
-
-            if (next === 'close') {
-                onCloseRef.current();
-                return;
-            }
-
-            goToPhase(next);
-        }, duration);
-
-        return () => window.clearTimeout(timeoutId);
-    }, [phase, reduceMotion]);
 
     useEffect(() => {
         function handleKeyDown(event: KeyboardEvent) {
@@ -660,41 +748,17 @@ export default function OpenBook({
                 onClick={requestClose}
             />
             {hasPickup && origin && flyerAnimate && flyerOuterAnimate ? (
-                <motion.div
-                    aria-hidden="true"
-                    className="pointer-events-none absolute top-0 left-0 z-0"
-                    style={{
-                        transformStyle: 'preserve-3d',
-                        opacity: flying ? 1 : 0,
-                        visibility: flying ? 'visible' : 'hidden',
-                    }}
-                    initial={hover ? flyerOuterMotion(hover) : false}
-                    animate={flyerOuterAnimate}
-                    transition={flyerTransition}
-                    onUpdate={(latest) => {
-                        if (typeof latest.transform === 'string') {
-                            returnFromRef.current = latest.transform;
-                        }
-                    }}
-                >
-                    <motion.div
-                        className="h-full w-full"
-                        style={{
-                            transformStyle: 'preserve-3d',
-                            transformOrigin: VOLUME_ORIGIN,
-                        }}
-                        initial={hover ? { rotateY: hover.rotateY } : false}
-                        animate={{ rotateY: flyerAnimate.rotateY }}
-                        transition={flyerYawTransition}
-                    >
-                        <div
-                            ref={assignFlyerHost}
-                            data-book-flyer-host=""
-                            className="h-full w-full"
-                            style={{ transformStyle: 'preserve-3d' }}
-                        />
-                    </motion.div>
-                </motion.div>
+                <BookFlyer
+                    hover={hover}
+                    outerAnimate={flyerOuterAnimate}
+                    outerTransition={flyerTransition}
+                    yawTransition={flyerYawTransition}
+                    rotateY={flyerAnimate.rotateY}
+                    flying={flying}
+                    assignHost={assignFlyerHost}
+                    onOuterComplete={handleFlyerComplete}
+                    onTransformUpdate={onFlyerTransformUpdate}
+                />
             ) : null}
             {showSpread ? (
                 <div
@@ -826,6 +890,7 @@ export default function OpenBook({
                                     : coverClosed,
                             }}
                             transition={motionTransition}
+                            onAnimationComplete={handleCoverComplete}
                         >
                             <div
                                 className={cn(

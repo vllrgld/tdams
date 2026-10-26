@@ -438,8 +438,8 @@
     "semantic_hash": "28f0ef771e78133e6ac4ca7c1a3887c2"
   },
   "app/Models/Document.php": {
-    "mtime": 1792720407.8743515,
-    "seen": 1792720466.1584036,
+    "mtime": 1792744763.9517078,
+    "seen": 1792979019.0126913,
     "ast_hash": "9af2c209384af8d249bd07590fc36cdf",
     "semantic_hash": ""
   },
@@ -654,8 +654,8 @@
     "semantic_hash": "499c8657bfc7c17680d4e7c5b87b06b1"
   },
   "resources/js/components/app-header.tsx": {
-    "mtime": 1792718665.0742505,
-    "seen": 1792720466.1588616,
+    "mtime": 1792744763.943707,
+    "seen": 1792979019.0128388,
     "ast_hash": "99398302fbd8df52da60d4abf4235a67",
     "semantic_hash": ""
   },
@@ -684,8 +684,8 @@
     "semantic_hash": "c0658cece136871dae634b36c5ad68a0"
   },
   "resources/js/components/app-sidebar.tsx": {
-    "mtime": 1792718665.0742505,
-    "seen": 1792720466.158919,
+    "mtime": 1792744763.972089,
+    "seen": 1792979019.012854,
     "ast_hash": "4840fa394014dbacfe1aa6b6e7240bb6",
     "semantic_hash": ""
   },
@@ -1122,14 +1122,14 @@
     "semantic_hash": ""
   },
   "resources/js/pages/documents/components/document-info.tsx": {
-    "mtime": 1792720408.133299,
-    "seen": 1792720466.1597767,
+    "mtime": 1792744763.950704,
+    "seen": 1792979019.0131588,
     "ast_hash": "e493d2854f08d6251138b5f27b341d01",
     "semantic_hash": ""
   },
   "resources/js/pages/documents/components/document-thumbnail.tsx": {
-    "mtime": 1792718665.0742505,
-    "seen": 1792720466.159785,
+    "mtime": 1792744763.9447117,
+    "seen": 1792979019.0131614,
     "ast_hash": "a5015e80286743d91a6eb317d2d83174",
     "semantic_hash": ""
   },
@@ -1146,8 +1146,8 @@
     "semantic_hash": ""
   },
   "resources/js/pages/documents/components/pdf-thumbnail.tsx": {
-    "mtime": 1792718665.072176,
-    "seen": 1792720466.1598203,
+    "mtime": 1792744763.9385757,
+    "seen": 1792979019.0131733,
     "ast_hash": "eedbaa48e3469c953916de651a9871d2",
     "semantic_hash": ""
   },
@@ -1266,8 +1266,8 @@
     "semantic_hash": "eb08d515cde3d3c778d7ce69893d2831"
   },
   "routes/web.php": {
-    "mtime": 1792718665.0742505,
-    "seen": 1792720466.1601164,
+    "mtime": 1792744763.9379928,
+    "seen": 1792979019.0133934,
     "ast_hash": "edcb44c380e4a307b19ec6273430e7e2",
     "semantic_hash": ""
   },
@@ -1362,8 +1362,8 @@
     "semantic_hash": "c4fdc046184435603b6035dce2ebf80b"
   },
   "vite.config.ts": {
-    "mtime": 1792718665.0742505,
-    "seen": 1792720466.160322,
+    "mtime": 1792744763.98667,
+    "seen": 1792979019.0135353,
     "ast_hash": "90bec548f3f709e9cf1548761c7a5131",
     "semantic_hash": ""
   },
@@ -1944,8 +1944,8 @@
     "semantic_hash": ""
   },
   "tests/Feature/Documents/DocumentSearchTest.php": {
-    "mtime": 1792720407.8808174,
-    "seen": 1792720466.1602314,
+    "mtime": 1792744763.98667,
+    "seen": 1792979019.0134845,
     "ast_hash": "9669326370d96522d7dce92a02461c96",
     "semantic_hash": ""
   },
@@ -1986,32 +1986,32 @@
     "semantic_hash": ""
   },
   "resources/js/pages/archive/components/cabinet-drawer.tsx": {
-    "mtime": 1792744171.2367136,
-    "seen": 1792744210.4797673,
+    "mtime": 1792744763.9379928,
+    "seen": 1792979019.013089,
     "ast_hash": "994528208c69fce1de4679d8cb267e1b",
     "semantic_hash": ""
   },
   "resources/js/pages/archive/components/filing-cabinet.tsx": {
-    "mtime": 1792744414.099781,
-    "seen": 1792744456.4541852,
+    "mtime": 1792744763.952707,
+    "seen": 1792979019.0130987,
     "ast_hash": "b606a86f59555b23bd2dfa5c05db1439",
     "semantic_hash": ""
   },
   "resources/js/pages/archive/data/cabinets.ts": {
-    "mtime": 1792732231.5571194,
-    "seen": 1792732468.9995093,
+    "mtime": 1792744763.9289882,
+    "seen": 1792979019.0131042,
     "ast_hash": "41f017e509fe1c7958130041efd6aecf",
     "semantic_hash": ""
   },
   "resources/js/pages/archive/index.tsx": {
-    "mtime": 1792732306.8834913,
-    "seen": 1792732468.999514,
+    "mtime": 1792744763.9578164,
+    "seen": 1792979019.013107,
     "ast_hash": "4b45cef00e7db8ebeb656f3012e343c7",
     "semantic_hash": ""
   },
   "tests/Feature/ArchiveTest.php": {
-    "mtime": 1792718665.0742505,
-    "seen": 1792720466.1601255,
+    "mtime": 1792744763.9690955,
+    "seen": 1792979019.0133984,
     "ast_hash": "c39aad9cc05e8a20dd181854022c3835",
     "semantic_hash": ""
   },
@@ -2028,14 +2028,14 @@
     "semantic_hash": ""
   },
   "app/Http/Controllers/CabinetController.php": {
-    "mtime": 1792718665.0742505,
-    "seen": 1792720466.1582751,
+    "mtime": 1792744763.9966693,
+    "seen": 1792979019.0126488,
     "ast_hash": "76912455c1aceef6ca1610a161c0b215",
     "semantic_hash": ""
   },
   "app/Models/Cabinet.php": {
-    "mtime": 1792718665.0742505,
-    "seen": 1792720466.1583953,
+    "mtime": 1792744763.9700909,
+    "seen": 1792979019.0126882,
     "ast_hash": "4692e75e4146e1146502a1c17b31089b",
     "semantic_hash": ""
   },
@@ -2088,8 +2088,8 @@
     "semantic_hash": ""
   },
   "tests/Feature/Manage/CabinetsTest.php": {
-    "mtime": 1792718665.0742505,
-    "seen": 1792720466.1602597,
+    "mtime": 1792744763.98667,
+    "seen": 1792979019.0135024,
     "ast_hash": "b533213cf18bdffcca0ed4939738dcec",
     "semantic_hash": ""
   },
@@ -2100,8 +2100,8 @@
     "semantic_hash": ""
   },
   "resources/js/pages/manage/cabinets/drawer-rename-row.tsx": {
-    "mtime": 1792718665.0620382,
-    "seen": 1792720466.1599622,
+    "mtime": 1792744763.9289882,
+    "seen": 1792979019.013264,
     "ast_hash": "5d61ccf3c5a8c62ea6321a77097478dc",
     "semantic_hash": ""
   },
@@ -2112,20 +2112,20 @@
     "semantic_hash": ""
   },
   "app/Http/Controllers/BookController.php": {
-    "mtime": 1792718665.0053332,
-    "seen": 1792720466.1582632,
+    "mtime": 1792744763.9289882,
+    "seen": 1792979019.0126443,
     "ast_hash": "a35e44c2a6d7da948548d6e9ea0a64f7",
     "semantic_hash": ""
   },
   "app/Models/Book.php": {
-    "mtime": 1792718665.0742505,
-    "seen": 1792720466.158387,
+    "mtime": 1792744763.954706,
+    "seen": 1792979019.0126848,
     "ast_hash": "3e1c04d7735a07501c7415d1c3665caf",
     "semantic_hash": ""
   },
   "database/factories/BookFactory.php": {
-    "mtime": 1792718665.0742505,
-    "seen": 1792720466.158635,
+    "mtime": 1792744763.9517078,
+    "seen": 1792979019.012764,
     "ast_hash": "4d2b5c42ae6487f9e804eb001dae9ea7",
     "semantic_hash": ""
   },
@@ -2142,9 +2142,9 @@
     "semantic_hash": ""
   },
   "resources/js/pages/archive/components/open-book.tsx": {
-    "mtime": 1792741887.14538,
-    "seen": 1792742005.4903467,
-    "ast_hash": "ac29f9249b41fe75f4f2e669bb2247d9",
+    "mtime": 1792978927.0727453,
+    "seen": 1792979019.0131013,
+    "ast_hash": "fe355380e11580ee9cd8114fa415ed02",
     "semantic_hash": ""
   },
   "database/migrations/2026_10_21_000003_add_book_id_to_documents_table.php": {
@@ -2160,27 +2160,27 @@
     "semantic_hash": ""
   },
   "resources/js/pages/archive/components/cabinet-search.tsx": {
-    "mtime": 1792720408.129295,
-    "seen": 1792720466.159572,
+    "mtime": 1792744763.935991,
+    "seen": 1792979019.0130925,
     "ast_hash": "f7be9be586f130073c885f938ad23e1e",
     "semantic_hash": ""
   },
   "database/migrations/2026_10_22_000000_add_cover_title_to_books_table.php": {
-    "mtime": 1792720429.554135,
-    "seen": 1792720466.1587884,
-    "ast_hash": "8d32b6c524f62799c6d3546d4bccb6c1",
+    "mtime": 1792744763.9620955,
+    "seen": 1792979019.012815,
+    "ast_hash": "ddd9f1c0474810db4d8467a8aa41fb23",
     "semantic_hash": ""
   },
   "resources/js/pages/manage/books/book-cover-face.tsx": {
-    "mtime": 1792726325.3182952,
-    "seen": 1792727477.764858,
-    "ast_hash": "2faf7d72cb203dbf61d397bbee2e9c04",
+    "mtime": 1792744763.9620955,
+    "seen": 1792979019.0132287,
+    "ast_hash": "3bb9d7bbaa9be5060404310ece71df83",
     "semantic_hash": ""
   },
   "resources/js/pages/manage/books/rotatable-closed-book.tsx": {
-    "mtime": 1792726292.255171,
-    "seen": 1792727477.7648737,
-    "ast_hash": "61df6ea9cca4f44d27c6981a67b2fb9a",
+    "mtime": 1792744763.931992,
+    "seen": 1792979019.0132403,
+    "ast_hash": "fe5cc819c47c58dc4560d5f272b259de",
     "semantic_hash": ""
   },
   "public/capitol-grey.webp": {
@@ -2190,21 +2190,21 @@
     "semantic_hash": ""
   },
   "resources/js/pages/archive/components/closed-book-mesh.tsx": {
-    "mtime": 1792744172.3494422,
-    "seen": 1792744210.4797862,
-    "ast_hash": "ac407db3a0e1640c061f8928f287dc68",
+    "mtime": 1792744763.966097,
+    "seen": 1792979019.0130956,
+    "ast_hash": "0ae43d6b20da09d6ca6b89af49e9eceb",
     "semantic_hash": ""
   },
   "resources/js/pages/archive/components/book-portal.tsx": {
-    "mtime": 1792732359.9246292,
-    "seen": 1792732468.9994617,
-    "ast_hash": "d0e38242edd91e498291e190c939322d",
+    "mtime": 1792744763.9562426,
+    "seen": 1792979019.0130794,
+    "ast_hash": "f3aa70850355be6d5334c182290f2127",
     "semantic_hash": ""
   },
   "resources/js/pages/archive/components/book-world-pose.ts": {
-    "mtime": 1792735590.379466,
-    "seen": 1792735737.7754314,
-    "ast_hash": "31842d0094ce8ddee6f6ca95e5296398",
+    "mtime": 1792744763.9417112,
+    "seen": 1792979019.013084,
+    "ast_hash": "66aca476457a8bc2ffbdcb1173946705",
     "semantic_hash": ""
   }
 }
