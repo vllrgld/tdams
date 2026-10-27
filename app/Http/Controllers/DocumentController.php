@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\OcrDocument;
 use App\Models\Book;
 use App\Models\Cabinet;
 use App\Models\Document;
 use App\Models\Drawer;
+use App\Services\Documents\DocumentSearcher;
+use App\Services\Ollama\DocumentFields;
+use App\Services\Ollama\OllamaClient;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -21,7 +25,7 @@ use Throwable;
 
 class DocumentController extends Controller
 {
-    public function index(Request $request): Response
+    public function index(Request $request, DocumentSearcher $searcher): Response
     {
         $validated = $request->validate([
             'q' => ['sometimes', 'nullable', 'string', 'max:200'],
@@ -35,12 +39,7 @@ class DocumentController extends Controller
             $field = 'all';
         }
 
-        $documents = Document::query()
-            ->when($search !== '', fn ($query) => $query->search($search, $field))
-            ->latest()
-            ->paginate(20)
-            ->withQueryString()
-            ->through(fn (Document $document): array => $document->toArchiveArray());
+        $documents = $searcher->paginate($search, $field);
 
         return Inertia::render('documents/index', [
             'documents' => $documents,
@@ -50,10 +49,11 @@ class DocumentController extends Controller
                 'field' => $field,
             ],
             'searchFields' => Document::searchFieldOptions(),
+            'mappingModels' => config('services.ollama.models'),
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request): RedirectResponse|JsonResponse
     {
         $validated = $request->validate([
             'file' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png,tif,tiff', 'max:51200'],
@@ -92,9 +92,10 @@ class DocumentController extends Controller
 
         $file = $validated['file'];
         $storagePath = null;
+        $documentId = null;
 
         try {
-            DB::transaction(function () use ($request, $file, $validated, &$storagePath): void {
+            DB::transaction(function () use ($request, $file, $validated, &$storagePath, &$documentId): void {
                 $temporaryPath = $file->getPathname();
 
                 if ($temporaryPath === '' || ! is_file($temporaryPath) || ! is_readable($temporaryPath)) {
@@ -121,7 +122,7 @@ class DocumentController extends Controller
 
                 $book = Book::query()->findOrFail($validated['book_id']);
 
-                Document::query()->create([
+                $document = Document::query()->create([
                     'book_id' => $book->id,
                     'position' => $book->nextDocumentPosition(),
                     'tax_declaration_number' => $validated['tax_declaration_number'] ?? null,
@@ -154,7 +155,9 @@ class DocumentController extends Controller
                     'mime_type' => $file->getMimeType() ?? 'application/octet-stream',
                     'file_size' => $file->getSize(),
                     'uploaded_by' => $request->user()->id,
+                    'ocr_status' => 'pending',
                 ]);
+                $documentId = $document->id;
             });
         } catch (Throwable $exception) {
             if (is_string($storagePath)) {
@@ -162,6 +165,18 @@ class DocumentController extends Controller
             }
 
             throw $exception;
+        }
+
+        if (! is_int($documentId)) {
+            throw new RuntimeException('The document could not be created.');
+        }
+
+        OcrDocument::dispatch($documentId);
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'id' => $documentId,
+            ]);
         }
 
         return to_route('documents.index');
@@ -212,6 +227,74 @@ class DocumentController extends Controller
         return response()->json($document->previousDeclarationChain());
     }
 
+    public function ocr(Document $document): JsonResponse
+    {
+        return response()->json([
+            'status' => $document->ocr_status,
+            'text' => $document->ocr_text,
+            'error' => $document->ocr_error,
+            'completedAt' => $document->ocr_completed_at?->toIso8601String(),
+            'pdfUrl' => $document->previewUrl(),
+            'mimeType' => $document->mime_type,
+        ]);
+    }
+
+    public function map(Request $request, Document $document, OllamaClient $client): JsonResponse
+    {
+        $models = config('services.ollama.models');
+        $validated = $request->validate([
+            'model' => ['required', 'string', Rule::in(is_array($models) ? $models : [])],
+        ]);
+
+        if ($document->ocr_status !== 'completed' || ! is_string($document->ocr_text) || trim($document->ocr_text) === '') {
+            throw ValidationException::withMessages([
+                'model' => 'OCR text is not ready to map.',
+            ]);
+        }
+
+        try {
+            $fields = $client->mapFields($validated['model'], $document->ocr_text);
+        } catch (RuntimeException $exception) {
+            throw ValidationException::withMessages([
+                'model' => $exception->getMessage(),
+            ]);
+        }
+
+        return response()->json([
+            'fields' => $fields,
+        ]);
+    }
+
+    public function saveFields(Request $request, Document $document): JsonResponse
+    {
+        $rules = DocumentFields::rules();
+        $payload = $request->only(array_keys($rules));
+
+        if ($payload === []) {
+            throw ValidationException::withMessages([
+                'fields' => 'Check at least one field before saving.',
+            ]);
+        }
+
+        $validated = $request->validate(array_intersect_key($rules, $payload));
+
+        $this->assertPreviousDeclarationIsNotSelf(
+            array_key_exists('previous_tax_declaration_number', $validated)
+                ? $validated['previous_tax_declaration_number']
+                : $document->previous_tax_declaration_number,
+            array_key_exists('tax_declaration_number', $validated)
+                ? $validated['tax_declaration_number']
+                : $document->tax_declaration_number,
+        );
+
+        $document->update($validated);
+        $document->refresh();
+
+        return response()->json([
+            'document' => $document->toArchiveArray(),
+        ]);
+    }
+
     public function chain(Document $document): JsonResponse
     {
         return response()->json($document->fullDeclarationChain());
@@ -258,6 +341,25 @@ class DocumentController extends Controller
             ],
             'inline',
         );
+    }
+
+    public function ocrPdf(Document $document): StreamedResponse
+    {
+        $ocrPdfPath = $document->ocr_pdf_path;
+
+        if ($document->hasStoredOcrPdf() && is_string($ocrPdfPath)) {
+            return Storage::disk('local')->response(
+                $ocrPdfPath,
+                pathinfo($document->original_filename, PATHINFO_FILENAME).'-ocr.pdf',
+                [
+                    'Content-Type' => 'application/pdf',
+                    'X-Content-Type-Options' => 'nosniff',
+                ],
+                'inline',
+            );
+        }
+
+        return $this->view($document);
     }
 
     /**

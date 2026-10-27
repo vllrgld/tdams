@@ -11,6 +11,9 @@
 /resources/js/routes
 /resources/js/wayfinder
 /vendor
+/services/ocr/.venv
+__pycache__/
+*.pyc
 .DS_Store
 .env
 .env.backup

@@ -2,12 +2,14 @@
 
 namespace Tests\Feature\Documents;
 
+use App\Jobs\OcrDocument;
 use App\Models\Book;
 use App\Models\Cabinet;
 use App\Models\Document;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
@@ -15,6 +17,13 @@ use Tests\TestCase;
 class DocumentUploadTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Queue::fake();
+    }
 
     public function test_authenticated_user_can_upload_a_document_with_property_details(): void
     {
@@ -75,6 +84,27 @@ class DocumentUploadTest extends TestCase
         $this->assertSame($book->id, $document->book_id);
         $this->assertSame(1, $document->position);
         Storage::disk('local')->assertExists($document->storage_path);
+    }
+
+    public function test_upload_queues_ocr_and_leaves_the_document_pending(): void
+    {
+        Storage::fake('local');
+        Queue::fake();
+
+        $this->actingAs(User::factory()->create())
+            ->post(route('documents.store'), [
+                'file' => UploadedFile::fake()->create('scan.pdf', 512, 'application/pdf'),
+                'book_id' => $this->bookForUpload()->id,
+            ])
+            ->assertRedirect(route('documents.index'));
+
+        $document = Document::query()->sole();
+
+        $this->assertSame('pending', $document->ocr_status);
+        $this->assertNull($document->ocr_text);
+        Queue::assertPushed(OcrDocument::class, function (OcrDocument $job) use ($document): bool {
+            return $job->documentId === $document->id;
+        });
     }
 
     public function test_document_metadata_is_optional_when_uploading_a_file(): void
@@ -231,6 +261,24 @@ class DocumentUploadTest extends TestCase
             ->assertSessionHasErrors('book_id');
 
         $this->assertDatabaseCount('documents', 0);
+    }
+
+    public function test_json_upload_returns_the_document_id_and_queues_ocr(): void
+    {
+        Storage::fake('local');
+        $book = $this->bookForUpload();
+
+        $response = $this->actingAs(User::factory()->create())
+            ->post(route('documents.store'), [
+                'file' => UploadedFile::fake()->create('declaration.pdf', 100, 'application/pdf'),
+                'book_id' => $book->id,
+            ], [
+                'Accept' => 'application/json',
+            ]);
+
+        $response->assertOk()->assertJsonPath('id', Document::query()->sole()->id);
+        Queue::assertPushed(OcrDocument::class);
+        $this->assertSame('pending', Document::query()->sole()->ocr_status);
     }
 
     public function test_documents_page_includes_archive_placement_tree(): void

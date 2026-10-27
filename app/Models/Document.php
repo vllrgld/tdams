@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
+use Laravel\Scout\Searchable;
 
 /**
  * @property int $id
@@ -42,6 +44,13 @@ use Illuminate\Support\Carbon;
  * @property string $mime_type
  * @property int $file_size
  * @property int|null $uploaded_by
+ * @property string $ocr_status
+ * @property string|null $ocr_text
+ * @property list<string>|null $ocr_pages
+ * @property string|null $ocr_pdf_path
+ * @property int|null $ocr_pdf_size
+ * @property string|null $ocr_error
+ * @property Carbon|null $ocr_completed_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Book|null $book
@@ -79,9 +88,18 @@ use Illuminate\Support\Carbon;
     'mime_type',
     'file_size',
     'uploaded_by',
+    'ocr_status',
+    'ocr_text',
+    'ocr_pages',
+    'ocr_pdf_path',
+    'ocr_pdf_size',
+    'ocr_error',
+    'ocr_completed_at',
 ])]
 class Document extends Model
 {
+    use Searchable;
+
     /**
      * Text-like columns users can search from the archive.
      *
@@ -132,6 +150,7 @@ class Document extends Model
             'property_location_municipality',
         ],
         'remarks' => ['remarks'],
+        'content' => ['ocr_text'],
     ];
 
     /**
@@ -144,6 +163,7 @@ class Document extends Model
         'lot_number' => 'Lot number',
         'property_location' => 'Location',
         'remarks' => 'Remarks',
+        'content' => 'Content',
     ];
 
     /**
@@ -156,6 +176,9 @@ class Document extends Model
             'previous_declaration_date' => 'date',
             'book_id' => 'integer',
             'position' => 'integer',
+            'ocr_pages' => 'array',
+            'ocr_pdf_size' => 'integer',
+            'ocr_completed_at' => 'datetime',
         ];
     }
 
@@ -185,6 +208,10 @@ class Document extends Model
         $terms = preg_split('/\s+/u', trim($search), -1, PREG_SPLIT_NO_EMPTY);
         $columns = self::columnsForSearchField($field);
 
+        if ($field === 'all') {
+            $columns[] = 'ocr_text';
+        }
+
         if ($terms === false || $terms === [] || $columns === []) {
             return;
         }
@@ -213,6 +240,29 @@ class Document extends Model
     }
 
     /**
+     * @return array<string, mixed>
+     */
+    public function toSearchableArray(): array
+    {
+        $payload = [
+            'id' => $this->id,
+            'ocr_status' => $this->ocr_status,
+            'ocr_text' => $this->ocr_text ?? '',
+            'ocr_pages' => $this->ocr_pages ?? [],
+        ];
+
+        foreach (self::SEARCHABLE_COLUMNS as $column) {
+            $value = $this->{$column};
+
+            $payload[$column] = $value instanceof Carbon
+                ? $value->toDateString()
+                : $value;
+        }
+
+        return $payload;
+    }
+
+    /**
      * @return list<array{value: string, label: string}>
      */
     public static function searchFieldOptions(): array
@@ -222,7 +272,7 @@ class Document extends Model
         foreach (array_keys(self::SEARCH_FIELDS) as $value) {
             $options[] = [
                 'value' => $value,
-                'label' => self::SEARCH_FIELD_LABELS[$value] ?? $value,
+                'label' => self::SEARCH_FIELD_LABELS[$value],
             ];
         }
 
@@ -266,9 +316,33 @@ class Document extends Model
             'originalFilename' => $this->original_filename,
             'mimeType' => $this->mime_type,
             'fileSize' => $this->file_size,
+            'ocrPdfSize' => $this->ocr_pdf_size,
             'createdAt' => $this->created_at?->toIso8601String(),
             'viewUrl' => route('documents.view', $this),
+            'ocrPdfUrl' => is_string($this->ocr_pdf_path) && $this->ocr_pdf_path !== ''
+                ? route('documents.ocr-pdf', $this)
+                : null,
         ];
+    }
+
+    public function hasStoredOcrPdf(): bool
+    {
+        return is_string($this->ocr_pdf_path)
+            && $this->ocr_pdf_path !== ''
+            && Storage::disk('local')->exists($this->ocr_pdf_path);
+    }
+
+    public function previewUrl(): ?string
+    {
+        if ($this->hasStoredOcrPdf()) {
+            return route('documents.ocr-pdf', $this);
+        }
+
+        if (is_string($this->storage_path) && $this->storage_path !== '' && Storage::disk('local')->exists($this->storage_path)) {
+            return route('documents.view', $this);
+        }
+
+        return null;
     }
 
     /**

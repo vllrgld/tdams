@@ -45,21 +45,25 @@ fi
 
 export DEBIAN_FRONTEND=noninteractive
 apt-get update
+apt-get install -y software-properties-common ca-certificates
+add-apt-repository -y ppa:ondrej/php
+apt-get update
 apt-get install -y \
     nginx \
     mysql-server \
     curl \
     unzip \
-    php8.3-cli \
-    php8.3-fpm \
-    php8.3-mysql \
-    php8.3-xml \
-    php8.3-mbstring \
-    php8.3-curl \
-    php8.3-zip \
-    php8.3-bcmath \
-    php8.3-intl \
-    php8.3-opcache
+    php8.4-cli \
+    php8.4-fpm \
+    php8.4-mysql \
+    php8.4-xml \
+    php8.4-mbstring \
+    php8.4-curl \
+    php8.4-zip \
+    php8.4-bcmath \
+    php8.4-intl \
+    php8.4-opcache
+update-alternatives --set php /usr/bin/php8.4
 
 if [[ ! -x /usr/local/bin/composer ]]; then
     curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -120,9 +124,9 @@ PY
 chown www-data:www-data "${APP_DIR}/.env"
 chmod 640 "${APP_DIR}/.env"
 
-install -m 644 "${SCRIPT_DIR}/php-fpm.conf" /etc/php/8.3/fpm/pool.d/www.conf
-systemctl enable php8.3-fpm
-systemctl restart php8.3-fpm
+install -m 644 "${SCRIPT_DIR}/php-fpm.conf" /etc/php/8.4/fpm/pool.d/www.conf
+systemctl enable php8.4-fpm
+systemctl restart php8.4-fpm
 
 install -m 644 "${SCRIPT_DIR}/tdms.conf" /etc/nginx/sites-available/tdms
 ln -sfn /etc/nginx/sites-available/tdms /etc/nginx/sites-enabled/tdms
@@ -135,8 +139,13 @@ cd "${APP_DIR}"
 export COMPOSER_MEMORY_LIMIT=512M
 composer install --no-dev --optimize-autoloader --no-interaction
 
-chown -R www-data:www-data storage bootstrap/cache
+chown -R www-data:www-data storage bootstrap/cache public
 chmod -R ug+rwx storage bootstrap/cache
+
+if ! grep -q '^APP_KEY=' .env; then
+    echo 'APP_KEY=' >> .env
+    chown www-data:www-data .env
+fi
 
 if ! grep -q '^APP_KEY=base64:' .env; then
     sudo -u www-data php artisan key:generate --force

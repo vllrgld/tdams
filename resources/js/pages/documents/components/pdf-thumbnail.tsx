@@ -51,6 +51,7 @@ export default function PdfThumbnail({
     const [isVisible, setIsVisible] = useState(eager);
     const [canLoad, setCanLoad] = useState(false);
     const [cachedSrc, setCachedSrc] = useState<string | null>(null);
+    const [painted, setPainted] = useState(false);
     const quiet = pageNumber > 1;
     const containImageClass = fill
         ? 'h-full w-full object-contain'
@@ -156,6 +157,7 @@ export default function PdfThumbnail({
         setMissingPage(false);
         setPageCount(null);
         setPageWidthRatio(A4_WIDTH_RATIO);
+        setPainted(false);
     }, [url, pageNumber, quality]);
 
     useEffect(() => {
@@ -183,10 +185,8 @@ export default function PdfThumbnail({
         <div
             ref={containerRef}
             aria-busy={!cachedSrc && !error && !canLoad}
-            className={`h-full w-full overflow-hidden ${
-                fit === 'cover'
-                    ? 'relative'
-                    : 'flex items-center justify-center'
+            className={`relative h-full w-full overflow-hidden ${
+                fit === 'cover' ? '' : 'flex items-center justify-center'
             }`}
         >
             {cachedSrc ? (
@@ -199,13 +199,7 @@ export default function PdfThumbnail({
                             : containImageClass
                     }
                 />
-            ) : !isVisible || !canLoad ? (
-                quiet ? null : (
-                    <div className="flex h-full w-full items-center justify-center">
-                        <PlaceholderIcon />
-                    </div>
-                )
-            ) : error ? (
+            ) : !isVisible || !canLoad ? null : error ? (
                 quiet ? null : (
                     <p
                         role="img"
@@ -218,6 +212,7 @@ export default function PdfThumbnail({
             ) : missingPage ? null : (
                 <Document
                     file={url}
+                    suspense={false}
                     onLoadSuccess={async (pdf) => {
                         releaseSlot();
                         setPageCount(pdf.numPages);
@@ -235,13 +230,7 @@ export default function PdfThumbnail({
                         releaseSlot();
                         setError(true);
                     }}
-                    loading={
-                        quiet ? null : (
-                            <div className="flex h-full w-full items-center justify-center">
-                                <PlaceholderIcon />
-                            </div>
-                        )
-                    }
+                    loading={null}
                     error={null}
                     className={
                         fit === 'cover'
@@ -268,12 +257,16 @@ export default function PdfThumbnail({
                                 <Page
                                     pageNumber={pageNumber}
                                     width={pageWidth}
+                                    suspense={false}
                                     devicePixelRatio={
                                         DEVICE_PIXEL_RATIO[quality]
                                     }
                                     renderTextLayer={false}
                                     renderAnnotationLayer={false}
+                                    loading={null}
                                     onRenderSuccess={() => {
+                                        setPainted(true);
+
                                         const canvas =
                                             containerRef.current?.querySelector(
                                                 'canvas',
@@ -298,6 +291,11 @@ export default function PdfThumbnail({
                             </div>
                         )}
                 </Document>
+            )}
+            {!cachedSrc && !error && !painted && !quiet && (
+                <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                    <PlaceholderIcon />
+                </div>
             )}
         </div>
     );

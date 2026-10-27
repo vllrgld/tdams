@@ -1,0 +1,17 @@
+[Unit]
+Description=DTMS Laravel queue worker (one job at a time)
+After=network.target mysql.service
+Wants=mysql.service
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/dtms
+ExecStart=/usr/bin/php artisan queue:work --sleep=3 --tries=1 --timeout=360 --max-jobs=1 --max-time=3600
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

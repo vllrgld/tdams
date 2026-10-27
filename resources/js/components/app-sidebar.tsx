@@ -7,6 +7,7 @@ import {
     Folders,
     LayoutDashboard,
     Palette,
+    ScanText,
     Shield,
     UserRound,
 } from 'lucide-react';
@@ -25,6 +26,7 @@ import {
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
 import { edit as editAppearance } from '@/routes/appearance';
+import { edit as editOcr } from '@/routes/ocr';
 import { edit as editProfile } from '@/routes/profile';
 import { edit as editSecurity } from '@/routes/security';
 import type { NavItem } from '@/types';
@@ -84,6 +86,11 @@ const accountNavItems: NavItem[] = [
         title: 'Appearance',
         href: editAppearance(),
         icon: Palette,
+    },
+    {
+        title: 'OCR',
+        href: editOcr(),
+        icon: ScanText,
     },
 ];
 

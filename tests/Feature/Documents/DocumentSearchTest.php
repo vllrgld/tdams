@@ -57,12 +57,18 @@ class DocumentSearchTest extends TestCase
         $this->assertSame(array_keys(Document::SEARCH_FIELDS), array_column(Document::searchFieldOptions(), 'value'));
         $this->assertSame(array_keys(Document::SEARCH_FIELDS), array_keys(Document::SEARCH_FIELD_LABELS));
 
-        foreach (Document::SEARCH_FIELDS as $columns) {
+        foreach (Document::SEARCH_FIELDS as $field => $columns) {
             if ($columns === null) {
                 continue;
             }
 
             foreach ($columns as $column) {
+                if ($field === 'content') {
+                    $this->assertSame('ocr_text', $column);
+
+                    continue;
+                }
+
                 $this->assertContains($column, Document::SEARCHABLE_COLUMNS);
             }
         }
@@ -239,6 +245,60 @@ class DocumentSearchTest extends TestCase
             ->assertInertia(fn (Assert $page) => $page
                 ->component('documents/index')
                 ->where('filters.q', 'Alpha LOT-Z')
+                ->where('filters.field', 'all')
+                ->where('documents.total', 1)
+                ->where('documents.data.0.id', $match->id));
+    }
+
+    public function test_content_search_matches_ocr_text_and_ignores_metadata_only_documents(): void
+    {
+        $user = User::factory()->create();
+        $match = $this->makeDocument($user, [
+            'tax_declaration_number' => 'TD-OTHER-0001',
+            'ocr_status' => 'completed',
+            'ocr_text' => "Owner\fHidden mineral rights unique phrase",
+            'ocr_pages' => ['Owner', 'Hidden mineral rights unique phrase'],
+        ]);
+        $this->makeDocument($user, [
+            'tax_declaration_number' => 'TD-OTHER-0002',
+            'registered_owner' => 'Hidden mineral rights unique phrase',
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('documents.index', [
+                'q' => 'mineral rights unique',
+                'field' => 'content',
+            ]))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('documents/index')
+                ->where('filters.q', 'mineral rights unique')
+                ->where('filters.field', 'content')
+                ->where('documents.total', 1)
+                ->where('documents.data.0.id', $match->id)
+                ->where('searchFields.6.value', 'content')
+                ->where('searchFields.6.label', 'Content'));
+    }
+
+    public function test_all_search_matches_a_phrase_that_exists_only_in_ocr_text(): void
+    {
+        $user = User::factory()->create();
+        $match = $this->makeDocument($user, [
+            'tax_declaration_number' => 'TD-OTHER-0001',
+            'ocr_status' => 'completed',
+            'ocr_text' => 'Unindexed cadastral monument unique',
+        ]);
+        $this->makeDocument($user, [
+            'tax_declaration_number' => 'TD-OTHER-0002',
+            'remarks' => 'Unrelated remarks',
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('documents.index', ['q' => 'cadastral monument unique']))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('documents/index')
+                ->where('filters.q', 'cadastral monument unique')
                 ->where('filters.field', 'all')
                 ->where('documents.total', 1)
                 ->where('documents.data.0.id', $match->id));

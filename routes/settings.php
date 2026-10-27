@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Settings\OcrSettingsController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\Settings\SecurityController;
 use Illuminate\Auth\Middleware\RequirePassword;
@@ -24,6 +25,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('user-password.update');
 
     Route::inertia('settings/appearance', 'settings/appearance')->name('appearance.edit');
+
+    Route::get('settings/ocr', [OcrSettingsController::class, 'edit'])->name('ocr.edit');
+    Route::put('settings/ocr', [OcrSettingsController::class, 'update'])->name('ocr.update');
+    Route::redirect('settings/compression', '/settings/ocr');
 });
 
 Route::get('.well-known/passkey-endpoints', function () {

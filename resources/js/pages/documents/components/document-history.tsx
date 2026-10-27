@@ -256,17 +256,18 @@ export default function DocumentHistory({
                                             <p className="mb-2 text-xs font-medium text-slate-500 dark:text-neutral-400">
                                                 Document preview
                                             </p>
-                                            {currentDocument?.mimeType ===
-                                            'application/pdf' ? (
+                                            {currentDocument &&
+                                            (currentDocument.ocrPdfUrl ||
+                                                currentDocument.mimeType ===
+                                                    'application/pdf') ? (
                                                 <div className="flex h-[54vh] min-h-72 flex-col">
                                                     <ClientOnly
                                                         fallback={pdfViewerFallback()}
                                                     >
                                                         <ClientPdfPreview
-                                                            key={
-                                                                currentDocument.id
-                                                            }
+                                                            key={`${currentDocument.id}-${currentDocument.ocrPdfUrl ?? 'original'}`}
                                                             url={
+                                                                currentDocument.ocrPdfUrl ??
                                                                 currentDocument.viewUrl
                                                             }
                                                             title={`Preview for ${currentEntry.taxDeclarationNumber}`}

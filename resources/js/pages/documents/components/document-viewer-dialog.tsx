@@ -22,6 +22,7 @@ import type { ArchivedDocument } from '../types';
 import DeclarationNumberSearch from './declaration-number-search';
 import DocumentChain from './document-chain';
 import DocumentHistory from './document-history';
+import DocumentOcrPanel, { OcrIcon } from './document-ocr-panel';
 
 function loadPdfPreview() {
     return import('@/components/pdf-preview');
@@ -59,7 +60,9 @@ export default function DocumentViewerDialog({
     onDocumentChange,
     onInfoOpenChange,
 }: DocumentViewerDialogProps) {
-    const [panelView, setPanelView] = useState<'info' | 'history'>('info');
+    const [panelView, setPanelView] = useState<'info' | 'history' | 'ocr'>(
+        'info',
+    );
     const [chainDocument, setChainDocument] = useState<ArchivedDocument | null>(
         null,
     );
@@ -106,6 +109,19 @@ export default function DocumentViewerDialog({
         }
 
         setPanelView('history');
+    };
+
+    const handleOcrToggle = () => {
+        if (infoOpen && panelView === 'ocr') {
+            onInfoOpenChange(false);
+            return;
+        }
+
+        if (!infoOpen) {
+            onInfoOpenChange(true);
+        }
+
+        setPanelView('ocr');
     };
 
     return (
@@ -190,6 +206,24 @@ export default function DocumentViewerDialog({
                             </Button>
                             <Button
                                 type="button"
+                                variant={
+                                    panelView === 'ocr' ? 'secondary' : 'ghost'
+                                }
+                                size="icon"
+                                aria-label={
+                                    infoOpen && panelView === 'ocr'
+                                        ? 'Hide OCR text'
+                                        : 'Show OCR text'
+                                }
+                                aria-pressed={infoOpen && panelView === 'ocr'}
+                                title="OCR text"
+                                onClick={handleOcrToggle}
+                                className="size-9 shrink-0 rounded-none border-0 focus-visible:ring-0 focus-visible:ring-transparent"
+                            >
+                                <OcrIcon />
+                            </Button>
+                            <Button
+                                type="button"
                                 variant={chainDocument ? 'secondary' : 'ghost'}
                                 size="icon"
                                 aria-label="Show document chain"
@@ -215,11 +249,15 @@ export default function DocumentViewerDialog({
                     {viewing && (
                         <div className="flex min-h-0 flex-1 flex-col gap-4 md:flex-row">
                             <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-3">
-                                {viewing.mimeType === 'application/pdf' ? (
+                                {viewing.ocrPdfUrl ||
+                                viewing.mimeType === 'application/pdf' ? (
                                     <ClientOnly fallback={pdfViewerFallback()}>
                                         <ClientPdfPreview
-                                            key={viewing.id}
-                                            url={viewing.viewUrl}
+                                            key={`${viewing.id}-${viewing.ocrPdfUrl ?? 'original'}`}
+                                            url={
+                                                viewing.ocrPdfUrl ??
+                                                viewing.viewUrl
+                                            }
                                             title={viewing.originalFilename}
                                         />
                                     </ClientOnly>
@@ -254,6 +292,11 @@ export default function DocumentViewerDialog({
                                 document={viewing}
                                 onDocumentChange={onDocumentChange}
                                 onShowInfo={() => setPanelView('info')}
+                            />
+                        ) : panelView === 'ocr' ? (
+                            <DocumentOcrPanel
+                                key={viewing.id}
+                                document={viewing}
                             />
                         ) : (
                             <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
@@ -429,6 +472,16 @@ export default function DocumentViewerDialog({
                                                 value={formatFileSize(
                                                     viewing.fileSize,
                                                 )}
+                                            />
+                                            <InfoField
+                                                label="Compressed PDF"
+                                                value={
+                                                    viewing.ocrPdfSize === null
+                                                        ? null
+                                                        : formatFileSize(
+                                                              viewing.ocrPdfSize,
+                                                          )
+                                                }
                                             />
                                             <InfoField
                                                 label="Date added"

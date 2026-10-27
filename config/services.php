@@ -35,4 +35,32 @@ return [
         ],
     ],
 
+    'ocr' => [
+        'local' => [
+            'url' => env('OCR_URL', 'http://127.0.0.1:8001'),
+            'token' => env('OCR_TOKEN'),
+            'timeout' => (int) env('OCR_TIMEOUT', 300),
+        ],
+        'paddle' => [
+            'job_url' => env('PADDLE_OCR_JOB_URL', 'https://paddleocr.aistudio-app.com/api/v2/ocr/jobs'),
+            'token' => env('PADDLE_OCR_TOKEN'),
+            'model' => env('PADDLE_OCR_MODEL', 'PP-OCRv6'),
+        ],
+    ],
+
+    'ollama' => [
+        'url' => env('OLLAMA_URL', 'https://ollama.com'),
+        'key' => env('OLLAMA_API_KEY'),
+        'timeout' => (int) env('OLLAMA_TIMEOUT', 180),
+        'models' => [
+            'beam',
+            'gemma4:31b',
+            'gpt-oss:120b',
+            'gpt-oss:20b',
+            'nemotron-3-nano:30b',
+            'nemotron-3-super',
+            'nemotron-3-ultra',
+        ],
+    ],
+
 ];

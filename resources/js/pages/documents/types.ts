@@ -9,8 +9,10 @@ export type ArchivedDocument = {
     originalFilename: string;
     mimeType: string;
     fileSize: number;
+    ocrPdfSize: number | null;
     createdAt: string | null;
     viewUrl: string;
+    ocrPdfUrl: string | null;
     previousTaxDeclarationNumber: string | null;
     previousDeclarationDate: string | null;
     titleNumber: string | null;
@@ -69,6 +71,7 @@ export type DocumentsPageProps = {
         field: string;
     };
     searchFields: SearchFieldOption[];
+    mappingModels: string[];
 };
 
 export type UploadForm = {

@@ -15,6 +15,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('documents', [DocumentController::class, 'store'])->name('documents.store');
     Route::get('documents/declaration-numbers', [DocumentController::class, 'declarationNumbers'])->name('documents.declaration-numbers');
     Route::get('documents/{document}/history', [DocumentController::class, 'history'])->name('documents.history');
+    Route::get('documents/{document}/ocr', [DocumentController::class, 'ocr'])->name('documents.ocr');
+    Route::post('documents/{document}/map', [DocumentController::class, 'map'])->name('documents.map');
+    Route::put('documents/{document}/fields', [DocumentController::class, 'saveFields'])->name('documents.fields');
+    Route::get('documents/{document}/ocr-pdf', [DocumentController::class, 'ocrPdf'])->name('documents.ocr-pdf');
     Route::get('documents/{document}/chain', [DocumentController::class, 'chain'])->name('documents.chain');
     Route::patch('documents/{document}', [DocumentController::class, 'update'])->name('documents.update');
     Route::get('documents/{document}/view', [DocumentController::class, 'view'])->name('documents.view');

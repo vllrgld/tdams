@@ -23,6 +23,7 @@ export default function PdfPreview({ url, title }: PdfPreviewProps) {
     const [zoom, setZoom] = useState(1);
     const [loadError, setLoadError] = useState<string | null>(null);
     const [workerReady, setWorkerReady] = useState(false);
+    const [pageReady, setPageReady] = useState(false);
 
     useEffect(() => {
         pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -38,15 +39,32 @@ export default function PdfPreview({ url, title }: PdfPreviewProps) {
             return;
         }
 
+        let timer = 0;
+        const publish = (width: number) => {
+            const next = Math.floor(width);
+            setViewerWidth((current) =>
+                Math.abs(current - next) < 8 ? current : next,
+            );
+        };
+
+        // Wait for the dialog to finish opening so the canvas is not
+        // cleared and redrawn on every width change.
         const observer = new ResizeObserver(([entry]) => {
-            if (entry) {
-                setViewerWidth(entry.contentRect.width);
-            }
+            window.clearTimeout(timer);
+            timer = window.setTimeout(() => {
+                if (entry) {
+                    publish(entry.contentRect.width);
+                }
+            }, 200);
         });
 
         observer.observe(viewer);
+        timer = window.setTimeout(() => publish(viewer.clientWidth), 200);
 
-        return () => observer.disconnect();
+        return () => {
+            window.clearTimeout(timer);
+            observer.disconnect();
+        };
     }, []);
 
     useEffect(() => {
@@ -54,6 +72,7 @@ export default function PdfPreview({ url, title }: PdfPreviewProps) {
         setPageCount(0);
         setZoom(1);
         setLoadError(null);
+        setPageReady(false);
     }, [url]);
 
     useEffect(() => {
@@ -231,13 +250,16 @@ export default function PdfPreview({ url, title }: PdfPreviewProps) {
 
             <div
                 ref={viewerRef}
-                className="min-h-0 flex-1 overflow-auto bg-slate-200 p-2 dark:bg-neutral-900"
+                className="relative min-h-0 flex-1 overflow-auto bg-slate-200 p-2 dark:bg-neutral-900"
             >
-                {!workerReady ? (
-                    <p className="p-6 text-center text-sm text-slate-600 dark:text-neutral-300">
-                        Loading PDF…
-                    </p>
-                ) : (
+                {!pageReady && !loadError && (
+                    <div className="absolute inset-0 z-10 flex items-center justify-center bg-slate-200 dark:bg-neutral-900">
+                        <p className="text-sm text-slate-600 dark:text-neutral-300">
+                            Loading PDF…
+                        </p>
+                    </div>
+                )}
+                {workerReady && viewerWidth > 0 ? (
                     <Document
                         file={url}
                         suspense={false}
@@ -281,6 +303,12 @@ export default function PdfPreview({ url, title }: PdfPreviewProps) {
                                 onRenderError={(error) =>
                                     setLoadError(error.message)
                                 }
+                                canvasBackground="#ffffff"
+                                onRenderSuccess={() => {
+                                    if (page === 1) {
+                                        setPageReady(true);
+                                    }
+                                }}
                                 loading={
                                     <p className="p-6 text-center text-sm text-slate-600 dark:text-neutral-300">
                                         Rendering page {page}…
@@ -300,7 +328,7 @@ export default function PdfPreview({ url, title }: PdfPreviewProps) {
                             />
                         ))}
                     </Document>
-                )}
+                ) : null}
             </div>
             <span className="sr-only">{title}</span>
         </div>

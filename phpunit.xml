@@ -28,9 +28,20 @@
         <env name="DB_URL" value=""/>
         <env name="MAIL_MAILER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
+        <env name="SCOUT_DRIVER" value="collection"/>
+        <env name="SCOUT_QUEUE" value="false"/>
         <env name="SESSION_DRIVER" value="array"/>
         <env name="PULSE_ENABLED" value="false"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
         <env name="NIGHTWATCH_ENABLED" value="false"/>
+        <env name="OCR_URL" value="http://127.0.0.1:8001"/>
+        <env name="OCR_TOKEN" value="local-dev-token"/>
+        <env name="OCR_TIMEOUT" value="5"/>
+        <env name="PADDLE_OCR_JOB_URL" value="https://paddleocr.aistudio-app.com/api/v2/ocr/jobs"/>
+        <env name="PADDLE_OCR_TOKEN" value=""/>
+        <env name="PADDLE_OCR_MODEL" value="PP-OCRv6"/>
+        <env name="OLLAMA_URL" value="https://ollama.test"/>
+        <env name="OLLAMA_API_KEY" value="test-key"/>
+        <env name="OLLAMA_TIMEOUT" value="5"/>
     </php>
 </phpunit>
