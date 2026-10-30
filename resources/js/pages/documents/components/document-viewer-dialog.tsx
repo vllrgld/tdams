@@ -1,8 +1,16 @@
-import { useEffect, useState, type FormEvent, type ReactNode } from 'react';
+import {
+    useCallback,
+    useEffect,
+    useRef,
+    useState,
+    type FormEvent,
+    type ReactNode,
+} from 'react';
 import { useForm } from '@inertiajs/react';
 import { History, Info, Link } from 'lucide-react';
 import { toast } from 'sonner';
 import ClientOnly from '@/components/client-only';
+import type { PdfHighlight, PdfViewport } from '@/components/pdf-preview';
 import InputError from '@/components/input-error';
 import { useClientComponent } from '@/hooks/use-client-component';
 import { Spinner } from '@/components/ui/spinner';
@@ -22,7 +30,10 @@ import type { ArchivedDocument } from '../types';
 import DeclarationNumberSearch from './declaration-number-search';
 import DocumentChain from './document-chain';
 import DocumentHistory from './document-history';
-import DocumentOcrPanel, { OcrIcon } from './document-ocr-panel';
+import DocumentOcrPanel, {
+    OcrIcon,
+    type OcrRegion,
+} from './document-ocr-panel';
 
 function loadPdfPreview() {
     return import('@/components/pdf-preview');
@@ -37,14 +48,54 @@ function pdfViewerFallback(): ReactNode {
     );
 }
 
-function ClientPdfPreview({ url, title }: { url: string; title: string }) {
-    const PdfPreview = useClientComponent(loadPdfPreview);
+function ClientPdfPreview({
+    url,
+    title,
+    highlights = [],
+    selectedHighlightId = null,
+    onSelectHighlight,
+    focusPage = null,
+    onViewportChange,
+    defaultFit = 'width',
+}: {
+    url: string;
+    title: string;
+    highlights?: PdfHighlight[];
+    selectedHighlightId?: number | null;
+    onSelectHighlight?: (id: number) => void;
+    focusPage?: number | null;
+    onViewportChange?: (viewport: PdfViewport) => void;
+    defaultFit?: 'width' | 'page';
+}) {
+    const [PdfPreview, viewerError] = useClientComponent(loadPdfPreview);
+
+    if (viewerError) {
+        return (
+            <p
+                role="alert"
+                className="flex min-h-0 flex-1 items-center justify-center p-6 text-center text-sm text-red-800 dark:text-red-300"
+            >
+                The PDF viewer could not be loaded. {viewerError}
+            </p>
+        );
+    }
 
     if (!PdfPreview) {
         return pdfViewerFallback();
     }
 
-    return <PdfPreview url={url} title={title} />;
+    return (
+        <PdfPreview
+            url={url}
+            title={title}
+            highlights={highlights}
+            selectedHighlightId={selectedHighlightId}
+            onSelectHighlight={onSelectHighlight}
+            focusPage={focusPage}
+            onViewportChange={onViewportChange}
+            defaultFit={defaultFit}
+        />
+    );
 }
 
 type DocumentViewerDialogProps = {
@@ -63,12 +114,22 @@ export default function DocumentViewerDialog({
     const [panelView, setPanelView] = useState<'info' | 'history' | 'ocr'>(
         'info',
     );
+    const [comparison, setComparison] = useState(false);
+    const [pdfViewport, setPdfViewport] = useState<PdfViewport | null>(null);
+    const [regions, setRegions] = useState<OcrRegion[]>([]);
+    const [selectedRegion, setSelectedRegion] = useState<number | null>(null);
+    const ignoreDockClose = useRef(false);
+    const handleRegions = useCallback((next: OcrRegion[]) => {
+        setRegions(next);
+    }, []);
     const [chainDocument, setChainDocument] = useState<ArchivedDocument | null>(
         null,
     );
     const [displayedDocument, setDisplayedDocument] =
         useState<ArchivedDocument | null>(document);
+    const [displayedInfoOpen, setDisplayedInfoOpen] = useState(infoOpen);
     const viewing = document ?? displayedDocument;
+    const viewerInfoOpen = document ? infoOpen : displayedInfoOpen;
 
     useEffect(() => {
         if (!infoOpen) {
@@ -77,13 +138,29 @@ export default function DocumentViewerDialog({
     }, [infoOpen]);
 
     useEffect(() => {
+        ignoreDockClose.current = false;
+        setComparison(false);
+        setRegions([]);
+        setPdfViewport(null);
+        setSelectedRegion(null);
+    }, [document?.id]);
+
+    useEffect(() => {
+        if (!infoOpen || panelView !== 'ocr') {
+            ignoreDockClose.current = false;
+            setComparison(false);
+        }
+    }, [infoOpen, panelView]);
+
+    useEffect(() => {
         if (!document) {
             setChainDocument(null);
             return;
         }
 
         setDisplayedDocument(document);
-    }, [document]);
+        setDisplayedInfoOpen(infoOpen);
+    }, [document, infoOpen]);
 
     const handleInfoToggle = () => {
         if (infoOpen && panelView === 'info') {
@@ -143,11 +220,13 @@ export default function DocumentViewerDialog({
             >
                 <DialogContent
                     className={cn(
-                        'flex h-[90vh] max-h-[90vh] w-[calc(100%-1rem)] flex-col gap-3 overflow-hidden rounded-none p-4 sm:p-6 lg:!top-[5vh] lg:!h-[90vh] lg:!w-[66vw] lg:!max-w-none lg:!translate-x-0 lg:!translate-y-0 dark:border-neutral-800 dark:bg-black',
-                        'transition-[left] duration-300 ease-in-out motion-reduce:transition-none',
-                        infoOpen
-                            ? 'lg:!left-[2vw]'
-                            : '!max-w-none sm:!max-w-none lg:!left-[17vw]',
+                        'flex h-[90vh] max-h-[90vh] w-[calc(100%-1rem)] flex-col gap-3 overflow-hidden rounded-none p-4 sm:p-6 lg:!top-[5vh] lg:!h-[90vh] lg:!max-w-none lg:!translate-x-0 lg:!translate-y-0 dark:border-neutral-800 dark:bg-black',
+                        'transition-[left,width,opacity,transform] [transition-duration:300ms,300ms,200ms,200ms] ease-in-out data-ending-style:duration-200 motion-reduce:transition-none',
+                        comparison
+                            ? '!top-[2vh] !h-[96vh] !max-h-[96vh] !max-w-none !translate-y-0 sm:!max-w-none lg:!top-[2vh] lg:!left-[2vw] lg:!h-[96vh] lg:!w-[96vw]'
+                            : viewerInfoOpen
+                              ? 'lg:!left-[2vw] lg:!w-[66vw]'
+                              : '!max-w-none sm:!max-w-none lg:!left-[17vw] lg:!w-[66vw]',
                     )}
                 >
                     <div className="flex shrink-0 items-start justify-between gap-3 pr-8">
@@ -166,6 +245,20 @@ export default function DocumentViewerDialog({
                             </DialogDescription>
                         </DialogHeader>
                         <div className="flex items-center gap-1">
+                            {comparison && (
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => {
+                                        ignoreDockClose.current = false;
+                                        setComparison(false);
+                                    }}
+                                    className="h-9 rounded-none text-xs"
+                                >
+                                    Exit comparison
+                                </Button>
+                            )}
                             <Button
                                 type="button"
                                 variant={
@@ -247,8 +340,20 @@ export default function DocumentViewerDialog({
                         </div>
                     </div>
                     {viewing && (
-                        <div className="flex min-h-0 flex-1 flex-col gap-4 md:flex-row">
-                            <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-3">
+                        <div
+                            className={cn(
+                                'min-h-0 flex-1 gap-4',
+                                comparison
+                                    ? 'grid grid-cols-2'
+                                    : 'flex flex-col md:flex-row',
+                            )}
+                        >
+                            <div
+                                className={cn(
+                                    'flex min-h-0 min-w-0 flex-col gap-3',
+                                    comparison ? 'w-full' : 'flex-1',
+                                )}
+                            >
                                 {viewing.ocrPdfUrl ||
                                 viewing.mimeType === 'application/pdf' ? (
                                     <ClientOnly fallback={pdfViewerFallback()}>
@@ -259,6 +364,35 @@ export default function DocumentViewerDialog({
                                                 viewing.viewUrl
                                             }
                                             title={viewing.originalFilename}
+                                            onViewportChange={setPdfViewport}
+                                            defaultFit={
+                                                comparison ? 'page' : 'width'
+                                            }
+                                            highlights={
+                                                comparison
+                                                    ? regions.map(
+                                                          (region, index) => ({
+                                                              id: index,
+                                                              page: region.page,
+                                                              box: region.box,
+                                                              pageWidth:
+                                                                  region.pageWidth,
+                                                              pageHeight:
+                                                                  region.pageHeight,
+                                                          }),
+                                                      )
+                                                    : []
+                                            }
+                                            selectedHighlightId={selectedRegion}
+                                            focusPage={
+                                                selectedRegion === null
+                                                    ? null
+                                                    : (regions[selectedRegion]
+                                                          ?.page ?? null)
+                                            }
+                                            onSelectHighlight={
+                                                setSelectedRegion
+                                            }
                                         />
                                     </ClientOnly>
                                 ) : (
@@ -271,6 +405,23 @@ export default function DocumentViewerDialog({
                                     </div>
                                 )}
                             </div>
+                            {comparison && viewing && (
+                                <div className="flex min-h-0 w-full min-w-0 flex-col overflow-hidden">
+                                    <DocumentOcrPanel
+                                        key={viewing.id}
+                                        document={viewing}
+                                        comparing
+                                        pdfViewport={pdfViewport}
+                                        onComparisonChange={() => {
+                                            ignoreDockClose.current = false;
+                                            setComparison(false);
+                                        }}
+                                        onRegionsChange={handleRegions}
+                                        selectedRegion={selectedRegion}
+                                        onSelectRegion={setSelectedRegion}
+                                    />
+                                </div>
+                            )}
                         </div>
                     )}
                 </DialogContent>
@@ -279,12 +430,18 @@ export default function DocumentViewerDialog({
             <Dialog
                 modal={false}
                 disablePointerDismissal
-                open={infoOpen && document !== null}
-                onOpenChange={onInfoOpenChange}
+                open={infoOpen && document !== null && !comparison}
+                onOpenChange={(open) => {
+                    if (!open && ignoreDockClose.current) {
+                        return;
+                    }
+
+                    onInfoOpenChange(open);
+                }}
             >
                 <DialogContent
                     overlayClassName="!pointer-events-none !bg-transparent"
-                    className="flex h-[90vh] max-h-[90vh] w-[calc(100%-1rem)] max-w-lg flex-col gap-0 overflow-hidden rounded-none p-0 sm:w-[min(30vw,32rem)] sm:max-w-none lg:!top-[5vh] lg:!left-[68vw] lg:!h-[90vh] lg:!w-[30vw] lg:!max-w-none lg:!translate-x-0 lg:!translate-y-0 dark:border-neutral-800 dark:bg-black"
+                    className="flex h-[90vh] max-h-[90vh] w-[calc(100%-1rem)] max-w-lg flex-col gap-0 overflow-hidden rounded-none p-0 motion-reduce:transition-none sm:w-[min(30vw,32rem)] sm:max-w-none lg:!top-[5vh] lg:!left-[68vw] lg:!h-[90vh] lg:!w-[30vw] lg:!max-w-none lg:!translate-x-0 lg:!translate-y-0 dark:border-neutral-800 dark:bg-black"
                 >
                     {viewing &&
                         (panelView === 'history' ? (
@@ -297,6 +454,11 @@ export default function DocumentViewerDialog({
                             <DocumentOcrPanel
                                 key={viewing.id}
                                 document={viewing}
+                                onComparisonChange={() => {
+                                    ignoreDockClose.current = true;
+                                    setComparison(true);
+                                }}
+                                onRegionsChange={handleRegions}
                             />
                         ) : (
                             <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
@@ -640,8 +802,6 @@ function InfoSection({
 }
 
 function BoundaryCompass({ document }: { document: ArchivedDocument }) {
-    const corner = 'bg-slate-50 dark:bg-neutral-900';
-
     return (
         <div className="grid min-w-0 gap-2 sm:col-span-2">
             <dt className="text-xs font-medium text-slate-500 dark:text-neutral-400">
@@ -649,11 +809,15 @@ function BoundaryCompass({ document }: { document: ArchivedDocument }) {
             </dt>
             <dd>
                 <dl className="grid grid-cols-3 gap-px border border-slate-200 bg-slate-200 dark:border-neutral-800 dark:bg-neutral-800">
-                    <div className={corner} />
+                    <BoundaryCell direction="NW" label="Northwest">
+                        {document.boundaryNorthwest}
+                    </BoundaryCell>
                     <BoundaryCell direction="N" label="North">
                         {document.boundaryNorth}
                     </BoundaryCell>
-                    <div className={corner} />
+                    <BoundaryCell direction="NE" label="Northeast">
+                        {document.boundaryNortheast}
+                    </BoundaryCell>
                     <BoundaryCell direction="W" label="West">
                         {document.boundaryWest}
                     </BoundaryCell>
@@ -668,11 +832,15 @@ function BoundaryCompass({ document }: { document: ArchivedDocument }) {
                     <BoundaryCell direction="E" label="East">
                         {document.boundaryEast}
                     </BoundaryCell>
-                    <div className={corner} />
+                    <BoundaryCell direction="SW" label="Southwest">
+                        {document.boundarySouthwest}
+                    </BoundaryCell>
                     <BoundaryCell direction="S" label="South">
                         {document.boundarySouth}
                     </BoundaryCell>
-                    <div className={corner} />
+                    <BoundaryCell direction="SE" label="Southeast">
+                        {document.boundarySoutheast}
+                    </BoundaryCell>
                 </dl>
             </dd>
         </div>

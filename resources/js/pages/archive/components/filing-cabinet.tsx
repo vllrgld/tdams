@@ -15,24 +15,29 @@ import type {
 } from '../data/cabinets';
 import CabinetDrawer from './cabinet-drawer';
 
+const CLOSEUP_WIDTH = 806;
+const CLOSEUP_HEIGHT = 420;
+const CLOSEUP_DEPTH = 682;
+
 const WIDTH = 180;
 const HEIGHT = 300;
-const DEPTH = 160;
-const FRAME_PADDING = 10;
-const DRAWER_GAP = 8;
-const DRAWER_DEPTH = DEPTH - 12;
+const FRAME_PADDING = 7;
+const DRAWER_GAP = 2;
+const DRAWER_DEPTH =
+    CLOSEUP_DEPTH * ((WIDTH - FRAME_PADDING * 2) / CLOSEUP_WIDTH);
+const DEPTH = DRAWER_DEPTH + 12;
 const DRAWER_TRAVEL = Math.round(DEPTH * 0.82);
 const PERSPECTIVE = 1000;
 const REST_ROTATE_X = -12;
-const REST_ROTATE_Y = 30;
+const REST_ROTATE_Y = -24;
 const REST_TRANSFORM = `rotateX(${REST_ROTATE_X}deg) rotateY(${REST_ROTATE_Y}deg)`;
 const SLOT_PAD_LEFT = Math.round(
-    DEPTH * Math.sin((REST_ROTATE_Y * Math.PI) / 180),
+    DRAWER_TRAVEL * Math.sin((Math.abs(REST_ROTATE_Y) * Math.PI) / 180) * 1.2,
 );
 const SLOT_PAD_RIGHT = Math.round(
-    DRAWER_TRAVEL * Math.sin((REST_ROTATE_Y * Math.PI) / 180) * 1.2,
+    DEPTH * Math.sin((Math.abs(REST_ROTATE_Y) * Math.PI) / 180),
 );
-const SLOT_PAD_TOP = 40;
+const SLOT_PAD_TOP = 56;
 const SLOT_PAD_BOTTOM =
     56 +
     Math.round(
@@ -42,11 +47,7 @@ const SLOT_PAD_BOTTOM =
     );
 const SLOT_CAPTION = 40;
 const SLOT_WIDTH = SLOT_PAD_LEFT + WIDTH + SLOT_PAD_RIGHT;
-const SLOT_HEIGHT = SLOT_PAD_TOP + HEIGHT + SLOT_PAD_BOTTOM + SLOT_CAPTION;
 
-const CLOSEUP_WIDTH = 806;
-const CLOSEUP_HEIGHT = 420;
-const CLOSEUP_DEPTH = 682;
 const CLOSEUP_SCALE_FROM = 0.72;
 const CLOSEUP_SCALE_TO = 1;
 const CLOSEUP_TILT_FROM = -32;
@@ -129,10 +130,15 @@ export default function FilingCabinet({
     const wasZoomed = useRef(false);
 
     const drawerCount = cabinet.drawers.length;
+    const cabinetHeight = HEIGHT;
+    const slotHeight =
+        SLOT_PAD_TOP + cabinetHeight + SLOT_PAD_BOTTOM + SLOT_CAPTION;
     const drawerWidth = WIDTH - FRAME_PADDING * 2;
     const drawerHeight =
-        (HEIGHT - FRAME_PADDING * 2 - DRAWER_GAP * (drawerCount - 1)) /
-        drawerCount;
+        (cabinetHeight -
+            FRAME_PADDING * 2 -
+            DRAWER_GAP * Math.max(0, drawerCount - 1)) /
+        Math.max(1, drawerCount);
     const drawerTop = (index: number) =>
         FRAME_PADDING + index * (drawerHeight + DRAWER_GAP);
 
@@ -167,16 +173,38 @@ export default function FilingCabinet({
             )}
             style={{
                 width: SLOT_WIDTH,
-                height: SLOT_HEIGHT,
+                height: slotHeight,
                 contentVisibility: openDrawer ? 'visible' : 'auto',
-                containIntrinsicSize: `${SLOT_WIDTH}px ${SLOT_HEIGHT}px`,
+                containIntrinsicSize: `${SLOT_WIDTH}px ${slotHeight}px`,
             }}
         >
+            <div
+                className="pointer-events-none absolute top-0 text-center"
+                style={{
+                    left: SLOT_PAD_LEFT,
+                    width: WIDTH + SLOT_PAD_RIGHT,
+                }}
+            >
+                <p
+                    className="truncate text-sm font-semibold text-slate-950 dark:text-white"
+                    title={cabinet.name}
+                >
+                    {cabinet.name}
+                </p>
+                {showLocation && (
+                    <p
+                        className="mt-0.5 truncate text-[10px] text-slate-500 dark:text-neutral-400"
+                        title={cabinet.location}
+                    >
+                        {cabinet.location}
+                    </p>
+                )}
+            </div>
             <div
                 className="relative shrink-0 overflow-visible"
                 style={{
                     width: SLOT_WIDTH,
-                    height: SLOT_PAD_TOP + HEIGHT + SLOT_PAD_BOTTOM,
+                    height: SLOT_PAD_TOP + cabinetHeight + SLOT_PAD_BOTTOM,
                     paddingTop: SLOT_PAD_TOP,
                     paddingBottom: SLOT_PAD_BOTTOM,
                     paddingLeft: SLOT_PAD_LEFT,
@@ -185,53 +213,48 @@ export default function FilingCabinet({
                 }}
             >
                 <div
+                    aria-hidden="true"
+                    className="cabinet-floor-shadow pointer-events-none absolute"
+                    style={{
+                        left: SLOT_PAD_LEFT - 12,
+                        top: SLOT_PAD_TOP + cabinetHeight - 2,
+                        width: WIDTH + SLOT_PAD_RIGHT + 24,
+                        height: 32,
+                    }}
+                />
+                <div
                     className="relative"
                     style={{
                         width: WIDTH,
-                        height: HEIGHT,
+                        height: cabinetHeight,
                         transformStyle: 'preserve-3d',
                         transform: REST_TRANSFORM,
                     }}
                 >
-                    <div
-                        className="pointer-events-none absolute right-0 bottom-full left-0 mb-4 text-center"
-                        style={{
-                            transform: `translateZ(${-DEPTH / 2}px)`,
-                        }}
-                    >
-                        <p className="text-sm font-semibold text-slate-950 dark:text-white">
-                            {cabinet.name}
-                        </p>
-                        {showLocation ? (
-                            <p className="text-[10px] font-normal text-slate-500 dark:text-neutral-400">
-                                {cabinet.location}
-                            </p>
-                        ) : null}
-                    </div>
                     <Face
-                        className="inset-0 bg-neutral-500 dark:bg-black"
+                        className="cabinet-vector-back inset-0"
                         style={{ transform: `translateZ(${-DEPTH}px)` }}
                     />
                     <Face
-                        className="top-0 left-full bg-neutral-400 dark:bg-neutral-900"
+                        className="cabinet-vector-side-shade top-0 left-full"
                         style={{
                             width: DEPTH,
-                            height: HEIGHT,
+                            height: cabinetHeight,
                             transformOrigin: 'left center',
                             transform: 'rotateY(90deg)',
                         }}
                     />
                     <Face
-                        className="top-0 right-full border border-neutral-500 bg-neutral-400 dark:border-neutral-700 dark:bg-neutral-900"
+                        className="cabinet-vector-side top-0 right-full border"
                         style={{
                             width: DEPTH,
-                            height: HEIGHT,
+                            height: cabinetHeight,
                             transformOrigin: 'right center',
                             transform: 'rotateY(-90deg)',
                         }}
                     />
                     <Face
-                        className="bottom-full left-0 border border-neutral-400 bg-neutral-200 dark:border-neutral-700 dark:bg-neutral-700"
+                        className="cabinet-vector-top bottom-full left-0 border"
                         style={{
                             width: WIDTH,
                             height: DEPTH,
@@ -240,7 +263,7 @@ export default function FilingCabinet({
                         }}
                     />
                     <Face
-                        className="top-full left-0 bg-neutral-500 dark:bg-black"
+                        className="cabinet-vector-bottom top-full left-0"
                         style={{
                             width: WIDTH,
                             height: DEPTH,
@@ -250,13 +273,15 @@ export default function FilingCabinet({
                     />
 
                     <div
+                        data-cabinet-shell
                         aria-hidden="true"
-                        className="absolute inset-0 border border-neutral-400 bg-neutral-300 dark:border-neutral-700 dark:bg-neutral-800"
+                        className="cabinet-vector-frame absolute inset-0 border"
+                        style={{ transformStyle: 'preserve-3d' }}
                     >
                         {cabinet.drawers.map((drawer, index) => (
                             <span
                                 key={drawer.id}
-                                className="absolute bg-neutral-800 dark:bg-black"
+                                className="cabinet-vector-cavity absolute"
                                 style={{
                                     left: FRAME_PADDING,
                                     top: drawerTop(index),
@@ -265,6 +290,36 @@ export default function FilingCabinet({
                                 }}
                             />
                         ))}
+                        <span
+                            className="cabinet-case-rail absolute inset-y-0 left-0"
+                            style={{
+                                width: FRAME_PADDING,
+                                transform: 'translateZ(2px)',
+                            }}
+                        />
+                        <span
+                            className="cabinet-case-rail absolute inset-y-0 right-0"
+                            style={{
+                                width: FRAME_PADDING,
+                                transform: 'translateZ(2px)',
+                            }}
+                        />
+                        <span
+                            className="cabinet-case-cap absolute inset-x-0 top-0"
+                            style={{
+                                height: FRAME_PADDING,
+                                transform: 'translateZ(3px)',
+                            }}
+                        >
+                            <span className="cabinet-case-lock absolute top-1/2 right-3 -translate-y-1/2" />
+                        </span>
+                        <span
+                            className="cabinet-case-base absolute inset-x-0 bottom-0"
+                            style={{
+                                height: FRAME_PADDING,
+                                transform: 'translateZ(3px)',
+                            }}
+                        />
                     </div>
 
                     {cabinet.drawers.map((drawer, index) => (
@@ -298,12 +353,22 @@ export default function FilingCabinet({
                 {openDrawer ? (
                     <>
                         <p className="text-xs text-slate-700 tabular-nums dark:text-neutral-300">
-                            {`${openDrawer.label} · ${openDrawer.range} · ${openDrawer.books.length} books`}
+                            {[
+                                openDrawer.label,
+                                openDrawer.range,
+                                `${openDrawer.books.length} ${openDrawer.books.length === 1 ? 'book' : 'books'}`,
+                            ]
+                                .filter(Boolean)
+                                .join(' · ')}
                         </p>
                         {!zoomed && (
-                            <p className="text-xs text-slate-500 dark:text-neutral-500">
-                                Click inside the drawer to look closer
-                            </p>
+                            <button
+                                type="button"
+                                onClick={() => onZoomChange(true)}
+                                className="mx-auto text-xs text-slate-600 underline underline-offset-2 hover:text-blue-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700 dark:text-neutral-300 dark:hover:text-white"
+                            >
+                                View drawer contents
+                            </button>
                         )}
                     </>
                 ) : null}
@@ -370,19 +435,21 @@ export default function FilingCabinet({
                                         }
                                     />
                                 </motion.div>
-                                <div className="pointer-events-auto absolute bottom-8 text-center">
-                                    <p className="text-sm font-semibold text-white">
-                                        {cabinet.name} · {openDrawer.label}
-                                    </p>
-                                    <p className="text-xs text-neutral-300 tabular-nums">
-                                        {openDrawer.range} ·{' '}
-                                        {openDrawer.books.length} books
-                                    </p>
-                                    {openDrawer.books.length > 0 && (
-                                        <p className="mt-1 text-xs text-neutral-400">
-                                            Click a book to open it
+                                <div className="pointer-events-none absolute inset-x-0 top-24 text-center">
+                                    <div className="mx-auto w-fit rounded-md bg-black/75 px-4 py-2">
+                                        <p className="text-sm font-semibold text-white">
+                                            {cabinet.name} · {openDrawer.label}
                                         </p>
-                                    )}
+                                        <p className="text-xs text-neutral-300 tabular-nums">
+                                            {openDrawer.range} ·{' '}
+                                            {openDrawer.books.length} books
+                                        </p>
+                                        {openDrawer.books.length > 0 && (
+                                            <p className="mt-1 text-xs text-neutral-400">
+                                                Click a book to open it
+                                            </p>
+                                        )}
+                                    </div>
                                 </div>
                                 <ul
                                     className="sr-only"

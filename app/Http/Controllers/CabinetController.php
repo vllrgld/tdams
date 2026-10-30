@@ -53,9 +53,17 @@ class CabinetController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        $drawers = $request->input('drawers', []);
+        $request->merge([
+            'drawers' => collect(is_array($drawers) ? $drawers : [])
+                ->map(fn (mixed $label): mixed => is_string($label) ? trim($label) : $label)
+                ->all(),
+        ]);
+
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:150'],
-            'drawer_count' => ['required', 'integer', 'min:1', 'max:8'],
+            'drawers' => ['required', 'array', 'min:1', 'max:8'],
+            'drawers.*' => ['required', 'string', 'max:100'],
         ]);
 
         DB::transaction(function () use ($validated): void {
@@ -64,11 +72,11 @@ class CabinetController extends Controller
                 'location' => $validated['name'],
             ]);
 
-            foreach (range(1, $validated['drawer_count']) as $position) {
+            foreach (array_values($validated['drawers']) as $index => $label) {
                 $cabinet->drawers()->create([
-                    'label' => "Drawer {$position}",
+                    'label' => $label,
                     'range' => null,
-                    'position' => $position,
+                    'position' => $index + 1,
                 ]);
             }
         });

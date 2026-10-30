@@ -38,7 +38,7 @@ function ClientPdfThumbnail({
     quality: ThumbnailQuality;
     eager?: boolean;
 }) {
-    const PdfThumbnail = useClientComponent(loadPdfThumbnail);
+    const [PdfThumbnail] = useClientComponent(loadPdfThumbnail);
 
     if (!PdfThumbnail) {
         return pageNumber > 1 ? null : pdfFallback();
@@ -59,6 +59,7 @@ function ClientPdfThumbnail({
 type DocumentThumbnailProps = {
     mimeType: string;
     url: string;
+    thumbnailUrl?: string | null;
     title: string;
     className?: string;
     fit?: 'contain' | 'cover';
@@ -71,6 +72,7 @@ type DocumentThumbnailProps = {
 export default function DocumentThumbnail({
     mimeType,
     url,
+    thumbnailUrl = null,
     title,
     className,
     fit = 'contain',
@@ -104,7 +106,20 @@ export default function DocumentThumbnail({
                 className,
             )}
         >
-            {mimeType === 'application/pdf' ? (
+            {thumbnailUrl && pageNumber === 1 ? (
+                <img
+                    src={thumbnailUrl}
+                    alt=""
+                    loading={eager ? 'eager' : 'lazy'}
+                    className={
+                        fit === 'cover'
+                            ? 'h-full w-full object-cover object-top'
+                            : fill
+                              ? 'h-full w-full object-contain'
+                              : 'h-full w-full object-contain p-1.5'
+                    }
+                />
+            ) : mimeType === 'application/pdf' ? (
                 <ClientOnly fallback={pageNumber > 1 ? null : pdfFallback()}>
                     <ClientPdfThumbnail
                         key={`${url}#${pageNumber}#${quality}`}

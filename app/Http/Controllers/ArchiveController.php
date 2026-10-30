@@ -31,7 +31,9 @@ class ArchiveController extends Controller
 
     public function book(Book $book): JsonResponse
     {
-        $documents = $book->documents
+        $documents = $book->documents()
+            ->with(Document::archiveRelations())
+            ->get()
             ->map(fn (Document $document): array => $document->toArchiveArray())
             ->values()
             ->all();
@@ -56,9 +58,11 @@ class ArchiveController extends Controller
         }
 
         $document = Document::query()
-            ->with(['book.drawer'])
+            ->with(['book.drawer', ...Document::archiveRelations()])
             ->whereNotNull('book_id')
-            ->whereRaw('LOWER(tax_declaration_number) = ?', [mb_strtolower($number)])
+            ->whereHas('taxDeclaration', function ($query) use ($number): void {
+                $query->whereRaw('LOWER(tax_declaration_number) = ?', [mb_strtolower($number)]);
+            })
             ->latest('id')
             ->first();
 

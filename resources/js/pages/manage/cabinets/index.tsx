@@ -31,7 +31,7 @@ export default function Cabinets({
         useState<CabinetListDrawer | null>(null);
     const form = useForm({
         name: '',
-        drawer_count: 4,
+        drawers: ['Drawer 1', 'Drawer 2', 'Drawer 3', 'Drawer 4'],
     });
     const bookForm = useForm({
         label: '',

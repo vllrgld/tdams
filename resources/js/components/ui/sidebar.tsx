@@ -27,7 +27,7 @@ import { cn } from "@/lib/utils"
 const SIDEBAR_COOKIE_NAME = "sidebar_state"
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
 const SIDEBAR_WIDTH = "16rem"
-const SIDEBAR_WIDTH_MOBILE = "18rem"
+const SIDEBAR_WIDTH_MOBILE = SIDEBAR_WIDTH
 const SIDEBAR_WIDTH_ICON = "3rem"
 const SIDEBAR_KEYBOARD_SHORTCUT = "b"
 
@@ -152,6 +152,7 @@ function Sidebar({
   side = "left",
   variant = "sidebar",
   collapsible = "offcanvas",
+  animated = true,
   className,
   children,
   ...props
@@ -159,6 +160,7 @@ function Sidebar({
   side?: "left" | "right"
   variant?: "sidebar" | "floating" | "inset"
   collapsible?: "offcanvas" | "icon" | "none"
+  animated?: boolean
 }) {
   const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
 
@@ -185,6 +187,7 @@ function Sidebar({
           <SheetDescription>Displays the mobile sidebar.</SheetDescription>
         </SheetHeader>
         <SheetContent
+          animated={animated}
           data-sidebar="sidebar"
           data-slot="sidebar"
           data-mobile="true"
@@ -206,6 +209,7 @@ function Sidebar({
     <div
       className="group peer text-sidebar-foreground hidden md:block"
       data-state={state}
+      data-animated={animated}
       data-collapsible={state === "collapsed" ? collapsible : ""}
       data-variant={variant}
       data-side={side}
@@ -213,8 +217,10 @@ function Sidebar({
     >
       {/* This is what handles the sidebar gap on desktop */}
       <div
+        data-slot="sidebar-gap"
         className={cn(
-          "relative h-svh w-(--sidebar-width) bg-transparent transition-[width] duration-200 ease-linear",
+          "relative h-svh w-(--sidebar-width) bg-transparent",
+          animated && "transition-[width] duration-200 ease-linear",
           "group-data-[collapsible=offcanvas]:w-0",
           "group-data-[side=right]:rotate-180",
           variant === "floating" || variant === "inset"
@@ -223,8 +229,12 @@ function Sidebar({
         )}
       />
       <div
+        data-slot="sidebar-container"
+        inert={collapsible === "offcanvas" && state === "collapsed"}
+        aria-hidden={collapsible === "offcanvas" && state === "collapsed" ? true : undefined}
         className={cn(
-          "fixed inset-y-0 z-10 hidden h-svh w-(--sidebar-width) transition-[left,right,width] duration-200 ease-linear md:flex",
+          "fixed inset-y-0 z-10 hidden h-svh w-(--sidebar-width) md:flex",
+          animated && "transition-[left,right,width] duration-200 ease-linear",
           side === "left"
             ? "left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]"
             : "right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]",
@@ -252,7 +262,8 @@ function SidebarTrigger({
   onClick,
   ...props
 }: React.ComponentProps<typeof Button>) {
-  const { toggleSidebar, isMobile, state } = useSidebar()
+  const { toggleSidebar, isMobile, open, openMobile } = useSidebar()
+  const isOpen = isMobile ? openMobile : open
 
   return (
     <Button
@@ -260,6 +271,7 @@ function SidebarTrigger({
       data-slot="sidebar-trigger"
       variant="ghost"
       size="icon"
+      aria-expanded={isOpen}
       className={cn("h-7 w-7", className)}
       onClick={(event) => {
         onClick?.(event)
@@ -267,8 +279,8 @@ function SidebarTrigger({
       }}
       {...props}
     >
-      {isMobile || state === "collapsed" ? <PanelLeftOpenIcon /> : <PanelLeftCloseIcon />}
-      <span className="sr-only">Toggle sidebar</span>
+      {isOpen ? <PanelLeftCloseIcon /> : <PanelLeftOpenIcon />}
+      <span className="sr-only">{isOpen ? "Close sidebar" : "Open sidebar"}</span>
     </Button>
   )
 }

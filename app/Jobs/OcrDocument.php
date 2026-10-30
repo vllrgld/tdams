@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Models\Document;
 use App\Models\OcrSetting;
+use App\Services\Ocr\LocalThumbnailClient;
 use App\Services\Ocr\OcrManager;
 use App\Services\Ocr\OcrPdfOptimizer;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -23,7 +24,7 @@ class OcrDocument implements ShouldQueue
 
     public function __construct(public int $documentId) {}
 
-    public function handle(OcrManager $manager, OcrPdfOptimizer $pdfOptimizer): void
+    public function handle(OcrManager $manager, OcrPdfOptimizer $pdfOptimizer, LocalThumbnailClient $thumbnails): void
     {
         $document = Document::query()->find($this->documentId);
 
@@ -43,6 +44,10 @@ class OcrDocument implements ShouldQueue
                 throw new RuntimeException('The stored document could not be read.');
             }
 
+            if ($document->mime_type === 'application/pdf') {
+                $this->renderThumbnail($document, $thumbnails, $contents, $document->original_filename);
+            }
+
             $setting = OcrSetting::current();
             $result = $manager->extractor($setting)->extract(
                 $contents,
@@ -56,6 +61,11 @@ class OcrDocument implements ShouldQueue
                 $pdf = $pdfOptimizer->optimize($contents, $document->original_filename, $setting->optimize);
                 $pdfPath = $this->storePreviewPdf($document, $pdf);
                 $pdfSize = strlen($pdf);
+
+                if ($document->mime_type !== 'application/pdf') {
+                    $name = pathinfo($document->original_filename, PATHINFO_FILENAME);
+                    $this->renderThumbnail($document, $thumbnails, $pdf, ($name !== '' ? $name : 'document').'.pdf');
+                }
             } catch (Throwable $exception) {
                 Log::warning('Document preview PDF could not be compressed.', [
                     'document_id' => $document->id,
@@ -68,6 +78,7 @@ class OcrDocument implements ShouldQueue
                     'ocr_status' => 'completed',
                     'ocr_text' => $result['text'],
                     'ocr_pages' => $result['pages'],
+                    'ocr_regions' => $result['regions'] === [] ? null : $result['regions'],
                     'ocr_pdf_path' => $pdfPath,
                     'ocr_pdf_size' => $pdfSize,
                     'ocr_error' => null,
@@ -113,5 +124,32 @@ class OcrDocument implements ShouldQueue
         }
 
         return $path;
+    }
+
+    private function renderThumbnail(Document $document, LocalThumbnailClient $thumbnails, string $contents, string $filename): void
+    {
+        try {
+            $jpeg = $thumbnails->render($contents, $filename);
+            $this->storeThumbnail($document, $jpeg);
+        } catch (Throwable $exception) {
+            Log::warning('Document thumbnail could not be rendered.', [
+                'document_id' => $document->id,
+                'message' => $exception->getMessage(),
+            ]);
+        }
+    }
+
+    private function storeThumbnail(Document $document, string $jpeg): void
+    {
+        $path = 'documents/thumbnails/'.$document->id.'.jpg';
+        $stored = Storage::disk('local')->put($path, $jpeg);
+
+        if ($stored !== true) {
+            throw new RuntimeException('The document thumbnail could not be saved.');
+        }
+
+        $document->forceFill([
+            'thumbnail_path' => $path,
+        ])->save();
     }
 }

@@ -30,6 +30,7 @@ class DocumentController extends Controller
         $validated = $request->validate([
             'q' => ['sometimes', 'nullable', 'string', 'max:200'],
             'field' => ['sometimes', 'nullable', 'string', Rule::in(array_keys(Document::SEARCH_FIELDS))],
+            'document' => ['sometimes', 'nullable', 'integer', 'min:1'],
         ]);
 
         $search = trim((string) ($validated['q'] ?? ''));
@@ -50,6 +51,9 @@ class DocumentController extends Controller
             ],
             'searchFields' => Document::searchFieldOptions(),
             'mappingModels' => config('services.ollama.models'),
+            'selectedDocument' => isset($validated['document'])
+                ? Document::query()->with(Document::archiveRelations())->where('id', $validated['document'])->first()?->toArchiveArray()
+                : null,
         ]);
     }
 
@@ -78,9 +82,13 @@ class DocumentController extends Controller
             'province' => ['nullable', 'string', 'max:150'],
             'pin' => ['nullable', 'string', 'max:100'],
             'boundary_north' => ['nullable', 'string', 'max:255'],
-            'boundary_south' => ['nullable', 'string', 'max:255'],
+            'boundary_northeast' => ['nullable', 'string', 'max:255'],
             'boundary_east' => ['nullable', 'string', 'max:255'],
+            'boundary_southeast' => ['nullable', 'string', 'max:255'],
+            'boundary_south' => ['nullable', 'string', 'max:255'],
+            'boundary_southwest' => ['nullable', 'string', 'max:255'],
             'boundary_west' => ['nullable', 'string', 'max:255'],
+            'boundary_northwest' => ['nullable', 'string', 'max:255'],
             'area' => ['nullable', 'numeric', 'min:0', 'max:9999999999.9999'],
             'remarks' => ['nullable', 'string', 'max:10000'],
         ]);
@@ -192,24 +200,19 @@ class DocumentController extends Controller
         $term = '%'.addcslashes(mb_strtolower($validated['q']), '%_\\').'%';
 
         $documents = Document::query()
-            ->whereNotNull('tax_declaration_number')
-            ->where('tax_declaration_number', '!=', '')
-            ->whereRaw('LOWER(tax_declaration_number) LIKE ?', [$term])
+            ->with(Document::archiveRelations())
+            ->whereHas('taxDeclaration', function ($query) use ($term): void {
+                $query->whereNotNull('tax_declaration_number')
+                    ->where('tax_declaration_number', '!=', '')
+                    ->whereRaw('LOWER(tax_declaration_number) LIKE ?', [$term]);
+            })
             ->when(
                 isset($validated['exclude']),
                 fn ($query) => $query->where('id', '!=', (int) $validated['exclude']),
             )
             ->latest('id')
             ->limit(15)
-            ->get([
-                'id',
-                'tax_declaration_number',
-                'registered_owner',
-                'lot_number',
-                'municipality',
-                'declaration_date',
-                'created_at',
-            ]);
+            ->get();
 
         return response()->json($documents->map(fn (Document $document): array => [
             'id' => $document->id,
@@ -231,6 +234,7 @@ class DocumentController extends Controller
     {
         return response()->json([
             'status' => $document->ocr_status,
+            'regions' => $document->ocr_regions ?? [],
             'text' => $document->ocr_text,
             'error' => $document->ocr_error,
             'completedAt' => $document->ocr_completed_at?->toIso8601String(),
@@ -326,6 +330,23 @@ class DocumentController extends Controller
         ]);
 
         return to_route('documents.index');
+    }
+
+    public function thumbnail(Document $document): StreamedResponse
+    {
+        $thumbnailPath = $document->thumbnail_path;
+
+        abort_unless($document->hasStoredThumbnail() && is_string($thumbnailPath), 404);
+
+        return Storage::disk('local')->response(
+            $thumbnailPath,
+            pathinfo($document->original_filename, PATHINFO_FILENAME).'.jpg',
+            [
+                'Content-Type' => 'image/jpeg',
+                'X-Content-Type-Options' => 'nosniff',
+            ],
+            'inline',
+        );
     }
 
     public function view(Document $document): StreamedResponse

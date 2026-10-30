@@ -5,7 +5,6 @@ namespace Tests\Feature\Settings;
 use App\Models\OcrSetting;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Config;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
@@ -25,11 +24,12 @@ class OcrSettingsTest extends TestCase
         $response->assertInertia(fn (Assert $page) => $page
             ->component('settings/ocr')
             ->where('driver', 'local')
-            ->where('hasToken', false)
-            ->where('jobUrl', OcrSetting::DEFAULT_JOB_URL)
             ->where('model', OcrSetting::DEFAULT_MODEL)
             ->where('optimize', 3)
             ->has('drivers', 2)
+            ->has('models', 2)
+            ->where('models.0.value', OcrSetting::MODEL_TRADITIONAL)
+            ->where('models.1.value', OcrSetting::MODEL_VL)
             ->has('levels', 4));
     }
 
@@ -70,9 +70,7 @@ class OcrSettingsTest extends TestCase
             ->actingAs($user)
             ->put(route('ocr.update'), [
                 'driver' => 'paddle',
-                'job_url' => 'https://paddleocr.aistudio-app.com/api/v2/ocr/jobs',
-                'token' => 'paddle-test-token',
-                'model' => 'PP-OCRv6',
+                'model' => OcrSetting::MODEL_VL,
                 'optimize' => 3,
             ]);
 
@@ -82,67 +80,60 @@ class OcrSettingsTest extends TestCase
 
         $setting = OcrSetting::current();
         $this->assertSame('paddle', $setting->driver);
-        $this->assertSame('https://paddleocr.aistudio-app.com/api/v2/ocr/jobs', $setting->job_url);
-        $this->assertSame('paddle-test-token', $setting->token);
-        $this->assertSame('PP-OCRv6', $setting->model);
+        $this->assertNull($setting->job_url);
+        $this->assertNull($setting->token);
+        $this->assertSame(OcrSetting::MODEL_VL, $setting->model);
     }
 
-    public function test_blank_paddle_token_keeps_the_saved_token(): void
+    public function test_saving_a_paddle_model_keeps_the_existing_token_and_clears_a_custom_job_url(): void
     {
         $user = User::factory()->create();
         OcrSetting::current()->forceFill([
             'driver' => 'paddle',
-            'job_url' => 'https://paddleocr.aistudio-app.com/api/v2/ocr/jobs',
+            'job_url' => 'https://example.test/jobs',
             'token' => 'existing-token',
-            'model' => 'PP-OCRv6',
+            'model' => OcrSetting::MODEL_TRADITIONAL,
         ])->save();
 
         $this->actingAs($user)
             ->put(route('ocr.update'), [
                 'driver' => 'paddle',
-                'job_url' => 'https://paddleocr.aistudio-app.com/api/v2/ocr/jobs',
-                'token' => '',
-                'model' => 'PP-OCRv6',
+                'model' => OcrSetting::MODEL_TRADITIONAL,
                 'optimize' => 3,
             ])
             ->assertSessionHasNoErrors();
 
-        $this->assertSame('existing-token', OcrSetting::current()->token);
+        $setting = OcrSetting::current();
+        $this->assertNull($setting->job_url);
+        $this->assertSame('existing-token', $setting->token);
+        $this->assertSame(OcrSetting::MODEL_TRADITIONAL, $setting->model);
     }
 
-    public function test_paddle_requires_a_token_when_none_is_saved(): void
+    public function test_paddle_rejects_an_unknown_model(): void
     {
         $user = User::factory()->create();
-        Config::set('services.ocr.paddle.token', '');
 
         $this->actingAs($user)
             ->from(route('ocr.edit'))
             ->put(route('ocr.update'), [
                 'driver' => 'paddle',
-                'job_url' => 'https://paddleocr.aistudio-app.com/api/v2/ocr/jobs',
-                'model' => 'PP-OCRv6',
+                'model' => 'not-a-model',
                 'optimize' => 3,
             ])
-            ->assertSessionHasErrors('token');
+            ->assertSessionHasErrors('model');
     }
 
-    public function test_paddle_can_be_enabled_using_the_env_token(): void
+    public function test_paddle_model_is_required(): void
     {
         $user = User::factory()->create();
-        Config::set('services.ocr.paddle.token', 'env-paddle-token');
 
         $this->actingAs($user)
+            ->from(route('ocr.edit'))
             ->put(route('ocr.update'), [
                 'driver' => 'paddle',
-                'job_url' => 'https://paddleocr.aistudio-app.com/api/v2/ocr/jobs',
-                'token' => '',
-                'model' => 'PP-OCRv6',
                 'optimize' => 3,
             ])
-            ->assertSessionHasNoErrors()
-            ->assertRedirect(route('ocr.edit'));
-
-        $this->assertSame('paddle', OcrSetting::current()->driver);
+            ->assertSessionHasErrors('model');
     }
 
     public function test_compression_level_must_be_between_zero_and_three(): void

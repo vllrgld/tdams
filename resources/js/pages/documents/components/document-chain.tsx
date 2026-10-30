@@ -375,6 +375,9 @@ export default function DocumentChain({
                                         <DocumentThumbnail
                                             mimeType={item.archived.mimeType}
                                             url={item.archived.viewUrl}
+                                            thumbnailUrl={
+                                                item.archived.thumbnailUrl
+                                            }
                                             title={
                                                 item.archived.originalFilename
                                             }

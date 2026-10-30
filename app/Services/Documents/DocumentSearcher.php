@@ -13,11 +13,14 @@ class DocumentSearcher
     public function paginate(string $search, string $field, int $perPage = 20): LengthAwarePaginator
     {
         if ($search === '') {
-            return $this->mapPage(Document::query()->latest()->paginate($perPage));
+            return $this->mapPage(
+                Document::query()->with(Document::archiveRelations())->latest()->paginate($perPage),
+            );
         }
 
         return $this->mapPage(
             Document::query()
+                ->with(Document::archiveRelations())
                 ->search($search, $field)
                 ->latest()
                 ->paginate($perPage),

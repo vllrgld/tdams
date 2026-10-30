@@ -241,6 +241,7 @@ function BookPage({
         <DocumentThumbnail
             mimeType={document.mimeType}
             url={document.viewUrl}
+            thumbnailUrl={document.thumbnailUrl}
             title={document.originalFilename}
             pageNumber={1}
             fit="contain"

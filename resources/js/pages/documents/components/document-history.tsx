@@ -27,7 +27,18 @@ function pdfViewerFallback(): ReactNode {
 }
 
 function ClientPdfPreview({ url, title }: { url: string; title: string }) {
-    const PdfPreview = useClientComponent(loadPdfPreview);
+    const [PdfPreview, viewerError] = useClientComponent(loadPdfPreview);
+
+    if (viewerError) {
+        return (
+            <p
+                role="alert"
+                className="flex h-full items-center justify-center p-6 text-center text-sm text-red-800 dark:text-red-300"
+            >
+                The PDF viewer could not be loaded. {viewerError}
+            </p>
+        );
+    }
 
     if (!PdfPreview) {
         return pdfViewerFallback();

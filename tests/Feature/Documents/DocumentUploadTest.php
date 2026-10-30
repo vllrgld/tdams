@@ -120,11 +120,11 @@ class DocumentUploadTest extends TestCase
             ]);
 
         $response->assertRedirect(route('documents.index'));
-        $this->assertDatabaseHas('documents', [
-            'original_filename' => 'scan.pdf',
-            'tax_declaration_number' => null,
-            'registered_owner' => null,
-        ]);
+        $document = Document::query()->where('original_filename', 'scan.pdf')->first();
+        $this->assertNotNull($document);
+        $this->assertNull($document->tax_declaration_number);
+        $this->assertNull($document->registered_owner);
+        $this->assertDatabaseCount('tax_declarations', 0);
     }
 
     public function test_unsupported_files_are_rejected(): void
@@ -232,7 +232,7 @@ class DocumentUploadTest extends TestCase
         );
         $this->assertSame(
             ['TD-1', 'TD-2'],
-            $book->documents()->pluck('tax_declaration_number')->all(),
+            $book->documents->pluck('tax_declaration_number')->all(),
         );
     }
 

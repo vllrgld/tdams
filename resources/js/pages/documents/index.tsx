@@ -11,11 +11,12 @@ export default function Documents({
     filters,
     searchFields,
     mappingModels,
+    selectedDocument = null,
 }: DocumentsPageProps) {
     const [viewMode, setViewMode] = useState<'list' | 'cards'>('cards');
     const [uploadOpen, setUploadOpen] = useState(false);
     const [viewingDocument, setViewingDocument] =
-        useState<ArchivedDocument | null>(null);
+        useState<ArchivedDocument | null>(selectedDocument);
     const [documentInfoOpen, setDocumentInfoOpen] = useState(false);
 
     return (

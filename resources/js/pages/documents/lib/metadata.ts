@@ -94,9 +94,29 @@ export const metadataSections: {
             { name: 'province', label: 'Province', maxLength: 150 },
             { name: 'area', label: 'Area' },
             { name: 'boundary_north', label: 'North boundary', maxLength: 255 },
-            { name: 'boundary_south', label: 'South boundary', maxLength: 255 },
+            {
+                name: 'boundary_northeast',
+                label: 'Northeast boundary',
+                maxLength: 255,
+            },
             { name: 'boundary_east', label: 'East boundary', maxLength: 255 },
+            {
+                name: 'boundary_southeast',
+                label: 'Southeast boundary',
+                maxLength: 255,
+            },
+            { name: 'boundary_south', label: 'South boundary', maxLength: 255 },
+            {
+                name: 'boundary_southwest',
+                label: 'Southwest boundary',
+                maxLength: 255,
+            },
             { name: 'boundary_west', label: 'West boundary', maxLength: 255 },
+            {
+                name: 'boundary_northwest',
+                label: 'Northwest boundary',
+                maxLength: 255,
+            },
         ],
     },
 ];

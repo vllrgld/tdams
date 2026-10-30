@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\Documents\DeclarationRecorder;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -14,31 +15,11 @@ use Laravel\Scout\Searchable;
  * @property int $id
  * @property int|null $book_id
  * @property int|null $position
+ * @property int|null $tax_declaration_id
  * @property string|null $tax_declaration_number
- * @property Carbon|null $declaration_date
- * @property string|null $lot_number
  * @property string|null $registered_owner
- * @property string|null $municipality
  * @property string|null $barangay
- * @property string|null $previous_tax_declaration_number
- * @property Carbon|null $previous_declaration_date
- * @property string|null $title_number
- * @property string|null $property_location_street
- * @property string|null $property_location_barangay
- * @property string|null $property_location_district
- * @property string|null $property_location_municipality
- * @property string|null $owner_address_street
- * @property string|null $owner_address_barangay
- * @property string|null $owner_address_district
- * @property string|null $owner_address_city_municipality
- * @property string|null $province
- * @property string|null $pin
- * @property string|null $boundary_north
- * @property string|null $boundary_south
- * @property string|null $boundary_east
- * @property string|null $boundary_west
- * @property numeric-string|null $area
- * @property string|null $remarks
+ * @property string|null $municipality
  * @property string $original_filename
  * @property string $storage_path
  * @property string $mime_type
@@ -47,17 +28,36 @@ use Laravel\Scout\Searchable;
  * @property string $ocr_status
  * @property string|null $ocr_text
  * @property list<string>|null $ocr_pages
+ * @property list<array{page: int, text: string, box: list<int>|null, pageWidth: int|null, pageHeight: int|null}>|null $ocr_regions
  * @property string|null $ocr_pdf_path
  * @property int|null $ocr_pdf_size
  * @property string|null $ocr_error
  * @property Carbon|null $ocr_completed_at
+ * @property string|null $thumbnail_path
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Book|null $book
+ * @property-read TaxDeclaration|null $taxDeclaration
+ * @property-read User|null $uploader
  */
 #[Fillable([
     'book_id',
     'position',
+    'tax_declaration_id',
+    'original_filename',
+    'storage_path',
+    'mime_type',
+    'file_size',
+    'uploaded_by',
+    'ocr_status',
+    'ocr_text',
+    'ocr_pages',
+    'ocr_regions',
+    'ocr_pdf_path',
+    'ocr_pdf_size',
+    'ocr_error',
+    'ocr_completed_at',
+    'thumbnail_path',
     'tax_declaration_number',
     'declaration_date',
     'lot_number',
@@ -78,27 +78,56 @@ use Laravel\Scout\Searchable;
     'province',
     'pin',
     'boundary_north',
-    'boundary_south',
+    'boundary_northeast',
     'boundary_east',
+    'boundary_southeast',
+    'boundary_south',
+    'boundary_southwest',
     'boundary_west',
+    'boundary_northwest',
     'area',
     'remarks',
-    'original_filename',
-    'storage_path',
-    'mime_type',
-    'file_size',
-    'uploaded_by',
-    'ocr_status',
-    'ocr_text',
-    'ocr_pages',
-    'ocr_pdf_path',
-    'ocr_pdf_size',
-    'ocr_error',
-    'ocr_completed_at',
 ])]
 class Document extends Model
 {
     use Searchable;
+
+    /**
+     * Legal values stored on the declaration, property, and owner records.
+     *
+     * @var list<string>
+     */
+    public const RECORD_FIELDS = [
+        'tax_declaration_number',
+        'declaration_date',
+        'lot_number',
+        'registered_owner',
+        'municipality',
+        'barangay',
+        'previous_tax_declaration_number',
+        'previous_declaration_date',
+        'title_number',
+        'property_location_street',
+        'property_location_barangay',
+        'property_location_district',
+        'property_location_municipality',
+        'owner_address_street',
+        'owner_address_barangay',
+        'owner_address_district',
+        'owner_address_city_municipality',
+        'province',
+        'pin',
+        'boundary_north',
+        'boundary_northeast',
+        'boundary_east',
+        'boundary_southeast',
+        'boundary_south',
+        'boundary_southwest',
+        'boundary_west',
+        'boundary_northwest',
+        'area',
+        'remarks',
+    ];
 
     /**
      * Text-like columns users can search from the archive.
@@ -123,11 +152,47 @@ class Document extends Model
         'owner_address_city_municipality',
         'province',
         'boundary_north',
-        'boundary_south',
+        'boundary_northeast',
         'boundary_east',
+        'boundary_southeast',
+        'boundary_south',
+        'boundary_southwest',
         'boundary_west',
+        'boundary_northwest',
         'area',
         'remarks',
+    ];
+
+    /**
+     * @var array<string, array{0: string, 1: string}>
+     */
+    private const RECORD_SEARCH = [
+        'tax_declaration_number' => ['taxDeclaration', 'tax_declaration_number'],
+        'declaration_date' => ['taxDeclaration', 'declaration_date'],
+        'remarks' => ['taxDeclaration', 'remarks'],
+        'lot_number' => ['taxDeclaration.property', 'lot_number'],
+        'title_number' => ['taxDeclaration.property', 'title_number'],
+        'province' => ['taxDeclaration.property', 'province'],
+        'municipality' => ['taxDeclaration.property', 'municipality'],
+        'barangay' => ['taxDeclaration.property', 'barangay'],
+        'property_location_street' => ['taxDeclaration.property', 'street'],
+        'property_location_barangay' => ['taxDeclaration.property', 'barangay'],
+        'property_location_district' => ['taxDeclaration.property', 'district'],
+        'property_location_municipality' => ['taxDeclaration.property', 'municipality'],
+        'registered_owner' => ['taxDeclaration.owners', 'name'],
+        'owner_address_street' => ['taxDeclaration.owners', 'street'],
+        'owner_address_barangay' => ['taxDeclaration.owners', 'barangay'],
+        'owner_address_district' => ['taxDeclaration.owners', 'district'],
+        'owner_address_city_municipality' => ['taxDeclaration.owners', 'municipality'],
+        'area' => ['taxDeclaration.property', 'area'],
+        'boundary_north' => ['taxDeclaration.property', 'boundary_north'],
+        'boundary_northeast' => ['taxDeclaration.property', 'boundary_northeast'],
+        'boundary_east' => ['taxDeclaration.property', 'boundary_east'],
+        'boundary_southeast' => ['taxDeclaration.property', 'boundary_southeast'],
+        'boundary_south' => ['taxDeclaration.property', 'boundary_south'],
+        'boundary_southwest' => ['taxDeclaration.property', 'boundary_southwest'],
+        'boundary_west' => ['taxDeclaration.property', 'boundary_west'],
+        'boundary_northwest' => ['taxDeclaration.property', 'boundary_northwest'],
     ];
 
     /**
@@ -167,18 +232,87 @@ class Document extends Model
     ];
 
     /**
+     * @var array<string, mixed>
+     */
+    private array $pendingRecord = [];
+
+    /**
      * @return array<string, string>
      */
     protected function casts(): array
     {
         return [
-            'declaration_date' => 'date',
-            'previous_declaration_date' => 'date',
             'book_id' => 'integer',
             'position' => 'integer',
+            'tax_declaration_id' => 'integer',
+            'file_size' => 'integer',
             'ocr_pages' => 'array',
+            'ocr_regions' => 'array',
             'ocr_pdf_size' => 'integer',
             'ocr_completed_at' => 'datetime',
+        ];
+    }
+
+    protected static function booted(): void
+    {
+        static::saved(function (Document $document): void {
+            $fields = $document->pullPendingRecord();
+
+            if ($fields === []) {
+                return;
+            }
+
+            app(DeclarationRecorder::class)->sync($document, $fields);
+        });
+    }
+
+    public function setAttribute($key, $value)
+    {
+        if (in_array($key, self::RECORD_FIELDS, true)) {
+            $this->pendingRecord[$key] = $value;
+
+            return $this;
+        }
+
+        return parent::setAttribute($key, $value);
+    }
+
+    public function getAttribute($key)
+    {
+        if (is_string($key) && in_array($key, self::RECORD_FIELDS, true)) {
+            return $this->recordValue($key);
+        }
+
+        return parent::getAttribute($key);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function pullPendingRecord(): array
+    {
+        $fields = $this->pendingRecord;
+        $this->pendingRecord = [];
+
+        return $fields;
+    }
+
+    /**
+     * @return BelongsTo<TaxDeclaration, $this>
+     */
+    public function taxDeclaration(): BelongsTo
+    {
+        return $this->belongsTo(TaxDeclaration::class);
+    }
+
+    /**
+     * @return list<string>
+     */
+    public static function archiveRelations(): array
+    {
+        return [
+            'taxDeclaration.property',
+            'taxDeclaration.owners',
         ];
     }
 
@@ -196,6 +330,69 @@ class Document extends Model
     public function book(): BelongsTo
     {
         return $this->belongsTo(Book::class);
+    }
+
+    private function recordValue(string $key): mixed
+    {
+        if (array_key_exists($key, $this->pendingRecord)) {
+            return $this->castRecordValue($key, $this->pendingRecord[$key]);
+        }
+
+        $this->loadMissing(self::archiveRelations());
+        $declaration = $this->getRelation('taxDeclaration');
+
+        if (! $declaration instanceof TaxDeclaration) {
+            return null;
+        }
+
+        $property = $declaration->property;
+        $owner = $declaration->owners->first();
+
+        $value = match ($key) {
+            'tax_declaration_number' => $declaration->tax_declaration_number,
+            'declaration_date' => $declaration->declaration_date,
+            'previous_tax_declaration_number' => $declaration->previous_tax_declaration_number,
+            'previous_declaration_date' => $declaration->previous_declaration_date,
+            'remarks' => $declaration->remarks,
+            'lot_number' => $property?->lot_number,
+            'title_number' => $property?->title_number,
+            'pin' => $property?->pin,
+            'area' => $property?->area,
+            'province' => $property?->province,
+            'municipality', 'property_location_municipality' => $property?->municipality,
+            'barangay', 'property_location_barangay' => $property?->barangay,
+            'property_location_street' => $property?->street,
+            'property_location_district' => $property?->district,
+            'boundary_north' => $property?->boundary_north,
+            'boundary_northeast' => $property?->boundary_northeast,
+            'boundary_east' => $property?->boundary_east,
+            'boundary_southeast' => $property?->boundary_southeast,
+            'boundary_south' => $property?->boundary_south,
+            'boundary_southwest' => $property?->boundary_southwest,
+            'boundary_west' => $property?->boundary_west,
+            'boundary_northwest' => $property?->boundary_northwest,
+            'registered_owner' => $owner?->name,
+            'owner_address_street' => $owner?->street,
+            'owner_address_barangay' => $owner?->barangay,
+            'owner_address_district' => $owner?->district,
+            'owner_address_city_municipality' => $owner?->municipality,
+            default => null,
+        };
+
+        return $this->castRecordValue($key, $value);
+    }
+
+    private function castRecordValue(string $key, mixed $value): mixed
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        if (in_array($key, ['declaration_date', 'previous_declaration_date'], true) && is_string($value)) {
+            return Carbon::parse($value)->startOfDay();
+        }
+
+        return $value;
     }
 
     /**
@@ -221,7 +418,16 @@ class Document extends Model
 
             $query->where(function (Builder $group) use ($columns, $like): void {
                 foreach ($columns as $column) {
-                    $group->orWhere($column, 'like', $like);
+                    if ($column === 'ocr_text') {
+                        $group->orWhere('documents.ocr_text', 'like', $like);
+
+                        continue;
+                    }
+
+                    [$relation, $relatedColumn] = self::RECORD_SEARCH[$column];
+                    $group->orWhereHas($relation, function (Builder $related) use ($relatedColumn, $like): void {
+                        $related->where($relatedColumn, 'like', $like);
+                    });
                 }
             });
         }
@@ -306,9 +512,13 @@ class Document extends Model
             'province' => $this->province,
             'pin' => $this->pin,
             'boundaryNorth' => $this->boundary_north,
-            'boundarySouth' => $this->boundary_south,
+            'boundaryNortheast' => $this->boundary_northeast,
             'boundaryEast' => $this->boundary_east,
+            'boundarySoutheast' => $this->boundary_southeast,
+            'boundarySouth' => $this->boundary_south,
+            'boundarySouthwest' => $this->boundary_southwest,
             'boundaryWest' => $this->boundary_west,
+            'boundaryNorthwest' => $this->boundary_northwest,
             'area' => $this->area === null
                 ? null
                 : number_format((float) $this->area, 4, '.', ''),
@@ -319,6 +529,9 @@ class Document extends Model
             'ocrPdfSize' => $this->ocr_pdf_size,
             'createdAt' => $this->created_at?->toIso8601String(),
             'viewUrl' => route('documents.view', $this),
+            'thumbnailUrl' => $this->hasStoredThumbnail()
+                ? route('documents.thumbnail', $this)
+                : null,
             'ocrPdfUrl' => is_string($this->ocr_pdf_path) && $this->ocr_pdf_path !== ''
                 ? route('documents.ocr-pdf', $this)
                 : null,
@@ -330,6 +543,13 @@ class Document extends Model
         return is_string($this->ocr_pdf_path)
             && $this->ocr_pdf_path !== ''
             && Storage::disk('local')->exists($this->ocr_pdf_path);
+    }
+
+    public function hasStoredThumbnail(): bool
+    {
+        return is_string($this->thumbnail_path)
+            && $this->thumbnail_path !== ''
+            && Storage::disk('local')->exists($this->thumbnail_path);
     }
 
     public function previewUrl(): ?string
@@ -350,48 +570,60 @@ class Document extends Model
      */
     public function previousDeclarationChain(): array
     {
+        $this->loadMissing('taxDeclaration');
+        $declaration = $this->taxDeclaration;
+
+        if (! $declaration instanceof TaxDeclaration) {
+            return [];
+        }
+
         $chain = [];
-        $seenIds = [$this->id];
-        $ownNumber = is_string($this->tax_declaration_number)
-            ? mb_strtolower($this->tax_declaration_number)
-            : '';
-        $seenNumbers = $ownNumber === '' ? [] : [$ownNumber];
-        $pointer = $this;
-        $currentNumber = $this->previous_tax_declaration_number;
+        $seenDeclarationIds = [$declaration->id];
+        $current = $declaration;
 
-        while (is_string($currentNumber) && $currentNumber !== '') {
-            $normalized = mb_strtolower($currentNumber);
+        while (true) {
+            $previousId = $current->previous_declaration_id;
+            $printed = $current->previous_tax_declaration_number;
 
-            if (in_array($normalized, $seenNumbers, true)) {
-                break;
-            }
+            if (is_int($previousId) && ! in_array($previousId, $seenDeclarationIds, true)) {
+                $previous = TaxDeclaration::query()
+                    ->with(['property', 'owners', 'documents'])
+                    ->find($previousId);
 
-            $seenNumbers[] = $normalized;
+                if (! $previous instanceof TaxDeclaration) {
+                    if (is_string($printed) && $printed !== '') {
+                        $chain[] = [
+                            'taxDeclarationNumber' => $printed,
+                            'document' => null,
+                            'declarationDate' => $current->previous_declaration_date?->toDateString(),
+                        ];
+                    }
 
-            $match = static::query()
-                ->whereRaw('LOWER(tax_declaration_number) = ?', [$normalized])
-                ->whereNotIn('id', $seenIds)
-                ->latest('id')
-                ->first();
+                    break;
+                }
 
-            if ($match === null) {
+                $seenDeclarationIds[] = $previous->id;
+                $file = $previous->documents->sortByDesc('id')->first();
                 $chain[] = [
-                    'taxDeclarationNumber' => $currentNumber,
-                    'document' => null,
-                    'declarationDate' => $pointer->previous_declaration_date?->toDateString(),
+                    'taxDeclarationNumber' => $previous->tax_declaration_number ?? (is_string($printed) ? $printed : ''),
+                    'document' => $file?->toArchiveArray(),
+                    'declarationDate' => $previous->declaration_date?->toDateString()
+                        ?? $current->previous_declaration_date?->toDateString(),
                 ];
-                break;
+                $current = $previous;
+
+                continue;
             }
 
-            $seenIds[] = $match->id;
-            $chain[] = [
-                'taxDeclarationNumber' => $match->tax_declaration_number ?? $currentNumber,
-                'document' => $match->toArchiveArray(),
-                'declarationDate' => $match->declaration_date?->toDateString()
-                    ?? $pointer->previous_declaration_date?->toDateString(),
-            ];
-            $pointer = $match;
-            $currentNumber = $match->previous_tax_declaration_number;
+            if (is_string($printed) && $printed !== '') {
+                $chain[] = [
+                    'taxDeclarationNumber' => $printed,
+                    'document' => null,
+                    'declarationDate' => $current->previous_declaration_date?->toDateString(),
+                ];
+            }
+
+            break;
         }
 
         return $chain;
@@ -403,6 +635,13 @@ class Document extends Model
      */
     public function followingDeclarationChain(array $seenIds = []): array
     {
+        $this->loadMissing('taxDeclaration');
+        $declaration = $this->taxDeclaration;
+
+        if (! $declaration instanceof TaxDeclaration) {
+            return [];
+        }
+
         $chain = [];
         $seenIds = $seenIds === [] ? [$this->id] : $seenIds;
 
@@ -410,33 +649,39 @@ class Document extends Model
             $seenIds[] = $this->id;
         }
 
-        $pointer = $this;
+        $seenDeclarationIds = [$declaration->id];
+        $current = $declaration;
 
         while (true) {
-            $number = $pointer->tax_declaration_number;
-
-            if (! is_string($number) || $number === '') {
-                break;
-            }
-
-            $normalized = mb_strtolower($number);
-            $next = static::query()
-                ->whereRaw('LOWER(previous_tax_declaration_number) = ?', [$normalized])
-                ->whereNotIn('id', $seenIds)
+            $next = TaxDeclaration::query()
+                ->with(['property', 'owners', 'documents'])
+                ->where('previous_declaration_id', $current->id)
                 ->latest('id')
                 ->first();
 
-            if ($next === null) {
+            if (! $next instanceof TaxDeclaration || in_array($next->id, $seenDeclarationIds, true)) {
                 break;
             }
 
-            $seenIds[] = $next->id;
+            $file = $next->documents->sortByDesc('id')->first();
+
+            if ($file instanceof self && in_array($file->id, $seenIds, true)) {
+                break;
+            }
+
+            $seenDeclarationIds[] = $next->id;
+
+            if ($file instanceof self) {
+                $seenIds[] = $file->id;
+                $file->setRelation('taxDeclaration', $next);
+            }
+
             $chain[] = [
-                'taxDeclarationNumber' => $next->tax_declaration_number ?? $number,
-                'document' => $next->toArchiveArray(),
+                'taxDeclarationNumber' => $next->tax_declaration_number ?? '',
+                'document' => $file?->toArchiveArray(),
                 'declarationDate' => $next->declaration_date?->toDateString(),
             ];
-            $pointer = $next;
+            $current = $next;
         }
 
         return $chain;

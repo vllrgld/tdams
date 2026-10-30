@@ -29,9 +29,13 @@ class DocumentFields
             'province' => ['label' => 'Province', 'max' => 150],
             'area' => ['label' => 'Area as a number without units', 'max' => 20],
             'boundary_north' => ['label' => 'North boundary', 'max' => 255],
-            'boundary_south' => ['label' => 'South boundary', 'max' => 255],
+            'boundary_northeast' => ['label' => 'Northeast boundary', 'max' => 255],
             'boundary_east' => ['label' => 'East boundary', 'max' => 255],
+            'boundary_southeast' => ['label' => 'Southeast boundary', 'max' => 255],
+            'boundary_south' => ['label' => 'South boundary', 'max' => 255],
+            'boundary_southwest' => ['label' => 'Southwest boundary', 'max' => 255],
             'boundary_west' => ['label' => 'West boundary', 'max' => 255],
+            'boundary_northwest' => ['label' => 'Northwest boundary', 'max' => 255],
             'remarks' => ['label' => 'Remarks', 'max' => 10000],
         ];
     }

@@ -43,7 +43,7 @@ class CabinetsTest extends TestCase
 
         $response = $this->actingAs($user)->post(route('manage.cabinets.store'), [
             'name' => 'Sarrat',
-            'drawer_count' => 3,
+            'drawers' => ['North', 'East', 'West'],
         ]);
 
         $response->assertRedirect(route('manage.cabinets.index'));

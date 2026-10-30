@@ -1,16 +1,6 @@
 import { useState } from 'react';
 import { Head, Link } from '@inertiajs/react';
-import {
-    ArrowDownRight,
-    ArrowRight,
-    ArrowUpRight,
-    CheckCheck,
-    Clock3,
-    FileSearch,
-    Files,
-    MapPin,
-    ScanText,
-} from 'lucide-react';
+import { ArrowRight, FileSearch } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -34,40 +24,24 @@ const metrics = [
         value: '36',
         comparison: '+12%',
         detail: 'vs. previous day',
-        icon: Files,
-        trend: 'up',
-        iconClass:
-            'bg-blue-50 text-blue-900 dark:bg-blue-950 dark:text-blue-200',
     },
     {
         label: 'Archived this month',
         value: '684',
         comparison: '+8.4%',
         detail: 'vs. previous month',
-        icon: CheckCheck,
-        trend: 'up',
-        iconClass:
-            'bg-emerald-50 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-200',
     },
     {
         label: 'OCR in progress',
         value: '14',
         comparison: '6.2 min',
         detail: 'average processing time',
-        icon: ScanText,
-        trend: 'steady',
-        iconClass:
-            'bg-amber-50 text-amber-900 dark:bg-amber-950 dark:text-amber-200',
     },
     {
         label: 'Needs field review',
         value: '56',
         comparison: '8.1%',
         detail: 'of this month’s archive',
-        icon: Clock3,
-        trend: 'down',
-        iconClass:
-            'bg-slate-100 text-slate-800 dark:bg-neutral-800 dark:text-neutral-200',
     },
 ];
 
@@ -86,19 +60,19 @@ const archiveStatus = [
         name: 'Indexed successfully',
         count: 2412,
         percent: 97,
-        color: 'bg-blue-900 dark:bg-blue-400',
+        color: 'bg-blue-900',
     },
     {
         name: 'Needs verification',
         count: 56,
         percent: 2,
-        color: 'bg-amber-600 dark:bg-amber-400',
+        color: 'bg-blue-400',
     },
     {
         name: 'OCR processing',
         count: 18,
         percent: 1,
-        color: 'bg-slate-400 dark:bg-neutral-500',
+        color: 'bg-blue-200',
     },
 ];
 
@@ -106,7 +80,6 @@ export default function Dashboard() {
     const [activePcode, setActivePcode] = useState<string | null>(null);
     const [selectedPcode, setSelectedPcode] = useState<string | null>(null);
     const highlightedPcode = activePcode ?? selectedPcode;
-    const maxLots = lguRows[0]?.lots ?? 1;
 
     const toggleSelected = (pcode: string) =>
         setSelectedPcode((current) => (current === pcode ? null : pcode));
@@ -117,22 +90,19 @@ export default function Dashboard() {
 
             <main className="min-h-full bg-background p-4 sm:p-6 xl:p-8">
                 <div className="mx-auto flex w-full max-w-[1600px] flex-col gap-6">
-                    <header className="flex flex-col justify-between gap-4 border-b-2 border-amber-700/70 pb-5 sm:flex-row sm:items-end dark:border-amber-500/60">
+                    <header className="flex flex-col justify-between gap-4 border-b border-blue-900 pb-5 sm:flex-row sm:items-end">
                         <div>
-                            <p className="mb-2 text-xs font-semibold tracking-[0.14em] text-blue-900 uppercase dark:text-blue-200">
-                                Provincial Assessor&apos;s Office
-                            </p>
-                            <h1 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl dark:text-neutral-50">
+                            <h1 className="text-2xl font-semibold tracking-tight text-balance text-slate-950 sm:text-3xl dark:text-neutral-50">
                                 Archive Analytics
                             </h1>
-                            <p className="mt-1 text-sm text-slate-600 dark:text-neutral-400">
-                                Incoming papers, digitization performance, and
-                                property locations.
+                            <p className="mt-2 max-w-[65ch] text-sm text-slate-600 dark:text-neutral-400">
+                                Provincial Assessor&apos;s Office · incoming
+                                papers, digitization, and property locations.
                             </p>
                         </div>
                         <Button
                             render={<Link href="/documents" />}
-                            className="w-full rounded-none bg-blue-900 text-white hover:bg-blue-800 sm:w-auto dark:bg-blue-800 dark:hover:bg-blue-700"
+                            className="w-full rounded-none bg-blue-900 text-white hover:bg-blue-800 sm:w-auto"
                         >
                             <FileSearch aria-hidden="true" />
                             Browse documents
@@ -142,7 +112,7 @@ export default function Dashboard() {
 
                     <div
                         role="note"
-                        className="border border-blue-200 bg-blue-50/80 px-4 py-3 text-sm text-blue-950 dark:border-blue-900 dark:bg-blue-950/40 dark:text-blue-100"
+                        className="border border-blue-900/25 px-4 py-3 text-sm text-blue-950 dark:border-blue-900 dark:text-neutral-200"
                     >
                         Analytics preview — all figures and locations are
                         illustrative and are not connected to live archive
@@ -150,69 +120,37 @@ export default function Dashboard() {
                     </div>
 
                     <section aria-labelledby="key-indicators-heading">
-                        <div className="mb-3 flex items-center gap-2">
-                            <span className="h-4 w-1 bg-amber-700 dark:bg-amber-500" />
+                        <div className="mb-3 flex items-baseline justify-between gap-4">
                             <h2
                                 id="key-indicators-heading"
-                                className="text-sm font-semibold tracking-wide text-slate-800 uppercase dark:text-neutral-200"
+                                className="text-base font-semibold text-slate-950 dark:text-white"
                             >
                                 Key indicators
                             </h2>
-                            <Badge
-                                variant="outline"
-                                className="ml-auto rounded-none border-slate-300 text-slate-600 dark:border-neutral-700 dark:text-neutral-400"
-                            >
-                                Today · Oct 09, 2026
-                            </Badge>
+                            <p className="text-sm text-slate-600 dark:text-neutral-400">
+                                Oct 09, 2026
+                            </p>
                         </div>
-                        <div className="grid gap-3 sm:grid-cols-2 2xl:grid-cols-4">
-                            {metrics.map((metric) => {
-                                const TrendIcon =
-                                    metric.trend === 'down'
-                                        ? ArrowDownRight
-                                        : ArrowUpRight;
-
-                                return (
-                                    <Card
-                                        key={metric.label}
-                                        className="gap-4 rounded-none border-slate-200 bg-white py-4 shadow-none dark:border-neutral-800 dark:bg-black"
-                                    >
-                                        <CardContent className="px-4">
-                                            <div className="flex items-start justify-between gap-4">
-                                                <div>
-                                                    <p className="text-sm font-medium text-slate-600 dark:text-neutral-400">
-                                                        {metric.label}
-                                                    </p>
-                                                    <p className="mt-2 text-3xl font-semibold tracking-tight text-slate-950 tabular-nums dark:text-white">
-                                                        {metric.value}
-                                                    </p>
-                                                    <p className="mt-1 flex items-center gap-1 text-xs text-slate-500 dark:text-neutral-400">
-                                                        {metric.trend !==
-                                                            'steady' && (
-                                                            <TrendIcon
-                                                                aria-hidden="true"
-                                                                className="size-3.5 text-emerald-700 dark:text-emerald-400"
-                                                            />
-                                                        )}
-                                                        <span className="font-semibold text-slate-700 dark:text-neutral-200">
-                                                            {metric.comparison}
-                                                        </span>
-                                                        {metric.detail}
-                                                    </p>
-                                                </div>
-                                                <span
-                                                    className={`flex size-10 shrink-0 items-center justify-center ${metric.iconClass}`}
-                                                >
-                                                    <metric.icon
-                                                        aria-hidden="true"
-                                                        className="size-5"
-                                                    />
-                                                </span>
-                                            </div>
-                                        </CardContent>
-                                    </Card>
-                                );
-                            })}
+                        <div className="grid gap-px border border-blue-900/20 bg-blue-900/20 sm:grid-cols-2 2xl:grid-cols-4 dark:border-border dark:bg-border">
+                            {metrics.map((metric) => (
+                                <div
+                                    key={metric.label}
+                                    className="bg-card px-4 py-4"
+                                >
+                                    <p className="text-sm text-slate-600 dark:text-neutral-400">
+                                        {metric.label}
+                                    </p>
+                                    <p className="mt-3 text-3xl font-semibold tracking-tight text-blue-950 tabular-nums dark:text-neutral-50">
+                                        {metric.value}
+                                    </p>
+                                    <p className="mt-2 text-xs text-slate-600 dark:text-neutral-400">
+                                        <span className="font-semibold text-blue-900 dark:text-neutral-200">
+                                            {metric.comparison}
+                                        </span>{' '}
+                                        {metric.detail}
+                                    </p>
+                                </div>
+                            ))}
                         </div>
                     </section>
 
@@ -220,14 +158,10 @@ export default function Dashboard() {
                         aria-label="Archive activity analytics"
                         className="grid min-w-0 gap-4 xl:grid-cols-12"
                     >
-                        <Card className="min-w-0 gap-0 rounded-none border-slate-200 bg-white py-0 shadow-none xl:col-span-12 dark:border-neutral-800 dark:bg-black">
-                            <CardHeader className="flex-row items-start justify-between border-b border-slate-200 px-4 py-4 sm:px-5 dark:border-neutral-800">
+                        <Card className="min-w-0 gap-0 rounded-none border-border bg-card py-0 shadow-none xl:col-span-12">
+                            <CardHeader className="flex-row items-start justify-between border-b border-border px-4 py-4 sm:px-5">
                                 <div>
-                                    <CardTitle className="flex items-center gap-2 text-base text-slate-950 dark:text-white">
-                                        <Files
-                                            aria-hidden="true"
-                                            className="size-4 text-blue-900 dark:text-blue-200"
-                                        />
+                                    <CardTitle className="text-base text-slate-950 dark:text-white">
                                         Daily incoming papers
                                     </CardTitle>
                                     <CardDescription className="mt-1">
@@ -237,7 +171,7 @@ export default function Dashboard() {
                                 </div>
                                 <Badge
                                     variant="outline"
-                                    className="rounded-none border-blue-200 bg-blue-50 text-blue-900 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-200"
+                                    className="rounded-none border-blue-200 bg-blue-50 text-blue-900 dark:border-blue-900 dark:bg-blue-900 dark:text-white"
                                 >
                                     191 papers
                                 </Badge>
@@ -248,7 +182,7 @@ export default function Dashboard() {
                                     aria-label="Bar chart of daily incoming papers for the last seven days, ranging from 13 to 41 documents per day"
                                     className="grid h-56 grid-cols-7 gap-2 sm:gap-4"
                                 >
-                                    {dailyIntake.map((item, index) => (
+                                    {dailyIntake.map((item) => (
                                         <div
                                             key={item.date}
                                             className="flex min-w-0 flex-col items-center justify-end gap-2"
@@ -256,9 +190,9 @@ export default function Dashboard() {
                                             <span className="text-xs font-semibold text-slate-700 tabular-nums dark:text-neutral-300">
                                                 {item.count}
                                             </span>
-                                            <div className="flex h-36 w-full items-end border-b border-slate-200 bg-slate-50 px-1 dark:border-neutral-800 dark:bg-neutral-900">
+                                            <div className="flex h-36 w-full items-end border-b border-blue-900/30 px-1 dark:border-neutral-700">
                                                 <div
-                                                    className={`w-full ${index === dailyIntake.length - 1 ? 'bg-amber-600 dark:bg-amber-400' : 'bg-blue-900 dark:bg-blue-500'}`}
+                                                    className="w-full bg-blue-900 dark:ring-1 dark:ring-white/30 dark:ring-inset"
                                                     style={{
                                                         height: `${(item.count / 45) * 100}%`,
                                                     }}
@@ -284,17 +218,13 @@ export default function Dashboard() {
                     </section>
 
                     <section aria-labelledby="coverage-heading">
-                        <Card className="min-w-0 gap-0 rounded-none border-slate-200 bg-white py-0 shadow-none dark:border-neutral-800 dark:bg-black">
-                            <CardHeader className="flex-row items-start justify-between border-b border-slate-200 px-4 py-4 sm:px-5 dark:border-neutral-800">
+                        <Card className="min-w-0 gap-0 rounded-none border-border bg-card py-0 shadow-none">
+                            <CardHeader className="flex-row items-start justify-between border-b border-border px-4 py-4 sm:px-5">
                                 <div>
                                     <CardTitle
                                         id="coverage-heading"
-                                        className="flex items-center gap-2 text-base text-slate-950 dark:text-white"
+                                        className="text-base text-slate-950 dark:text-white"
                                     >
-                                        <MapPin
-                                            aria-hidden="true"
-                                            className="size-4 text-blue-900 dark:text-blue-200"
-                                        />
                                         Ilocos Norte coverage
                                     </CardTitle>
                                     <CardDescription className="mt-1">
@@ -304,7 +234,7 @@ export default function Dashboard() {
                                 </div>
                                 <Badge
                                     variant="outline"
-                                    className="rounded-none border-blue-200 bg-blue-50 text-blue-900 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-200"
+                                    className="rounded-none border-blue-200 bg-blue-50 text-blue-900 dark:border-blue-900 dark:bg-blue-900 dark:text-white"
                                 >
                                     {provinceTotals.lgus} LGUs ·{' '}
                                     {provinceTotals.lots.toLocaleString()} lots
@@ -320,7 +250,7 @@ export default function Dashboard() {
                                     />
                                 </div>
                                 <div className="flex min-w-0 flex-col xl:col-span-5">
-                                    <div className="mb-2 flex items-center justify-between text-xs font-medium tracking-wide text-slate-500 uppercase dark:text-neutral-400">
+                                    <div className="mb-2 flex items-center justify-between text-sm text-slate-600 dark:text-neutral-400">
                                         <span>Ranked by archived lots</span>
                                         {selectedPcode && (
                                             <button
@@ -328,7 +258,7 @@ export default function Dashboard() {
                                                 onClick={() =>
                                                     setSelectedPcode(null)
                                                 }
-                                                className="cursor-pointer text-blue-900 normal-case underline-offset-2 hover:underline focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:outline-none dark:text-blue-300"
+                                                className="cursor-pointer text-blue-900 underline-offset-2 hover:underline focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:outline-none dark:text-neutral-200"
                                             >
                                                 Clear selection
                                             </button>
@@ -372,22 +302,16 @@ export default function Dashboard() {
                                                             setActivePcode(null)
                                                         }
                                                         className={cn(
-                                                            'w-full cursor-pointer space-y-1.5 px-3 py-2 text-left transition-colors focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:outline-none focus-visible:ring-inset',
+                                                            'w-full cursor-pointer px-3 py-2.5 text-left transition-colors focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:outline-none focus-visible:ring-inset',
                                                             isHighlighted
-                                                                ? 'bg-amber-50 dark:bg-amber-950/40'
-                                                                : 'hover:bg-slate-50 dark:hover:bg-neutral-900',
+                                                                ? 'bg-blue-50 dark:bg-blue-950'
+                                                                : 'hover:bg-blue-50/60 dark:hover:bg-blue-950/40',
                                                         )}
                                                     >
                                                         <span className="flex items-center justify-between gap-3 text-sm">
                                                             <span className="flex min-w-0 items-center gap-2 font-medium text-slate-800 dark:text-neutral-200">
-                                                                <span className="w-5 text-xs text-slate-400 tabular-nums dark:text-neutral-500">
-                                                                    {String(
-                                                                        index +
-                                                                            1,
-                                                                    ).padStart(
-                                                                        2,
-                                                                        '0',
-                                                                    )}
+                                                                <span className="w-5 text-xs text-slate-500 tabular-nums dark:text-neutral-400">
+                                                                    {index + 1}
                                                                 </span>
                                                                 <span
                                                                     aria-hidden="true"
@@ -403,39 +327,15 @@ export default function Dashboard() {
                                                                     {row.name}
                                                                 </span>
                                                             </span>
-                                                            <span className="shrink-0 font-semibold text-slate-700 tabular-nums dark:text-neutral-300">
+                                                            <span className="shrink-0 font-semibold text-blue-950 tabular-nums dark:text-neutral-100">
                                                                 {row.lots.toLocaleString()}
                                                             </span>
-                                                        </span>
-                                                        <span
-                                                            aria-hidden="true"
-                                                            className="block h-1.5 bg-slate-100 dark:bg-neutral-800"
-                                                        >
-                                                            <span
-                                                                className={cn(
-                                                                    'block h-full',
-                                                                    isHighlighted
-                                                                        ? 'bg-amber-600 dark:bg-amber-400'
-                                                                        : 'bg-blue-900 dark:bg-blue-500',
-                                                                )}
-                                                                style={{
-                                                                    width: `${(row.lots / maxLots) * 100}%`,
-                                                                }}
-                                                            />
                                                         </span>
                                                     </button>
                                                 </li>
                                             );
                                         })}
                                     </ol>
-                                    <Button
-                                        render={<Link href="/documents" />}
-                                        variant="outline"
-                                        className="mt-3 w-full justify-between rounded-none border-slate-300 dark:border-neutral-700"
-                                    >
-                                        Explore archive records
-                                        <ArrowRight aria-hidden="true" />
-                                    </Button>
                                 </div>
                             </CardContent>
                         </Card>
@@ -445,13 +345,9 @@ export default function Dashboard() {
                         aria-label="Archive processing analytics"
                         className="grid min-w-0 gap-4 xl:grid-cols-12"
                     >
-                        <Card className="min-w-0 gap-0 rounded-none border-slate-200 bg-white py-0 shadow-none xl:col-span-12 dark:border-neutral-800 dark:bg-black">
+                        <Card className="min-w-0 gap-0 rounded-none border-border bg-card py-0 shadow-none xl:col-span-12">
                             <CardHeader className="border-b border-slate-200 px-4 py-4 sm:px-5 dark:border-neutral-800">
-                                <CardTitle className="flex items-center gap-2 text-base text-slate-950 dark:text-white">
-                                    <ScanText
-                                        aria-hidden="true"
-                                        className="size-4 text-blue-900 dark:text-blue-200"
-                                    />
+                                <CardTitle className="text-base text-slate-950 dark:text-white">
                                     OCR and indexing status
                                 </CardTitle>
                                 <CardDescription className="mt-1">
@@ -486,10 +382,10 @@ export default function Dashboard() {
                                                 className={`mt-1 size-2 shrink-0 ${status.color}`}
                                             />
                                             <div>
-                                                <p className="text-xs text-slate-600 dark:text-neutral-400">
+                                                <p className="text-sm text-slate-600 dark:text-neutral-400">
                                                     {status.name}
                                                 </p>
-                                                <p className="mt-1 text-lg font-semibold text-slate-950 tabular-nums dark:text-white">
+                                                <p className="mt-1 text-lg font-semibold text-blue-950 tabular-nums dark:text-neutral-50">
                                                     {status.count.toLocaleString()}
                                                 </p>
                                             </div>

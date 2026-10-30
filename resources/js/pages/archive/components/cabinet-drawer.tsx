@@ -49,7 +49,7 @@ type CabinetDrawerProps = {
 };
 
 function drawerRimOffset(height: number): number {
-    return height * 0.15;
+    return Math.min(12, height * 0.08);
 }
 
 function translateZ(value: number): string {
@@ -89,10 +89,22 @@ export default function CabinetDrawer({
     const previousOpen = useRef(open);
     const previousOpenedBookId = useRef(openedBookId);
     const isCloseup = Boolean(onOpenBook);
+    const pullHeight = isCloseup ? 64 : Math.min(26, height * 0.42);
+    const pullTop = Math.min(height * 0.14, isCloseup ? 48 : 18);
     const documentTotal = drawer.books.reduce(
         (total, book) => total + book.documentCount,
         0,
     );
+    const description = [
+        drawer.label,
+        drawer.range,
+        `${drawer.books.length} ${drawer.books.length === 1 ? 'book' : 'books'}`,
+        documentTotal > 0
+            ? `${documentTotal} ${documentTotal === 1 ? 'document' : 'documents'}`
+            : null,
+    ]
+        .filter(Boolean)
+        .join(', ');
     const booksVisible = showBooks || booksHeldOpen;
     const visibleBooks = booksVisible
         ? drawer.books.slice(0, MAX_VISIBLE_BOOKS)
@@ -109,7 +121,7 @@ export default function CabinetDrawer({
     const bookWidth = Math.max(isCloseup ? 4 : 6, colStride - colGap);
     const coverDepth = Math.max(isCloseup ? 10 : 16, rowDepth - colGap);
     const peek = Math.round(travel * 0.14);
-    const sideTop = drawerRimOffset(height);
+    const sideTop = isCloseup ? height * 0.15 : drawerRimOffset(height);
     const sideHeight = height - sideTop;
     const insideEnabled = open && !locked;
     const canPeek = !open && !locked && !peekLocked;
@@ -200,17 +212,17 @@ export default function CabinetDrawer({
         >
             <div
                 aria-hidden="true"
-                className="absolute left-0 bg-neutral-300 dark:bg-neutral-800"
+                className="cabinet-drawer-side absolute left-0"
                 style={side}
             />
             <div
                 aria-hidden="true"
-                className="absolute left-full bg-neutral-300 dark:bg-neutral-800"
+                className="cabinet-drawer-side cabinet-drawer-side-shade absolute left-full"
                 style={side}
             />
             <div
                 aria-hidden="true"
-                className="absolute top-full left-0 bg-neutral-400 dark:bg-neutral-900"
+                className="cabinet-vector-well absolute top-full left-0"
                 style={{
                     width,
                     height: depth,
@@ -220,7 +232,7 @@ export default function CabinetDrawer({
             />
             <div
                 aria-hidden="true"
-                className="absolute left-0 bg-neutral-400 dark:bg-neutral-900"
+                className="cabinet-vector-well absolute left-0"
                 style={{
                     top: sideTop,
                     width,
@@ -413,10 +425,9 @@ export default function CabinetDrawer({
                 onClick={onToggle}
                 disabled={locked}
                 aria-expanded={open}
-                aria-label={`${drawer.label}, ${drawer.range}, ${drawer.books.length} books${documentTotal > 0 ? `, ${documentTotal} documents` : ''}`}
+                aria-label={description}
                 className={cn(
-                    'absolute inset-0 flex cursor-pointer flex-col items-center justify-center border border-neutral-400 bg-neutral-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700 disabled:cursor-default dark:border-neutral-600 dark:bg-neutral-700',
-                    isCloseup ? 'gap-3' : 'gap-1.5',
+                    'cabinet-vector-front absolute inset-0 flex cursor-pointer justify-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700 disabled:cursor-default',
                     locked && 'pointer-events-none',
                 )}
                 onFocus={() => {
@@ -431,31 +442,43 @@ export default function CabinetDrawer({
             >
                 <span
                     className={cn(
-                        'max-w-[85%] truncate border border-neutral-400 bg-white leading-none font-semibold text-neutral-700 dark:border-neutral-500 dark:bg-neutral-200 dark:text-neutral-900',
-                        isCloseup
-                            ? 'px-3 py-1 text-lg'
-                            : 'px-1.5 py-0.5 text-[9px]',
+                        'cabinet-pull',
+                        isCloseup && 'cabinet-pull-closeup',
                     )}
+                    style={{
+                        top: pullTop,
+                        width: isCloseup ? 192 : Math.min(64, width * 0.42),
+                        height: pullHeight,
+                    }}
                 >
-                    {drawer.label}
-                </span>
-                <span
-                    aria-hidden="true"
-                    className={cn(
-                        'rounded-full bg-neutral-500 dark:bg-neutral-400',
-                        isCloseup ? 'h-3 w-20' : 'h-1.5 w-10',
-                    )}
-                />
-                {drawer.books.length > 0 ? (
                     <span
                         className={cn(
-                            'leading-none font-medium text-neutral-600 tabular-nums dark:text-neutral-300',
-                            isCloseup ? 'text-base' : 'text-[8px]',
+                            'cabinet-pull-slot',
+                            isCloseup ? 'gap-3 px-4' : 'gap-1 px-1',
                         )}
                     >
-                        {drawer.books.length}
+                        <span
+                            className={cn(
+                                'cabinet-label-holder truncate leading-none font-semibold',
+                                isCloseup ? 'text-lg' : 'text-[8px]',
+                                pullHeight < 20 && 'sr-only',
+                            )}
+                        >
+                            {drawer.label}
+                        </span>
+                        {drawer.books.length > 0 && pullHeight >= 20 ? (
+                            <span
+                                className={cn(
+                                    'cabinet-vector-count leading-none font-semibold tabular-nums',
+                                    isCloseup ? 'text-sm' : 'text-[8px]',
+                                )}
+                            >
+                                {drawer.books.length}
+                            </span>
+                        ) : null}
                     </span>
-                ) : null}
+                    <span aria-hidden="true" className="cabinet-pull-grip" />
+                </span>
             </button>
         </motion.div>
     );

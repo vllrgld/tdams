@@ -16,8 +16,20 @@ import { Label } from '@/components/ui/label';
 
 type CabinetForm = {
     name: string;
-    drawer_count: number;
+    drawers: string[];
 };
+
+function drawerNames(current: string[], count: number): string[] {
+    const size = Math.min(8, Math.max(1, count));
+
+    const next = current.slice(0, size);
+
+    while (next.length < size) {
+        next.push(`Drawer ${next.length + 1}`);
+    }
+
+    return next;
+}
 
 type AddCabinetDialogProps = {
     form: InertiaFormProps<CabinetForm>;
@@ -65,17 +77,45 @@ export default function AddCabinetDialog({
                             type="number"
                             min={1}
                             max={8}
-                            value={form.data.drawer_count}
+                            value={form.data.drawers.length}
                             onChange={(event) =>
                                 form.setData(
-                                    'drawer_count',
-                                    Number(event.target.value),
+                                    'drawers',
+                                    drawerNames(
+                                        form.data.drawers,
+                                        Number(event.target.value),
+                                    ),
                                 )
                             }
                             required
                             className="rounded-none"
                         />
-                        <InputError message={form.errors.drawer_count} />
+                        <InputError message={form.errors.drawers} />
+                    </div>
+
+                    <div className="grid max-h-64 gap-3 overflow-y-auto">
+                        {form.data.drawers.map((label, index) => (
+                            <div key={index} className="grid gap-2">
+                                <Label htmlFor={`drawer-name-${index}`}>
+                                    Drawer {index + 1}
+                                </Label>
+                                <Input
+                                    id={`drawer-name-${index}`}
+                                    value={label}
+                                    onChange={(event) => {
+                                        const drawers = [...form.data.drawers];
+                                        drawers[index] = event.target.value;
+                                        form.setData('drawers', drawers);
+                                    }}
+                                    required
+                                    maxLength={100}
+                                    className="rounded-none"
+                                />
+                                <InputError
+                                    message={form.errors[`drawers.${index}`]}
+                                />
+                            </div>
+                        ))}
                     </div>
 
                     <DialogFooter>

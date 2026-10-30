@@ -12,6 +12,7 @@ export type ArchivedDocument = {
     ocrPdfSize: number | null;
     createdAt: string | null;
     viewUrl: string;
+    thumbnailUrl: string | null;
     ocrPdfUrl: string | null;
     previousTaxDeclarationNumber: string | null;
     previousDeclarationDate: string | null;
@@ -27,9 +28,13 @@ export type ArchivedDocument = {
     province: string | null;
     pin: string | null;
     boundaryNorth: string | null;
-    boundarySouth: string | null;
+    boundaryNortheast: string | null;
     boundaryEast: string | null;
+    boundarySoutheast: string | null;
+    boundarySouth: string | null;
+    boundarySouthwest: string | null;
     boundaryWest: string | null;
+    boundaryNorthwest: string | null;
     area: string | null;
     remarks: string | null;
 };
@@ -72,6 +77,7 @@ export type DocumentsPageProps = {
     };
     searchFields: SearchFieldOption[];
     mappingModels: string[];
+    selectedDocument?: ArchivedDocument | null;
 };
 
 export type UploadForm = {
@@ -95,9 +101,13 @@ export type UploadForm = {
     province: string;
     pin: string;
     boundary_north: string;
-    boundary_south: string;
+    boundary_northeast: string;
     boundary_east: string;
+    boundary_southeast: string;
+    boundary_south: string;
+    boundary_southwest: string;
     boundary_west: string;
+    boundary_northwest: string;
     area: string;
     remarks: string;
 };

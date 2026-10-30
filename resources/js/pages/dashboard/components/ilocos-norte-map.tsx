@@ -22,32 +22,32 @@ export const LOT_BUCKETS = [
     {
         min: 0,
         label: '0–49',
-        fill: 'fill-blue-100 dark:fill-blue-950',
-        swatch: 'bg-blue-100 dark:bg-blue-950',
+        fill: 'fill-blue-100',
+        swatch: 'bg-blue-100',
     },
     {
         min: 50,
         label: '50–99',
-        fill: 'fill-blue-200 dark:fill-blue-900',
-        swatch: 'bg-blue-200 dark:bg-blue-900',
+        fill: 'fill-blue-200',
+        swatch: 'bg-blue-200',
     },
     {
         min: 100,
         label: '100–199',
-        fill: 'fill-blue-400 dark:fill-blue-700',
-        swatch: 'bg-blue-400 dark:bg-blue-700',
+        fill: 'fill-blue-400',
+        swatch: 'bg-blue-400',
     },
     {
         min: 200,
         label: '200–349',
-        fill: 'fill-blue-600 dark:fill-blue-500',
-        swatch: 'bg-blue-600 dark:bg-blue-500',
+        fill: 'fill-blue-600',
+        swatch: 'bg-blue-600',
     },
     {
         min: 350,
         label: '350+',
-        fill: 'fill-blue-900 dark:fill-blue-300',
-        swatch: 'bg-blue-900 dark:bg-blue-300',
+        fill: 'fill-blue-900',
+        swatch: 'bg-blue-900',
     },
 ] as const;
 
@@ -175,7 +175,7 @@ export default function IlocosNorteMap({
                                                 }
                                                 aria-label={`${feature.properties.name}: ${lots.toLocaleString()} archived lots`}
                                                 className={cn(
-                                                    'cursor-pointer stroke-white stroke-1 transition-[fill,opacity] outline-none dark:stroke-black',
+                                                    'cursor-pointer stroke-white stroke-1 transition-[fill,opacity] outline-none dark:stroke-neutral-500',
                                                     bucketFor(lots).fill,
                                                     highlightedPcode &&
                                                         highlightedPcode !==
@@ -209,7 +209,7 @@ export default function IlocosNorteMap({
                                             className={cn(
                                                 'pointer-events-none fill-none stroke-[2.5]',
                                                 activePcode
-                                                    ? 'stroke-amber-500 dark:stroke-amber-400'
+                                                    ? 'stroke-blue-900 dark:stroke-white'
                                                     : 'stroke-slate-950 dark:stroke-white',
                                             )}
                                         />
@@ -331,7 +331,7 @@ function DetailCell({
     detail?: string;
 }) {
     return (
-        <div className="min-w-0 bg-white px-3 py-2 dark:bg-black">
+        <div className="min-w-0 bg-card px-3 py-2">
             <p className="text-[11px] font-medium tracking-wide text-slate-500 uppercase dark:text-neutral-400">
                 {label}
             </p>

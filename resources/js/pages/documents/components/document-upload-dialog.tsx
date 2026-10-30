@@ -45,11 +45,22 @@ function loadPdfPreview() {
 }
 
 function ClientPdfPreview({ url, title }: { url: string; title: string }) {
-    const PdfPreview = useClientComponent(loadPdfPreview);
+    const [PdfPreview, viewerError] = useClientComponent(loadPdfPreview);
+
+    if (viewerError) {
+        return (
+            <p
+                role="alert"
+                className="flex h-full items-center justify-center p-6 text-center text-sm text-red-800 dark:text-red-300"
+            >
+                The PDF viewer could not be loaded. {viewerError}
+            </p>
+        );
+    }
 
     if (!PdfPreview) {
         return (
-            <div className="flex min-h-64 items-center justify-center gap-2 text-sm text-slate-600 dark:text-neutral-300">
+            <div className="flex h-full min-h-64 items-center justify-center gap-2 text-sm text-slate-600 dark:text-neutral-300">
                 <Spinner />
                 Loading PDF viewer…
             </div>
@@ -85,9 +96,13 @@ function fieldNames(): MetadataField[] {
 
 const BOUNDARY_FIELDS: MetadataField[] = [
     'boundary_north',
-    'boundary_south',
+    'boundary_northeast',
     'boundary_east',
+    'boundary_southeast',
+    'boundary_south',
+    'boundary_southwest',
     'boundary_west',
+    'boundary_northwest',
 ];
 
 const REMARKS_KEY = 'remarks';
@@ -619,8 +634,8 @@ export default function DocumentUploadDialog({
                     )}
 
                     {reviewing && (
-                        <div className="grid min-h-0 flex-1 gap-4 lg:grid-cols-2">
-                            <div className="min-h-80 overflow-hidden border border-slate-200 dark:border-neutral-800">
+                        <div className="grid min-h-0 flex-1 gap-4 overflow-y-auto md:grid-cols-2 md:overflow-hidden">
+                            <div className="flex h-80 min-h-80 flex-col overflow-hidden border border-slate-200 md:h-full md:min-h-0 dark:border-neutral-800">
                                 {pdfUrl &&
                                 (pdfUrl.includes('/ocr-pdf') ||
                                     file?.type === 'application/pdf') ? (
@@ -1031,16 +1046,19 @@ function BoundaryEditor({
     busy: boolean;
     onValueChange: (name: MetadataField, value: string) => void;
 }) {
-    const corner = 'bg-slate-50 dark:bg-neutral-900';
     const sides: {
         name: MetadataField;
         direction: string;
         label: string;
     }[] = [
+        { name: 'boundary_northwest', direction: 'NW', label: 'Northwest' },
         { name: 'boundary_north', direction: 'N', label: 'North' },
+        { name: 'boundary_northeast', direction: 'NE', label: 'Northeast' },
         { name: 'boundary_west', direction: 'W', label: 'West' },
         { name: 'boundary_east', direction: 'E', label: 'East' },
+        { name: 'boundary_southwest', direction: 'SW', label: 'Southwest' },
         { name: 'boundary_south', direction: 'S', label: 'South' },
+        { name: 'boundary_southeast', direction: 'SE', label: 'Southeast' },
     ];
 
     function cell(side: (typeof sides)[number]) {
@@ -1079,10 +1097,10 @@ function BoundaryEditor({
                 Boundaries
             </p>
             <div className="grid grid-cols-3 gap-px border border-slate-200 bg-slate-200 dark:border-neutral-800 dark:bg-neutral-800">
-                <div className={corner} />
                 {cell(sides[0])}
-                <div className={corner} />
                 {cell(sides[1])}
+                {cell(sides[2])}
+                {cell(sides[3])}
                 <div className="flex min-h-16 flex-col items-center justify-center bg-card p-2 text-center">
                     <span className="text-[10px] font-medium tracking-wide text-slate-500 uppercase dark:text-neutral-400">
                         Lot
@@ -1091,10 +1109,10 @@ function BoundaryEditor({
                         {values.lot_number || '—'}
                     </span>
                 </div>
-                {cell(sides[2])}
-                <div className={corner} />
-                {cell(sides[3])}
-                <div className={corner} />
+                {cell(sides[4])}
+                {cell(sides[5])}
+                {cell(sides[6])}
+                {cell(sides[7])}
             </div>
         </div>
     );

@@ -21,7 +21,7 @@ class PaddleOcrClient implements OcrExtractor
     private const POLL_SECONDS = 5;
 
     /**
-     * @return array{text: string, pages: list<string>, page_count: int, pdf: string|null}
+     * @return array{text: string, pages: list<string>, page_count: int, pdf: string|null, regions: list<array{kind?: 'line'|'block', page: int, text: string, box: list<int>|null, pageWidth: int|null, pageHeight: int|null}>}
      */
     public function extract(string $contents, string $filename): array
     {
@@ -36,7 +36,8 @@ class PaddleOcrClient implements OcrExtractor
 
         $jobId = $this->submit($jobUrl, $token, $model, $contents, $filename);
         $jsonUrl = $this->poll($jobUrl, $token, $jobId);
-        $pages = $this->pagesFromJsonl($this->downloadJsonl($jsonUrl));
+        $parsed = $this->readJsonl($this->downloadJsonl($jsonUrl));
+        $pages = $parsed['pages'];
 
         if ($pages === []) {
             throw new RuntimeException('Paddle OCR returned no recognized text.');
@@ -47,6 +48,7 @@ class PaddleOcrClient implements OcrExtractor
             'pages' => $pages,
             'page_count' => count($pages),
             'pdf' => null,
+            'regions' => $parsed['regions'],
         ];
     }
 
@@ -56,11 +58,7 @@ class PaddleOcrClient implements OcrExtractor
             ->attach('file', $contents, $filename)
             ->post($jobUrl, [
                 'model' => $model,
-                'optionalPayload' => json_encode([
-                    'useDocOrientationClassify' => false,
-                    'useDocUnwarping' => false,
-                    'useTextlineOrientation' => false,
-                ]),
+                'optionalPayload' => json_encode($this->optionalPayload($model)),
             ]);
 
         $data = $this->payload($response, 'Paddle OCR could not start a job.');
@@ -154,6 +152,26 @@ class PaddleOcrClient implements OcrExtractor
         throw new RuntimeException(mb_substr($lastError, 0, 500));
     }
 
+    /**
+     * @return array<string, bool>
+     */
+    private function optionalPayload(string $model): array
+    {
+        if ($model === OcrSetting::MODEL_VL) {
+            return [
+                'useDocOrientationClassify' => false,
+                'useDocUnwarping' => false,
+                'useChartRecognition' => false,
+            ];
+        }
+
+        return [
+            'useDocOrientationClassify' => false,
+            'useDocUnwarping' => false,
+            'useTextlineOrientation' => false,
+        ];
+    }
+
     private function client(string $token, int $timeout): PendingRequest
     {
         return Http::withHeaders([
@@ -163,11 +181,12 @@ class PaddleOcrClient implements OcrExtractor
     }
 
     /**
-     * @return list<string>
+     * @return array{pages: list<string>, regions: list<array{kind?: 'line'|'block', page: int, text: string, box: list<int>|null, pageWidth: int|null, pageHeight: int|null}>}
      */
-    private function pagesFromJsonl(string $body): array
+    private function readJsonl(string $body): array
     {
         $pages = [];
+        $regions = [];
 
         foreach (preg_split('/\r\n|\n/', $body) ?: [] as $line) {
             $line = trim($line);
@@ -186,9 +205,14 @@ class PaddleOcrClient implements OcrExtractor
 
             if (is_array($result['ocrResults'] ?? null)) {
                 foreach ($result['ocrResults'] as $ocrResult) {
-                    if (is_array($ocrResult)) {
-                        $pages[] = $this->pageFromRecTexts($ocrResult);
+                    if (! is_array($ocrResult)) {
+                        continue;
                     }
+
+                    $page = count($pages) + 1;
+                    $parsed = $this->pageFromRecTexts($ocrResult, $page);
+                    $pages[] = $parsed['text'];
+                    array_push($regions, ...$parsed['regions']);
                 }
 
                 continue;
@@ -200,35 +224,168 @@ class PaddleOcrClient implements OcrExtractor
                         continue;
                     }
 
+                    $page = count($pages) + 1;
                     $text = $layoutResult['markdown']['text'] ?? '';
                     $pages[] = is_string($text) ? $text : '';
+                    array_push($regions, ...$this->regionsFromLayout($layoutResult, $page));
                 }
             }
         }
 
-        return $pages;
+        return [
+            'pages' => $pages,
+            'regions' => $regions,
+        ];
     }
 
     /**
      * @param  array<string, mixed>  $ocrResult
+     * @return array{text: string, regions: list<array{kind?: 'line'|'block', page: int, text: string, box: list<int>|null, pageWidth: int|null, pageHeight: int|null}>}
      */
-    private function pageFromRecTexts(array $ocrResult): string
+    private function pageFromRecTexts(array $ocrResult, int $page): array
     {
-        $texts = $ocrResult['prunedResult']['rec_texts'] ?? $ocrResult['rec_texts'] ?? [];
+        $pruned = is_array($ocrResult['prunedResult'] ?? null) ? $ocrResult['prunedResult'] : $ocrResult;
+        $texts = $pruned['rec_texts'] ?? [];
+        $boxes = $pruned['rec_boxes'] ?? [];
+        $polygons = $pruned['rec_polys'] ?? [];
+        [$pageWidth, $pageHeight] = $this->pageSize([
+            'width' => $pruned['width'] ?? $ocrResult['width'] ?? null,
+            'height' => $pruned['height'] ?? $ocrResult['height'] ?? null,
+        ]);
 
         if (! is_array($texts)) {
-            return '';
+            return ['text' => '', 'regions' => []];
         }
 
         $lines = [];
+        $regions = [];
 
-        foreach ($texts as $text) {
-            if (is_string($text) && $text !== '') {
-                $lines[] = $text;
+        foreach ($texts as $index => $text) {
+            if (! is_string($text) || $text === '') {
+                continue;
             }
+
+            $lines[] = $text;
+            $regions[] = [
+                'kind' => 'line',
+                'page' => $page,
+                'text' => $text,
+                'box' => $this->box(is_array($boxes) ? ($boxes[$index] ?? null) : null)
+                    ?? $this->box(is_array($polygons) ? ($polygons[$index] ?? null) : null),
+                'pageWidth' => $pageWidth,
+                'pageHeight' => $pageHeight,
+            ];
         }
 
-        return implode("\n", $lines);
+        return [
+            'text' => implode("\n", $lines),
+            'regions' => $regions,
+        ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $layoutResult
+     * @return list<array{kind?: 'line'|'block', page: int, text: string, box: list<int>|null, pageWidth: int|null, pageHeight: int|null}>
+     */
+    private function regionsFromLayout(array $layoutResult, int $page): array
+    {
+        $pruned = is_array($layoutResult['prunedResult'] ?? null) ? $layoutResult['prunedResult'] : $layoutResult;
+        $blocks = $pruned['parsing_res_list'] ?? $layoutResult['parsing_res_list'] ?? [];
+        [$pageWidth, $pageHeight] = $this->pageSize([
+            'width' => $pruned['width'] ?? $layoutResult['width'] ?? null,
+            'height' => $pruned['height'] ?? $layoutResult['height'] ?? null,
+        ]);
+
+        if (! is_array($blocks)) {
+            return [];
+        }
+
+        $regions = [];
+
+        foreach ($blocks as $block) {
+            if (! is_array($block)) {
+                continue;
+            }
+
+            $text = $block['block_content'] ?? '';
+
+            if (! is_string($text) || trim($text) === '') {
+                continue;
+            }
+
+            $regions[] = [
+                'kind' => 'block',
+                'page' => $page,
+                'text' => $text,
+                'box' => $this->box($block['block_bbox'] ?? null),
+                'pageWidth' => $pageWidth,
+                'pageHeight' => $pageHeight,
+            ];
+        }
+
+        return $regions;
+    }
+
+    /**
+     * @param  array<string, mixed>  $source
+     * @return array{0: int|null, 1: int|null}
+     */
+    private function pageSize(array $source): array
+    {
+        $width = $source['width'] ?? null;
+        $height = $source['height'] ?? null;
+
+        return [
+            is_numeric($width) ? (int) $width : null,
+            is_numeric($height) ? (int) $height : null,
+        ];
+    }
+
+    /**
+     * @return list<int>|null
+     */
+    private function box(mixed $value): ?array
+    {
+        if (! is_array($value) || $value === []) {
+            return null;
+        }
+
+        if (isset($value[0]) && is_array($value[0])) {
+            $xs = [];
+            $ys = [];
+
+            foreach ($value as $point) {
+                if (! is_array($point) || ! isset($point[0], $point[1]) || ! is_numeric($point[0]) || ! is_numeric($point[1])) {
+                    return null;
+                }
+
+                $xs[] = (float) $point[0];
+                $ys[] = (float) $point[1];
+            }
+
+            $value = [
+                (int) round(min($xs)),
+                (int) round(min($ys)),
+                (int) round(max($xs)),
+                (int) round(max($ys)),
+            ];
+        }
+
+        if (count($value) < 4) {
+            return null;
+        }
+
+        $coords = [];
+
+        foreach (array_slice(array_values($value), 0, 4) as $part) {
+            if (! is_numeric($part)) {
+                return null;
+            }
+
+            $coords[] = (int) round((float) $part);
+        }
+
+        return $coords[2] > $coords[0] && $coords[3] > $coords[1] ? $coords : null;
     }
 
     /**

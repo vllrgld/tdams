@@ -4,8 +4,6 @@ import OcrSettingsController from '@/actions/App/Http/Controllers/Settings/OcrSe
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import { edit } from '@/routes/ocr';
 
@@ -21,22 +19,26 @@ type Level = {
     description: string;
 };
 
+type Model = {
+    value: string;
+    label: string;
+    description: string;
+};
+
 export default function Ocr({
     driver,
-    jobUrl,
     model,
-    hasToken,
     optimize,
     drivers,
+    models,
     levels,
     status,
 }: {
     driver: string;
-    jobUrl: string;
     model: string;
-    hasToken: boolean;
     optimize: number;
     drivers: Driver[];
+    models: Model[];
     levels: Level[];
     status?: string;
 }) {
@@ -102,54 +104,44 @@ export default function Ocr({
                             <InputError message={errors.driver} />
 
                             {selectedDriver === 'paddle' && (
-                                <div className="space-y-4">
-                                    <Heading
-                                        variant="small"
-                                        title="PaddleOCR"
-                                        description="Defaults come from PADDLE_OCR_JOB_URL, PADDLE_OCR_TOKEN, and PADDLE_OCR_MODEL in .env. Save here to override."
-                                    />
-
-                                    <div className="grid gap-2">
-                                        <Label htmlFor="job_url">Job URL</Label>
-                                        <Input
-                                            id="job_url"
-                                            name="job_url"
-                                            type="url"
-                                            defaultValue={jobUrl}
-                                            required
-                                            autoComplete="off"
-                                        />
-                                        <InputError message={errors.job_url} />
-                                    </div>
-
-                                    <div className="grid gap-2">
-                                        <Label htmlFor="token">Token</Label>
-                                        <Input
-                                            id="token"
-                                            name="token"
-                                            type="password"
-                                            autoComplete="off"
-                                            placeholder={
-                                                hasToken
-                                                    ? 'Saved — leave blank to keep'
-                                                    : 'Bearer token'
-                                            }
-                                        />
-                                        <InputError message={errors.token} />
-                                    </div>
-
-                                    <div className="grid gap-2">
-                                        <Label htmlFor="model">Model</Label>
-                                        <Input
-                                            id="model"
-                                            name="model"
-                                            defaultValue={model}
-                                            required
-                                            autoComplete="off"
-                                        />
-                                        <InputError message={errors.model} />
-                                    </div>
-                                </div>
+                                <fieldset className="space-y-3">
+                                    <legend className="text-sm font-medium">
+                                        Paddle model
+                                    </legend>
+                                    <p className="text-sm text-muted-foreground">
+                                        The service address and token stay on
+                                        the server. Choose which model reads
+                                        the scan.
+                                    </p>
+                                    {models.map((option) => (
+                                        <label
+                                            key={option.value}
+                                            className={cn(
+                                                'flex cursor-pointer gap-3 border border-border p-3 has-checked:border-foreground',
+                                            )}
+                                        >
+                                            <input
+                                                type="radio"
+                                                name="model"
+                                                value={option.value}
+                                                defaultChecked={
+                                                    option.value === model
+                                                }
+                                                required
+                                                className="mt-1"
+                                            />
+                                            <span>
+                                                <span className="block text-sm font-medium">
+                                                    {option.label}
+                                                </span>
+                                                <span className="mt-1 block text-sm text-muted-foreground">
+                                                    {option.description}
+                                                </span>
+                                            </span>
+                                        </label>
+                                    ))}
+                                    <InputError message={errors.model} />
+                                </fieldset>
                             )}
 
                             <fieldset className="space-y-3">

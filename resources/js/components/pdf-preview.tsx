@@ -1,26 +1,54 @@
-import {
-    ChevronLeft,
-    ChevronRight,
-    Maximize,
-    ZoomIn,
-    ZoomOut,
-} from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import PdfViewerControls from '@/components/pdf-viewer-controls';
+import { useDragToPan } from '@/hooks/use-drag-to-pan';
+import { usePdfPageScale } from '@/hooks/use-pdf-page-scale';
+import type { PdfFitMode } from '@/hooks/use-pdf-page-scale';
+import { cn } from '@/lib/utils';
+
+export type PdfHighlight = {
+    id: number;
+    page: number;
+    box: [number, number, number, number] | null;
+    pageWidth: number | null;
+    pageHeight: number | null;
+};
+
+export type PdfViewport = {
+    fitWidth: number;
+    fitHeight: number;
+    pageWidth: number;
+    zoom: number;
+    pages: Record<number, { width: number; height: number }>;
+};
 
 type PdfPreviewProps = {
     url: string;
     title: string;
+    highlights?: PdfHighlight[];
+    selectedHighlightId?: number | null;
+    onSelectHighlight?: (id: number) => void;
+    focusPage?: number | null;
+    onViewportChange?: (viewport: PdfViewport) => void;
+    defaultFit?: PdfFitMode;
 };
 
-export default function PdfPreview({ url, title }: PdfPreviewProps) {
+export default function PdfPreview({
+    url,
+    title,
+    highlights = [],
+    selectedHighlightId = null,
+    onSelectHighlight,
+    focusPage = null,
+    onViewportChange,
+    defaultFit = 'width',
+}: PdfPreviewProps) {
     const viewerRef = useRef<HTMLDivElement>(null);
     const [viewerWidth, setViewerWidth] = useState(0);
+    const [viewerHeight, setViewerHeight] = useState(0);
     const [pageNumber, setPageNumber] = useState(1);
     const [pageCount, setPageCount] = useState(0);
-    const [zoom, setZoom] = useState(1);
+    const [pageSizes, setPageSizes] = useState<PdfViewport['pages']>({});
     const [loadError, setLoadError] = useState<string | null>(null);
     const [workerReady, setWorkerReady] = useState(false);
     const [pageReady, setPageReady] = useState(false);
@@ -40,11 +68,12 @@ export default function PdfPreview({ url, title }: PdfPreviewProps) {
         }
 
         let timer = 0;
-        const publish = (width: number) => {
+        const publish = (width: number, height: number) => {
             const next = Math.floor(width);
             setViewerWidth((current) =>
                 Math.abs(current - next) < 8 ? current : next,
             );
+            setViewerHeight(Math.floor(height));
         };
 
         // Wait for the dialog to finish opening so the canvas is not
@@ -53,13 +82,12 @@ export default function PdfPreview({ url, title }: PdfPreviewProps) {
             window.clearTimeout(timer);
             timer = window.setTimeout(() => {
                 if (entry) {
-                    publish(entry.contentRect.width);
+                    publish(entry.contentRect.width, entry.contentRect.height);
                 }
             }, 200);
         });
 
         observer.observe(viewer);
-        timer = window.setTimeout(() => publish(viewer.clientWidth), 200);
 
         return () => {
             window.clearTimeout(timer);
@@ -70,7 +98,7 @@ export default function PdfPreview({ url, title }: PdfPreviewProps) {
     useEffect(() => {
         setPageNumber(1);
         setPageCount(0);
-        setZoom(1);
+        setPageSizes({});
         setLoadError(null);
         setPageReady(false);
     }, [url]);
@@ -109,6 +137,14 @@ export default function PdfPreview({ url, title }: PdfPreviewProps) {
         return () => observer.disconnect();
     }, [pageCount]);
 
+    useEffect(() => {
+        if (!focusPage || pageCount === 0) {
+            return;
+        }
+
+        goToPage(focusPage);
+    }, [focusPage, pageCount]);
+
     function goToPage(nextPage: number) {
         const targetPage = Math.max(1, Math.min(pageCount, nextPage));
         const viewer = viewerRef.current;
@@ -126,131 +162,51 @@ export default function PdfPreview({ url, title }: PdfPreviewProps) {
         }
     }
 
-    const pageWidth = Math.max(240, Math.floor((viewerWidth - 40) * zoom));
+    const fitWidth = Math.max(
+        0,
+        viewerWidth - (defaultFit === 'page' ? 0 : 40),
+    );
+    const fitHeight = Math.max(0, viewerHeight);
+    const { zoom, pageWidth, canPan, onZoomChange, onFitPage } =
+        usePdfPageScale({
+            fitWidth,
+            fitHeight,
+            pages: pageSizes,
+            defaultFit,
+            resetKey: url,
+        });
+    const { panning, panHandlers } = useDragToPan(canPan);
+
+    useEffect(() => {
+        onViewportChange?.({
+            fitWidth,
+            fitHeight,
+            pageWidth,
+            zoom,
+            pages: pageSizes,
+        });
+    }, [onViewportChange, fitWidth, fitHeight, pageWidth, pageSizes, zoom]);
 
     return (
         <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden border border-slate-200 dark:border-neutral-800">
-            <div
-                className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-b border-slate-200 bg-card px-2 py-2 dark:border-neutral-800 dark:bg-black"
-                aria-label="PDF viewer controls"
-            >
-                <div className="flex items-center gap-1">
-                    <Button
-                        type="button"
-                        variant="outline"
-                        size="icon"
-                        aria-label="Previous page"
-                        title="Previous page"
-                        disabled={pageNumber <= 1 || pageCount === 0}
-                        onClick={() => goToPage(Math.max(1, pageNumber - 1))}
-                        className="size-8 rounded-none"
-                    >
-                        <ChevronLeft aria-hidden="true" />
-                    </Button>
-                    <span className="min-w-20 px-1 text-center text-xs text-slate-700 tabular-nums dark:text-neutral-300">
-                        <Input
-                            aria-label="Current PDF page"
-                            type="number"
-                            min={1}
-                            max={pageCount}
-                            value={pageNumber}
-                            disabled={pageCount === 0}
-                            onChange={(event) => {
-                                const requestedPage = Number(
-                                    event.target.value,
-                                );
-
-                                if (
-                                    Number.isInteger(requestedPage) &&
-                                    requestedPage >= 1 &&
-                                    requestedPage <= pageCount
-                                ) {
-                                    goToPage(requestedPage);
-                                }
-                            }}
-                            className="mr-1 inline-flex h-8 w-12 rounded-none px-1 text-center text-xs tabular-nums"
-                        />
-                        <span aria-live="polite">
-                            / {pageCount > 0 ? pageCount : '—'}
-                        </span>
-                    </span>
-                    <Button
-                        type="button"
-                        variant="outline"
-                        size="icon"
-                        aria-label="Next page"
-                        title="Next page"
-                        disabled={pageNumber >= pageCount || pageCount === 0}
-                        onClick={() =>
-                            goToPage(Math.min(pageCount, pageNumber + 1))
-                        }
-                        className="size-8 rounded-none"
-                    >
-                        <ChevronRight aria-hidden="true" />
-                    </Button>
-                </div>
-
-                <div className="flex items-center gap-1">
-                    <Button
-                        type="button"
-                        variant="outline"
-                        size="icon"
-                        aria-label="Zoom out"
-                        title="Zoom out"
-                        disabled={zoom <= 0.5}
-                        onClick={() =>
-                            setZoom((current) =>
-                                Math.max(
-                                    0.5,
-                                    Math.round((current - 0.25) * 100) / 100,
-                                ),
-                            )
-                        }
-                        className="size-8 rounded-none"
-                    >
-                        <ZoomOut aria-hidden="true" />
-                    </Button>
-                    <span
-                        className="min-w-12 text-center text-xs text-slate-700 tabular-nums dark:text-neutral-300"
-                        aria-live="polite"
-                    >
-                        {Math.round(zoom * 100)}%
-                    </span>
-                    <Button
-                        type="button"
-                        variant="outline"
-                        size="icon"
-                        aria-label="Zoom in"
-                        title="Zoom in"
-                        disabled={zoom >= 2.5}
-                        onClick={() =>
-                            setZoom((current) =>
-                                Math.min(
-                                    2.5,
-                                    Math.round((current + 0.25) * 100) / 100,
-                                ),
-                            )
-                        }
-                        className="size-8 rounded-none"
-                    >
-                        <ZoomIn aria-hidden="true" />
-                    </Button>
-                    <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setZoom(1)}
-                        className="h-8 rounded-none px-2 text-xs"
-                    >
-                        <Maximize aria-hidden="true" />
-                        Fit width
-                    </Button>
-                </div>
-            </div>
+            <PdfViewerControls
+                pageNumber={pageNumber}
+                pageCount={pageCount}
+                zoom={zoom}
+                onPageChange={goToPage}
+                onZoomChange={onZoomChange}
+                onFitPage={onFitPage}
+            />
 
             <div
                 ref={viewerRef}
-                className="relative min-h-0 flex-1 overflow-auto bg-slate-200 p-2 dark:bg-neutral-900"
+                {...panHandlers}
+                className={cn(
+                    'relative min-h-0 flex-1 overflow-auto bg-slate-200 p-2 dark:bg-neutral-900',
+                    canPan &&
+                        'cursor-grab touch-none select-none [&_button]:cursor-grab',
+                    panning && 'cursor-grabbing [&_button]:cursor-grabbing',
+                )}
             >
                 {!pageReady && !loadError && (
                     <div className="absolute inset-0 z-10 flex items-center justify-center bg-slate-200 dark:bg-neutral-900">
@@ -284,48 +240,105 @@ export default function PdfPreview({ url, title }: PdfPreviewProps) {
                                     : 'Could not load this PDF.'}
                             </p>
                         }
-                        className="flex w-full flex-col items-center gap-4"
+                        className="flex w-max min-w-full flex-col items-center gap-4"
                     >
                         {Array.from(
                             { length: pageCount },
                             (_, index) => index + 1,
                         ).map((page) => (
-                            <Page
-                                key={page}
-                                pageNumber={page}
-                                width={pageWidth}
-                                suspense={false}
-                                renderTextLayer={false}
-                                renderAnnotationLayer={false}
-                                onLoadError={(error) =>
-                                    setLoadError(error.message)
-                                }
-                                onRenderError={(error) =>
-                                    setLoadError(error.message)
-                                }
-                                canvasBackground="#ffffff"
-                                onRenderSuccess={() => {
-                                    if (page === 1) {
-                                        setPageReady(true);
+                            <div key={page} className="relative w-fit">
+                                <Page
+                                    pageNumber={page}
+                                    onLoadSuccess={(loadedPage) => {
+                                        const { width, height } =
+                                            loadedPage.getViewport({
+                                                scale: 1,
+                                            });
+                                        setPageSizes((current) =>
+                                            current[page]?.width === width &&
+                                            current[page]?.height === height
+                                                ? current
+                                                : {
+                                                      ...current,
+                                                      [page]: { width, height },
+                                                  },
+                                        );
+                                    }}
+                                    width={pageWidth}
+                                    suspense={false}
+                                    renderTextLayer={false}
+                                    renderAnnotationLayer={false}
+                                    onLoadError={(error) =>
+                                        setLoadError(error.message)
                                     }
-                                }}
-                                loading={
-                                    <p className="p-6 text-center text-sm text-slate-600 dark:text-neutral-300">
-                                        Rendering page {page}…
-                                    </p>
-                                }
-                                error={
-                                    <p
-                                        role="alert"
-                                        className="max-w-lg p-6 text-center text-sm text-red-800 dark:text-red-300"
-                                    >
-                                        {loadError
-                                            ? `Could not render page ${page}: ${loadError}`
-                                            : `Could not render page ${page}.`}
-                                    </p>
-                                }
-                                className="scroll-m-2 shadow-lg [&_canvas]:block"
-                            />
+                                    onRenderError={(error) =>
+                                        setLoadError(error.message)
+                                    }
+                                    canvasBackground="#ffffff"
+                                    onRenderSuccess={() => {
+                                        if (page === 1) {
+                                            setPageReady(true);
+                                        }
+                                    }}
+                                    loading={
+                                        <p className="p-6 text-center text-sm text-slate-600 dark:text-neutral-300">
+                                            Rendering page {page}…
+                                        </p>
+                                    }
+                                    error={
+                                        <p
+                                            role="alert"
+                                            className="max-w-lg p-6 text-center text-sm text-red-800 dark:text-red-300"
+                                        >
+                                            {loadError
+                                                ? `Could not render page ${page}: ${loadError}`
+                                                : `Could not render page ${page}.`}
+                                        </p>
+                                    }
+                                    className="scroll-m-2 shadow-lg [&_canvas]:block"
+                                />
+                                {highlights.map((highlight) => {
+                                    if (
+                                        highlight.page !== page ||
+                                        !highlight.box ||
+                                        !highlight.pageWidth ||
+                                        !highlight.pageHeight
+                                    ) {
+                                        return null;
+                                    }
+
+                                    const [x1, y1, x2, y2] = highlight.box;
+                                    const selected =
+                                        selectedHighlightId === highlight.id;
+
+                                    return (
+                                        <button
+                                            key={highlight.id}
+                                            data-pan-region
+                                            type="button"
+                                            aria-label={`OCR region on page ${page}`}
+                                            aria-pressed={selected}
+                                            onClick={() =>
+                                                onSelectHighlight?.(
+                                                    highlight.id,
+                                                )
+                                            }
+                                            className={cn(
+                                                'absolute border',
+                                                selected
+                                                    ? 'z-10 border-blue-900 bg-blue-900/20'
+                                                    : 'z-0 border-blue-900/40 bg-blue-900/5',
+                                            )}
+                                            style={{
+                                                left: `${(x1 / highlight.pageWidth) * 100}%`,
+                                                top: `${(y1 / highlight.pageHeight) * 100}%`,
+                                                width: `${((x2 - x1) / highlight.pageWidth) * 100}%`,
+                                                height: `${((y2 - y1) / highlight.pageHeight) * 100}%`,
+                                            }}
+                                        />
+                                    );
+                                })}
+                            </div>
                         ))}
                     </Document>
                 ) : null}

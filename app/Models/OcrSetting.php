@@ -20,7 +20,11 @@ class OcrSetting extends Model
 
     public const DEFAULT_JOB_URL = 'https://paddleocr.aistudio-app.com/api/v2/ocr/jobs';
 
-    public const DEFAULT_MODEL = 'PP-OCRv6';
+    public const MODEL_TRADITIONAL = 'PP-OCRv6';
+
+    public const MODEL_VL = 'PaddleOCR-VL-1.6';
+
+    public const DEFAULT_MODEL = self::MODEL_TRADITIONAL;
 
     protected $fillable = [
         'driver',
@@ -125,6 +129,25 @@ class OcrSetting extends Model
                 'value' => self::DRIVER_PADDLE,
                 'label' => 'PaddleOCR',
                 'description' => 'Uses the Baidu PaddleOCR jobs API. Stores recognized text only.',
+            ],
+        ];
+    }
+
+    /**
+     * @return list<array{value: string, label: string, description: string}>
+     */
+    public static function models(): array
+    {
+        return [
+            [
+                'value' => self::MODEL_TRADITIONAL,
+                'label' => 'Traditional',
+                'description' => 'PP-OCRv6. Recognizes each line of text.',
+            ],
+            [
+                'value' => self::MODEL_VL,
+                'label' => 'VL',
+                'description' => 'PaddleOCR-VL-1.6. Reads the page as markdown, including tables and layout.',
             ],
         ];
     }

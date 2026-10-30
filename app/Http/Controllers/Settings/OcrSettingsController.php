@@ -18,11 +18,10 @@ class OcrSettingsController extends Controller
 
         return Inertia::render('settings/ocr', [
             'driver' => $setting->driver,
-            'jobUrl' => $setting->resolvedJobUrl(),
             'model' => $setting->resolvedModel(),
-            'hasToken' => $setting->resolvedToken() !== '',
             'optimize' => $setting->optimize,
             'drivers' => OcrSetting::drivers(),
+            'models' => OcrSetting::models(),
             'levels' => OcrSetting::levels(),
             'status' => $request->session()->get('status'),
         ]);
@@ -34,17 +33,12 @@ class OcrSettingsController extends Controller
 
         $validated = $request->validate([
             'driver' => ['required', 'string', Rule::in([OcrSetting::DRIVER_LOCAL, OcrSetting::DRIVER_PADDLE])],
-            'job_url' => ['required_if:driver,'.OcrSetting::DRIVER_PADDLE, 'nullable', 'string', 'url', 'max:500'],
-            'token' => [
-                Rule::requiredIf(
-                    $request->input('driver') === OcrSetting::DRIVER_PADDLE
-                    && $setting->resolvedToken() === '',
-                ),
+            'model' => [
+                Rule::requiredIf($request->input('driver') === OcrSetting::DRIVER_PADDLE),
                 'nullable',
                 'string',
-                'max:500',
+                Rule::in([OcrSetting::MODEL_TRADITIONAL, OcrSetting::MODEL_VL]),
             ],
-            'model' => ['required_if:driver,'.OcrSetting::DRIVER_PADDLE, 'nullable', 'string', 'max:100'],
             'optimize' => ['required', 'integer', 'between:0,3'],
         ]);
 
@@ -52,12 +46,8 @@ class OcrSettingsController extends Controller
         $setting->optimize = $validated['optimize'];
 
         if ($validated['driver'] === OcrSetting::DRIVER_PADDLE) {
-            $setting->job_url = $validated['job_url'];
+            $setting->job_url = null;
             $setting->model = $validated['model'];
-
-            if (filled($validated['token'] ?? null)) {
-                $setting->token = $validated['token'];
-            }
         }
 
         $setting->save();

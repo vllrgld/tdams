@@ -51,6 +51,7 @@ export default function DocumentCardView({
                         <DocumentThumbnail
                             mimeType={document.mimeType}
                             url={document.viewUrl}
+                            thumbnailUrl={document.thumbnailUrl}
                             title={document.originalFilename}
                             fit="cover"
                             className="absolute inset-0 h-full"
