@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react';
 import { cn } from '@/lib/utils';
 import BookCoverFace from '@/pages/manage/books/book-cover-face';
-import type { BookCover } from '../data/cabinets';
+import type { BookCover } from '../../data/cabinets';
 
 const COVER_ART_W = 440;
 const COVER_ART_H = 595;

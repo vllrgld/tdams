@@ -1,24 +1,28 @@
 import { Maximize2 } from 'lucide-react';
 import { motion, useReducedMotion, type Transition } from 'motion/react';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import type { ArchivedDocument } from '@/pages/documents/types';
 import BookCoverFace from '@/pages/manage/books/book-cover-face';
-import type { BookCover, BookOrigin, CabinetBook } from '../data/cabinets';
-import { useBookPortal } from './book-portal';
-import OpenFolder from './open-folder';
+import { useBookPortal } from '../shared/book-portal';
+import type { FilingItemViewerProps } from '../shared/filing-item-types';
+import {
+    FADE_PICKUP_HOLD_MS,
+    useFilingItemTransition,
+} from '../shared/use-filing-item-transition';
 import {
     BookPage,
     DocumentDetails,
     EmptyDocuments,
     FILING_PAGE_HEIGHT,
-} from './filing-document-content';
+} from '../shared/filing-document-content';
 import {
     measureSlotPose,
     poseFromMatrix,
     type FlyerPose,
-} from './book-world-pose';
+} from '../shared/book-world-pose';
 
 const PAGE_W = 440;
 const PAGE_H = FILING_PAGE_HEIGHT;
@@ -53,8 +57,7 @@ const TRAVEL_YAW: Transition = {
 };
 const RETURN_EASE = [0.22, 1, 0.36, 1] as const;
 const RETURN_FIT_S = 0.32;
-const RETURN_MOVE_S = 1;
-const RETURN_PARK_AT = 0.7;
+const RETURN_MOVE_S = 0.7;
 const INSERT_LIFT_RATIO = 1.4;
 const INSTANT: Transition = { duration: 0 };
 const RETURN_FIT: Transition = {
@@ -64,12 +67,15 @@ const RETURN_FIT: Transition = {
 const RETURN_MOVE: Transition = {
     duration: RETURN_MOVE_S,
     ease: [0.4, 0, 0.2, 1],
-    times: [0, RETURN_PARK_AT, 1],
     transformOrigin: INSTANT,
     width: RETURN_FIT,
     height: RETURN_FIT,
     ['--book-depth' as string]: RETURN_FIT,
     ['--cover-scale' as string]: RETURN_FIT,
+};
+const INSERT_MOVE: Transition = {
+    duration: 0.38,
+    ease: [0.4, 0, 0.2, 1],
 };
 const BACKDROP: Transition = {
     duration: 0.55,
@@ -78,20 +84,18 @@ const BACKDROP: Transition = {
 const FLIP: Transition = { duration: 0.7, ease: [0.4, 0, 0.2, 1] };
 const FADE: Transition = { duration: 0.35, ease: [0.22, 1, 0.36, 1] };
 
-export type { BookOrigin };
-
-export type OpenedBook = {
-    book: CabinetBook;
-    cabinetName: string;
-    drawerLabel: string;
-    cover: BookCover;
-    origin: BookOrigin | null;
-};
-
-type BookPhase = 'rise' | 'travel' | 'open' | 'closing' | 'return' | 'drop';
+type BookPhase =
+    | 'appearing'
+    | 'rise'
+    | 'travel'
+    | 'open'
+    | 'closing'
+    | 'return'
+    | 'drop';
 
 // Leave room beyond the normal tween for a delayed completion callback.
 const PHASE_RECOVERY_MS: Record<Exclude<BookPhase, 'open'>, number> = {
+    appearing: FADE_PICKUP_HOLD_MS,
     rise: 1000,
     travel: 1200,
     closing: 1000,
@@ -102,9 +106,7 @@ const PHASE_RECOVERY_MS: Record<Exclude<BookPhase, 'open'>, number> = {
 const VOLUME_ORIGIN = '50% 50% calc(-0.5 * var(--book-depth, 0px))';
 
 function risenPose(pose: FlyerPose): FlyerPose {
-    const matrix = new DOMMatrix(pose.transform).translateSelf(0, -RISE);
-
-    return poseFromMatrix(matrix, pose);
+    return liftPose(pose, insertLift(pose.height));
 }
 
 function standingPose(): FlyerPose {
@@ -151,7 +153,7 @@ function liftPose(pose: FlyerPose, lift: number): FlyerPose {
 }
 
 function insertLift(height: number): number {
-    return Math.round(height * INSERT_LIFT_RATIO);
+    return Math.max(RISE, Math.round(height * INSERT_LIFT_RATIO));
 }
 
 function parkedAboveSlot(rest: FlyerPose): FlyerPose {
@@ -165,7 +167,8 @@ function returnOuterMotion(
 ) {
     return {
         ...flyerOuterMotion(to),
-        transform: [fromTransform, above.transform, to.transform],
+        // Stop above the drawer. Insertion happens in its own 3D scene.
+        transform: [fromTransform, above.transform],
     };
 }
 
@@ -183,7 +186,8 @@ function isReturnOuterAnimate(definition: unknown): boolean {
 }
 
 const BookFlyer = memo(function BookFlyer({
-    hover,
+    initialPose,
+    drawerSlot,
     outerAnimate,
     outerTransition,
     yawTransition,
@@ -193,7 +197,8 @@ const BookFlyer = memo(function BookFlyer({
     onOuterComplete,
     onTransformUpdate,
 }: {
-    hover: FlyerPose | null;
+    initialPose: FlyerPose | null;
+    drawerSlot: HTMLElement | null;
     outerAnimate: FlyerOuterAnimate;
     outerTransition: Transition;
     yawTransition: Transition;
@@ -203,25 +208,100 @@ const BookFlyer = memo(function BookFlyer({
     onOuterComplete: (definition?: unknown) => void;
     onTransformUpdate: (transform: string) => void;
 }) {
-    return (
+    const flyerRef = useRef<HTMLDivElement>(null);
+    const completionFrame = useRef<number | null>(null);
+    const latestAnimate = useRef(outerAnimate);
+    latestAnimate.current = outerAnimate;
+    useEffect(
+        () => () => {
+            if (completionFrame.current !== null) {
+                cancelAnimationFrame(completionFrame.current);
+            }
+        },
+        [],
+    );
+    const drawerFrame = useMemo(
+        () =>
+            drawerSlot
+                ? new DOMMatrix(
+                      measureSlotPose(drawerSlot, initialPose?.depth ?? 0)
+                          .transform,
+                  )
+                : null,
+        [drawerSlot, initialPose],
+    );
+    const inverseFrame = drawerFrame?.inverse();
+    const toLocal = (transform: string) => {
+        if (!inverseFrame) return transform;
+        const matrix = inverseFrame.multiply(new DOMMatrix(transform));
+        // Inverting matrices leaves near-zero values in scientific notation,
+        // which Motion can mistake for units while interpolating the string.
+        return `matrix3d(${Array.from(matrix.toFloat64Array(), (value) =>
+            value.toFixed(8),
+        ).join(', ')})`;
+    };
+    const localTransform = Array.isArray(outerAnimate.transform)
+        ? outerAnimate.transform.map(toLocal)
+        : toLocal(outerAnimate.transform);
+    const flyer = (
         <motion.div
+            ref={flyerRef}
             aria-hidden="true"
-            className="pointer-events-none absolute top-0 left-0 z-0"
+            data-book-flight-space={drawerSlot ? 'drawer' : 'overlay'}
+            className="pointer-events-none absolute top-0 left-0"
             style={{
                 transformStyle: 'preserve-3d',
                 opacity: flying ? 1 : 0,
                 visibility: flying ? 'visible' : 'hidden',
                 willChange: flying ? 'transform' : 'auto',
             }}
-            initial={hover ? flyerOuterMotion(hover) : false}
-            animate={outerAnimate}
+            initial={
+                initialPose
+                    ? {
+                          ...flyerOuterMotion(initialPose),
+                          transform: toLocal(initialPose.transform),
+                      }
+                    : false
+            }
+            animate={{ ...outerAnimate, transform: localTransform }}
             transition={outerTransition}
             onUpdate={(latest) => {
                 if (typeof latest.transform === 'string') {
-                    onTransformUpdate(latest.transform);
+                    onTransformUpdate(
+                        drawerFrame
+                            ? drawerFrame
+                                  .multiply(new DOMMatrix(latest.transform))
+                                  .toString()
+                            : latest.transform,
+                    );
                 }
             }}
-            onAnimationComplete={onOuterComplete}
+            onAnimationComplete={(definition) => {
+                // Ignore completion from an interrupted target, and report the
+                // world-space target regardless of the flyer's current parent.
+                if (
+                    typeof definition === 'object' &&
+                    'transform' in definition &&
+                    JSON.stringify(definition.transform) ===
+                        JSON.stringify(localTransform)
+                ) {
+                    // Motion completes before its final style write. Measure
+                    // on the next frame so changing parents preserves that pose.
+                    completionFrame.current = requestAnimationFrame(() => {
+                        completionFrame.current = null;
+                        if (latestAnimate.current !== outerAnimate) return;
+                        if (flyerRef.current) {
+                            onTransformUpdate(
+                                measureSlotPose(
+                                    flyerRef.current,
+                                    initialPose?.depth ?? 0,
+                                ).transform,
+                            );
+                        }
+                        onOuterComplete(outerAnimate);
+                    });
+                }
+            }}
         >
             <motion.div
                 className="h-full w-full"
@@ -229,7 +309,7 @@ const BookFlyer = memo(function BookFlyer({
                     transformStyle: 'preserve-3d',
                     transformOrigin: VOLUME_ORIGIN,
                 }}
-                initial={hover ? { rotateY: hover.rotateY } : false}
+                initial={initialPose ? { rotateY: initialPose.rotateY } : false}
                 animate={{ rotateY }}
                 transition={yawTransition}
             >
@@ -242,27 +322,11 @@ const BookFlyer = memo(function BookFlyer({
             </motion.div>
         </motion.div>
     );
+
+    return drawerSlot ? createPortal(flyer, drawerSlot) : flyer;
 });
 
-export type OpenBookProps = {
-    opened: OpenedBook;
-    dimmed?: boolean;
-    initialDocumentId?: string | null;
-    onClose: () => void;
-    onOpenDocument: (document: ArchivedDocument) => void;
-    onOpenPrevious?: (number: string) => void;
-    onInitialDocumentConsumed?: () => void;
-};
-
-export default function OpenBook(props: OpenBookProps) {
-    return props.opened.book.kind === 'folder' ? (
-        <OpenFolder {...props} />
-    ) : (
-        <BookReader {...props} />
-    );
-}
-
-function BookReader({
+export default function OpenBook({
     opened,
     dimmed,
     initialDocumentId,
@@ -270,12 +334,21 @@ function BookReader({
     onOpenDocument,
     onOpenPrevious,
     onInitialDocumentConsumed,
-}: OpenBookProps) {
+}: FilingItemViewerProps) {
     const reduceMotion = useReducedMotion();
     const portal = useBookPortal();
     const setHost = portal?.setHost;
     const getSlot = portal?.getSlot;
     const dialogRef = useRef<HTMLDivElement>(null);
+    const animation = useFilingItemTransition({
+        kind: 'book',
+        dialogRef,
+        onClose,
+        getActor: () =>
+            portal?.host?.closest<HTMLElement>('[data-book-flight-space]') ??
+            null,
+    });
+    const fadePickup = animation.pickup === 'fade';
     const consumedInitialRef = useRef(false);
     const initialDocumentIdRef = useRef(initialDocumentId);
     const onInitialDocumentConsumedRef = useRef(onInitialDocumentConsumed);
@@ -294,14 +367,31 @@ function BookReader({
         origin?.hover ? risenPose(origin.hover) : null,
     );
     const [standing] = useState(() => (origin ? standingPose() : null));
-    const [phase, setPhase] = useState<BookPhase>(hasPickup ? 'rise' : 'open');
+    const [phase, setPhase] = useState<BookPhase>(
+        reduceMotion
+            ? 'open'
+            : fadePickup
+              ? 'appearing'
+              : hasPickup
+                ? 'rise'
+                : 'open',
+    );
     const phaseRef = useRef(phase);
     phaseRef.current = phase;
     const returnFromRef = useRef(hover?.transform ?? '');
     const [returnFrom, setReturnFrom] = useState(returnFromRef.current);
+    const [handoffPose, setHandoffPose] = useState(hover);
 
     const goToPhase = useCallback(
         (next: BookPhase) => {
+            if (next === 'travel' && origin) {
+                setHandoffPose(
+                    poseFromMatrix(
+                        new DOMMatrix(returnFromRef.current),
+                        origin.hover,
+                    ),
+                );
+            }
             if (next === 'open' && standing) {
                 returnFromRef.current = standing.transform;
             }
@@ -315,6 +405,14 @@ function BookReader({
 
                     setRest(restPose);
                     setAbove(liftPose(restPose, insertLift(slot.offsetHeight)));
+                    if (next === 'drop') {
+                        setHandoffPose(
+                            poseFromMatrix(
+                                new DOMMatrix(returnFromRef.current),
+                                restPose,
+                            ),
+                        );
+                    }
                 }
             }
 
@@ -335,14 +433,19 @@ function BookReader({
     const prefetchDocs = [nextDoc, upcomingDoc, prevDoc].filter(
         (document): document is ArchivedDocument => document !== null,
     );
-    const canInteract = phase === 'open';
+    const canInteract = phase === 'open' && !animation.fadingOut;
+    const insideDrawer = phase === 'rise' || phase === 'drop';
     const flying =
         phase === 'rise' ||
         phase === 'travel' ||
         phase === 'closing' ||
         phase === 'return' ||
         phase === 'drop';
-    const showSpread = !hasPickup || phase === 'open' || phase === 'closing';
+    const showSpread =
+        !hasPickup ||
+        phase === 'appearing' ||
+        phase === 'open' ||
+        phase === 'closing';
     const canGoNext =
         canInteract && current !== null && index < lastIndex && !flip;
     const canGoPrev = canInteract && index > 0 && !flip;
@@ -353,25 +456,29 @@ function BookReader({
         ? INSTANT
         : phase === 'closing'
           ? COVER_CLOSE
-          : origin
+          : origin || fadePickup
             ? OPEN_AFTER_PICKUP
             : OPEN;
     const flipTransition = reduceMotion ? INSTANT : FLIP;
     const flyerAnimate =
         phase === 'rise'
             ? risenHover
-            : phase === 'return' || phase === 'drop'
-              ? rest
-              : standing;
+            : phase === 'return'
+              ? above
+              : phase === 'drop'
+                ? rest
+                : standing;
     const flyerTransition = reduceMotion
         ? INSTANT
         : phase === 'rise'
           ? RISE_MOVE
-          : phase === 'return' || phase === 'drop'
-            ? RETURN_MOVE
-            : phase === 'travel'
-              ? TRAVEL_MOVE
-              : INSTANT;
+          : phase === 'drop'
+            ? INSERT_MOVE
+            : phase === 'return'
+              ? RETURN_MOVE
+              : phase === 'travel'
+                ? TRAVEL_MOVE
+                : INSTANT;
     const flyerYawTransition = reduceMotion
         ? INSTANT
         : phase === 'return' || phase === 'drop'
@@ -380,7 +487,7 @@ function BookReader({
             ? TRAVEL_YAW
             : flyerTransition;
     const flyerOuterAnimate = useMemo(() => {
-        if ((phase === 'return' || phase === 'drop') && rest && above) {
+        if (phase === 'return' && rest && above) {
             return returnOuterMotion(rest, above, returnFrom);
         }
 
@@ -394,6 +501,7 @@ function BookReader({
     );
     const handleFlyerComplete = useCallback(
         (definition?: unknown) => {
+            if (animation.fadingOutRef.current) return;
             const current = phaseRef.current;
             const transform =
                 definition &&
@@ -412,7 +520,7 @@ function BookReader({
                 return;
             }
 
-            if (current === 'return' || current === 'drop') {
+            if (current === 'return') {
                 if (
                     definition !== undefined &&
                     !isReturnOuterAnimate(definition)
@@ -420,13 +528,16 @@ function BookReader({
                     return;
                 }
 
+                goToPhase('drop');
+            } else if (current === 'drop' && transform === rest?.transform) {
                 onCloseRef.current();
             }
         },
-        [goToPhase, risenHover, standing],
+        [goToPhase, risenHover, standing, rest, animation.fadingOutRef],
     );
     const handleCoverComplete = useCallback(
         (definition?: unknown) => {
+            if (animation.fadingOutRef.current) return;
             if (phaseRef.current !== 'closing') {
                 return;
             }
@@ -444,37 +555,51 @@ function BookReader({
 
             goToPhase('return');
         },
-        [coverClosed, goToPhase],
+        [coverClosed, goToPhase, animation.fadingOutRef],
     );
     const onFlyerTransformUpdate = useCallback((transform: string) => {
         returnFromRef.current = transform;
     }, []);
 
     useEffect(() => {
-        if (!hasPickup || phase === 'open') {
+        if (
+            (!hasPickup && phase !== 'appearing') ||
+            phase === 'open' ||
+            animation.fadingOut
+        ) {
             return;
         }
 
         // Interrupted/no-op animations may not deliver a completion event.
         // Recover only the phase that scheduled this timer; never skip a newer one.
         const timeout = window.setTimeout(() => {
-            if (phaseRef.current !== phase) {
+            if (phaseRef.current !== phase || animation.fadingOutRef.current) {
                 return;
             }
 
-            if (phase === 'rise') {
+            if (phase === 'appearing') {
+                goToPhase('open');
+            } else if (phase === 'rise') {
                 goToPhase('travel');
             } else if (phase === 'travel') {
                 goToPhase('open');
             } else if (phase === 'closing') {
                 goToPhase('return');
+            } else if (phase === 'return') {
+                goToPhase('drop');
             } else {
                 onCloseRef.current();
             }
         }, PHASE_RECOVERY_MS[phase]);
 
         return () => window.clearTimeout(timeout);
-    }, [goToPhase, hasPickup, phase]);
+    }, [
+        goToPhase,
+        hasPickup,
+        phase,
+        animation.fadingOut,
+        animation.fadingOutRef,
+    ]);
 
     useEffect(() => {
         dialogRef.current?.focus({ preventScroll: true });
@@ -540,12 +665,13 @@ function BookReader({
     }, [opened.book.id]);
 
     function requestClose() {
-        if (dimmed) {
+        if (dimmed || animation.fadingOutRef.current) {
             return;
         }
 
-        if (reduceMotion || !origin) {
-            onCloseRef.current();
+        if (animation.returnAnimation === 'fade' || !origin) {
+            setFlip(null);
+            animation.closeWithFade();
             return;
         }
 
@@ -565,7 +691,7 @@ function BookReader({
             return;
         }
 
-        goToPhase('return');
+        goToPhase(currentPhase === 'rise' ? 'drop' : 'return');
     }
 
     useEffect(() => {
@@ -580,7 +706,13 @@ function BookReader({
         window.addEventListener('keydown', handleKeyDown);
 
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [dimmed, opened.origin, reduceMotion]);
+    }, [
+        dimmed,
+        opened.origin,
+        reduceMotion,
+        animation.returnAnimation,
+        animation.closeWithFade,
+    ]);
 
     function finishFlip(direction: 'next' | 'prev') {
         if (phaseRef.current !== 'open') {
@@ -651,6 +783,10 @@ function BookReader({
             aria-modal="true"
             aria-labelledby="open-book-title"
             data-book-phase={phase}
+            data-pickup-animation={animation.pickup}
+            data-return-animation={animation.returnAnimation}
+            data-fading-out={animation.fadingOut || undefined}
+            inert={animation.fadingOut || dimmed || undefined}
             tabIndex={-1}
             ref={dialogRef}
             className={cn(
@@ -658,21 +794,36 @@ function BookReader({
                 dimmed ? 'z-40' : 'z-[60]',
             )}
             style={{ perspective: '1200px' }}
-            initial={hasPickup || reduceMotion ? false : { opacity: 0 }}
+            initial={
+                fadePickup
+                    ? { opacity: 0 }
+                    : hasPickup || reduceMotion
+                      ? false
+                      : { opacity: 0 }
+            }
             animate={{ opacity: 1 }}
             exit={
-                hasPickup
+                hasPickup || animation.fadingOut
                     ? { opacity: 0, transition: INSTANT }
                     : reduceMotion
                       ? undefined
                       : { opacity: 0 }
             }
-            transition={reduceMotion || hasPickup ? INSTANT : FADE}
+            transition={
+                fadePickup
+                    ? { duration: animation.duration }
+                    : reduceMotion || hasPickup
+                      ? INSTANT
+                      : FADE
+            }
         >
             <motion.button
                 type="button"
                 aria-label="Close book"
-                className="absolute inset-0 bg-black/70 focus-visible:outline-2 focus-visible:outline-offset-[-4px] focus-visible:outline-blue-300"
+                className={cn(
+                    'absolute inset-0 focus-visible:outline-2 focus-visible:outline-offset-[-4px] focus-visible:outline-blue-300',
+                    insideDrawer ? 'bg-transparent' : 'bg-black/70',
+                )}
                 initial={hasPickup ? { opacity: 0 } : false}
                 animate={{
                     opacity:
@@ -689,7 +840,12 @@ function BookReader({
             />
             {hasPickup && origin && flyerAnimate && flyerOuterAnimate ? (
                 <BookFlyer
-                    hover={hover}
+                    initialPose={phase === 'rise' ? hover : handoffPose}
+                    drawerSlot={
+                        insideDrawer
+                            ? (getSlot?.(opened.book.id) ?? null)
+                            : null
+                    }
                     outerAnimate={flyerOuterAnimate}
                     outerTransition={flyerTransition}
                     yawTransition={flyerYawTransition}
@@ -703,6 +859,7 @@ function BookReader({
             {showSpread ? (
                 <div
                     className="group/book relative z-10"
+                    inert={!canInteract || undefined}
                     style={{
                         width: PAGE_W * 2,
                         height: PAGE_H,
@@ -822,7 +979,7 @@ function BookReader({
                                 transformStyle: 'preserve-3d',
                             }}
                             initial={
-                                reduceMotion
+                                reduceMotion || fadePickup
                                     ? false
                                     : { transform: coverClosed }
                             }

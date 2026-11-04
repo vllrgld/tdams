@@ -1,0 +1,26 @@
+[
+  {
+    "case": "book-scale-regression",
+    "phases": [
+      "rise",
+      "travel",
+      "open",
+      "closing",
+      "return",
+      "drop"
+    ],
+    "handoffs": [
+      {
+        "from": "drawer",
+        "to": "overlay",
+        "distance": 0.49784211175597665
+      },
+      {
+        "from": "overlay",
+        "to": "drawer",
+        "distance": 0.47323840915558646
+      }
+    ],
+    "status": "passed"
+  }
+]

@@ -7,6 +7,7 @@ import {
     Folder,
     Folders,
     LayoutDashboard,
+    Clapperboard,
     Palette,
     ScanText,
     Shield,
@@ -28,6 +29,7 @@ import {
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
 import { edit as editAppearance } from '@/routes/appearance';
+import { edit as editAnimations } from '@/routes/animations';
 import { edit as editOcr } from '@/routes/ocr';
 import { edit as editProfile } from '@/routes/profile';
 import { edit as editSecurity } from '@/routes/security';
@@ -93,6 +95,11 @@ const accountNavItems: NavItem[] = [
         title: 'Appearance',
         href: editAppearance(),
         icon: Palette,
+    },
+    {
+        title: 'Animations',
+        href: editAnimations(),
+        icon: Clapperboard,
     },
     {
         title: 'OCR',

@@ -10,7 +10,7 @@ import { BOOK_COVER } from '@/pages/archive/data/cabinets';
 import type { FilingKind } from '@/pages/archive/data/cabinets';
 import ClosedFolderMesh, {
     FOLDER_ASPECT_RATIO,
-} from '@/pages/archive/components/closed-folder-mesh';
+} from '@/pages/archive/components/folders/closed-folder-mesh';
 import BookCoverFace from './book-cover-face';
 
 const BOOK_W = 260;

@@ -22,7 +22,7 @@ import { cn } from '@/lib/utils';
 import CabinetSearch, {
     CABINET_SEARCH_FIELDS,
     type CabinetSearchField,
-} from '@/pages/archive/components/cabinet-search';
+} from '@/pages/archive/components/cabinets/cabinet-search';
 import {
     DEFAULT_COVER_TITLE,
     type FilingKind,

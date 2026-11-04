@@ -1,0 +1,26 @@
+[
+  {
+    "case": "recovery",
+    "phases": [
+      "rise",
+      "travel",
+      "open",
+      "closing",
+      "return",
+      "drop"
+    ],
+    "handoffs": [
+      {
+        "from": "drawer",
+        "to": "overlay",
+        "distance": 0.4564202832291552
+      },
+      {
+        "from": "overlay",
+        "to": "drawer",
+        "distance": 0.4325559071631239
+      }
+    ],
+    "status": "passed"
+  }
+]

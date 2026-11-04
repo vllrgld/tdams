@@ -12,7 +12,7 @@ import type {
     BookOrigin,
     CabinetBook,
     FilingCabinet as FilingCabinetData,
-} from '../data/cabinets';
+} from '../../data/cabinets';
 import CabinetDrawer from './cabinet-drawer';
 
 const CLOSEUP_WIDTH = 806;
@@ -73,7 +73,7 @@ function closeupPose(scale: number, tiltDeg: number): string {
     ];
     const centerY = ((Math.min(...ys) + Math.max(...ys)) / 2) * scale;
 
-    return `translateY(${-centerY}px) scale(${scale}) rotateX(${tiltDeg}deg)`;
+    return `translateY(${-centerY}px) scale3d(${scale}, ${scale}, ${scale}) rotateX(${tiltDeg}deg)`;
 }
 
 const CLOSEUP_FROM = closeupPose(CLOSEUP_SCALE_FROM, CLOSEUP_TILT_FROM);

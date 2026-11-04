@@ -1,0 +1,265 @@
+[
+  {
+    "case": "front-left",
+    "phases": [
+      "rise",
+      "travel",
+      "open",
+      "closing",
+      "return",
+      "drop"
+    ],
+    "handoffs": [
+      {
+        "from": "drawer",
+        "to": "overlay",
+        "distance": 0.44259257217254006
+      },
+      {
+        "from": "overlay",
+        "to": "drawer",
+        "distance": 0.40868426929700363
+      }
+    ],
+    "status": "passed"
+  },
+  {
+    "case": "front-middle",
+    "phases": [
+      "rise",
+      "travel",
+      "open",
+      "closing",
+      "return",
+      "drop"
+    ],
+    "handoffs": [
+      {
+        "from": "drawer",
+        "to": "overlay",
+        "distance": 0.38272106893683655
+      },
+      {
+        "from": "overlay",
+        "to": "drawer",
+        "distance": 0.3536378269899786
+      }
+    ],
+    "status": "passed"
+  },
+  {
+    "case": "back-left",
+    "phases": [
+      "rise",
+      "travel",
+      "open",
+      "closing",
+      "return",
+      "drop"
+    ],
+    "handoffs": [
+      {
+        "from": "drawer",
+        "to": "overlay",
+        "distance": 0.4102938943328492
+      },
+      {
+        "from": "overlay",
+        "to": "drawer",
+        "distance": 0.38464168092930456
+      }
+    ],
+    "status": "passed"
+  },
+  {
+    "case": "back-middle",
+    "phases": [
+      "rise",
+      "travel",
+      "open",
+      "closing",
+      "return",
+      "drop"
+    ],
+    "handoffs": [
+      {
+        "from": "drawer",
+        "to": "overlay",
+        "distance": 0.4564202832291552
+      },
+      {
+        "from": "overlay",
+        "to": "drawer",
+        "distance": 0.4325559071631239
+      }
+    ],
+    "status": "passed"
+  },
+  {
+    "case": "back-right",
+    "phases": [
+      "rise",
+      "travel",
+      "open",
+      "closing",
+      "return",
+      "drop"
+    ],
+    "handoffs": [
+      {
+        "from": "drawer",
+        "to": "overlay",
+        "distance": 0.4831054734152352
+      },
+      {
+        "from": "overlay",
+        "to": "drawer",
+        "distance": 0.4583456914504069
+      }
+    ],
+    "status": "passed"
+  },
+  {
+    "case": "cancel-rise",
+    "phases": [
+      "rise",
+      "drop"
+    ],
+    "handoffs": [],
+    "status": "passed"
+  },
+  {
+    "case": "cancel-travel",
+    "phases": [
+      "rise",
+      "travel",
+      "return",
+      "drop"
+    ],
+    "handoffs": [
+      {
+        "from": "drawer",
+        "to": "overlay",
+        "distance": 0.4564202832291552
+      },
+      {
+        "from": "overlay",
+        "to": "drawer",
+        "distance": 0.4325559071631239
+      }
+    ],
+    "status": "passed"
+  },
+  {
+    "case": "cancel-closing",
+    "phases": [
+      "rise",
+      "travel",
+      "open",
+      "closing",
+      "return",
+      "drop"
+    ],
+    "handoffs": [
+      {
+        "from": "drawer",
+        "to": "overlay",
+        "distance": 0.4564202832291552
+      },
+      {
+        "from": "overlay",
+        "to": "drawer",
+        "distance": 0.4325559071631239
+      }
+    ],
+    "status": "passed"
+  },
+  {
+    "case": "cancel-return",
+    "phases": [
+      "rise",
+      "travel",
+      "open",
+      "closing",
+      "return",
+      "drop"
+    ],
+    "handoffs": [
+      {
+        "from": "drawer",
+        "to": "overlay",
+        "distance": 0.4564202832291552
+      },
+      {
+        "from": "overlay",
+        "to": "drawer",
+        "distance": 0.4325559071631239
+      }
+    ],
+    "status": "passed"
+  },
+  {
+    "case": "cancel-drop",
+    "phases": [
+      "rise",
+      "travel",
+      "open",
+      "closing",
+      "return",
+      "drop"
+    ],
+    "handoffs": [
+      {
+        "from": "drawer",
+        "to": "overlay",
+        "distance": 0.4564202832291552
+      },
+      {
+        "from": "overlay",
+        "to": "drawer",
+        "distance": 0.4325559071631239
+      }
+    ],
+    "status": "passed"
+  },
+  {
+    "case": "reduced",
+    "phases": [
+      "open"
+    ],
+    "handoffs": [],
+    "status": "passed"
+  },
+  {
+    "case": "mobile",
+    "phases": [
+      "rise",
+      "travel",
+      "open",
+      "closing",
+      "return",
+      "drop"
+    ],
+    "handoffs": [
+      {
+        "from": "drawer",
+        "to": "overlay",
+        "distance": 0.46180429854710453
+      },
+      {
+        "from": "overlay",
+        "to": "drawer",
+        "distance": 0.437727839298824
+      }
+    ],
+    "status": "passed"
+  },
+  {
+    "case": "no-origin",
+    "phases": [
+      "open"
+    ],
+    "handoffs": [],
+    "status": "passed"
+  }
+]

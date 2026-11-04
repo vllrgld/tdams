@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import FilingCabinet from '@/pages/archive/components/filing-cabinet';
+import FilingCabinet from '@/pages/archive/components/cabinets/filing-cabinet';
 import type { FilingCabinet as FilingCabinetData } from '@/pages/archive/data/cabinets';
 
 type CabinetForm = {

@@ -1,4 +1,4 @@
-import type { FlyerPose } from './book-world-pose';
+import type { FlyerPose } from '../shared/book-world-pose';
 
 /** Keep the folder rigid and turn around its volume center, rather than
  * interpolating matrix entries (which shrinks its faces during a turn). */
@@ -23,6 +23,9 @@ export function folderMotionTransform(
     );
     const world = center.matrixTransform(matrix);
     const degrees = 180 / Math.PI;
+    // Avoid scientific notation from matrix-inversion noise: Motion's transform
+    // string interpolation can misread its exponent as a unit.
+    const value = (number: number) => number.toFixed(8);
 
-    return `translate3d(${world.x}px, ${world.y}px, ${world.z}px) rotateX(${x * degrees}deg) rotateY(${y * degrees}deg) rotateZ(${z * degrees}deg) scale3d(${sx}, ${sy}, ${sz}) translate3d(${-center.x}px, ${-center.y}px, ${-center.z}px)`;
+    return `translate3d(${value(world.x)}px, ${value(world.y)}px, ${value(world.z)}px) rotateX(${value(x * degrees)}deg) rotateY(${value(y * degrees)}deg) rotateZ(${value(z * degrees)}deg) scale3d(${value(sx)}, ${value(sy)}, ${value(sz)}) translate3d(${value(-center.x)}px, ${value(-center.y)}px, ${value(-center.z)}px)`;
 }

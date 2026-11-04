@@ -25,6 +25,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('user-password.update');
 
     Route::inertia('settings/appearance', 'settings/appearance')->name('appearance.edit');
+    Route::inertia('settings/animations', 'settings/animations')->name('animations.edit');
 
     Route::get('settings/ocr', [OcrSettingsController::class, 'edit'])->name('ocr.edit');
     Route::put('settings/ocr', [OcrSettingsController::class, 'update'])->name('ocr.update');

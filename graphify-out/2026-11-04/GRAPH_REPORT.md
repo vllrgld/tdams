@@ -1,24 +1,24 @@
 # Graph Report - dtms  (2026-11-04)
 
 ## Corpus Check
-- 367 files · ~422,948 words
+- 376 files · ~472,582 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 52 file(s) not represented in the graph (top: (none) 16, .csv 16, .css 5)
 
 ## Summary
-- 3160 nodes · 6998 edges · 191 communities (135 shown, 56 thin omitted)
+- 3170 nodes · 7031 edges · 195 communities (142 shown, 53 thin omitted)
 - Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 326 edges (avg confidence: 0.87)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `ccbc44f6`
+- Built from commit: `52e470e1`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
-- ShadcnInstaller
+- dialog.tsx
 - Book
-- cn
+- dropdown-menu.tsx
 - generate-slide.py
 - PaddleOcrClient
 - gray
@@ -28,27 +28,28 @@
 - slide_search_core.py
 - Illuminate\Http\RedirectResponse
 - component-tokens.md
-- components.json
+- document-chain.tsx
 - re
-- SKILL.md (design)
+- react
 - OcrDocument
-- document-viewer-dialog.tsx
+- react
 - @inertiajs/react
 - Brand Context Sync
 - Spacing Scale Tokens
-- security.tsx
-- document-viewer-dialog.tsx
-- button
+- SKILL.md (design)
+- two-factor-setup-modal.tsx
+- Illuminate\Database\Eloquent\Model
 - Semantic Color Tokens
 - HTML Token Validator
-- logo/generate.py
-- sys
-- cabinet-drawer.tsx
+- test_regions.py
+- open-book.tsx
+- ilocos-norte-map.tsx
+- DocumentInfo
 - Brand Color Extraction Scripts
 - TestCase
-- open-book.tsx
+- AppServiceProvider
 - design/references/banner-sizes-and-styles.md
-- @inertiajs/react
+- cabinets.ts
 - User
 - package.json Metadata
 - npm Dependencies
@@ -56,35 +57,35 @@
 - radius
 - app-sidebar-header.tsx
 - Banner Design Skill
-- SKILL.md (design-system)
+- generate-tokens.cjs
 - logo-design.md
 - csv
 - shadcn-accessibility.md
 - TestTailwindConfigGenerator
-- Archive
-- cip/search.py
+- open-folder.tsx
+- @base-ui/react
 - PasswordValidationRules
 - Inertia Middleware & Fortify
 - Brand Accessibility Checklists
-- sidebar.tsx
+- cn
 - cip/generate.py
-- TestShadcnInstaller
+- select.tsx
 - Brand Typography & Voice
 - Token Architecture Layers
 - Brand Asset Organization
 - Font Size Tokens
 - TaxDeclaration
-- AppServiceProvider
+- slides-copywriting-formulas.md
 - index.ts
 - TypeScript Config
 - pathlib
 - OcrSettingsTest
 - book-world-pose.ts
-- inject-brand-context.cjs
+- filing-cabinet.tsx
 - Inertia\Testing\AssertableInertia
 - regions.py
-- document-info.tsx
-- dropdown-menu.tsx
+- cn
+- books/index.tsx
 - Brand Asset Validator
 - cip/core.py
 - folder-motion-enhanced-review.mjs
@@ -93,15 +94,14 @@
 - DocumentFieldMappingTest.php
 - Design Tokens Starter Structure
 - .generate_config_string
-- embed-tokens.cjs
-- closed-folder-mesh.tsx
+- ocr
+- BM25
 - document-upload-dialog.tsx
-- SKILL.md (slides)
+- AuthenticationTest
 - EmailVerificationTest
 - main.py
 - TDAMS Branding Assets
 - ui-styling/SKILL.md
-- TailwindConfigGenerator
 - Routing by Task Type
 - Composer Package Metadata
 - Token Usage Validator
@@ -110,67 +110,69 @@
 - canvas-design-system.md
 - tailwind-utilities.md
 - tailwind-customization.md
-- SKILL.md (design-system)
 - Composer Dev Dependencies
 - FoldersTest
 - Motion Duration Tokens
 - shadcn-theming.md
 - tailwind-responsive.md
-- open-folder.tsx
+- button
 - DocumentFields
-- global-search.tsx
+- layout.tsx
 - Composer Requirements
+- BM25
 - input
 - xl
-- filing-cabinet.tsx
+- archive/index.tsx
 - Optional Native Binaries
 - DocumentController.php
 - Composer Config
-- books/index.tsx
 - auth.ts
-- $type
+- components.json
 - Product
 - CI Workflow
 - npm Scripts
 - Laravel\Fortify\Features
 - Document Upload Tests
 - ArchiveTest
-- radius
+- avatar.tsx
 - use-appearance.tsx
-- lg
+- messaging-framework.md
 - npm Dev Dependencies
 - Bagong Pilipinas Emblems
 - Ilocos Norte Seal
-- sm
+- $type
 - PSR-4 Autoload
 - Laravel Extra Config
 - 1 GB Lightsail: FastAPI + Paddle OCR + compression
 - 0001_01_01_000000_create_application_schema.php
 - apple-touch-icon.png
-- AuthenticationTest
+- radius
 - logo/core.py
-- padding-y
+- lg
 - Login Cover Art
 - setup-ocr.sh
 - Dependabot Config
 - ring
-- 16
+- sm
 - pnpm Workspace
 - Apache License
 - robots.txt
 - DocumentLinkingTest
-- Illuminate\Database\Eloquent\Model
+- Cabinet
 - slides-copywriting-formulas.md
 - SecurityTest.php
-- vite.config.ts
-- 1
-- pdf-preview.tsx
+- ShadcnInstaller
+- padding-y
+- 16
+- pdf-thumbnail.tsx
 - .test_full_configuration_typescript
+- TailwindConfigGenerator
 - OcrDocumentTest
 - PdfRegionTests
 - run.sh
-- 3
+- 1
 - HeaderDocumentSearchTest
+- 3
 - 8
 - destructive
 - destructive-foreground
@@ -178,16 +180,19 @@
 - primary-foreground
 - secondary-foreground
 - DocumentUploadTest.php
-- cip-deliverable-guide.md
+- AppLogoIcon
+- alert.tsx
 - setup.sh
+- cip-deliverable-guide.md
 - OcrDocumentTest.php
+- document-info.tsx
 - OcrSetting
 - none
 - PaddleOcrClient
 
 ## God Nodes (most connected - your core abstractions)
 1. `cn()` - 161 edges
-2. `react` - 89 edges
+2. `react` - 90 edges
 3. `Button()` - 85 edges
 4. `Document` - 66 edges
 5. `TailwindConfigGenerator` - 58 edges
@@ -204,10 +209,10 @@
   .github/prompts/design-system/references/tailwind-integration.md → .github/prompts/design-system/references/component-tokens.md
 - `Banner Output Path Convention` --semantically_similar_to--> `Asset Naming Convention`  [INFERRED] [semantically similar]
   .github/prompts/banner-design/SKILL.md → .github/prompts/brand/references/asset-organization.md
+- `Token Compliance Rule` --semantically_similar_to--> `Brand Color Compliance Validation`  [INFERRED] [semantically similar]
+  .github/prompts/design-system/SKILL.md → .github/prompts/brand/references/color-palette-management.md
 - `MIT License (frontmatter)` --conceptually_related_to--> `Apache License 2.0`  [AMBIGUOUS]
   .github/prompts/ui-styling/SKILL.md → .github/prompts/ui-styling/LICENSE.txt
-- `Multi-Skill Workflows` --semantically_similar_to--> `Complete Brand Package Workflow`  [INFERRED] [semantically similar]
-  .github/prompts/design/references/design-routing.md → .github/prompts/design/SKILL.md
 
 ## Import Cycles
 - None detected.
@@ -225,18 +230,22 @@
 - **Radix data-state to Base UI data attributes** — migration_checkbox_data_checked, migration_toggle_data_pressed, migration_navigation_menu_data_popup_open, migration_sidebar_data_popup_open [INFERRED 0.85]
 - **Primitive -> Semantic -> Component Token Cascade** — github_prompts_design_system_references_token_architecture_primitive_layer, github_prompts_design_system_references_token_architecture_semantic_layer, github_prompts_design_system_references_token_architecture_component_layer, github_prompts_design_system_references_primitive_tokens_color_scales, github_prompts_design_system_references_semantic_tokens_color_semantics, github_prompts_design_system_references_component_tokens_button_tokens [INFERRED 0.85]
 
-## Communities (191 total, 56 thin omitted)
+## Communities (195 total, 53 thin omitted)
+
+### Community 0 - "dialog.tsx"
+Cohesion: 0.10
+Nodes (33): Dialog Backdrop and Popup, Opacity and scale transitions, DeleteUser(), documentHint(), DocumentMatch, DocumentResult, GlobalSearch(), groupOrder (+25 more)
 
 ### Community 1 - "Book"
-Cohesion: 0.07
-Nodes (23): {closure#2}(), {closure#1}(), {closure#2}(), {closure#3}(), {closure#4}(), {closure#5}(), {closure#6}(), {closure#1}() (+15 more)
+Cohesion: 0.13
+Nodes (11): {closure#1}(), {closure#2}(), {closure#3}(), {closure#4}(), {closure#5}(), {closure#6}(), {closure#1}(), {closure#4}() (+3 more)
 
-### Community 2 - "cn"
-Cohesion: 0.09
-Nodes (37): Per-side translate transitions, Base UI Tooltip, delay prop (formerly delayDuration), withApp(), AppHeader(), mainNavItems, Props, rightNavItems (+29 more)
+### Community 2 - "dropdown-menu.tsx"
+Cohesion: 0.15
+Nodes (13): DropdownMenuCheckboxItem(), DropdownMenuGroup(), DropdownMenuItem(), DropdownMenuLabel(), DropdownMenuRadioItem(), DropdownMenuSeparator(), DropdownMenuShortcut(), DropdownMenuSubContent() (+5 more)
 
 ### Community 3 - "generate-slide.py"
-Cohesion: 0.13
+Cohesion: 0.12
 Nodes (11): _e(), generate_chart_slide(), generate_cta_slide(), generate_deck(), generate_metrics_slide(), generate_problem_slide(), generate_solution_slide(), generate_testimonial_slide() (+3 more)
 
 ### Community 5 - "gray"
@@ -244,68 +253,68 @@ Cohesion: 0.05
 Nodes (53): $type, $value, $type, $value, $type, $value, $type, $value (+45 more)
 
 ### Community 6 - "Button"
-Cohesion: 0.10
-Nodes (27): @laravel/passkeys, InputError(), PasskeyRegistration(), Props, PasskeyVerify(), Props, PasswordInput(), Props (+19 more)
+Cohesion: 0.06
+Nodes (43): Non-primitive wrappers (alert, card, input, skeleton, spinner), @inertiajs/react, @laravel/passkeys, Heading(), InputError(), EmptyState(), ManagePasskeys(), Props (+35 more)
 
 ### Community 8 - "card"
 Cohesion: 0.20
 Nodes (12): $type, $value, bg, bg, padding, shadow, card, bg (+4 more)
 
 ### Community 9 - "slide_search_core.py"
-Cohesion: 0.11
-Nodes (16): format_context(), format_result(), main(), calculate_pattern_break(), detect_domain(), get_background_config(), get_color_for_emotion(), get_layout_for_goal() (+8 more)
+Cohesion: 0.12
+Nodes (14): format_context(), format_result(), main(), calculate_pattern_break(), detect_domain(), get_background_config(), get_color_for_emotion(), get_layout_for_goal() (+6 more)
 
 ### Community 10 - "Illuminate\Http\RedirectResponse"
-Cohesion: 0.09
+Cohesion: 0.08
 Nodes (9): ArchiveController, BookController, CabinetController, Controller, DrawerController, GlobalSearchController, OcrSettingsController, ProfileController (+1 more)
 
 ### Community 11 - "component-tokens.md"
 Cohesion: 0.07
 Nodes (32): Alert Spec, Badge Spec, Button Spec, Card Spec, Dialog Spec, Input Spec, Table Spec, Alert Tokens (+24 more)
 
-### Community 12 - "components.json"
-Cohesion: 0.11
-Nodes (18): aliases, components, hooks, lib, ui, utils, base, iconLibrary (+10 more)
+### Community 12 - "document-chain.tsx"
+Cohesion: 0.10
+Nodes (33): DeclarationNumberSearchProps, chainArrowDots(), chainArrowHead(), ChainCard, clampScrollLeft(), cubicBezierPoint(), DocumentChain(), DocumentChainProps (+25 more)
 
 ### Community 13 - "re"
-Cohesion: 0.14
-Nodes (12): gemini-3.1-pro-preview, 12 Icon Categories, 15 Icon Styles, apply_color(), apply_viewbox_size(), extract_svgs(), generate_batch(), generate_icon() (+4 more)
+Cohesion: 0.09
+Nodes (17): gemini-3.1-pro-preview, 12 Icon Categories, 15 Icon Styles, apply_color(), apply_viewbox_size(), extract_svgs(), generate_batch(), generate_icon() (+9 more)
 
-### Community 14 - "SKILL.md (design)"
-Cohesion: 0.14
-Nodes (15): Gemini Flash/Pro Image Models, CIP HTML Presentation, CIP Mockup Base Prompt Structure, Lighting & Context Modifiers, CIP Negative Prompts, CIP Style Modifiers, CIP Design Styles (Corporate Minimal, Modern Tech, Luxury Premium, ...), Logo Core Prompt Structure (+7 more)
+### Community 14 - "react"
+Cohesion: 0.41
+Nodes (10): Props, TwoFactorRecoveryCodes(), Card(), CardContent(), CardDescription(), CardFooter(), CardHeader(), CardTitle() (+2 more)
 
 ### Community 15 - "OcrDocument"
 Cohesion: 0.17
 Nodes (4): OcrDocument, LocalThumbnailClient, OcrManager, OcrPdfOptimizer
 
-### Community 16 - "document-viewer-dialog.tsx"
-Cohesion: 0.06
-Nodes (64): react, react-dom, ClientOnly(), PdfViewport, PlaceholderPatternProps, Spinner(), resolvedComponents, useClientComponent() (+56 more)
+### Community 16 - "react"
+Cohesion: 0.09
+Nodes (42): react, ClientOnly(), PdfHighlight, PdfPreview(), PdfPreviewProps, PdfViewport, PdfViewerControls(), PlaceholderPatternProps (+34 more)
 
 ### Community 17 - "@inertiajs/react"
-Cohesion: 0.09
-Nodes (20): Non-primitive wrappers (alert, card, input, skeleton, spinner), @inertiajs/react, lucide-react, sonner, IconProps, Toaster(), useFlashToast(), BookSlotPose (+12 more)
+Cohesion: 0.11
+Nodes (15): @base-ui/react/checkbox, data-checked attribute, lucide-react, sonner, IconProps, CabinetListDrawer, CabinetListItem, BookForm (+7 more)
 
 ### Community 18 - "Brand Context Sync"
-Cohesion: 0.09
-Nodes (25): Brand Guidelines Document Structure, Extractable Brand Fields, Elevator Pitches (10/30/60s), Message Testing, Messaging Framework Hierarchy, Positioning Statement, Value Proposition Template, Brand Color Presets (+17 more)
+Cohesion: 0.10
+Nodes (27): Brand Guidelines Document Structure, Extractable Brand Fields, Brand Color Presets, /brand:update Command, Core Visual Elements, Visual Guidelines Template, extractColorsFromTable(), extractCoreAttributes() (+19 more)
 
 ### Community 19 - "Spacing Scale Tokens"
 Cohesion: 0.09
 Nodes (22): $type, $value, $type, $value, $type, $value, $type, $value (+14 more)
 
-### Community 20 - "security.tsx"
-Cohesion: 0.20
-Nodes (10): Heading(), EmptyState(), ManagePasskeys(), Props, ManageTwoFactor(), Props, useTwoFactorAuth(), Props (+2 more)
+### Community 20 - "SKILL.md (design)"
+Cohesion: 0.14
+Nodes (15): Gemini Flash/Pro Image Models, CIP HTML Presentation, CIP Mockup Base Prompt Structure, Lighting & Context Modifiers, CIP Negative Prompts, CIP Style Modifiers, CIP Design Styles (Corporate Minimal, Modern Tech, Luxury Premium, ...), Logo Core Prompt Structure (+7 more)
 
-### Community 21 - "document-viewer-dialog.tsx"
-Cohesion: 0.21
-Nodes (22): Dialog Backdrop and Popup, Opacity and scale transitions, DeleteUser(), PasskeyItem(), Props, TwoFactorSetupModal(), Dialog(), DialogClose() (+14 more)
+### Community 21 - "two-factor-setup-modal.tsx"
+Cohesion: 0.10
+Nodes (18): input-otp, Props, GridScanIcon(), Props, TwoFactorSetupStep(), TwoFactorVerificationStep(), InputOTP, InputOTPGroup (+10 more)
 
-### Community 22 - "button"
-Cohesion: 0.20
-Nodes (10): fg, font-size, hover-bg, button, $type, $value, $type, $value (+2 more)
+### Community 22 - "Illuminate\Database\Eloquent\Model"
+Cohesion: 0.19
+Nodes (4): DeclarationOwner, {closure#2}(), {closure#3}(), Property
 
 ### Community 23 - "Semantic Color Tokens"
 Cohesion: 0.11
@@ -315,41 +324,41 @@ Nodes (19): $type, $value, background, foreground, muted-foreground, primary, pr
 Cohesion: 0.13
 Nodes (12): get_context(), is_allowed_exception(), is_allowed_rgba(), is_inside_block(), load_css_variables(), main(), print_result(), print_summary() (+4 more)
 
-### Community 25 - "logo/generate.py"
-Cohesion: 0.21
-Nodes (5): enhance_prompt(), generate_batch(), generate_logo(), load_env(), main()
+### Community 26 - "open-book.tsx"
+Cohesion: 0.09
+Nodes (31): BACKDROP, BookFlyer, BookPhase, COVER_CLOSE, FADE, FLIP, FlyerOuterAnimate, flyerOuterMotion() (+23 more)
 
-### Community 26 - "sys"
-Cohesion: 0.21
-Nodes (5): Node.js 18+ Requirement, pytest Dev Dependencies (pytest>=8.0.0, pytest-cov, pytest-mock), main(), requirements.txt (tests), pytest Test Dependencies (pytest>=7.4.0, pytest-cov, pytest-mock)
+### Community 27 - "ilocos-norte-map.tsx"
+Cohesion: 0.11
+Nodes (20): @visx/geo, bucketFor(), DetailCell(), IlocosNorteMap(), IlocosNorteMapProps, LguRow, lguRows, LOT_BUCKETS (+12 more)
 
-### Community 28 - "cabinet-drawer.tsx"
-Cohesion: 0.18
-Nodes (14): BookPortalContext, BookPortalProvider(), BookPortalValue, useBookPortal(), measureHoverAndRestPose(), BOOK_POP, CabinetDrawer(), CabinetDrawerProps (+6 more)
+### Community 28 - "DocumentInfo"
+Cohesion: 0.26
+Nodes (14): Select(), SelectItem(), SelectSeparator(), SelectTrigger(), SelectValue(), CabinetSearch(), DocumentInfo(), changeQuery() (+6 more)
 
 ### Community 29 - "Brand Color Extraction Scripts"
-Cohesion: 0.20
-Nodes (11): calculateCompliance(), colorDistance(), displayPalette(), extractHexColors(), findNearestBrandColor(), fs, generateImageMagickCommand(), hexToRgb() (+3 more)
+Cohesion: 0.10
+Nodes (19): calculateCompliance(), colorDistance(), displayPalette(), extractHexColors(), findNearestBrandColor(), fs, generateImageMagickCommand(), hexToRgb() (+11 more)
 
 ### Community 30 - "TestCase"
-Cohesion: 0.06
-Nodes (13): {closure#1}(), PasswordConfirmationTest, RegistrationTest, {closure#1}(), TwoFactorChallengeTest, BookmarksTest, {closure#1}(), DashboardTest (+5 more)
+Cohesion: 0.07
+Nodes (11): {closure#1}(), PasswordConfirmationTest, RegistrationTest, BookmarksTest, {closure#1}(), DashboardTest, ExampleTest, GlobalSearchTest (+3 more)
 
-### Community 31 - "open-book.tsx"
-Cohesion: 0.08
-Nodes (33): BACKDROP, BookFlyer, BookPhase, BookReader(), finishFlip(), goNext(), goPrev(), handleKeyDown() (+25 more)
+### Community 31 - "AppServiceProvider"
+Cohesion: 0.15
+Nodes (3): AppServiceProvider, {closure#1}(), FortifyServiceProvider
 
 ### Community 32 - "design/references/banner-sizes-and-styles.md"
 Cohesion: 0.11
 Nodes (16): 22 Art Direction Styles, Google Display Network Ad Sizes, Pinterest Research Queries, Print Specs, Logo Workflow, Social Art Direction Styles (Reuse from Banner), Social Platform Sizes, Screenshot Export (Chrome Headless / Playwright / Puppeteer) (+8 more)
 
-### Community 33 - "@inertiajs/react"
+### Community 33 - "cabinets.ts"
 Cohesion: 0.12
-Nodes (16): input-otp, GridScanIcon(), Props, TwoFactorSetupStep(), TwoFactorVerificationStep(), InputOTP, InputOTPGroup, InputOTPSeparator (+8 more)
+Nodes (29): motion, ClosedBookMesh(), BOOK_POP, CabinetDrawer(), CabinetDrawerProps, drawerRimOffset(), translateZ(), ClosedFolderMesh (+21 more)
 
 ### Community 35 - "package.json Metadata"
-Cohesion: 0.09
-Nodes (21): private, $schema, type, babel-plugin-react-compiler, clsx, concurrently, @laravel/multiplex, lightningcss-linux-x64-gnu (+13 more)
+Cohesion: 0.08
+Nodes (28): private, $schema, type, babel-plugin-react-compiler, clsx, concurrently, @inertiajs/vite, @laravel/multiplex (+20 more)
 
 ### Community 36 - "npm Dependencies"
 Cohesion: 0.08
@@ -361,15 +370,15 @@ Nodes (14): $type, $value, $type, $value, $type, $value, primitive, radius (+6 m
 
 ### Community 39 - "app-sidebar-header.tsx"
 Cohesion: 0.33
-Nodes (14): BreadcrumbLink, render={<Link />}, AppSidebarHeader(), useArchiveHeaderTrail(), Breadcrumbs(), Breadcrumb(), BreadcrumbEllipsis(), BreadcrumbItem() (+6 more)
+Nodes (14): BreadcrumbLink, render={<Link />}, AppSidebarHeader(), useArchiveHeaderTrail(), Breadcrumbs(), Breadcrumb(), BreadcrumbItem(), BreadcrumbLink() (+6 more)
 
 ### Community 40 - "Banner Design Skill"
 Cohesion: 0.15
 Nodes (15): 22 Art Direction Styles, Pinterest Research Queries, Platform Banner Sizes, Print Specs, SKILL.md (banner-design), ai-artist Skill, ai-multimodal Skill, AI Visual Generation (Gemini Flash / Pro) (+7 more)
 
-### Community 41 - "SKILL.md (design-system)"
-Cohesion: 0.36
-Nodes (9): flattenTokens(), fs, generateCSS(), generateTailwind(), main(), parseArgs(), path, resolveReference() (+1 more)
+### Community 41 - "generate-tokens.cjs"
+Cohesion: 0.16
+Nodes (16): assets/design-tokens.css, flattenTokens(), fs, generateCSS(), generateTailwind(), main(), parseArgs(), path (+8 more)
 
 ### Community 42 - "logo-design.md"
 Cohesion: 0.11
@@ -383,17 +392,17 @@ Nodes (9): generate_css_for_background(), get_background_image(), get_curated_im
 Cohesion: 0.13
 Nodes (17): @axe-core/react Automated Testing, Focus Management (focus trap, focus-visible rings), Form Accessibility (labels, aria-invalid, error association), Keyboard Navigation Patterns, ARIA Live Regions, prefers-reduced-motion Support, Screen Reader Support (ARIA labels, sr-only), WCAG Color Contrast (AA 4.5:1 / AAA 7:1) (+9 more)
 
-### Community 47 - "Archive"
-Cohesion: 0.22
-Nodes (12): useSetArchiveHeaderTrail(), buttonVariants, OpenBook(), FilingCabinet, filingCover(), Archive(), openPreviousDeclaration(), ArchiveLocateResponse (+4 more)
+### Community 47 - "open-folder.tsx"
+Cohesion: 0.14
+Nodes (23): standingPose(), alignForReturn(), COVER_CLOSE, COVER_OPEN, EASE, INSTANT, lift(), OpenFolder() (+15 more)
 
-### Community 48 - "cip/search.py"
-Cohesion: 0.28
-Nodes (4): CIP Workflow, format_brief(), format_results(), main()
+### Community 48 - "@base-ui/react"
+Cohesion: 0.18
+Nodes (13): @base-ui/react/separator, decorative prop dropped, @base-ui/react/toggle, data-pressed attribute, @base-ui/react/toggle-group, multiple boolean (replaces type), toggleVariants, @base-ui/react (+5 more)
 
 ### Community 49 - "PasswordValidationRules"
-Cohesion: 0.08
-Nodes (9): CreateNewUser, ResetUserPassword, PasswordValidationRules, ProfileValidationRules, PasswordUpdateRequest, ProfileDeleteRequest, ProfileUpdateRequest, TwoFactorAuthenticationRequest (+1 more)
+Cohesion: 0.10
+Nodes (8): CreateNewUser, ResetUserPassword, PasswordValidationRules, ProfileValidationRules, PasswordUpdateRequest, ProfileDeleteRequest, ProfileUpdateRequest, TwoFactorAuthenticationRequest
 
 ### Community 50 - "Inertia Middleware & Fortify"
 Cohesion: 0.09
@@ -403,13 +412,17 @@ Nodes (12): HandleAppearance, HandleInertiaRequests, {closure#1}(), {closure#10}
 Cohesion: 0.12
 Nodes (14): Accessibility Review (WCAG AA), Post-Approval Archival, Asset Approval Checklist, Legal & Compliance Review, Reviewer Sign-off, Industry Color Palette Examples, Color System Hierarchy, Relative Luminance & Contrast Ratio Formula (+6 more)
 
-### Community 52 - "sidebar.tsx"
-Cohesion: 0.10
-Nodes (44): data-popup-open on menu buttons, Slot-based sidebar pieces via useRender, accountNavItems, AppSidebar(), mainNavItems, NavFooter(), CollapsibleNavItem(), NavMain() (+36 more)
+### Community 52 - "cn"
+Cohesion: 0.12
+Nodes (40): data-popup-open on menu buttons, accountNavItems, AppSidebar(), mainNavItems, NavFooter(), CollapsibleNavItem(), NavMain(), NavUser() (+32 more)
 
 ### Community 53 - "cip/generate.py"
 Cohesion: 0.18
-Nodes (7): build_cip_prompt(), check_logo_required(), generate_cip_set(), generate_with_nano_banana(), load_env(), load_logo_image(), main()
+Nodes (8): CIP Workflow, build_cip_prompt(), check_logo_required(), generate_cip_set(), generate_with_nano_banana(), load_env(), load_logo_image(), main()
+
+### Community 54 - "select.tsx"
+Cohesion: 0.24
+Nodes (10): --anchor-width CSS variable, alignItemWithTrigger={false}, --available-height / --transform-origin / --anchor-width / --anchor-height, Base UI Select, collisionAvoidance, onValueChange can receive null, SelectContent(), SelectLabel() (+2 more)
 
 ### Community 55 - "Brand Typography & Voice"
 Cohesion: 0.12
@@ -428,56 +441,60 @@ Cohesion: 0.12
 Nodes (16): $type, $value, $type, $value, $type, $value, $type, $value (+8 more)
 
 ### Community 59 - "TaxDeclaration"
+Cohesion: 0.16
+Nodes (4): Owner, TaxDeclaration, {closure#1}(), DeclarationRecorder
+
+### Community 60 - "slides-copywriting-formulas.md"
 Cohesion: 0.14
-Nodes (5): Owner, Property, TaxDeclaration, {closure#1}(), DeclarationRecorder
+Nodes (14): AIDA (Attention-Interest-Desire-Action), Before-After-Bridge, Cost of Inaction, FAB (Features-Advantages-Benefits), Formula-to-Slide Mapping, Headline Patterns, PAS (Problem-Agitate-Solution), search-slides.py (design-system) (+6 more)
 
 ### Community 61 - "index.ts"
 Cohesion: 0.16
-Nodes (17): AppContent(), Props, AppShell(), Props, ArchiveHeaderItem, ArchiveHeaderProvider(), SetTrailContext, TrailContext (+9 more)
+Nodes (16): AppContent(), Props, AppShell(), Props, ArchiveHeaderItem, ArchiveHeaderProvider(), SetTrailContext, TrailContext (+8 more)
 
 ### Community 62 - "TypeScript Config"
 Cohesion: 0.12
 Nodes (15): compilerOptions, allowJs, esModuleInterop, forceConsistentCasingInFileNames, isolatedModules, jsx, module, moduleResolution (+7 more)
 
 ### Community 63 - "pathlib"
-Cohesion: 0.14
-Nodes (6): test_sync_parses_bundled_starter_template(), _run(), test_flags_hardcoded_hex_sharing_line_with_token(), test_token_only_line_reports_no_violation(), get_ocr_engine(), RegionTesseractEngine
+Cohesion: 0.11
+Nodes (9): test_sync_parses_bundled_starter_template(), main(), _run(), test_flags_hardcoded_hex_sharing_line_with_token(), test_token_only_line_reports_no_violation(), Node.js 18+ Requirement, pytest Dev Dependencies (pytest>=8.0.0, pytest-cov, pytest-mock), requirements.txt (tests) (+1 more)
 
 ### Community 65 - "book-world-pose.ts"
-Cohesion: 0.27
-Nodes (11): BoxQuadElement, cumulativeFromOffsetParents(), cumulativeTransform(), decompose(), findPerspectiveRoot(), matrixFromBoxQuads(), measureLiftedSlotPose(), measureSlotPose() (+3 more)
+Cohesion: 0.24
+Nodes (13): FolderActor(), folderMotionTransform(), BoxQuadElement, cumulativeFromOffsetParents(), cumulativeTransform(), findPerspectiveRoot(), FlyerPose, matrixFromBoxQuads() (+5 more)
 
-### Community 66 - "inject-brand-context.cjs"
-Cohesion: 0.31
-Nodes (10): extractColorsFromTable(), extractCoreAttributes(), extractHexColors(), extractImageStyle(), extractTypography(), extractVoice(), fs, generatePromptAddition() (+2 more)
+### Community 66 - "filing-cabinet.tsx"
+Cohesion: 0.13
+Nodes (15): react-dom, CLOSEUP, CLOSEUP_FROM, CLOSEUP_TO, closeupPose(), DRAWER_TRAVEL, Face(), FADE (+7 more)
 
 ### Community 67 - "Inertia\Testing\AssertableInertia"
 Cohesion: 0.08
 Nodes (34): {closure#1}(), {closure#2}(), {closure#3}(), {closure#4}(), {closure#1}(), {closure#10}(), {closure#11}(), {closure#12}() (+26 more)
 
 ### Community 68 - "regions.py"
-Cohesion: 0.09
-Nodes (3): hocr_text_regions(), RegionPageAggregator, text_lines()
+Cohesion: 0.12
+Nodes (5): hocr_text_regions(), OcrRegion, pdf_text_regions(), RegionPageAggregator, text_lines()
 
-### Community 69 - "document-info.tsx"
-Cohesion: 0.06
-Nodes (44): @visx/geo, AlertError(), AppLogoIcon(), Props, TwoFactorRecoveryCodes(), Alert(), AlertDescription(), AlertTitle() (+36 more)
+### Community 69 - "cn"
+Cohesion: 0.11
+Nodes (34): data-popup-open attribute, NavigationMenuIndicator, --positioner-height / --positioner-width, viewport boolean wrapper prop, Per-side translate transitions, AppHeader(), mainNavItems, Props (+26 more)
 
-### Community 70 - "dropdown-menu.tsx"
-Cohesion: 0.08
-Nodes (32): --anchor-width CSS variable, @base-ui/react/menu, closeOnClick defaults to false, Base UI NavigationMenu, data-popup-open attribute, 50ms hover open delay, NavigationMenuIndicator, --positioner-height / --positioner-width (+24 more)
+### Community 70 - "books/index.tsx"
+Cohesion: 0.11
+Nodes (17): Collapsible Panel (formerly Content), DrawerIcon, DrawerIconProps, Collapsible(), CollapsibleContent(), CollapsibleTrigger(), CABINET_SEARCH_FIELDS, CabinetSearchField (+9 more)
 
 ### Community 71 - "Brand Asset Validator"
 Cohesion: 0.25
 Nodes (13): checkManifest(), formatBytes(), formatOutput(), fs, main(), parseFilename(), path, RULES (+5 more)
 
 ### Community 72 - "cip/core.py"
-Cohesion: 0.11
-Nodes (7): BM25, detect_domain(), get_cip_brief(), _load_csv(), search(), search_all(), _search_csv()
+Cohesion: 0.18
+Nodes (6): detect_domain(), get_cip_brief(), _load_csv(), search(), search_all(), _search_csv()
 
 ### Community 74 - "Transformation Engine"
-Cohesion: 0.09
-Nodes (24): @base-ui/react/avatar, Radix Slot, @base-ui/react/button, buttonVariants, @base-ui/react/checkbox, data-checked attribute, Collapsible Panel (formerly Content), @base-ui/react (+16 more)
+Cohesion: 0.16
+Nodes (11): Radix Slot, @base-ui/react/button, buttonVariants, @base-ui/react/menu, closeOnClick defaults to false, Base UI NavigationMenu, 50ms hover open delay, @base-ui/react (+3 more)
 
 ### Community 75 - "Composer Scripts"
 Cohesion: 0.15
@@ -487,25 +504,21 @@ Nodes (13): scripts, ci:check, dev, lint, lint:check, post-autoload-dump, post-c
 Cohesion: 0.15
 Nodes (12): component, $type, $value, dark, semantic, $schema, $type, $value (+4 more)
 
-### Community 79 - "embed-tokens.cjs"
-Cohesion: 0.18
-Nodes (8): args, fs, minimal, MINIMAL_TOKENS, path, projectRoot, tokensPath, wrapStyle
+### Community 79 - "ocr"
+Cohesion: 0.42
+Nodes (5): ocr(), optimize_pdf(), read_upload(), require_token(), thumbnail()
 
-### Community 80 - "closed-folder-mesh.tsx"
-Cohesion: 0.31
-Nodes (9): ClosedFolderMesh, FOLDER_ASPECT_RATIO, FolderCover(), FolderCoverSurface(), FolderDetail, FolderPaperEdges(), DEFAULT_COVER_TITLE, COVER_LOGO_SIZE (+1 more)
+### Community 80 - "BM25"
+Cohesion: 0.18
+Nodes (3): BM25, _load_csv(), _search_csv()
 
 ### Community 81 - "document-upload-dialog.tsx"
-Cohesion: 0.07
-Nodes (55): alignItemWithTrigger={false}, --available-height / --transform-origin / --anchor-width / --anchor-height, Base UI Select, collisionAvoidance, onValueChange can receive null, Select(), SelectContent(), SelectItem() (+47 more)
-
-### Community 82 - "SKILL.md (slides)"
-Cohesion: 0.23
-Nodes (9): 16:9 Slide Deck Base HTML Structure, Chart.js Integration, Slide CSS Variables (Design Tokens), Slide Navigation (showSlide/nextSlide/prevSlide), Slides Key Features, Slides Workflow, Slides (Built-in), SKILL.md (slides) (+1 more)
+Cohesion: 0.13
+Nodes (29): DeclarationNumberSearch(), blankFields(), BOUNDARY_FIELDS, BoundaryEditor(), boundaryHasText(), checklistKeys(), ClientPdfPreview(), csrfToken() (+21 more)
 
 ### Community 84 - "main.py"
-Cohesion: 0.14
-Nodes (15): embedded_page_texts(), health(), merge_skipped_pages(), ocr(), optimize_pdf(), page_has_text(), pages_from_sidecar(), read_upload() (+7 more)
+Cohesion: 0.24
+Nodes (8): embedded_page_texts(), health(), merge_skipped_pages(), page_has_text(), pages_from_sidecar(), render_thumbnail(), run_ocr(), run_optimize()
 
 ### Community 85 - "TDAMS Branding Assets"
 Cohesion: 0.17
@@ -524,12 +537,12 @@ Cohesion: 0.17
 Nodes (11): autoload-dev, psr-4, description, keywords, license, minimum-stability, name, prefer-stable (+3 more)
 
 ### Community 90 - "Token Usage Validator"
-Cohesion: 0.22
+Cohesion: 0.24
 Nodes (11): extensions, formatReport(), fs, getFiles(), main(), parseArgs(), path, patterns (+3 more)
 
 ### Community 91 - "render-html.py"
-Cohesion: 0.27
-Nodes (4): generate_html(), get_deliverable_info(), get_image_base64(), main()
+Cohesion: 0.15
+Nodes (7): generate_html(), get_deliverable_info(), get_image_base64(), main(), format_brief(), format_results(), main()
 
 ### Community 93 - "canvas-design-system.md"
 Cohesion: 0.20
@@ -542,10 +555,6 @@ Nodes (8): Intentional OKLCH Color Palette (2-5 colors), @theme Directive (CSS-b
 ### Community 95 - "tailwind-customization.md"
 Cohesion: 0.29
 Nodes (7): @apply Directive, Custom Utilities (@utility), Custom Variants (@custom-variant), Dark Mode Configuration (darkMode class/media), Layer Organization (@layer base/components/utilities), Tailwind Plugins (typography, forms, container-queries, custom), Content Configuration & Safelist
-
-### Community 96 - "SKILL.md (design-system)"
-Cohesion: 0.29
-Nodes (5): main(), SKILL.md (design-system), Component Spec Pattern, Contextual Slide Decision Flow, BM25 Slide Search
 
 ### Community 98 - "Composer Dev Dependencies"
 Cohesion: 0.20
@@ -563,13 +572,13 @@ Nodes (9): Base Color Presets (Slate, Gray, Zinc, Neutral, Stone), shadcn CSS Va
 Cohesion: 0.29
 Nodes (6): Breakpoint System (sm 640 – 2xl 1536), Container Queries (@container), Custom Breakpoints (--breakpoint-3xl, --breakpoint-tablet), Max-Width & Range Queries (max-*:), Mobile-First Breakpoint Approach, Responsive Testing Checklist (320-1280px, 44x44 touch targets)
 
-### Community 103 - "open-folder.tsx"
-Cohesion: 0.19
-Nodes (18): FlyerPose, poseFromMatrix(), translatePose(), BookPage(), DetailRow(), DocumentDetails(), EmptyDocuments(), folderMotionTransform() (+10 more)
+### Community 103 - "button"
+Cohesion: 0.20
+Nodes (10): fg, font-size, hover-bg, button, $type, $value, $type, $value (+2 more)
 
-### Community 106 - "global-search.tsx"
-Cohesion: 0.09
-Nodes (13): documentHint(), DocumentMatch, DocumentResult, GlobalSearch(), groupOrder, PageEntry, pageMatches(), pages (+5 more)
+### Community 106 - "layout.tsx"
+Cohesion: 0.13
+Nodes (13): Base UI Tooltip, delay prop (formerly delayDuration), withApp(), Toaster(), TooltipProvider(), IsCurrentOrParentUrlFn, IsCurrentUrlFn, UseCurrentUrlReturn (+5 more)
 
 ### Community 107 - "Composer Requirements"
 Cohesion: 0.22
@@ -583,9 +592,9 @@ Nodes (8): padding-x, input, $type, $value, focus-ring, padding-x, $type, $value
 Cohesion: 0.67
 Nodes (4): xl, xl, $type, $value
 
-### Community 111 - "filing-cabinet.tsx"
-Cohesion: 0.12
-Nodes (17): motion, CLOSEUP, CLOSEUP_FROM, CLOSEUP_TO, closeupPose(), DRAWER_TRAVEL, Face(), FADE (+9 more)
+### Community 111 - "archive/index.tsx"
+Cohesion: 0.14
+Nodes (18): useSetArchiveHeaderTrail(), buttonVariants, BookPortalContext, BookPortalProvider(), BookPortalValue, FilingItemViewerProps, OpenedFilingItem, FilingItemViewer() (+10 more)
 
 ### Community 112 - "Optional Native Binaries"
 Cohesion: 0.25
@@ -599,17 +608,13 @@ Nodes (7): {closure#3}(), DocumentController, {closure#1}(), DocumentSearchContr
 Cohesion: 0.29
 Nodes (7): pestphp/pest-plugin, php-http/discovery, config, allow-plugins, optimize-autoloader, preferred-install, sort-packages
 
-### Community 115 - "books/index.tsx"
-Cohesion: 0.10
-Nodes (16): DrawerIcon, DrawerIconProps, CABINET_SEARCH_FIELDS, CabinetSearchField, BOOK_COVER, FilingKind, ManageBook, bookFromDrawer() (+8 more)
-
 ### Community 116 - "auth.ts"
 Cohesion: 0.24
 Nodes (8): Auth, TwoFactorSecretKey, TwoFactorSetupData, User, InertiaConfig, @inertiajs/core, InputHTMLAttributes, react
 
-### Community 117 - "$type"
-Cohesion: 0.60
-Nodes (5): $type, $value, border, border, border
+### Community 117 - "components.json"
+Cohesion: 0.11
+Nodes (18): aliases, components, hooks, lib, ui, utils, base, iconLibrary (+10 more)
 
 ### Community 118 - "Product"
 Cohesion: 0.18
@@ -623,17 +628,21 @@ Nodes (5): CI Job (ubuntu-latest, push main / pull_request), composer ci:check, 
 Cohesion: 0.29
 Nodes (7): scripts, build, build:ssr, check, check:fix, dev, types:check
 
-### Community 124 - "radius"
-Cohesion: 0.60
-Nodes (5): radius, radius, radius, $type, $value
+### Community 121 - "Laravel\Fortify\Features"
+Cohesion: 0.08
+Nodes (4): PasswordResetTest, {closure#1}(), TwoFactorChallengeTest, VerificationNotificationTest
+
+### Community 124 - "avatar.tsx"
+Cohesion: 0.32
+Nodes (8): @base-ui/react/avatar, Avatar(), AvatarFallback(), AvatarImage(), UserInfo(), getInitial(), GetInitialsFn, useInitials()
 
 ### Community 125 - "use-appearance.tsx"
-Cohesion: 0.19
-Nodes (17): AppearanceToggleTab(), Appearance, applyTheme(), getStoredAppearance(), handleSystemThemeChange(), initializeTheme(), isDarkMode(), listeners (+9 more)
+Cohesion: 0.22
+Nodes (16): AppearanceToggleTab(), Appearance, applyTheme(), getStoredAppearance(), handleSystemThemeChange(), initializeTheme(), isDarkMode(), listeners (+8 more)
 
-### Community 126 - "lg"
-Cohesion: 0.60
-Nodes (5): lg, $type, $value, lg, lg
+### Community 126 - "messaging-framework.md"
+Cohesion: 0.33
+Nodes (5): Elevator Pitches (10/30/60s), Message Testing, Messaging Framework Hierarchy, Positioning Statement, Value Proposition Template
 
 ### Community 127 - "npm Dev Dependencies"
 Cohesion: 0.33
@@ -647,9 +656,9 @@ Nodes (4): Bagong Pilipinas (Philippine Government Brand), Bagong Pilipinas (Phi
 Cohesion: 0.33
 Nodes (5): Rice and Garlic Agricultural Symbols, Baroque Church Facade (likely Paoay Church), Founding Year 1818, Province of Ilocos Norte, Wind Turbines (Bangui Windmills)
 
-### Community 130 - "sm"
+### Community 130 - "$type"
 Cohesion: 0.60
-Nodes (5): sm, sm, sm, $type, $value
+Nodes (5): $type, $value, border, border, border
 
 ### Community 131 - "PSR-4 Autoload"
 Cohesion: 0.40
@@ -667,13 +676,17 @@ Nodes (4): 1 GB Lightsail: FastAPI + Paddle OCR + compression, Checks, Install, 
 Cohesion: 0.09
 Nodes (26): {closure#1}(), {closure#10}(), {closure#11}(), {closure#12}(), {closure#13}(), {closure#14}(), {closure#15}(), {closure#16}() (+18 more)
 
-### Community 138 - "logo/core.py"
-Cohesion: 0.12
-Nodes (6): BM25, detect_domain(), _load_csv(), search(), search_all(), _search_csv()
+### Community 137 - "radius"
+Cohesion: 0.60
+Nodes (5): radius, radius, radius, $type, $value
 
-### Community 139 - "padding-y"
-Cohesion: 0.67
-Nodes (4): padding-y, padding-y, $type, $value
+### Community 138 - "logo/core.py"
+Cohesion: 0.21
+Nodes (5): detect_domain(), _load_csv(), search(), search_all(), _search_csv()
+
+### Community 139 - "lg"
+Cohesion: 0.60
+Nodes (5): lg, $type, $value, lg, lg
 
 ### Community 140 - "Login Cover Art"
 Cohesion: 0.50
@@ -683,59 +696,67 @@ Nodes (3): Dark Neutral Palette (#171717 / #fafafa), Diagonal Line Pattern, Logi
 Cohesion: 0.67
 Nodes (3): ring, $type, $value
 
-### Community 145 - "16"
-Cohesion: 0.67
-Nodes (3): $type, $value, 16
+### Community 145 - "sm"
+Cohesion: 0.60
+Nodes (5): sm, sm, sm, $type, $value
 
-### Community 158 - "Illuminate\Database\Eloquent\Model"
-Cohesion: 0.11
-Nodes (9): {closure#6}(), {closure#1}(), DeclarationOwner, {closure#2}(), {closure#3}(), Drawer, BookFactory, CabinetFactory (+1 more)
+### Community 158 - "Cabinet"
+Cohesion: 0.08
+Nodes (18): {closure#2}(), {closure#1}(), {closure#2}(), {closure#3}(), {closure#5}(), {closure#5}(), {closure#6}(), {closure#2}() (+10 more)
 
 ### Community 159 - "slides-copywriting-formulas.md"
-Cohesion: 0.14
-Nodes (14): AIDA (Attention-Interest-Desire-Action), Before-After-Bridge, Cost of Inaction, FAB (Features-Advantages-Benefits), Formula-to-Slide Mapping, Headline Patterns, PAS (Problem-Agitate-Solution), search-slides.py (design-system) (+6 more)
+Cohesion: 0.23
+Nodes (9): 16:9 Slide Deck Base HTML Structure, Chart.js Integration, Slide CSS Variables (Design Tokens), Slide Navigation (showSlide/nextSlide/prevSlide), Slides Key Features, Slides Workflow, Slides (Built-in), SKILL.md (slides) (+1 more)
 
 ### Community 161 - "SecurityTest.php"
 Cohesion: 0.09
 Nodes (4): UserFactory, {closure#1}(), {closure#2}(), SecurityTest
 
-### Community 162 - "vite.config.ts"
-Cohesion: 0.22
-Nodes (7): @inertiajs/vite, laravel-vite-plugin, @laravel/vite-plugin-wayfinder, @rolldown/plugin-babel, @tailwindcss/vite, vite-plus, @vitejs/plugin-react
+### Community 162 - "ShadcnInstaller"
+Cohesion: 0.06
+Nodes (3): main(), ShadcnInstaller, TestShadcnInstaller
 
-### Community 165 - "1"
+### Community 163 - "padding-y"
 Cohesion: 0.67
-Nodes (3): $type, $value, 1
+Nodes (4): padding-y, padding-y, $type, $value
 
-### Community 166 - "pdf-preview.tsx"
-Cohesion: 0.12
-Nodes (25): react-pdf, PdfHighlight, PdfPreview(), PdfPreviewProps, PdfViewerControls(), useDragToPan(), PageSize, PdfFitMode (+17 more)
+### Community 165 - "16"
+Cohesion: 0.67
+Nodes (3): $type, $value, 16
+
+### Community 166 - "pdf-thumbnail.tsx"
+Cohesion: 0.26
+Nodes (13): react-pdf, acquireThumbnailSlot(), cacheRenderedThumbnail(), getCachedThumbnail(), JPEG_QUALITY, releaseThumbnailSlot(), thumbnailCacheKey(), thumbnailObjectUrls (+5 more)
 
 ### Community 170 - "PdfRegionTests"
-Cohesion: 0.16
+Cohesion: 0.22
 Nodes (3): pdf_fixture(), PdfRegionTests, fake_ocr()
 
 ### Community 171 - "run.sh"
 Cohesion: 0.50
 Nodes (3): OCR_API_TOKEN, run.sh script, WATCHFILES_FORCE_POLLING
 
-### Community 173 - "3"
+### Community 173 - "1"
+Cohesion: 0.67
+Nodes (3): $type, $value, 1
+
+### Community 175 - "3"
 Cohesion: 0.67
 Nodes (3): $type, $value, 3
 
-### Community 175 - "8"
+### Community 176 - "8"
 Cohesion: 0.67
 Nodes (3): $type, $value, 8
 
-### Community 176 - "destructive"
+### Community 177 - "destructive"
 Cohesion: 0.67
 Nodes (3): destructive, $type, $value
 
-### Community 177 - "destructive-foreground"
+### Community 178 - "destructive-foreground"
 Cohesion: 0.67
 Nodes (3): destructive-foreground, $type, $value
 
-### Community 178 - "muted"
+### Community 179 - "muted"
 Cohesion: 0.67
 Nodes (3): muted, $type, $value
 
@@ -751,17 +772,29 @@ Nodes (3): secondary-foreground, $type, $value
 Cohesion: 0.32
 Nodes (3): {closure#1}(), {closure#2}(), {closure#3}()
 
-### Community 183 - "cip-deliverable-guide.md"
-Cohesion: 0.33
-Nodes (6): Core Identity Deliverables, Digital Assets, Office Environment Signage, Stationery Set, Vehicle Branding, CIP Deliverable Categories
+### Community 183 - "AppLogoIcon"
+Cohesion: 0.36
+Nodes (5): AppLogoIcon(), AuthSimpleLayout(), AuthSplitLayout(), AuthLayout(), AuthLayoutProps
+
+### Community 184 - "alert.tsx"
+Cohesion: 0.50
+Nodes (6): class-variance-authority, AlertError(), Alert(), AlertDescription(), AlertTitle(), alertVariants
 
 ### Community 185 - "setup.sh"
 Cohesion: 0.50
 Nodes (3): COMPOSER_MEMORY_LIMIT, DEBIAN_FRONTEND, setup.sh script
 
+### Community 186 - "cip-deliverable-guide.md"
+Cohesion: 0.33
+Nodes (6): Core Identity Deliverables, Digital Assets, Office Environment Signage, Stationery Set, Vehicle Branding, CIP Deliverable Categories
+
 ### Community 187 - "OcrDocumentTest.php"
-Cohesion: 0.21
+Cohesion: 0.22
 Nodes (19): {closure#1}(), {closure#10}(), {closure#11}(), {closure#12}(), {closure#13}(), {closure#14}(), {closure#15}(), {closure#16}() (+11 more)
+
+### Community 188 - "document-info.tsx"
+Cohesion: 0.38
+Nodes (3): Badge(), badgeVariants, DocumentArchiveProps
 
 ### Community 199 - "none"
 Cohesion: 0.67
@@ -779,21 +812,21 @@ Nodes (4): $type, $value, none, none
 
 ## Knowledge Gaps
 - **110 isolated node(s):** `DEBIAN_FRONTEND`, `DEBIAN_FRONTEND`, `COMPOSER_MEMORY_LIMIT`, `@types/react`, `@types/react-dom` (+105 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1059 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **56 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1063 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **53 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `SKILL.md (design-system)` connect `SKILL.md (design-system)` to `SKILL.md (design-system)`, `component-tokens.md`, `Brand Context Sync`, `Token Architecture Layers`, `Token Usage Validator`?**
+- **Why does `SKILL.md (design-system)` connect `generate-tokens.cjs` to `Token Architecture Layers`, `Brand Context Sync`, `component-tokens.md`, `Token Usage Validator`?**
   _High betweenness centrality (0.032) - this node is a cross-community bridge._
 - **Are the 2 inferred relationships involving `TailwindConfigGenerator` (e.g. with `TestGeneratedConfigIsValidJs` and `TestTailwindConfigGenerator`) actually correct?**
   _`TailwindConfigGenerator` has 2 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `DEBIAN_FRONTEND`, `DEBIAN_FRONTEND`, `COMPOSER_MEMORY_LIMIT` to the rest of the system?**
   _110 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `Book` be split into smaller, more focused modules?**
-  _Cohesion score 0.0666049953746531 - nodes in this community are weakly interconnected._
-- **Why does `Document` connect `DocumentController.php` to `Book`, `Inertia\Testing\AssertableInertia`, `DocumentSearchTest`, `DocumentFields`, `OcrDocumentTest`, `DocumentFieldMappingTest.php`, `OcrDocumentTest.php`, `HeaderDocumentSearchTest`, `OcrDocument`, `DocumentUploadTest.php`, `TaxDeclaration`, `DocumentLinkingTest`, `Illuminate\Database\Eloquent\Model`?**
+- **Should `dialog.tsx` be split into smaller, more focused modules?**
+  _Cohesion score 0.09803921568627451 - nodes in this community are weakly interconnected._
+- **Why does `cn()` connect `cn` to `dialog.tsx`, `dropdown-menu.tsx`, `Button`, `react`, `react`, `@inertiajs/react`, `two-factor-setup-modal.tsx`, `open-book.tsx`, `ilocos-norte-map.tsx`, `DocumentInfo`, `cabinets.ts`, `app-sidebar-header.tsx`, `open-folder.tsx`, `@base-ui/react`, `cn`, `select.tsx`, `alert.tsx`, `document-info.tsx`, `index.ts`, `filing-cabinet.tsx`, `books/index.tsx`, `layout.tsx`, `avatar.tsx`, `use-appearance.tsx`?**
   _High betweenness centrality (0.021) - this node is a cross-community bridge._
 
 ### Low-confidence Hints

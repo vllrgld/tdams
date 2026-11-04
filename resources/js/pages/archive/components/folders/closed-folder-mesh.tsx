@@ -4,7 +4,7 @@ import {
     COVER_LOGO_SIZE,
     coverTitleLines,
 } from '@/pages/manage/books/book-cover-face';
-import { DEFAULT_COVER_TITLE } from '../data/cabinets';
+import { DEFAULT_COVER_TITLE } from '../../data/cabinets';
 
 export const FOLDER_ASPECT_RATIO = 297 / 210;
 
@@ -88,7 +88,14 @@ function FolderCover({
             initial={{ rotateX: 0 }}
             animate={{ rotateX: open ? -158 : 0 }}
             transition={transition}
-            onAnimationComplete={onComplete}
+            onAnimationComplete={(definition) => {
+                if (
+                    typeof definition === 'object' &&
+                    'rotateX' in definition &&
+                    definition.rotateX === (open ? -158 : 0)
+                )
+                    onComplete?.();
+            }}
         >
             {children}
         </motion.div>

@@ -14,11 +14,13 @@ import {
     type BookOrigin,
     type CabinetBook,
     type CabinetDrawer as CabinetDrawerData,
-} from '../data/cabinets';
-import { useBookPortal } from './book-portal';
-import { measureHoverAndRestPose } from './book-world-pose';
-import ClosedBookMesh from './closed-book-mesh';
-import ClosedFolderMesh, { FOLDER_ASPECT_RATIO } from './closed-folder-mesh';
+} from '../../data/cabinets';
+import { useBookPortal } from '../shared/book-portal';
+import { measureHoverAndRestPose } from '../shared/book-world-pose';
+import ClosedBookMesh from '../books/closed-book-mesh';
+import ClosedFolderMesh, {
+    FOLDER_ASPECT_RATIO,
+} from '../folders/closed-folder-mesh';
 
 const BOOKS_PER_ROW = 8;
 const ROW_COUNT = 2;

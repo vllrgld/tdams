@@ -9,10 +9,11 @@ import type { ArchivedDocument } from '@/pages/documents/types';
 import CabinetSearch, {
     CABINET_SEARCH_FIELDS,
     type CabinetSearchField,
-} from './components/cabinet-search';
-import { BookPortalProvider } from './components/book-portal';
-import FilingCabinet from './components/filing-cabinet';
-import OpenBook, { type OpenedBook } from './components/open-book';
+} from './components/cabinets/cabinet-search';
+import { BookPortalProvider } from './components/shared/book-portal';
+import FilingCabinet from './components/cabinets/filing-cabinet';
+import FilingItemViewer from './components/shared/filing-item-viewer';
+import type { OpenedFilingItem } from './components/shared/filing-item-types';
 import {
     filingCover,
     type FilingCabinet as FilingCabinetData,
@@ -102,7 +103,7 @@ export default function Archive({
     );
     const [zoomedCabinetId, setZoomedCabinetId] = useState<string | null>(null);
     const [openDrawerId, setOpenDrawerId] = useState<string | null>(null);
-    const [openedBook, setOpenedBook] = useState<OpenedBook | null>(null);
+    const [openedBook, setOpenedBook] = useState<OpenedFilingItem | null>(null);
     const [viewingDocument, setViewingDocument] =
         useState<ArchivedDocument | null>(null);
     const [documentInfoOpen, setDocumentInfoOpen] = useState(false);
@@ -528,7 +529,7 @@ export default function Archive({
                 createPortal(
                     <AnimatePresence>
                         {openedBook && (
-                            <OpenBook
+                            <FilingItemViewer
                                 key={openedBook.book.id}
                                 opened={openedBook}
                                 dimmed={viewingDocument !== null}

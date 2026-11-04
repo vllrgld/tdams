@@ -1,0 +1,28 @@
+[
+  {
+    "case": "visual",
+    "phases": [
+      "rise",
+      "travel",
+      "opening",
+      "open",
+      "closing",
+      "align",
+      "return",
+      "insert"
+    ],
+    "handoffs": [
+      {
+        "from": "drawer",
+        "to": "overlay",
+        "distance": 0.5453452991251337
+      },
+      {
+        "from": "overlay",
+        "to": "drawer",
+        "distance": 0.5450326679169435
+      }
+    ],
+    "status": "passed"
+  }
+]

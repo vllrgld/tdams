@@ -1,0 +1,285 @@
+[
+  {
+    "case": "front",
+    "phases": [
+      "rise",
+      "travel",
+      "opening",
+      "open",
+      "closing",
+      "align",
+      "return",
+      "insert"
+    ],
+    "handoffs": [
+      {
+        "from": "drawer",
+        "to": "overlay",
+        "distance": 0.5838303596120611
+      },
+      {
+        "from": "overlay",
+        "to": "drawer",
+        "distance": 0.5835502256737807
+      }
+    ],
+    "status": "passed"
+  },
+  {
+    "case": "middle",
+    "phases": [
+      "rise",
+      "travel",
+      "opening",
+      "open",
+      "closing",
+      "align",
+      "return",
+      "insert"
+    ],
+    "handoffs": [
+      {
+        "from": "drawer",
+        "to": "overlay",
+        "distance": 0.5857450844812954
+      },
+      {
+        "from": "overlay",
+        "to": "drawer",
+        "distance": 0.5450326679169435
+      }
+    ],
+    "status": "passed"
+  },
+  {
+    "case": "back",
+    "phases": [
+      "rise",
+      "travel",
+      "opening",
+      "open",
+      "closing",
+      "align",
+      "return",
+      "insert"
+    ],
+    "handoffs": [
+      {
+        "from": "drawer",
+        "to": "overlay",
+        "distance": 0.5228763969502699
+      },
+      {
+        "from": "overlay",
+        "to": "drawer",
+        "distance": 0.4932605356335541
+      }
+    ],
+    "status": "passed"
+  },
+  {
+    "case": "cancel-rise",
+    "phases": [
+      "rise",
+      "insert"
+    ],
+    "handoffs": [],
+    "status": "passed"
+  },
+  {
+    "case": "cancel-travel",
+    "phases": [
+      "rise",
+      "travel",
+      "align",
+      "return",
+      "insert"
+    ],
+    "handoffs": [
+      {
+        "from": "drawer",
+        "to": "overlay",
+        "distance": 0.5857450844812954
+      },
+      {
+        "from": "overlay",
+        "to": "drawer",
+        "distance": 0.5450326679169435
+      }
+    ],
+    "status": "passed"
+  },
+  {
+    "case": "cancel-opening",
+    "phases": [
+      "rise",
+      "travel",
+      "opening",
+      "closing",
+      "align",
+      "return",
+      "insert"
+    ],
+    "handoffs": [
+      {
+        "from": "drawer",
+        "to": "overlay",
+        "distance": 0.5857450844812954
+      },
+      {
+        "from": "overlay",
+        "to": "drawer",
+        "distance": 0.5450326679169435
+      }
+    ],
+    "status": "passed"
+  },
+  {
+    "case": "cancel-closing",
+    "phases": [
+      "rise",
+      "travel",
+      "opening",
+      "open",
+      "closing",
+      "align",
+      "return",
+      "insert"
+    ],
+    "handoffs": [
+      {
+        "from": "drawer",
+        "to": "overlay",
+        "distance": 0.5857450844812954
+      },
+      {
+        "from": "overlay",
+        "to": "drawer",
+        "distance": 0.5450326679169435
+      }
+    ],
+    "status": "passed"
+  },
+  {
+    "case": "cancel-align",
+    "phases": [
+      "rise",
+      "travel",
+      "opening",
+      "open",
+      "closing",
+      "align",
+      "return",
+      "insert"
+    ],
+    "handoffs": [
+      {
+        "from": "drawer",
+        "to": "overlay",
+        "distance": 0.5857450844812954
+      },
+      {
+        "from": "overlay",
+        "to": "drawer",
+        "distance": 0.5450326679169435
+      }
+    ],
+    "status": "passed"
+  },
+  {
+    "case": "cancel-return",
+    "phases": [
+      "rise",
+      "travel",
+      "opening",
+      "open",
+      "closing",
+      "align",
+      "return",
+      "insert"
+    ],
+    "handoffs": [
+      {
+        "from": "drawer",
+        "to": "overlay",
+        "distance": 0.5857450844812954
+      },
+      {
+        "from": "overlay",
+        "to": "drawer",
+        "distance": 0.5450326679169435
+      }
+    ],
+    "status": "passed"
+  },
+  {
+    "case": "cancel-insert",
+    "phases": [
+      "rise",
+      "travel",
+      "opening",
+      "open",
+      "closing",
+      "align",
+      "return",
+      "insert"
+    ],
+    "handoffs": [
+      {
+        "from": "drawer",
+        "to": "overlay",
+        "distance": 0.5857450844812954
+      },
+      {
+        "from": "overlay",
+        "to": "drawer",
+        "distance": 0.5450326679169435
+      }
+    ],
+    "status": "passed"
+  },
+  {
+    "case": "mobile",
+    "phases": [
+      "rise",
+      "travel",
+      "opening",
+      "open",
+      "closing",
+      "align",
+      "return",
+      "insert"
+    ],
+    "handoffs": [
+      {
+        "from": "drawer",
+        "to": "overlay",
+        "distance": 0.5852048754144666
+      },
+      {
+        "from": "overlay",
+        "to": "drawer",
+        "distance": 0.5451352463212163
+      }
+    ],
+    "status": "passed"
+  },
+  {
+    "case": "reduced",
+    "phases": [
+      "open"
+    ],
+    "handoffs": [],
+    "status": "passed"
+  },
+  {
+    "case": "no-origin",
+    "phases": [
+      "opening",
+      "open",
+      "closing"
+    ],
+    "handoffs": [],
+    "status": "passed"
+  }
+]
