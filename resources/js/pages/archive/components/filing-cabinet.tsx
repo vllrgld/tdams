@@ -29,13 +29,13 @@ const DEPTH = DRAWER_DEPTH + 12;
 const DRAWER_TRAVEL = Math.round(DEPTH * 0.82);
 const PERSPECTIVE = 1000;
 const REST_ROTATE_X = -12;
-const REST_ROTATE_Y = -24;
+const REST_ROTATE_Y = 24;
 const REST_TRANSFORM = `rotateX(${REST_ROTATE_X}deg) rotateY(${REST_ROTATE_Y}deg)`;
 const SLOT_PAD_LEFT = Math.round(
-    DRAWER_TRAVEL * Math.sin((Math.abs(REST_ROTATE_Y) * Math.PI) / 180) * 1.2,
+    DEPTH * Math.sin((Math.abs(REST_ROTATE_Y) * Math.PI) / 180),
 );
 const SLOT_PAD_RIGHT = Math.round(
-    DEPTH * Math.sin((Math.abs(REST_ROTATE_Y) * Math.PI) / 180),
+    DRAWER_TRAVEL * Math.sin((Math.abs(REST_ROTATE_Y) * Math.PI) / 180) * 1.2,
 );
 const SLOT_PAD_TOP = 56;
 const SLOT_PAD_BOTTOM =
@@ -49,9 +49,9 @@ const SLOT_CAPTION = 40;
 const SLOT_WIDTH = SLOT_PAD_LEFT + WIDTH + SLOT_PAD_RIGHT;
 
 const CLOSEUP_SCALE_FROM = 0.72;
-const CLOSEUP_SCALE_TO = 1;
+const CLOSEUP_SCALE_TO = 0.9;
 const CLOSEUP_TILT_FROM = -32;
-const CLOSEUP_TILT_TO = -62;
+const CLOSEUP_TILT_TO = -52;
 
 function rotatedDrawerY(
     localY: number,
@@ -181,8 +181,8 @@ export default function FilingCabinet({
             <div
                 className="pointer-events-none absolute top-0 text-center"
                 style={{
-                    left: SLOT_PAD_LEFT,
-                    width: WIDTH + SLOT_PAD_RIGHT,
+                    left: 0,
+                    width: SLOT_PAD_LEFT + WIDTH,
                 }}
             >
                 <p
@@ -216,9 +216,9 @@ export default function FilingCabinet({
                     aria-hidden="true"
                     className="cabinet-floor-shadow pointer-events-none absolute"
                     style={{
-                        left: SLOT_PAD_LEFT - 12,
+                        left: -12,
                         top: SLOT_PAD_TOP + cabinetHeight - 2,
-                        width: WIDTH + SLOT_PAD_RIGHT + 24,
+                        width: WIDTH + SLOT_PAD_LEFT + 24,
                         height: 32,
                     }}
                 />
@@ -356,7 +356,7 @@ export default function FilingCabinet({
                             {[
                                 openDrawer.label,
                                 openDrawer.range,
-                                `${openDrawer.books.length} ${openDrawer.books.length === 1 ? 'book' : 'books'}`,
+                                `${openDrawer.books.length} ${openDrawer.books[0]?.kind === 'folder' ? 'folder' : 'book'}${openDrawer.books.length === 1 ? '' : 's'}`,
                             ]
                                 .filter(Boolean)
                                 .join(' · ')}
@@ -435,25 +435,34 @@ export default function FilingCabinet({
                                         }
                                     />
                                 </motion.div>
-                                <div className="pointer-events-none absolute inset-x-0 top-24 text-center">
+                                <div className="pointer-events-none absolute inset-x-0 top-6 text-center">
                                     <div className="mx-auto w-fit rounded-md bg-black/75 px-4 py-2">
                                         <p className="text-sm font-semibold text-white">
                                             {cabinet.name} · {openDrawer.label}
                                         </p>
                                         <p className="text-xs text-neutral-300 tabular-nums">
                                             {openDrawer.range} ·{' '}
-                                            {openDrawer.books.length} books
+                                            {openDrawer.books.length}{' '}
+                                            {openDrawer.books[0]?.kind ===
+                                            'folder'
+                                                ? 'folders'
+                                                : 'books'}
                                         </p>
                                         {openDrawer.books.length > 0 && (
                                             <p className="mt-1 text-xs text-neutral-400">
-                                                Click a book to open it
+                                                Click a{' '}
+                                                {openDrawer.books[0]?.kind ===
+                                                'folder'
+                                                    ? 'folder'
+                                                    : 'book'}{' '}
+                                                to open it
                                             </p>
                                         )}
                                     </div>
                                 </div>
                                 <ul
                                     className="sr-only"
-                                    aria-label={`Books in ${openDrawer.label}`}
+                                    aria-label={`${openDrawer.books[0]?.kind === 'folder' ? 'Folders' : 'Books'} in ${openDrawer.label}`}
                                 >
                                     {openDrawer.books.map((book) => (
                                         <li key={book.id}>

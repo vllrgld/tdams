@@ -15,6 +15,7 @@ use Illuminate\Support\Collection;
  * @property int $id
  * @property int $drawer_id
  * @property string $label
+ * @property string $kind
  * @property string $cover_title
  * @property int $position
  * @property Carbon|null $created_at
@@ -23,7 +24,7 @@ use Illuminate\Support\Collection;
  * @property-read Collection<int, Document> $documents
  * @property-read int|null $documents_count
  */
-#[Fillable(['drawer_id', 'label', 'cover_title', 'position'])]
+#[Fillable(['drawer_id', 'label', 'kind', 'cover_title', 'position'])]
 class Book extends Model
 {
     /** @use HasFactory<BookFactory> */
@@ -37,12 +38,14 @@ class Book extends Model
      * @var array<string, mixed>
      */
     protected $attributes = [
+        'kind' => 'book',
         'cover_title' => 'Tax Declaration',
     ];
 
-    public static function coverTitle(): string
+    public static function coverTitle(string $kind = 'book'): string
     {
-        $title = self::query()->value('cover_title');
+        $title = self::query()->where('kind', $kind)->where('cover_title', '!=', '')
+            ->orderBy('id')->value('cover_title');
 
         return is_string($title) && $title !== ''
             ? $title

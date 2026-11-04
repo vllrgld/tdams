@@ -14,7 +14,7 @@ export const CABINET_SEARCH_FIELDS = [
     { value: 'all', label: 'All' },
     { value: 'name', label: 'Name' },
     { value: 'drawer', label: 'Drawer' },
-    { value: 'book', label: 'Book' },
+    { value: 'book', label: 'Folder / book' },
 ] as const;
 
 export type CabinetSearchField =

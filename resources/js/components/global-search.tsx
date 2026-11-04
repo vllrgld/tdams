@@ -4,6 +4,7 @@ import {
     Bookmark,
     BookMarked,
     FileSearch,
+    Folder,
     Folders,
     LayoutDashboard,
     LoaderCircle,
@@ -50,6 +51,7 @@ type PageEntry = {
 
 type RecordMatch = {
     id: number;
+    kind?: 'book' | 'folder';
     title: string;
     hint: string;
     url: string;
@@ -132,8 +134,16 @@ const pages: PageEntry[] = [
         group: 'Pages',
         hint: 'Menu > Manage',
         href: '/manage/books',
-        keywords: 'book volume manage',
+        keywords: 'folder book volume manage',
         icon: BookMarked,
+    },
+    {
+        title: 'Folders',
+        group: 'Pages',
+        hint: 'Menu > Manage',
+        href: '/manage/folders',
+        keywords: 'folder filing manage',
+        icon: Folder,
     },
     {
         title: 'Profile',
@@ -175,6 +185,7 @@ const groupOrder = [
     'Cabinets',
     'Drawers',
     'Books',
+    'Folders',
     'Documents',
 ];
 
@@ -276,11 +287,11 @@ export default function GlobalSearch() {
         for (const book of places.books) {
             next.push({
                 key: `book-${book.id}`,
-                group: 'Books',
+                group: book.kind === 'folder' ? 'Folders' : 'Books',
                 title: book.title,
                 hint: book.hint,
                 url: book.url,
-                icon: BookMarked,
+                icon: book.kind === 'folder' ? Folder : BookMarked,
             });
         }
 
@@ -577,8 +588,8 @@ export default function GlobalSearch() {
             >
                 <DialogTitle className="sr-only">Search the system</DialogTitle>
                 <DialogDescription className="sr-only">
-                    Find a page, setting, cabinet, book, or document. Arrow keys
-                    move, Enter opens.
+                    Find a page, setting, cabinet, folder, book, or document.
+                    Arrow keys move, Enter opens.
                 </DialogDescription>
                 <div className="flex items-center gap-2 border-b px-3">
                     <Search

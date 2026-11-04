@@ -1,4 +1,14 @@
-export const BOOK_COVER = {
+export type FilingKind = 'book' | 'folder';
+
+export type BookCover = { cover: string; spine: string; text: string };
+
+export const FOLDER_COVER: BookCover = {
+    cover: 'bg-slate-50',
+    spine: 'bg-slate-200',
+    text: 'text-slate-800',
+};
+
+export const BOOK_COVER: BookCover = {
     cover: 'bg-blue-950',
     spine: 'bg-blue-950',
     text: 'text-blue-50',
@@ -6,7 +16,9 @@ export const BOOK_COVER = {
 
 export const DEFAULT_COVER_TITLE = 'Tax Declaration';
 
-export type BookCover = typeof BOOK_COVER;
+export function filingCover(kind?: FilingKind): BookCover {
+    return kind === 'folder' ? FOLDER_COVER : BOOK_COVER;
+}
 
 export type BookSlotPose = {
     x: number;
@@ -28,6 +40,7 @@ export type BookOrigin = {
 
 export type CabinetBook = {
     id: string;
+    kind: FilingKind;
     label: string;
     coverTitle: string;
     documentCount: number;
@@ -49,6 +62,7 @@ export type FilingCabinet = {
 
 export type CabinetListBook = {
     id: string;
+    kind: FilingKind;
     label: string;
     coverTitle: string;
     position: number;
@@ -56,6 +70,7 @@ export type CabinetListBook = {
 
 export type ManageBook = {
     id: string;
+    kind: FilingKind;
     label: string;
     position: number;
     drawerId: string;

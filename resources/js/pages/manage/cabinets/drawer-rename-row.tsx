@@ -3,10 +3,8 @@ import { Pencil, Plus } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 import InputError from '@/components/input-error';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { cn } from '@/lib/utils';
 import type { CabinetListDrawer } from '@/pages/archive/data/cabinets';
 
 const MAX_BOOKS_PER_DRAWER = 16;
@@ -25,6 +23,9 @@ export default function DrawerRenameRow({
     });
     const canAddBook = drawer.books.length < MAX_BOOKS_PER_DRAWER;
     const bookCount = drawer.books.length;
+    const kind = drawer.books[0]?.kind;
+    const itemName = kind === 'folder' ? 'folder' : 'book';
+    const addLabel = `Add ${kind ? itemName : 'book or folder'} to ${drawer.label}`;
 
     function startEditing() {
         form.setData('label', drawer.label);
@@ -69,8 +70,8 @@ export default function DrawerRenameRow({
     }
 
     return (
-        <li className="border-t border-slate-200 dark:border-neutral-800">
-            <div className="flex min-w-0 items-center gap-1 px-3 py-1">
+        <li className="border-t border-slate-200 first:border-t-0 dark:border-neutral-800">
+            <div className="grid min-h-12 min-w-0 grid-cols-[minmax(0,1fr)_auto_4.25rem] items-center gap-3 px-4 py-2">
                 {editing ? (
                     <div className="grid min-w-0 flex-1 gap-1">
                         <Input
@@ -95,7 +96,7 @@ export default function DrawerRenameRow({
                                     stopEditing();
                                 }
                             }}
-                            className="h-7 rounded-none text-sm"
+                            className="h-8 rounded-none text-sm"
                         />
                         <InputError message={form.errors.label} />
                     </div>
@@ -103,62 +104,63 @@ export default function DrawerRenameRow({
                     <button
                         type="button"
                         onClick={startEditing}
-                        className="min-w-0 flex-1 truncate rounded-none py-0.5 text-left text-sm text-slate-800 hover:text-blue-900 dark:text-neutral-200 dark:hover:text-blue-200"
+                        title={drawer.label}
+                        className="min-w-0 truncate py-1 text-left text-sm text-slate-800 hover:text-blue-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700 dark:text-neutral-200 dark:hover:text-blue-200"
                     >
                         {drawer.label}
                     </button>
                 )}
-                <Badge
-                    variant="outline"
-                    aria-label={
-                        bookCount > 0
-                            ? `View ${bookCount} ${bookCount === 1 ? 'book' : 'books'} in ${drawer.label}`
-                            : undefined
-                    }
-                    title={
-                        bookCount > 0
-                            ? `View ${bookCount} ${bookCount === 1 ? 'book' : 'books'} in ${drawer.label}`
-                            : undefined
-                    }
-                    render={
-                        bookCount > 0 ? (
-                            <Link href={`/manage/books?drawer=${drawer.id}`} />
-                        ) : undefined
-                    }
-                    className={cn(
-                        'shrink-0 rounded-none border-slate-300 text-[10px] text-slate-600 dark:border-neutral-700 dark:text-neutral-400',
-                        bookCount > 0 &&
-                            'hover:border-blue-900 hover:text-blue-900 dark:hover:border-blue-200 dark:hover:text-blue-200',
+                {bookCount > 0 ? (
+                    <Link
+                        href={`/manage/${kind === 'folder' ? 'folders' : 'books'}?drawer=${drawer.id}`}
+                        aria-label={
+                            bookCount > 0
+                                ? `View ${bookCount} ${itemName}${bookCount === 1 ? '' : 's'} in ${drawer.label}`
+                                : undefined
+                        }
+                        title={
+                            bookCount > 0
+                                ? `View ${bookCount} ${itemName}${bookCount === 1 ? '' : 's'} in ${drawer.label}`
+                                : undefined
+                        }
+                        className="text-xs whitespace-nowrap text-slate-600 tabular-nums underline-offset-4 hover:text-blue-900 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700 dark:text-neutral-400 dark:hover:text-blue-200"
+                    >
+                        {bookCount} {itemName}
+                        {bookCount === 1 ? '' : 's'}
+                    </Link>
+                ) : (
+                    <span className="text-xs whitespace-nowrap text-slate-500 tabular-nums dark:text-neutral-400">
+                        Empty
+                    </span>
+                )}
+                <div className="flex items-center justify-end gap-1">
+                    {canAddBook && (
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            aria-label={addLabel}
+                            title={addLabel}
+                            onClick={() => onAddBook(drawer)}
+                            className="size-8 shrink-0 rounded-none text-slate-500 hover:text-blue-900 dark:text-neutral-400 dark:hover:text-blue-200"
+                        >
+                            <Plus aria-hidden="true" className="size-3.5" />
+                        </Button>
                     )}
-                >
-                    {bookCount} {bookCount === 1 ? 'book' : 'books'}
-                </Badge>
-                {canAddBook && (
-                    <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        aria-label={`Add book to ${drawer.label}`}
-                        title={`Add book to ${drawer.label}`}
-                        onClick={() => onAddBook(drawer)}
-                        className="size-7 shrink-0 rounded-none text-slate-500 hover:text-blue-900 dark:text-neutral-400 dark:hover:text-blue-200"
-                    >
-                        <Plus aria-hidden="true" className="size-3.5" />
-                    </Button>
-                )}
-                {!editing && (
-                    <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        aria-label={`Rename ${drawer.label}`}
-                        title={`Rename ${drawer.label}`}
-                        onClick={startEditing}
-                        className="size-7 shrink-0 rounded-none text-slate-500 hover:text-blue-900 dark:text-neutral-400 dark:hover:text-blue-200"
-                    >
-                        <Pencil aria-hidden="true" className="size-3.5" />
-                    </Button>
-                )}
+                    {!editing && (
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            aria-label={`Rename ${drawer.label}`}
+                            title={`Rename ${drawer.label}`}
+                            onClick={startEditing}
+                            className="size-8 shrink-0 rounded-none text-slate-500 hover:text-blue-900 dark:text-neutral-400 dark:hover:text-blue-200"
+                        >
+                            <Pencil aria-hidden="true" className="size-3.5" />
+                        </Button>
+                    )}
+                </div>
             </div>
         </li>
     );

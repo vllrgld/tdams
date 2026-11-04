@@ -2,6 +2,7 @@ import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import {
     ArrowUpRight,
     BookMarked,
+    Folder,
     ChevronDown,
     ChevronRight,
 } from 'lucide-react';
@@ -24,6 +25,7 @@ import CabinetSearch, {
 } from '@/pages/archive/components/cabinet-search';
 import {
     DEFAULT_COVER_TITLE,
+    type FilingKind,
     type ManageBook,
 } from '@/pages/archive/data/cabinets';
 import RotatableClosedBook from './rotatable-closed-book';
@@ -124,7 +126,7 @@ function BookNavigation({
                             className="group/cabinet"
                         >
                             <CollapsibleTrigger
-                                aria-label={`Books in ${cabinet.name}`}
+                                aria-label={`${cabinet.drawers[0]?.books[0]?.kind === 'folder' ? 'Folders' : 'Books'} in ${cabinet.name}`}
                                 className="flex w-full items-center gap-2 bg-slate-50 px-4 py-3 text-left text-sm font-semibold text-slate-900 hover:bg-slate-100 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-blue-900 dark:bg-neutral-950 dark:text-neutral-100 dark:hover:bg-neutral-900 dark:focus-visible:outline-blue-200"
                             >
                                 <ChevronDown
@@ -171,10 +173,18 @@ function BookNavigation({
                                                                 : 'text-slate-700 hover:bg-slate-50 dark:text-neutral-300 dark:hover:bg-neutral-900',
                                                         )}
                                                     >
-                                                        <BookMarked
-                                                            aria-hidden="true"
-                                                            className="size-3.5 shrink-0"
-                                                        />
+                                                        {book.kind ===
+                                                        'folder' ? (
+                                                            <Folder
+                                                                aria-hidden="true"
+                                                                className="size-3.5 shrink-0"
+                                                            />
+                                                        ) : (
+                                                            <BookMarked
+                                                                aria-hidden="true"
+                                                                className="size-3.5 shrink-0"
+                                                            />
+                                                        )}
                                                         <span className="min-w-0 flex-1 break-words">
                                                             {book.label}
                                                         </span>
@@ -200,13 +210,19 @@ function BookNavigation({
     );
 }
 
+export type BookManagementProps = {
+    books: ManageBook[];
+    coverTitle: string;
+    kind?: FilingKind;
+};
+
 export default function Books({
     books,
     coverTitle,
-}: {
-    books: ManageBook[];
-    coverTitle: string;
-}) {
+    kind = 'book',
+}: BookManagementProps) {
+    const title = kind === 'folder' ? 'Folders' : 'Books';
+    const plural = kind === 'folder' ? 'folders' : 'books';
     const [searchQuery, setSearchQuery] = useState('');
     const [searchField, setSearchField] = useState<CabinetSearchField>(
         CABINET_SEARCH_FIELDS[0].value,
@@ -256,31 +272,34 @@ export default function Books({
     function submit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
         if (!selected || form.processing) return;
-        form.setData({
-            label: form.data.label.trim(),
-            cover_title: form.data.cover_title.trim(),
-        });
+        form.transform((data) => ({
+            label: data.label.trim(),
+            cover_title: data.cover_title.trim(),
+        }));
         form.patch(`/manage/books/${selected.id}`, {
             preserveScroll: true,
             onSuccess: () => {
-                toast.success('Book updated.');
+                toast.success(
+                    `${selected.kind === 'folder' ? 'Folder' : 'Book'} updated.`,
+                );
             },
         });
     }
 
     return (
         <>
-            <Head title="Books" />
+            <Head title={title} />
             <main className="min-h-full flex-1 bg-background p-4 sm:p-6 xl:p-8">
                 <div className="mx-auto flex w-full max-w-[1600px] flex-col gap-6">
                     <header className="flex flex-col justify-between gap-4 border-b border-blue-900 pb-5 sm:flex-row sm:items-end dark:border-blue-200">
                         <div>
                             <h1 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl dark:text-neutral-50">
-                                Books
+                                {title}
                             </h1>
                             <p className="mt-2 max-w-[65ch] text-sm text-slate-600 dark:text-neutral-400">
-                                Manage spine names and cover text for the
-                                physical archive.
+                                {kind === 'folder'
+                                    ? 'Name folders and preview them in the physical archive.'
+                                    : 'Manage spine names and cover text for the physical archive.'}
                             </p>
                         </div>
                         <Button
@@ -301,12 +320,11 @@ export default function Books({
                                 id="no-books-heading"
                                 className="text-base font-semibold text-slate-950 dark:text-neutral-100"
                             >
-                                No books yet
+                                No {plural} yet
                             </h2>
                             <p className="mt-2 max-w-[65ch] text-sm text-slate-600 dark:text-neutral-400">
-                                Add books to a cabinet drawer in Manage
-                                Cabinets. They will appear here for naming and
-                                cover updates.
+                                Add {plural} to a drawer in Manage Cabinets.
+                                They will appear here for naming and previewing.
                             </p>
                             <Link
                                 href="/manage/cabinets"
@@ -321,7 +339,7 @@ export default function Books({
                         </section>
                     ) : (
                         <section
-                            aria-label="Book management"
+                            aria-label={`${title} management`}
                             className="min-w-0 border border-slate-200 bg-card dark:border-neutral-800"
                         >
                             <div className="flex flex-col justify-between gap-3 border-b border-slate-200 p-4 sm:flex-row sm:items-center dark:border-neutral-800">
@@ -331,8 +349,8 @@ export default function Books({
                                         field={searchField}
                                         onQueryChange={setSearchQuery}
                                         onFieldChange={setSearchField}
-                                        placeholderAll="Search books…"
-                                        ariaLabel="Search books"
+                                        placeholderAll={`Search ${plural}…`}
+                                        ariaLabel={`Search ${plural}`}
                                     />
                                 </div>
                                 <p
@@ -342,12 +360,12 @@ export default function Books({
                                     {isFiltering
                                         ? `${visibleBooks.length} of ${books.length}`
                                         : books.length}{' '}
-                                    {books.length === 1 ? 'book' : 'books'}
+                                    {books.length === 1 ? kind : plural}
                                 </p>
                             </div>
                             <div className="grid min-w-0 lg:grid-cols-[17rem_minmax(0,1fr)]">
                                 <nav
-                                    aria-label="Books by cabinet and drawer"
+                                    aria-label={`${title} by cabinet and drawer`}
                                     className="min-w-0 border-b border-slate-200 lg:border-r lg:border-b-0 dark:border-neutral-800"
                                 >
                                     <div className="border-b border-slate-200 px-4 py-3 dark:border-neutral-800">
@@ -373,11 +391,14 @@ export default function Books({
                                         ) : (
                                             <div className="px-4 py-6">
                                                 <p className="text-sm font-medium text-slate-900 dark:text-neutral-100">
-                                                    No books match your search.
+                                                    No {plural} match your
+                                                    search.
                                                 </p>
                                                 <p className="mt-2 text-xs leading-5 text-slate-600 dark:text-neutral-400">
                                                     Try a cabinet, drawer, or
-                                                    spine name.
+                                                    {kind === 'folder'
+                                                        ? 'folder name.'
+                                                        : 'spine name.'}
                                                 </p>
                                                 <Button
                                                     type="button"
@@ -424,19 +445,27 @@ export default function Books({
                                             <form
                                                 onSubmit={submit}
                                                 className="px-5 sm:px-6"
-                                                aria-label="Book settings"
+                                                aria-label={
+                                                    selected.kind === 'folder'
+                                                        ? 'Folder settings'
+                                                        : 'Book settings'
+                                                }
                                             >
                                                 <div className="py-6">
                                                     <Label htmlFor="book-name">
-                                                        Spine name
+                                                        {selected.kind ===
+                                                        'folder'
+                                                            ? 'Folder name'
+                                                            : 'Spine name'}
                                                     </Label>
                                                     <p
                                                         id="book-name-help"
                                                         className="mt-2 text-xs leading-5 text-slate-600 dark:text-neutral-400"
                                                     >
-                                                        The name on this
-                                                        book&apos;s spine and in
-                                                        its drawer.
+                                                        {selected.kind ===
+                                                        'folder'
+                                                            ? 'The name on this folder’s tab and in its drawer.'
+                                                            : 'The name on this book’s spine and in its drawer.'}
                                                     </p>
                                                     <Input
                                                         id="book-name"
@@ -482,8 +511,8 @@ export default function Books({
                                                         id="book-cover-help"
                                                         className="mt-2 text-xs leading-5 text-slate-600 dark:text-neutral-400"
                                                     >
-                                                        Changes apply to every
-                                                        book in the archive.
+                                                        Changes apply to every{' '}
+                                                        {kind} in the archive.
                                                     </p>
                                                     <Input
                                                         id="book-cover-title"
@@ -572,10 +601,18 @@ export default function Books({
                                                 id="book-preview-heading"
                                                 className="text-sm font-semibold text-slate-900 dark:text-neutral-100"
                                             >
-                                                Book preview
+                                                {selected.kind === 'folder'
+                                                    ? 'Folder preview'
+                                                    : 'Book preview'}
                                             </h3>
                                             <div className="mt-3 flex justify-center">
                                                 <RotatableClosedBook
+                                                    key={selected.kind}
+                                                    kind={selected.kind}
+                                                    upright={
+                                                        selected.kind ===
+                                                        'folder'
+                                                    }
                                                     label={
                                                         form.data.label ||
                                                         selected.label

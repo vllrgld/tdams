@@ -32,6 +32,7 @@ class CabinetController extends Controller
                             ->map(fn (Book $book): array => [
                                 'id' => (string) $book->id,
                                 'label' => $book->label,
+                                'kind' => $book->kind,
                                 'coverTitle' => $book->cover_title !== ''
                                     ? $book->cover_title
                                     : Book::DEFAULT_COVER_TITLE,
@@ -48,6 +49,8 @@ class CabinetController extends Controller
 
         return Inertia::render('manage/cabinets/index', [
             'cabinets' => $cabinets,
+            'coverTitle' => Book::coverTitle(),
+            'folderCoverTitle' => Book::coverTitle('folder'),
         ]);
     }
 

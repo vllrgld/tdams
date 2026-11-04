@@ -14,7 +14,7 @@ import { BookPortalProvider } from './components/book-portal';
 import FilingCabinet from './components/filing-cabinet';
 import OpenBook, { type OpenedBook } from './components/open-book';
 import {
-    BOOK_COVER,
+    filingCover,
     type FilingCabinet as FilingCabinetData,
 } from './data/cabinets';
 
@@ -151,7 +151,7 @@ export default function Archive({
             located
                 ? {
                       book: located.book,
-                      cover: BOOK_COVER,
+                      cover: filingCover(located.book.kind),
                       drawerLabel: located.drawer.label,
                       cabinetName: located.cabinet.name,
                       origin: null,
@@ -307,7 +307,7 @@ export default function Archive({
         setZoomedCabinetId(located.cabinet.id);
         setOpenedBook({
             book: located.book,
-            cover: BOOK_COVER,
+            cover: filingCover(located.book.kind),
             drawerLabel: located.drawer.label,
             cabinetName: located.cabinet.name,
             origin: null,
@@ -350,8 +350,8 @@ export default function Archive({
                                 Archive
                             </h1>
                             <p className="mt-2 max-w-[65ch] text-sm text-slate-600 dark:text-neutral-400">
-                                Browse the filing cabinets to find a book and
-                                its tax declarations.
+                                Browse the filing cabinets to find a folder or
+                                book and its tax declarations.
                             </p>
                         </div>
                         <Link
@@ -379,7 +379,7 @@ export default function Archive({
                                             field={searchField}
                                             onQueryChange={setSearchQuery}
                                             onFieldChange={setSearchField}
-                                            placeholderAll="Search cabinets, drawers or books…"
+                                            placeholderAll="Search cabinets, drawers, folders or books…"
                                         />
                                     </div>
                                     {isFiltering && (
@@ -407,7 +407,9 @@ export default function Archive({
                                         : 'drawers'}
                                     {' · '}
                                     {visibleBookTotal}{' '}
-                                    {visibleBookTotal === 1 ? 'book' : 'books'}
+                                    {visibleBookTotal === 1
+                                        ? 'folder / book'
+                                        : 'folders / books'}
                                 </p>
                             </div>
                         )}
@@ -439,7 +441,8 @@ export default function Archive({
                                     </h2>
                                     <p className="mt-2 max-w-[45ch] text-sm text-slate-600 dark:text-neutral-400">
                                         Try another cabinet name, drawer, or
-                                        book, or clear the search above.
+                                        folder or book, or clear the search
+                                        above.
                                     </p>
                                 </div>
                             ) : (

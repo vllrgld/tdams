@@ -3,12 +3,17 @@ import { motion, useReducedMotion, type Transition } from 'motion/react';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import DocumentThumbnail from '@/pages/documents/components/document-thumbnail';
-import { formatDate } from '@/pages/documents/lib/formatters';
 import type { ArchivedDocument } from '@/pages/documents/types';
 import BookCoverFace from '@/pages/manage/books/book-cover-face';
 import type { BookCover, BookOrigin, CabinetBook } from '../data/cabinets';
 import { useBookPortal } from './book-portal';
+import OpenFolder from './open-folder';
+import {
+    BookPage,
+    DocumentDetails,
+    EmptyDocuments,
+    FILING_PAGE_HEIGHT,
+} from './filing-document-content';
 import {
     measureSlotPose,
     poseFromMatrix,
@@ -16,7 +21,7 @@ import {
 } from './book-world-pose';
 
 const PAGE_W = 440;
-const PAGE_H = 595;
+const PAGE_H = FILING_PAGE_HEIGHT;
 const COVER_THICKNESS = 56;
 const RISE = 210;
 const OPEN: Transition = {
@@ -84,6 +89,15 @@ export type OpenedBook = {
 };
 
 type BookPhase = 'rise' | 'travel' | 'open' | 'closing' | 'return' | 'drop';
+
+// Leave room beyond the normal tween for a delayed completion callback.
+const PHASE_RECOVERY_MS: Record<Exclude<BookPhase, 'open'>, number> = {
+    rise: 1000,
+    travel: 1200,
+    closing: 1000,
+    return: 1800,
+    drop: 1800,
+};
 
 const VOLUME_ORIGIN = '50% 50% calc(-0.5 * var(--book-depth, 0px))';
 
@@ -230,124 +244,7 @@ const BookFlyer = memo(function BookFlyer({
     );
 });
 
-function BookPage({
-    document,
-    eager = false,
-}: {
-    document: ArchivedDocument;
-    eager?: boolean;
-}) {
-    return (
-        <DocumentThumbnail
-            mimeType={document.mimeType}
-            url={document.viewUrl}
-            thumbnailUrl={document.thumbnailUrl}
-            title={document.originalFilename}
-            pageNumber={1}
-            fit="contain"
-            fill
-            quality="book"
-            eager={eager}
-            className="h-full bg-transparent dark:bg-transparent"
-        />
-    );
-}
-
-function DetailRow({ label, value }: { label: string; value: string | null }) {
-    return (
-        <div>
-            <p className="text-[10px] font-medium tracking-wide text-neutral-500 uppercase">
-                {label}
-            </p>
-            <p className="mt-0.5 text-sm break-words text-neutral-900">
-                {value || '—'}
-            </p>
-        </div>
-    );
-}
-
-function DocumentDetails({
-    document,
-    onOpenPrevious,
-}: {
-    document: ArchivedDocument;
-    onOpenPrevious?: (number: string) => void;
-}) {
-    const title = document.taxDeclarationNumber || document.originalFilename;
-    const showFilename = Boolean(document.taxDeclarationNumber);
-    const previous = document.previousTaxDeclarationNumber;
-
-    return (
-        <div className="flex h-full flex-col justify-between p-6">
-            <div className="space-y-4">
-                <p className="text-lg font-semibold break-words text-neutral-900">
-                    {title}
-                </p>
-                <div className="space-y-3">
-                    {previous && onOpenPrevious ? (
-                        <div>
-                            <p className="text-[10px] font-medium tracking-wide text-neutral-500 uppercase">
-                                Previous declaration
-                            </p>
-                            <button
-                                type="button"
-                                onClick={(event) => {
-                                    event.stopPropagation();
-                                    onOpenPrevious(previous);
-                                }}
-                                className="mt-0.5 text-left text-sm break-words text-blue-900 underline-offset-2 hover:underline focus-visible:underline focus-visible:outline-none"
-                            >
-                                {previous}
-                            </button>
-                        </div>
-                    ) : (
-                        <DetailRow
-                            label="Previous declaration"
-                            value={previous}
-                        />
-                    )}
-                    <DetailRow label="Owner" value={document.registeredOwner} />
-                    <DetailRow label="Lot" value={document.lotNumber} />
-                    <DetailRow
-                        label="Date"
-                        value={
-                            document.declarationDate
-                                ? formatDate(document.declarationDate)
-                                : null
-                        }
-                    />
-                </div>
-            </div>
-            {showFilename ? (
-                <p className="truncate text-[10px] text-neutral-500">
-                    {document.originalFilename}
-                </p>
-            ) : null}
-        </div>
-    );
-}
-
-function EmptyDocuments({ loading }: { loading?: boolean }) {
-    return (
-        <div className="flex h-full items-center justify-center p-6">
-            <p className="text-center text-sm text-neutral-700">
-                {loading
-                    ? 'Loading documents…'
-                    : 'Saved documents in this book will appear here.'}
-            </p>
-        </div>
-    );
-}
-
-export default function OpenBook({
-    opened,
-    dimmed,
-    initialDocumentId,
-    onClose,
-    onOpenDocument,
-    onOpenPrevious,
-    onInitialDocumentConsumed,
-}: {
+export type OpenBookProps = {
     opened: OpenedBook;
     dimmed?: boolean;
     initialDocumentId?: string | null;
@@ -355,7 +252,25 @@ export default function OpenBook({
     onOpenDocument: (document: ArchivedDocument) => void;
     onOpenPrevious?: (number: string) => void;
     onInitialDocumentConsumed?: () => void;
-}) {
+};
+
+export default function OpenBook(props: OpenBookProps) {
+    return props.opened.book.kind === 'folder' ? (
+        <OpenFolder {...props} />
+    ) : (
+        <BookReader {...props} />
+    );
+}
+
+function BookReader({
+    opened,
+    dimmed,
+    initialDocumentId,
+    onClose,
+    onOpenDocument,
+    onOpenPrevious,
+    onInitialDocumentConsumed,
+}: OpenBookProps) {
     const reduceMotion = useReducedMotion();
     const portal = useBookPortal();
     const setHost = portal?.setHost;
@@ -382,14 +297,11 @@ export default function OpenBook({
     const [phase, setPhase] = useState<BookPhase>(hasPickup ? 'rise' : 'open');
     const phaseRef = useRef(phase);
     phaseRef.current = phase;
-    const allowCompleteRef = useRef(true);
     const returnFromRef = useRef(hover?.transform ?? '');
     const [returnFrom, setReturnFrom] = useState(returnFromRef.current);
 
     const goToPhase = useCallback(
         (next: BookPhase) => {
-            allowCompleteRef.current = false;
-
             if (next === 'open' && standing) {
                 returnFromRef.current = standing.transform;
             }
@@ -408,9 +320,6 @@ export default function OpenBook({
 
             phaseRef.current = next;
             setPhase(next);
-            requestAnimationFrame(() => {
-                allowCompleteRef.current = true;
-            });
         },
         [standing, getSlot, opened.book.id, origin],
     );
@@ -485,18 +394,20 @@ export default function OpenBook({
     );
     const handleFlyerComplete = useCallback(
         (definition?: unknown) => {
-            if (!allowCompleteRef.current) {
-                return;
-            }
-
             const current = phaseRef.current;
+            const transform =
+                definition &&
+                typeof definition === 'object' &&
+                'transform' in definition
+                    ? definition.transform
+                    : null;
 
-            if (current === 'rise') {
+            if (current === 'rise' && transform === risenHover?.transform) {
                 goToPhase('travel');
                 return;
             }
 
-            if (current === 'travel') {
+            if (current === 'travel' && transform === standing?.transform) {
                 goToPhase('open');
                 return;
             }
@@ -512,14 +423,10 @@ export default function OpenBook({
                 onCloseRef.current();
             }
         },
-        [goToPhase],
+        [goToPhase, risenHover, standing],
     );
     const handleCoverComplete = useCallback(
         (definition?: unknown) => {
-            if (!allowCompleteRef.current) {
-                return;
-            }
-
             if (phaseRef.current !== 'closing') {
                 return;
             }
@@ -531,7 +438,7 @@ export default function OpenBook({
                     ? (definition as { transform: unknown }).transform
                     : null;
 
-            if (transform != null && transform !== coverClosed) {
+            if (transform !== coverClosed) {
                 return;
             }
 
@@ -542,6 +449,32 @@ export default function OpenBook({
     const onFlyerTransformUpdate = useCallback((transform: string) => {
         returnFromRef.current = transform;
     }, []);
+
+    useEffect(() => {
+        if (!hasPickup || phase === 'open') {
+            return;
+        }
+
+        // Interrupted/no-op animations may not deliver a completion event.
+        // Recover only the phase that scheduled this timer; never skip a newer one.
+        const timeout = window.setTimeout(() => {
+            if (phaseRef.current !== phase) {
+                return;
+            }
+
+            if (phase === 'rise') {
+                goToPhase('travel');
+            } else if (phase === 'travel') {
+                goToPhase('open');
+            } else if (phase === 'closing') {
+                goToPhase('return');
+            } else {
+                onCloseRef.current();
+            }
+        }, PHASE_RECOVERY_MS[phase]);
+
+        return () => window.clearTimeout(timeout);
+    }, [goToPhase, hasPickup, phase]);
 
     useEffect(() => {
         dialogRef.current?.focus({ preventScroll: true });
@@ -611,7 +544,7 @@ export default function OpenBook({
             return;
         }
 
-        if (reduceMotion || !opened.origin) {
+        if (reduceMotion || !origin) {
             onCloseRef.current();
             return;
         }
@@ -627,6 +560,7 @@ export default function OpenBook({
         }
 
         if (currentPhase === 'open') {
+            setFlip(null);
             goToPhase('closing');
             return;
         }
@@ -649,6 +583,11 @@ export default function OpenBook({
     }, [dimmed, opened.origin, reduceMotion]);
 
     function finishFlip(direction: 'next' | 'prev') {
+        if (phaseRef.current !== 'open') {
+            setFlip(null);
+            return;
+        }
+
         setIndex((currentIndex) =>
             direction === 'next'
                 ? Math.min(lastIndex, currentIndex + 1)
@@ -810,6 +749,7 @@ export default function OpenBook({
                         }}
                     >
                         <div
+                            data-folder-paper
                             className="absolute inset-0 overflow-hidden border border-neutral-300 bg-neutral-50 shadow-2xl dark:border-neutral-400 dark:bg-neutral-100"
                             style={{ transform: 'translateZ(0px)' }}
                         >
@@ -875,6 +815,7 @@ export default function OpenBook({
                         )}
 
                         <motion.div
+                            data-folder-leaf
                             className="absolute inset-0"
                             style={{
                                 transformOrigin: 'left center',

@@ -2,29 +2,24 @@ import { Head, useForm } from '@inertiajs/react';
 import { Plus } from 'lucide-react';
 import { useState, type FormEvent } from 'react';
 import { toast } from 'sonner';
-import DrawerIcon from '@/components/drawer-icon';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
 import type {
     CabinetListDrawer,
     CabinetListItem,
 } from '@/pages/archive/data/cabinets';
-import AddBookDialog from './add-book-dialog';
+import AddBookDialog, { type BookForm } from './add-book-dialog';
 import AddCabinetDialog from './add-cabinet-dialog';
 import CabinetRenameTitle from './cabinet-rename-title';
 import DrawerRenameRow from './drawer-rename-row';
 
 export default function Cabinets({
     cabinets,
+    coverTitle,
+    folderCoverTitle,
 }: {
     cabinets: CabinetListItem[];
+    coverTitle: string;
+    folderCoverTitle: string;
 }) {
     const [addOpen, setAddOpen] = useState(false);
     const [addBookDrawer, setAddBookDrawer] =
@@ -33,8 +28,9 @@ export default function Cabinets({
         name: '',
         drawers: ['Drawer 1', 'Drawer 2', 'Drawer 3', 'Drawer 4'],
     });
-    const bookForm = useForm({
+    const bookForm = useForm<BookForm>({
         label: '',
+        kind: 'book',
     });
 
     function submitCabinet(event: FormEvent<HTMLFormElement>) {
@@ -50,7 +46,11 @@ export default function Cabinets({
     }
 
     function openAddBook(drawer: CabinetListDrawer) {
-        bookForm.setData('label', `Book ${drawer.books.length + 1}`);
+        const kind = drawer.books[0]?.kind ?? 'book';
+        bookForm.setData({
+            kind,
+            label: `${kind === 'folder' ? 'Folder' : 'Book'} ${drawer.books.length + 1}`,
+        });
         bookForm.clearErrors();
         setAddBookDrawer(drawer);
     }
@@ -67,7 +67,9 @@ export default function Cabinets({
             onSuccess: () => {
                 setAddBookDrawer(null);
                 bookForm.reset();
-                toast.success('Book added.');
+                toast.success(
+                    `${bookForm.data.kind === 'folder' ? 'Folder' : 'Book'} added.`,
+                );
             },
         });
     }
@@ -77,92 +79,82 @@ export default function Cabinets({
             <Head title="Cabinets" />
             <main className="min-h-full flex-1 bg-background p-4 sm:p-6 xl:p-8">
                 <div className="mx-auto flex w-full max-w-[1600px] flex-col gap-6">
-                    <Card className="min-w-0 gap-0 overflow-visible rounded-none border-slate-200 bg-card py-0 shadow-none dark:border-neutral-800 dark:bg-black">
-                        <CardHeader className="flex-row items-start justify-between border-b border-slate-200 px-4 py-4 sm:px-5 dark:border-neutral-800">
-                            <div>
-                                <CardTitle className="flex items-center gap-2 text-base text-slate-950 dark:text-white">
-                                    <DrawerIcon
-                                        aria-hidden="true"
-                                        className="size-4 text-blue-900 dark:text-blue-200"
-                                    />
+                    <header className="flex flex-col justify-between gap-4 border-b border-blue-900 pb-5 sm:flex-row sm:items-end dark:border-blue-200">
+                        <div>
+                            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                                <h1 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl dark:text-neutral-50">
                                     Cabinets
-                                </CardTitle>
-                                <CardDescription className="mt-1">
-                                    Add filing cabinets and see them on the
-                                    Archive floor
-                                </CardDescription>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <Badge
-                                    variant="outline"
-                                    className="w-fit rounded-none border-slate-300 text-slate-700 dark:border-neutral-700 dark:text-neutral-300"
-                                >
+                                </h1>
+                                <p className="text-sm text-slate-600 tabular-nums dark:text-neutral-400">
                                     {cabinets.length}{' '}
                                     {cabinets.length === 1
                                         ? 'cabinet'
                                         : 'cabinets'}
-                                </Badge>
-                                <Button
-                                    type="button"
-                                    onClick={() => setAddOpen(true)}
-                                    className="rounded-none bg-blue-900 text-white hover:bg-blue-800 dark:bg-blue-700 dark:hover:bg-blue-600"
-                                >
-                                    <Plus aria-hidden="true" />
-                                    Add cabinet
-                                </Button>
-                            </div>
-                        </CardHeader>
-                        <CardContent className="px-0 py-0">
-                            {cabinets.length === 0 ? (
-                                <p className="px-4 py-8 text-sm text-slate-600 sm:px-5 dark:text-neutral-400">
-                                    No cabinets yet. Add a cabinet to start
-                                    organizing drawers.
                                 </p>
-                            ) : (
-                                <ul className="grid gap-4 p-4 sm:grid-cols-2 sm:px-5 xl:grid-cols-4">
-                                    {cabinets.map((cabinet) => (
-                                        <li
-                                            key={cabinet.id}
-                                            className="min-w-0 rounded-none border border-slate-200 dark:border-neutral-800"
+                            </div>
+                            <p className="mt-2 max-w-[65ch] text-sm text-slate-600 dark:text-neutral-400">
+                                Add filing cabinets and see them on the Archive
+                                floor
+                            </p>
+                        </div>
+                        <Button
+                            type="button"
+                            onClick={() => setAddOpen(true)}
+                            className="w-fit shrink-0 rounded-none bg-blue-900 text-white hover:bg-blue-800 dark:bg-blue-700 dark:hover:bg-blue-600"
+                        >
+                            <Plus aria-hidden="true" />
+                            Add cabinet
+                        </Button>
+                    </header>
+                    {cabinets.length === 0 ? (
+                        <p className="border border-slate-200 bg-card px-5 py-10 text-sm leading-6 text-slate-600 dark:border-neutral-800 dark:bg-black dark:text-neutral-400">
+                            No cabinets yet. Add a cabinet to start organizing
+                            drawers.
+                        </p>
+                    ) : (
+                        <ul
+                            aria-label="Filing cabinets"
+                            className="grid gap-4 lg:grid-cols-2 2xl:grid-cols-3"
+                        >
+                            {cabinets.map((cabinet) => (
+                                <li
+                                    key={cabinet.id}
+                                    className="min-w-0 self-start border border-slate-200 bg-card dark:border-neutral-800 dark:bg-black"
+                                >
+                                    <div className="flex items-center justify-between gap-3 border-b border-slate-200 bg-slate-50/70 px-4 py-3 dark:border-neutral-800 dark:bg-neutral-950">
+                                        <div className="min-w-0 flex-1">
+                                            <CabinetRenameTitle
+                                                cabinet={cabinet}
+                                            />
+                                        </div>
+                                        <span className="shrink-0 text-xs text-slate-600 tabular-nums dark:text-neutral-400">
+                                            {cabinet.drawers.length}{' '}
+                                            {cabinet.drawers.length === 1
+                                                ? 'drawer'
+                                                : 'drawers'}
+                                        </span>
+                                    </div>
+                                    {cabinet.drawers.length > 0 ? (
+                                        <ul
+                                            aria-label={`Drawers in ${cabinet.name}`}
                                         >
-                                            <div className="flex items-start justify-between gap-2 border-b border-slate-200 px-3 py-2.5 dark:border-neutral-800">
-                                                <div className="min-w-0 flex-1">
-                                                    <CabinetRenameTitle
-                                                        cabinet={cabinet}
-                                                    />
-                                                </div>
-                                                <Badge
-                                                    variant="outline"
-                                                    className="shrink-0 rounded-none border-slate-300 text-xs text-slate-700 dark:border-neutral-700 dark:text-neutral-300"
-                                                >
-                                                    {cabinet.drawers.length}{' '}
-                                                    {cabinet.drawers.length ===
-                                                    1
-                                                        ? 'drawer'
-                                                        : 'drawers'}
-                                                </Badge>
-                                            </div>
-                                            {cabinet.drawers.length > 0 && (
-                                                <ul>
-                                                    {cabinet.drawers.map(
-                                                        (drawer) => (
-                                                            <DrawerRenameRow
-                                                                key={drawer.id}
-                                                                drawer={drawer}
-                                                                onAddBook={
-                                                                    openAddBook
-                                                                }
-                                                            />
-                                                        ),
-                                                    )}
-                                                </ul>
-                                            )}
-                                        </li>
-                                    ))}
-                                </ul>
-                            )}
-                        </CardContent>
-                    </Card>
+                                            {cabinet.drawers.map((drawer) => (
+                                                <DrawerRenameRow
+                                                    key={drawer.id}
+                                                    drawer={drawer}
+                                                    onAddBook={openAddBook}
+                                                />
+                                            ))}
+                                        </ul>
+                                    ) : (
+                                        <p className="px-4 py-5 text-sm text-slate-600 dark:text-neutral-400">
+                                            No drawers in this cabinet.
+                                        </p>
+                                    )}
+                                </li>
+                            ))}
+                        </ul>
+                    )}
                 </div>
             </main>
             <AddCabinetDialog
@@ -173,6 +165,9 @@ export default function Cabinets({
             />
             <AddBookDialog
                 form={bookForm}
+                coverTitle={coverTitle}
+                folderCoverTitle={folderCoverTitle}
+                lockedKind={addBookDrawer?.books[0]?.kind}
                 drawerLabel={addBookDrawer?.label ?? ''}
                 open={addBookDrawer !== null}
                 onOpenChange={(open) => {

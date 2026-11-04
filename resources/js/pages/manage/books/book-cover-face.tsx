@@ -1,7 +1,9 @@
 import { cn } from '@/lib/utils';
 import { DEFAULT_COVER_TITLE } from '@/pages/archive/data/cabinets';
 
-function coverTitleLines(title: string): string[] {
+export const COVER_LOGO_SIZE = { open: 48, preview: 32 } as const;
+
+export function coverTitleLines(title: string): string[] {
     const words = title.trim().split(/\s+/).filter(Boolean);
 
     if (words.length === 0) {
@@ -40,10 +42,11 @@ export default function BookCoverFace({
             <img
                 src="/logo.png"
                 alt=""
-                className={cn(
-                    'object-contain opacity-90',
-                    open ? 'h-12 w-12' : 'h-8 w-8',
-                )}
+                className="shrink-0 object-contain opacity-90"
+                style={{
+                    width: COVER_LOGO_SIZE[size],
+                    height: COVER_LOGO_SIZE[size],
+                }}
             />
             <p
                 className={cn(

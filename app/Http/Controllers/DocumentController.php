@@ -403,6 +403,7 @@ class DocumentController extends Controller
                             ->map(fn (Book $book): array => [
                                 'id' => (string) $book->id,
                                 'label' => $book->label,
+                                'kind' => $book->kind,
                             ])
                             ->values()
                             ->all(),

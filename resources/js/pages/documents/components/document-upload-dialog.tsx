@@ -173,7 +173,7 @@ async function errorMessage(response: Response): Promise<string> {
 
 export default function DocumentUploadDialog({
     archive,
-    mappingModels = [],
+    mappingModels,
     open,
     onOpenChange,
 }: DocumentUploadDialogProps) {
@@ -421,10 +421,7 @@ export default function DocumentUploadDialog({
             return;
         }
 
-        if (
-            !force &&
-            checklistKeys().some((key) => checked[key] !== true)
-        ) {
+        if (!force && checklistKeys().some((key) => checked[key] !== true)) {
             setConfirmSave(true);
 
             return;
@@ -596,9 +593,7 @@ export default function DocumentUploadDialog({
                         <div className="grid gap-5">
                             <p className="text-sm text-slate-700 dark:text-neutral-300">
                                 Upload{' '}
-                                <span className="font-medium">
-                                    {file.name}
-                                </span>{' '}
+                                <span className="font-medium">{file.name}</span>{' '}
                                 ({formatFileSize(file.size)})?
                             </p>
                             <ArchiveSelectors
@@ -674,7 +669,11 @@ export default function DocumentUploadDialog({
                                         <Select
                                             value={model}
                                             onValueChange={(value) =>
-                                                setModel(String(value ?? ''))
+                                                setModel(
+                                                    typeof value === 'string'
+                                                        ? value
+                                                        : '',
+                                                )
                                             }
                                             items={mappingModels.map(
                                                 (item) => ({
@@ -775,95 +774,100 @@ export default function DocumentUploadDialog({
                                                         ),
                                                 )
                                                 .map((field) => (
-                                                <FieldRow
-                                                    key={field.name}
-                                                    id={`document-${field.name}`}
-                                                    label={field.label}
-                                                    error={
-                                                        fieldErrors[field.name]
-                                                    }
-                                                >
-                                                    {field.name ===
-                                                    'previous_tax_declaration_number' ? (
-                                                        <DeclarationNumberSearch
-                                                            id={`document-${field.name}`}
-                                                            value={
-                                                                values[
-                                                                    field.name
-                                                                ]
-                                                            }
-                                                            onChange={(
-                                                                value,
-                                                                match,
-                                                            ) => {
-                                                                updateValue(
-                                                                    field.name,
-                                                                    value,
-                                                                );
-
-                                                                if (
-                                                                    match?.declarationDate
-                                                                ) {
-                                                                    updateValue(
-                                                                        'previous_declaration_date',
-                                                                        match.declarationDate,
-                                                                    );
+                                                    <FieldRow
+                                                        key={field.name}
+                                                        id={`document-${field.name}`}
+                                                        label={field.label}
+                                                        error={
+                                                            fieldErrors[
+                                                                field.name
+                                                            ]
+                                                        }
+                                                    >
+                                                        {field.name ===
+                                                        'previous_tax_declaration_number' ? (
+                                                            <DeclarationNumberSearch
+                                                                id={`document-${field.name}`}
+                                                                value={
+                                                                    values[
+                                                                        field
+                                                                            .name
+                                                                    ]
                                                                 }
-                                                            }}
-                                                            excludeNumber={
-                                                                values.tax_declaration_number
-                                                            }
-                                                            maxLength={
-                                                                field.maxLength
-                                                            }
-                                                            disabled={busy}
-                                                        />
-                                                    ) : (
-                                                        <Input
-                                                            id={`document-${field.name}`}
-                                                            type={
-                                                                field.type ??
-                                                                (field.name ===
-                                                                'area'
-                                                                    ? 'number'
-                                                                    : 'text')
-                                                            }
-                                                            step={
-                                                                field.name ===
-                                                                'area'
-                                                                    ? '0.0001'
-                                                                    : undefined
-                                                            }
-                                                            min={
-                                                                field.name ===
-                                                                'area'
-                                                                    ? '0'
-                                                                    : undefined
-                                                            }
-                                                            value={
-                                                                values[
-                                                                    field.name
-                                                                ]
-                                                            }
-                                                            onChange={(
-                                                                event,
-                                                            ) =>
-                                                                updateValue(
-                                                                    field.name,
-                                                                    event
-                                                                        .target
-                                                                        .value,
-                                                                )
-                                                            }
-                                                            maxLength={
-                                                                field.maxLength
-                                                            }
-                                                            className="rounded-none"
-                                                        />
-                                                    )}
-                                                </FieldRow>
-                                            ))}
-                                            {section.title === 'Land details' && (
+                                                                onChange={(
+                                                                    value,
+                                                                    match,
+                                                                ) => {
+                                                                    updateValue(
+                                                                        field.name,
+                                                                        value,
+                                                                    );
+
+                                                                    if (
+                                                                        match?.declarationDate
+                                                                    ) {
+                                                                        updateValue(
+                                                                            'previous_declaration_date',
+                                                                            match.declarationDate,
+                                                                        );
+                                                                    }
+                                                                }}
+                                                                excludeNumber={
+                                                                    values.tax_declaration_number
+                                                                }
+                                                                maxLength={
+                                                                    field.maxLength
+                                                                }
+                                                                disabled={busy}
+                                                            />
+                                                        ) : (
+                                                            <Input
+                                                                id={`document-${field.name}`}
+                                                                type={
+                                                                    field.type ??
+                                                                    (field.name ===
+                                                                    'area'
+                                                                        ? 'number'
+                                                                        : 'text')
+                                                                }
+                                                                step={
+                                                                    field.name ===
+                                                                    'area'
+                                                                        ? '0.0001'
+                                                                        : undefined
+                                                                }
+                                                                min={
+                                                                    field.name ===
+                                                                    'area'
+                                                                        ? '0'
+                                                                        : undefined
+                                                                }
+                                                                value={
+                                                                    values[
+                                                                        field
+                                                                            .name
+                                                                    ]
+                                                                }
+                                                                onChange={(
+                                                                    event,
+                                                                ) =>
+                                                                    updateValue(
+                                                                        field.name,
+                                                                        event
+                                                                            .target
+                                                                            .value,
+                                                                    )
+                                                                }
+                                                                maxLength={
+                                                                    field.maxLength
+                                                                }
+                                                                className="rounded-none"
+                                                            />
+                                                        )}
+                                                    </FieldRow>
+                                                ))}
+                                            {section.title ===
+                                                'Land details' && (
                                                 <BoundaryEditor
                                                     values={values}
                                                     errors={fieldErrors}
@@ -981,8 +985,8 @@ export default function DocumentUploadDialog({
                         {reviewing && confirmSave && (
                             <div className="flex flex-1 flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
                                 <p className="text-sm text-slate-700 dark:text-neutral-300">
-                                    Some sections are not checked. Would you like
-                                    to continue saving?
+                                    Some sections are not checked. Would you
+                                    like to continue saving?
                                 </p>
                                 <Button
                                     type="button"
@@ -1162,7 +1166,8 @@ function ArchiveSelectors({
     if (cabinets.length === 0) {
         return (
             <p className="text-sm text-slate-600 dark:text-neutral-400">
-                Add a book from Manage Cabinets before filing a document.
+                Add a folder or book from Manage Cabinets before filing a
+                document.
             </p>
         );
     }
@@ -1187,7 +1192,7 @@ function ArchiveSelectors({
                 <Select
                     value={cabinetId}
                     onValueChange={(value) =>
-                        onCabinetChange(String(value ?? ''))
+                        onCabinetChange(typeof value === 'string' ? value : '')
                     }
                     items={cabinetItems}
                 >
@@ -1215,7 +1220,7 @@ function ArchiveSelectors({
                 <Select
                     value={drawerId}
                     onValueChange={(value) =>
-                        onDrawerChange(String(value ?? ''))
+                        onDrawerChange(typeof value === 'string' ? value : '')
                     }
                     items={drawerItems}
                     disabled={!cabinetId}
@@ -1240,10 +1245,18 @@ function ArchiveSelectors({
                 </Select>
             </div>
             <div className="grid gap-2">
-                <Label htmlFor="document-book">Book</Label>
+                <Label htmlFor="document-book">
+                    {books[0]?.kind === 'folder'
+                        ? 'Folder'
+                        : books.length
+                          ? 'Book'
+                          : 'Folder or book'}
+                </Label>
                 <Select
                     value={bookId}
-                    onValueChange={(value) => onBookChange(String(value ?? ''))}
+                    onValueChange={(value) =>
+                        onBookChange(typeof value === 'string' ? value : '')
+                    }
                     items={bookItems}
                     disabled={!drawerId}
                 >
@@ -1251,7 +1264,13 @@ function ArchiveSelectors({
                         id="document-book"
                         className="w-full rounded-none"
                     >
-                        <SelectValue placeholder="Select book" />
+                        <SelectValue
+                            placeholder={
+                                books[0]?.kind === 'folder'
+                                    ? 'Select folder'
+                                    : 'Select book'
+                            }
+                        />
                     </SelectTrigger>
                     <SelectContent className="rounded-none">
                         {bookItems.map((item) => (

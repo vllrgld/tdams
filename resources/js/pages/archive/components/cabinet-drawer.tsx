@@ -9,7 +9,7 @@ import {
 import { createPortal } from 'react-dom';
 import { cn } from '@/lib/utils';
 import {
-    BOOK_COVER,
+    filingCover,
     type BookCover,
     type BookOrigin,
     type CabinetBook,
@@ -18,6 +18,7 @@ import {
 import { useBookPortal } from './book-portal';
 import { measureHoverAndRestPose } from './book-world-pose';
 import ClosedBookMesh from './closed-book-mesh';
+import ClosedFolderMesh, { FOLDER_ASPECT_RATIO } from './closed-folder-mesh';
 
 const BOOKS_PER_ROW = 8;
 const ROW_COUNT = 2;
@@ -82,6 +83,7 @@ export default function CabinetDrawer({
     const portal = useBookPortal();
     const [focusPeek, setFocusPeek] = useState(false);
     const [pointerOver, setPointerOver] = useState(false);
+    const [insideHovered, setInsideHovered] = useState(false);
     const [peekLocked, setPeekLocked] = useState(false);
     const [popsFrozen, setPopsFrozen] = useState(false);
     const [hoveredId, setHoveredId] = useState<string | null>(null);
@@ -89,7 +91,15 @@ export default function CabinetDrawer({
     const previousOpen = useRef(open);
     const previousOpenedBookId = useRef(openedBookId);
     const isCloseup = Boolean(onOpenBook);
+    const folders = drawer.books[0]?.kind === 'folder';
+    const itemName = folders ? 'folder' : 'book';
     const pullHeight = isCloseup ? 64 : Math.min(26, height * 0.42);
+    const pullPadding = isCloseup ? 5 : 2;
+    const pullSlotHeight = Math.max(0, pullHeight - pullPadding * 2) * 0.3;
+    const pullGripHeight = Math.max(
+        0,
+        pullHeight - pullPadding * 2 - pullSlotHeight - 2,
+    );
     const pullTop = Math.min(height * 0.14, isCloseup ? 48 : 18);
     const documentTotal = drawer.books.reduce(
         (total, book) => total + book.documentCount,
@@ -98,7 +108,7 @@ export default function CabinetDrawer({
     const description = [
         drawer.label,
         drawer.range,
-        `${drawer.books.length} ${drawer.books.length === 1 ? 'book' : 'books'}`,
+        `${drawer.books.length} ${itemName}${drawer.books.length === 1 ? '' : 's'}`,
         documentTotal > 0
             ? `${documentTotal} ${documentTotal === 1 ? 'document' : 'documents'}`
             : null,
@@ -123,7 +133,7 @@ export default function CabinetDrawer({
     const peek = Math.round(travel * 0.14);
     const sideTop = isCloseup ? height * 0.15 : drawerRimOffset(height);
     const sideHeight = height - sideTop;
-    const insideEnabled = open && !locked;
+    const insideEnabled = open && !locked && !isCloseup;
     const canPeek = !open && !locked && !peekLocked;
     const bookHeight = isCloseup
         ? height * 0.72
@@ -202,8 +212,15 @@ export default function CabinetDrawer({
                 }
             }}
             onPointerEnter={() => setPointerOver(true)}
+            onPointerOver={(event) => {
+                setInsideHovered(
+                    event.target instanceof Element &&
+                        Boolean(event.target.closest('[data-drawer-interior]')),
+                );
+            }}
             onPointerLeave={() => {
                 setPointerOver(false);
+                setInsideHovered(false);
                 setPeekLocked(false);
                 setPopsFrozen(false);
                 setHoveredId(null);
@@ -243,6 +260,7 @@ export default function CabinetDrawer({
 
             <button
                 ref={insideRef}
+                data-drawer-interior
                 type="button"
                 onClick={onViewInside}
                 disabled={!insideEnabled}
@@ -253,6 +271,9 @@ export default function CabinetDrawer({
                     insideEnabled
                         ? 'cursor-zoom-in hover:border-blue-800 hover:bg-blue-600/40 hover:ring-2 hover:ring-blue-800/50 focus-visible:border-blue-800 focus-visible:bg-blue-600/40 focus-visible:ring-2 focus-visible:ring-blue-800/50'
                         : 'pointer-events-none',
+                    insideEnabled &&
+                        insideHovered &&
+                        'border-blue-800 bg-blue-600/40 ring-2 ring-blue-800/50',
                 )}
                 style={{
                     top: sideTop,
@@ -264,19 +285,45 @@ export default function CabinetDrawer({
             />
 
             {visibleBooks.map((book, index) => {
-                const colors = BOOK_COVER;
+                const colors = filingCover(book.kind);
+                const folder = book.kind === 'folder';
                 const row = Math.floor(index / BOOKS_PER_ROW);
                 const col = index % BOOKS_PER_ROW;
-                const bookLeft =
-                    innerPad + col * colStride + (colStride - bookWidth) / 2;
-                const bookZ = -(innerPad + row * (rowDepth + aisle));
+                const itemHeight = folder
+                    ? Math.min(
+                          // Include the raised rear tab in the preview clearance.
+                          isCloseup ? height * 0.98 : bookHeight / 1.06,
+                          usableWidth / FOLDER_ASPECT_RATIO,
+                      )
+                    : bookHeight;
+                const itemWidth = folder
+                    ? itemHeight * FOLDER_ASPECT_RATIO
+                    : bookWidth;
+                const itemDepth = folder
+                    ? Math.max(2, (usableDepth / MAX_VISIBLE_BOOKS) * 0.28)
+                    : coverDepth;
+                const bookLeft = folder
+                    ? (width - itemWidth) / 2
+                    : innerPad + col * colStride + (colStride - bookWidth) / 2;
+                const bookZ = folder
+                    ? -(innerPad + (index * usableDepth) / MAX_VISIBLE_BOOKS)
+                    : -(innerPad + row * (rowDepth + aisle));
                 const popLift = isCloseup ? -40 : -14;
                 const showTitle = isCloseup || coverDepth >= 28;
                 const host = portal?.host ?? null;
-                const lifted = openedBookId === book.id && host !== null;
-                const canPop = !lifted && !popsFrozen;
+                const lifted =
+                    openedBookId === book.id && (folder || host !== null);
+                const canPop = !lifted && !popsFrozen && (!folder || isCloseup);
                 const poppedUp = canPop && hoveredId === book.id;
-                const mesh = (
+                const mesh = folder ? (
+                    <ClosedFolderMesh
+                        detail="closed"
+                        label={book.label}
+                        coverTitle={book.coverTitle}
+                        depth={itemDepth}
+                        showLabel={isCloseup}
+                    />
+                ) : (
                     <ClosedBookMesh
                         depth={coverDepth}
                         label={book.label}
@@ -290,6 +337,11 @@ export default function CabinetDrawer({
                 );
 
                 const openFromSlot = (slot: HTMLElement) => {
+                    if (insideEnabled) {
+                        onViewInside();
+                        return;
+                    }
+
                     if (!onOpenBook || lifted) {
                         return;
                     }
@@ -303,13 +355,14 @@ export default function CabinetDrawer({
                     onOpenBook(
                         book,
                         colors,
-                        measureHoverAndRestPose(visual, 'none', coverDepth),
+                        measureHoverAndRestPose(visual, 'none', itemDepth),
                     );
                 };
 
                 return (
                     <div
                         key={book.id}
+                        data-drawer-interior={insideEnabled || undefined}
                         ref={(node) => {
                             portal?.registerSlot(book.id, node);
                         }}
@@ -321,14 +374,15 @@ export default function CabinetDrawer({
                         }
                         className={cn(
                             'absolute bottom-0',
+                            insideEnabled && 'cursor-zoom-in',
                             onOpenBook && !lifted && 'cursor-pointer',
                             lifted && 'pointer-events-none',
                             poppedUp && 'z-10',
                         )}
                         style={{
                             left: bookLeft,
-                            width: bookWidth,
-                            height: bookHeight,
+                            width: itemWidth,
+                            height: itemHeight,
                             transform: `translateZ(${bookZ}px)`,
                             transformStyle: 'preserve-3d',
                             transformOrigin: '50% 100%',
@@ -376,11 +430,17 @@ export default function CabinetDrawer({
                         }}
                     >
                         <div aria-hidden="true" className="absolute inset-0" />
+                        {folder && (
+                            <div
+                                aria-hidden="true"
+                                className="absolute -top-[6%] left-0 h-[8%] w-[52%]"
+                            />
+                        )}
                         <div
                             aria-hidden="true"
                             className="absolute top-0 left-full h-full"
                             style={{
-                                width: coverDepth,
+                                width: itemDepth,
                                 transformOrigin: 'left center',
                                 transform: 'rotateY(90deg)',
                             }}
@@ -389,7 +449,7 @@ export default function CabinetDrawer({
                             aria-hidden="true"
                             className="absolute bottom-full left-0 w-full"
                             style={{
-                                height: coverDepth,
+                                height: itemDepth,
                                 transformOrigin: 'bottom center',
                                 transform: 'rotateX(90deg)',
                             }}
@@ -400,6 +460,8 @@ export default function CabinetDrawer({
                             style={{
                                 transformStyle: 'preserve-3d',
                                 transformOrigin: '50% 100%',
+                                visibility:
+                                    lifted && folder ? 'hidden' : undefined,
                             }}
                             initial={false}
                             animate={{
@@ -414,7 +476,9 @@ export default function CabinetDrawer({
                                     : BOOK_POP
                             }
                         >
-                            {lifted && host ? createPortal(mesh, host) : mesh}
+                            {lifted && host && !folder
+                                ? createPortal(mesh, host)
+                                : mesh}
                         </motion.div>
                     </div>
                 );
@@ -447,37 +511,44 @@ export default function CabinetDrawer({
                     )}
                     style={{
                         top: pullTop,
-                        width: isCloseup ? 192 : Math.min(64, width * 0.42),
-                        height: pullHeight,
+                        width: Math.min(isCloseup ? 144 : 44, width * 0.28),
+                        height: pullHeight - pullGripHeight * 0.25,
                     }}
                 >
                     <span
+                        aria-hidden="true"
+                        className="cabinet-pull-slot"
+                        style={{ height: pullSlotHeight }}
+                    />
+                    <span aria-hidden="true" className="cabinet-pull-grip" />
+                </span>
+                <span
+                    className={cn(
+                        'absolute left-1/2 flex w-[82%] -translate-x-1/2 items-center justify-center',
+                        isCloseup ? 'gap-3 text-lg' : 'gap-1 text-[8px]',
+                        'leading-none',
+                    )}
+                    style={{ bottom: Math.max(4, height * 0.1) }}
+                >
+                    <span
                         className={cn(
-                            'cabinet-pull-slot',
-                            isCloseup ? 'gap-3 px-4' : 'gap-1 px-1',
+                            'cabinet-label-holder truncate font-semibold',
+                            isCloseup ? 'text-lg' : 'text-[8px]',
+                            'leading-none',
                         )}
                     >
-                        <span
-                            className={cn(
-                                'cabinet-label-holder truncate leading-none font-semibold',
-                                isCloseup ? 'text-lg' : 'text-[8px]',
-                                pullHeight < 20 && 'sr-only',
-                            )}
-                        >
-                            {drawer.label}
-                        </span>
-                        {drawer.books.length > 0 && pullHeight >= 20 ? (
-                            <span
-                                className={cn(
-                                    'cabinet-vector-count leading-none font-semibold tabular-nums',
-                                    isCloseup ? 'text-sm' : 'text-[8px]',
-                                )}
-                            >
-                                {drawer.books.length}
-                            </span>
-                        ) : null}
+                        {drawer.label}
                     </span>
-                    <span aria-hidden="true" className="cabinet-pull-grip" />
+                    <span
+                        className={cn(
+                            'cabinet-vector-count font-semibold whitespace-nowrap tabular-nums',
+                            isCloseup ? 'text-sm' : 'text-[8px]',
+                            'leading-none',
+                        )}
+                    >
+                        {drawer.books.length} {itemName}
+                        {drawer.books.length === 1 ? '' : 's'}
+                    </span>
                 </span>
             </button>
         </motion.div>

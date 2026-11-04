@@ -1,5 +1,6 @@
 import { Link } from '@inertiajs/react';
 import { ChevronDown } from 'lucide-react';
+import { useState } from 'react';
 import {
     Collapsible,
     CollapsibleContent,
@@ -14,6 +15,7 @@ import {
     SidebarMenuSub,
     SidebarMenuSubButton,
     SidebarMenuSubItem,
+    useSidebar,
 } from '@/components/ui/sidebar';
 import { useCurrentUrl } from '@/hooks/use-current-url';
 import type { NavItem } from '@/types';
@@ -62,10 +64,23 @@ function CollapsibleNavItem({
     isCurrentUrl: (href: NavItem['href']) => boolean;
 }) {
     const childActive = item.items?.some((child) => isCurrentUrl(child.href));
-    const open = Boolean(childActive);
+    const [open, setOpen] = useState(Boolean(childActive));
+    const { state, isMobile, setOpen: setSidebarOpen } = useSidebar();
 
     return (
-        <Collapsible defaultOpen={open} className="group/collapsible">
+        <Collapsible
+            open={open}
+            onOpenChange={(nextOpen) => {
+                if (!isMobile && state === 'collapsed') {
+                    setSidebarOpen(true);
+                    setOpen(true);
+                    return;
+                }
+
+                setOpen(nextOpen);
+            }}
+            className="group/collapsible"
+        >
             <SidebarMenuItem>
                 <SidebarMenuButton
                     isActive={false}

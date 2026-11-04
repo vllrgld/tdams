@@ -36,6 +36,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('manage/drawers/{drawer}', [DrawerController::class, 'update'])->name('manage.drawers.update');
     Route::post('manage/drawers/{drawer}/books', [BookController::class, 'store'])->name('manage.drawers.books.store');
     Route::get('manage/books', [BookController::class, 'index'])->name('manage.books.index');
+    Route::get('manage/folders', [BookController::class, 'folders'])->name('manage.folders.index');
     Route::patch('manage/books/{book}', [BookController::class, 'update'])->name('manage.books.update');
     Route::redirect('archive/cabinets', '/manage/cabinets');
     Route::redirect('archive/books', '/manage/books');

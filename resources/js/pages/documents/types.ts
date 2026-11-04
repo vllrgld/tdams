@@ -47,6 +47,7 @@ export type SearchFieldOption = {
 export type ArchivePlacementBook = {
     id: string;
     label: string;
+    kind: 'book' | 'folder';
 };
 
 export type ArchivePlacementDrawer = {

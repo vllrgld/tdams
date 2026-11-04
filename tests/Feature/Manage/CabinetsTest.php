@@ -27,7 +27,9 @@ class CabinetsTest extends TestCase
 
         $this->get(route('manage.cabinets.index'))
             ->assertOk()
-            ->assertInertia(fn (Assert $page) => $page->component('manage/cabinets/index'));
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('manage/cabinets/index')
+                ->where('coverTitle', Book::DEFAULT_COVER_TITLE));
 
         $this->get(route('manage.books.index'))
             ->assertOk()
@@ -53,7 +55,7 @@ class CabinetsTest extends TestCase
         $this->assertSame('Sarrat', $cabinet->name);
         $this->assertSame('Sarrat', $cabinet->location);
         $this->assertSame(3, $cabinet->drawers()->count());
-        $this->assertSame(['Drawer 1', 'Drawer 2', 'Drawer 3'], $cabinet->drawers()->pluck('label')->all());
+        $this->assertSame(['North', 'East', 'West'], $cabinet->drawers()->pluck('label')->all());
         $this->assertSame([1, 2, 3], $cabinet->drawers()->pluck('position')->all());
         $this->assertSame(3, Drawer::query()->count());
     }
@@ -64,7 +66,7 @@ class CabinetsTest extends TestCase
 
         $response = $this->actingAs($user)->post(route('manage.cabinets.store'), []);
 
-        $response->assertSessionHasErrors(['name', 'drawer_count']);
+        $response->assertSessionHasErrors(['name', 'drawers']);
         $this->assertSame(0, Cabinet::query()->count());
     }
 
@@ -74,13 +76,13 @@ class CabinetsTest extends TestCase
 
         $this->actingAs($user)->post(route('manage.cabinets.store'), [
             'name' => 'Sarrat',
-            'drawer_count' => 9,
-        ])->assertSessionHasErrors('drawer_count');
+            'drawers' => array_fill(0, 9, 'Drawer'),
+        ])->assertSessionHasErrors('drawers');
 
         $this->actingAs($user)->post(route('manage.cabinets.store'), [
             'name' => 'Sarrat',
-            'drawer_count' => 0,
-        ])->assertSessionHasErrors('drawer_count');
+            'drawers' => [],
+        ])->assertSessionHasErrors('drawers');
 
         $this->assertSame(0, Cabinet::query()->count());
     }

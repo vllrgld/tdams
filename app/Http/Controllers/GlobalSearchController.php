@@ -97,6 +97,7 @@ class GlobalSearchController extends Controller
                 return [
                     'id' => $book->id,
                     'title' => $book->label,
+                    'kind' => $book->kind,
                     'hint' => $cabinet->name.' > '.$drawer->label,
                     'url' => route('archive.index', [
                         'cabinet' => $cabinet->id,

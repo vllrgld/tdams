@@ -34,7 +34,7 @@ class Cabinet extends Model
     }
 
     /**
-     * @return array{id: string, name: string, location: string, drawers: list<array{id: string, label: string, range: string, books: list<array{id: string, label: string, coverTitle: string, documentCount: int}>}>}
+     * @return array{id: string, name: string, location: string, drawers: list<array{id: string, label: string, range: string, books: list<array{id: string, label: string, kind: string, coverTitle: string, documentCount: int}>}>}
      */
     public function toFilingArray(): array
     {
@@ -51,6 +51,7 @@ class Cabinet extends Model
                         ->map(fn (Book $book): array => [
                             'id' => (string) $book->id,
                             'label' => $book->label,
+                            'kind' => $book->kind,
                             'coverTitle' => $book->cover_title !== ''
                                 ? $book->cover_title
                                 : Book::DEFAULT_COVER_TITLE,

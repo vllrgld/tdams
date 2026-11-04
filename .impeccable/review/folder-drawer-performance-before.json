@@ -1,0 +1,34 @@
+[
+  {
+    "kind": "book",
+    "nodes": 429,
+    "meshes": 0,
+    "paperLayers": 0,
+    "coverAnimations": 0,
+    "renders": 49,
+    "renderMs": 7502.9000000003725,
+    "scriptMs": 11220.08,
+    "layoutMs": 0,
+    "styleMs": 137.12,
+    "frameMedianMs": 322.2,
+    "frameP95Ms": 530.7,
+    "paintLayers": 122,
+    "errors": []
+  },
+  {
+    "kind": "folder",
+    "nodes": 637,
+    "meshes": 16,
+    "paperLayers": 128,
+    "coverAnimations": 0,
+    "renders": 49,
+    "renderMs": 15327.600000062957,
+    "scriptMs": 23027.36,
+    "layoutMs": 0,
+    "styleMs": 162.29,
+    "frameMedianMs": 673.8,
+    "frameP95Ms": 1030.2,
+    "paintLayers": 250,
+    "errors": []
+  }
+]

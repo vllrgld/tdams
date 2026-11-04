@@ -1,0 +1,102 @@
+@keyframes document-chain-card-enter {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.document-chain-card-enter {
+    animation: document-chain-card-enter 280ms ease-out both;
+}
+
+@keyframes document-chain-arrow-dot {
+    from {
+        opacity: 0;
+        transform: scale(0.25);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes document-chain-arrowhead-enter {
+    from {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.document-chain-arrow-dot {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: document-chain-arrow-dot 180ms ease-out both;
+}
+
+.document-chain-arrowhead {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: document-chain-arrowhead-enter 220ms ease-out both;
+}
+
+@keyframes document-chain-origin-arrow {
+    0%,
+    100% {
+        transform: translateY(-4px);
+    }
+
+    50% {
+        transform: translateY(5px);
+    }
+}
+
+.document-chain-origin-arrow {
+    animation: document-chain-origin-arrow 1.05s ease-in-out infinite;
+}
+
+.document-chain-scroller {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    overscroll-behavior-x: contain;
+}
+
+.document-chain-scroller::-webkit-scrollbar {
+    display: none;
+}
+
+.document-card-overlay {
+    --document-card-blue: color-mix(in oklab, var(--color-blue-900) 88%, black);
+    background:
+        radial-gradient(
+            130% 80% at 50% 100%,
+            color-mix(in oklab, var(--document-card-blue) 40%, transparent),
+            transparent 72%
+        ),
+        linear-gradient(
+            to top,
+            var(--document-card-blue) 0%,
+            color-mix(in oklab, var(--document-card-blue) 78%, transparent) 32%,
+            color-mix(in oklab, var(--document-card-blue) 42%, transparent) 58%,
+            color-mix(in oklab, var(--document-card-blue) 12%, transparent) 82%,
+            transparent 100%
+        );
+    text-shadow: 0 1px 2px rgb(15 23 42 / 0.55);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .document-chain-card-enter,
+    .document-chain-arrow-dot,
+    .document-chain-arrowhead,
+    .document-chain-origin-arrow {
+        animation: none;
+    }
+}
