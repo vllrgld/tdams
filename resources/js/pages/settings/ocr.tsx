@@ -110,8 +110,8 @@ export default function Ocr({
                                     </legend>
                                     <p className="text-sm text-muted-foreground">
                                         The service address and token stay on
-                                        the server. Choose which model reads
-                                        the scan.
+                                        the server. Choose which model reads the
+                                        scan.
                                     </p>
                                     {models.map((option) => (
                                         <label
@@ -149,7 +149,10 @@ export default function Ocr({
                                     Preview PDF compression
                                 </legend>
                                 <p className="text-sm text-muted-foreground">
-                                    Applies after OCR for every engine. The original upload is sent to OCRmyPDF, which converts it to PDF and compresses it with Ghostscript.
+                                    Applies after OCR for every engine. The
+                                    original upload is sent to OCRmyPDF, which
+                                    converts it to PDF and compresses it with
+                                    Ghostscript.
                                 </p>
                                 {levels.map((level) => (
                                     <label

@@ -6,6 +6,7 @@ use App\Models\Book;
 use App\Models\Cabinet;
 use App\Models\Document;
 use App\Models\User;
+use App\Services\Documents\DocumentWriter;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Queue;
@@ -129,6 +130,41 @@ class DocumentLinkingTest extends TestCase
             ->assertSessionHasErrors('previous_tax_declaration_number');
 
         $this->assertNull($document->fresh()->previous_tax_declaration_number);
+    }
+
+    public function test_patch_rejects_a_cycle_through_multiple_previous_declarations(): void
+    {
+        $user = User::factory()->create();
+        $first = $this->makeDocument($user, ['tax_declaration_number' => 'TD-A']);
+        $this->makeDocument($user, ['tax_declaration_number' => 'TD-B', 'previous_tax_declaration_number' => 'TD-A']);
+        $this->makeDocument($user, ['tax_declaration_number' => 'TD-C', 'previous_tax_declaration_number' => 'TD-B']);
+
+        $this->actingAs($user)->from(route('documents.index'))
+            ->patch(route('documents.update', $first), ['previous_tax_declaration_number' => 'TD-C'])
+            ->assertRedirect(route('documents.index'))->assertSessionHasErrors('previous_tax_declaration_number');
+
+        $this->assertNull($first->refresh()->taxDeclaration->previous_declaration_id);
+        $this->assertNull($first->previous_tax_declaration_number);
+    }
+
+    public function test_upload_rejects_a_cycle_created_by_resolving_a_previous_number(): void
+    {
+        Storage::fake('local');
+        $user = User::factory()->create();
+        $first = $this->makeDocument($user, ['tax_declaration_number' => 'TD-A', 'previous_tax_declaration_number' => 'TD-B']);
+
+        $this->actingAs($user)->postJson(route('documents.store'), [
+            'file' => UploadedFile::fake()->create('declaration.pdf', 10, 'application/pdf'),
+            'book_id' => $this->bookForUpload()->id,
+            'tax_declaration_number' => 'TD-B',
+            'previous_tax_declaration_number' => 'TD-A',
+        ])->assertUnprocessable()->assertJsonValidationErrors('previous_tax_declaration_number');
+
+        $this->assertDatabaseCount('documents', 1);
+        $this->assertDatabaseCount('tax_declarations', 1);
+        $this->assertNull($first->refresh()->taxDeclaration->previous_declaration_id);
+        $this->assertSame([], Storage::disk('local')->allFiles('documents'));
+        Queue::assertNothingPushed();
     }
 
     public function test_store_rejects_linking_a_document_to_its_own_tax_declaration_number(): void
@@ -274,7 +310,7 @@ class DocumentLinkingTest extends TestCase
         static $count = 0;
         $count++;
 
-        return Document::query()->create([
+        return app(DocumentWriter::class)->create([
             'original_filename' => "scan-{$count}.pdf",
             'storage_path' => "documents/scan-{$count}.pdf",
             'mime_type' => 'application/pdf',

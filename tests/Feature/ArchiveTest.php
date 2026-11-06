@@ -3,8 +3,8 @@
 namespace Tests\Feature;
 
 use App\Models\Cabinet;
-use App\Models\Document;
 use App\Models\User;
+use App\Services\Documents\DocumentWriter;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
@@ -90,7 +90,7 @@ class ArchiveTest extends TestCase
             'label' => 'TD 0001–0100',
             'position' => 1,
         ]);
-        Document::query()->create([
+        app(DocumentWriter::class)->create([
             'book_id' => $book->id,
             'position' => 2,
             'tax_declaration_number' => 'TD-2026-00482',
@@ -100,7 +100,7 @@ class ArchiveTest extends TestCase
             'file_size' => 2048,
             'uploaded_by' => $user->id,
         ]);
-        Document::query()->create([
+        app(DocumentWriter::class)->create([
             'book_id' => $book->id,
             'position' => 1,
             'tax_declaration_number' => 'TD-2026-00481',
@@ -132,7 +132,7 @@ class ArchiveTest extends TestCase
             'label' => 'TD 0001–0100',
             'position' => 1,
         ]);
-        $second = Document::query()->create([
+        $second = app(DocumentWriter::class)->create([
             'book_id' => $book->id,
             'position' => 2,
             'tax_declaration_number' => 'TD-2026-00482',
@@ -142,7 +142,7 @@ class ArchiveTest extends TestCase
             'file_size' => 2048,
             'uploaded_by' => $user->id,
         ]);
-        $first = Document::query()->create([
+        $first = app(DocumentWriter::class)->create([
             'book_id' => $book->id,
             'position' => 1,
             'tax_declaration_number' => 'TD-2026-00481',
@@ -190,7 +190,7 @@ class ArchiveTest extends TestCase
             'label' => 'TD 0001–0100',
             'position' => 1,
         ]);
-        $document = Document::query()->create([
+        $document = app(DocumentWriter::class)->create([
             'book_id' => $book->id,
             'position' => 1,
             'tax_declaration_number' => 'TD-2026-00481',
@@ -213,7 +213,7 @@ class ArchiveTest extends TestCase
     public function test_archive_locate_returns_null_when_the_document_is_not_filed(): void
     {
         $user = User::factory()->create();
-        Document::query()->create([
+        app(DocumentWriter::class)->create([
             'book_id' => null,
             'position' => null,
             'tax_declaration_number' => 'TD-2026-00999',

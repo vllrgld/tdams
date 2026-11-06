@@ -2,26 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Jobs\OcrDocument;
+use App\Http\Requests\Documents\StoreDocumentRequest;
+use App\Http\Resources\DocumentResource;
 use App\Models\Book;
 use App\Models\Cabinet;
 use App\Models\Document;
-use App\Models\Drawer;
+use App\Services\Documents\DocumentFieldDefinitions;
 use App\Services\Documents\DocumentSearcher;
-use App\Services\Ollama\DocumentFields;
-use App\Services\Ollama\OllamaClient;
+use App\Services\Documents\UploadDocument;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
-use RuntimeException;
-use Symfony\Component\HttpFoundation\StreamedResponse;
-use Throwable;
 
 class DocumentController extends Controller
 {
@@ -42,6 +36,10 @@ class DocumentController extends Controller
 
         $documents = $searcher->paginate($search, $field);
 
+        $selectedDocument = isset($validated['document'])
+            ? Document::query()->with(Document::archiveRelations())->whereKey($validated['document'])->first()
+            : null;
+
         return Inertia::render('documents/index', [
             'documents' => $documents,
             'archive' => $this->archivePlacementTree(),
@@ -51,380 +49,50 @@ class DocumentController extends Controller
             ],
             'searchFields' => Document::searchFieldOptions(),
             'mappingModels' => config('services.ollama.models'),
-            'selectedDocument' => isset($validated['document'])
-                ? Document::query()->with(Document::archiveRelations())->where('id', $validated['document'])->first()?->toArchiveArray()
-                : null,
+            'fieldSections' => DocumentFieldDefinitions::reviewSections(),
+            'selectedDocument' => $selectedDocument === null ? null : (new DocumentResource($selectedDocument))->resolve(),
         ]);
     }
 
-    public function store(Request $request): RedirectResponse|JsonResponse
+    public function store(StoreDocumentRequest $request, UploadDocument $upload): RedirectResponse|JsonResponse
     {
-        $validated = $request->validate([
-            'file' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png,tif,tiff', 'max:51200'],
-            'book_id' => ['required', 'integer', 'exists:books,id'],
-            'tax_declaration_number' => ['nullable', 'string', 'max:100'],
-            'declaration_date' => ['nullable', 'date'],
-            'lot_number' => ['nullable', 'string', 'max:100'],
-            'registered_owner' => ['nullable', 'string', 'max:255'],
-            'municipality' => ['nullable', 'string', 'max:150'],
-            'barangay' => ['nullable', 'string', 'max:150'],
-            'previous_tax_declaration_number' => ['nullable', 'string', 'max:100'],
-            'previous_declaration_date' => ['nullable', 'date'],
-            'title_number' => ['nullable', 'string', 'max:100'],
-            'property_location_street' => ['nullable', 'string', 'max:255'],
-            'property_location_barangay' => ['nullable', 'string', 'max:150'],
-            'property_location_district' => ['nullable', 'string', 'max:150'],
-            'property_location_municipality' => ['nullable', 'string', 'max:150'],
-            'owner_address_street' => ['nullable', 'string', 'max:255'],
-            'owner_address_barangay' => ['nullable', 'string', 'max:150'],
-            'owner_address_district' => ['nullable', 'string', 'max:150'],
-            'owner_address_city_municipality' => ['nullable', 'string', 'max:150'],
-            'province' => ['nullable', 'string', 'max:150'],
-            'pin' => ['nullable', 'string', 'max:100'],
-            'boundary_north' => ['nullable', 'string', 'max:255'],
-            'boundary_northeast' => ['nullable', 'string', 'max:255'],
-            'boundary_east' => ['nullable', 'string', 'max:255'],
-            'boundary_southeast' => ['nullable', 'string', 'max:255'],
-            'boundary_south' => ['nullable', 'string', 'max:255'],
-            'boundary_southwest' => ['nullable', 'string', 'max:255'],
-            'boundary_west' => ['nullable', 'string', 'max:255'],
-            'boundary_northwest' => ['nullable', 'string', 'max:255'],
-            'area' => ['nullable', 'numeric', 'min:0', 'max:9999999999.9999'],
-            'remarks' => ['nullable', 'string', 'max:10000'],
-        ]);
-
-        $this->assertPreviousDeclarationIsNotSelf(
-            $validated['previous_tax_declaration_number'] ?? null,
-            $validated['tax_declaration_number'] ?? null,
-        );
-
-        $file = $validated['file'];
-        $storagePath = null;
-        $documentId = null;
-
-        try {
-            DB::transaction(function () use ($request, $file, $validated, &$storagePath, &$documentId): void {
-                $temporaryPath = $file->getPathname();
-
-                if ($temporaryPath === '' || ! is_file($temporaryPath) || ! is_readable($temporaryPath)) {
-                    throw new RuntimeException('The uploaded document temporary file is unavailable.');
-                }
-
-                $stream = fopen($temporaryPath, 'rb');
-
-                if ($stream === false) {
-                    throw new RuntimeException('The uploaded document temporary file could not be opened.');
-                }
-
-                $storagePath = 'documents/'.$file->hashName();
-
-                try {
-                    $stored = Storage::disk('local')->put($storagePath, $stream);
-                } finally {
-                    fclose($stream);
-                }
-
-                if (! $stored) {
-                    throw new RuntimeException('The document could not be saved to private storage.');
-                }
-
-                $book = Book::query()->findOrFail($validated['book_id']);
-
-                $document = Document::query()->create([
-                    'book_id' => $book->id,
-                    'position' => $book->nextDocumentPosition(),
-                    'tax_declaration_number' => $validated['tax_declaration_number'] ?? null,
-                    'declaration_date' => $validated['declaration_date'] ?? null,
-                    'lot_number' => $validated['lot_number'] ?? null,
-                    'registered_owner' => $validated['registered_owner'] ?? null,
-                    'municipality' => $validated['municipality'] ?? null,
-                    'barangay' => $validated['barangay'] ?? null,
-                    'previous_tax_declaration_number' => $validated['previous_tax_declaration_number'] ?? null,
-                    'previous_declaration_date' => $validated['previous_declaration_date'] ?? null,
-                    'title_number' => $validated['title_number'] ?? null,
-                    'property_location_street' => $validated['property_location_street'] ?? null,
-                    'property_location_barangay' => $validated['property_location_barangay'] ?? null,
-                    'property_location_district' => $validated['property_location_district'] ?? null,
-                    'property_location_municipality' => $validated['property_location_municipality'] ?? null,
-                    'owner_address_street' => $validated['owner_address_street'] ?? null,
-                    'owner_address_barangay' => $validated['owner_address_barangay'] ?? null,
-                    'owner_address_district' => $validated['owner_address_district'] ?? null,
-                    'owner_address_city_municipality' => $validated['owner_address_city_municipality'] ?? null,
-                    'province' => $validated['province'] ?? null,
-                    'pin' => $validated['pin'] ?? null,
-                    'boundary_north' => $validated['boundary_north'] ?? null,
-                    'boundary_south' => $validated['boundary_south'] ?? null,
-                    'boundary_east' => $validated['boundary_east'] ?? null,
-                    'boundary_west' => $validated['boundary_west'] ?? null,
-                    'area' => $validated['area'] ?? null,
-                    'remarks' => $validated['remarks'] ?? null,
-                    'original_filename' => $file->getClientOriginalName(),
-                    'storage_path' => $storagePath,
-                    'mime_type' => $file->getMimeType() ?? 'application/octet-stream',
-                    'file_size' => $file->getSize(),
-                    'uploaded_by' => $request->user()->id,
-                    'ocr_status' => 'pending',
-                ]);
-                $documentId = $document->id;
-            });
-        } catch (Throwable $exception) {
-            if (is_string($storagePath)) {
-                Storage::disk('local')->delete($storagePath);
-            }
-
-            throw $exception;
-        }
-
-        if (! is_int($documentId)) {
-            throw new RuntimeException('The document could not be created.');
-        }
-
-        OcrDocument::dispatch($documentId);
+        $document = $upload->store($request->validated('file'), $request->integer('book_id'), $request->user(), $request->safe()->except(['file', 'book_id']));
 
         if ($request->wantsJson()) {
-            return response()->json([
-                'id' => $documentId,
-            ]);
+            return response()->json(['id' => $document->id]);
         }
 
         return to_route('documents.index');
-    }
-
-    public function declarationNumbers(Request $request): JsonResponse
-    {
-        $validated = $request->validate([
-            'q' => ['required', 'string', 'min:1', 'max:100'],
-            'exclude' => ['nullable', 'integer', 'exists:documents,id'],
-        ]);
-
-        $term = '%'.addcslashes(mb_strtolower($validated['q']), '%_\\').'%';
-
-        $documents = Document::query()
-            ->with(Document::archiveRelations())
-            ->whereHas('taxDeclaration', function ($query) use ($term): void {
-                $query->whereNotNull('tax_declaration_number')
-                    ->where('tax_declaration_number', '!=', '')
-                    ->whereRaw('LOWER(tax_declaration_number) LIKE ?', [$term]);
-            })
-            ->when(
-                isset($validated['exclude']),
-                fn ($query) => $query->where('id', '!=', (int) $validated['exclude']),
-            )
-            ->latest('id')
-            ->limit(15)
-            ->get();
-
-        return response()->json($documents->map(fn (Document $document): array => [
-            'id' => $document->id,
-            'taxDeclarationNumber' => $document->tax_declaration_number,
-            'registeredOwner' => $document->registered_owner,
-            'lotNumber' => $document->lot_number,
-            'municipality' => $document->municipality,
-            'declarationDate' => $document->declaration_date?->toDateString(),
-            'createdAt' => $document->created_at?->toIso8601String(),
-        ])->values());
-    }
-
-    public function history(Document $document): JsonResponse
-    {
-        return response()->json($document->previousDeclarationChain());
-    }
-
-    public function ocr(Document $document): JsonResponse
-    {
-        return response()->json([
-            'status' => $document->ocr_status,
-            'regions' => $document->ocr_regions ?? [],
-            'text' => $document->ocr_text,
-            'error' => $document->ocr_error,
-            'completedAt' => $document->ocr_completed_at?->toIso8601String(),
-            'pdfUrl' => $document->previewUrl(),
-            'mimeType' => $document->mime_type,
-        ]);
-    }
-
-    public function map(Request $request, Document $document, OllamaClient $client): JsonResponse
-    {
-        $models = config('services.ollama.models');
-        $validated = $request->validate([
-            'model' => ['required', 'string', Rule::in(is_array($models) ? $models : [])],
-        ]);
-
-        if ($document->ocr_status !== 'completed' || ! is_string($document->ocr_text) || trim($document->ocr_text) === '') {
-            throw ValidationException::withMessages([
-                'model' => 'OCR text is not ready to map.',
-            ]);
-        }
-
-        try {
-            $fields = $client->mapFields($validated['model'], $document->ocr_text);
-        } catch (RuntimeException $exception) {
-            throw ValidationException::withMessages([
-                'model' => $exception->getMessage(),
-            ]);
-        }
-
-        return response()->json([
-            'fields' => $fields,
-        ]);
-    }
-
-    public function saveFields(Request $request, Document $document): JsonResponse
-    {
-        $rules = DocumentFields::rules();
-        $payload = $request->only(array_keys($rules));
-
-        if ($payload === []) {
-            throw ValidationException::withMessages([
-                'fields' => 'Check at least one field before saving.',
-            ]);
-        }
-
-        $validated = $request->validate(array_intersect_key($rules, $payload));
-
-        $this->assertPreviousDeclarationIsNotSelf(
-            array_key_exists('previous_tax_declaration_number', $validated)
-                ? $validated['previous_tax_declaration_number']
-                : $document->previous_tax_declaration_number,
-            array_key_exists('tax_declaration_number', $validated)
-                ? $validated['tax_declaration_number']
-                : $document->tax_declaration_number,
-        );
-
-        $document->update($validated);
-        $document->refresh();
-
-        return response()->json([
-            'document' => $document->toArchiveArray(),
-        ]);
-    }
-
-    public function chain(Document $document): JsonResponse
-    {
-        return response()->json($document->fullDeclarationChain());
-    }
-
-    public function update(Request $request, Document $document): RedirectResponse
-    {
-        $validated = $request->validate([
-            'previous_tax_declaration_number' => ['nullable', 'string', 'max:100'],
-            'previous_declaration_date' => ['nullable', 'date'],
-        ]);
-
-        if (filled($document->previous_tax_declaration_number)) {
-            throw ValidationException::withMessages([
-                'previous_tax_declaration_number' => 'A previous tax declaration number is already set.',
-            ]);
-        }
-
-        $previousNumber = $validated['previous_tax_declaration_number'] ?? null;
-
-        $this->assertPreviousDeclarationIsNotSelf(
-            $previousNumber,
-            $document->tax_declaration_number,
-        );
-
-        $document->update([
-            'previous_tax_declaration_number' => $previousNumber,
-            'previous_declaration_date' => $validated['previous_declaration_date'] ?? null,
-        ]);
-
-        return to_route('documents.index');
-    }
-
-    public function thumbnail(Document $document): StreamedResponse
-    {
-        $thumbnailPath = $document->thumbnail_path;
-
-        abort_unless($document->hasStoredThumbnail() && is_string($thumbnailPath), 404);
-
-        return Storage::disk('local')->response(
-            $thumbnailPath,
-            pathinfo($document->original_filename, PATHINFO_FILENAME).'.jpg',
-            [
-                'Content-Type' => 'image/jpeg',
-                'X-Content-Type-Options' => 'nosniff',
-            ],
-            'inline',
-        );
-    }
-
-    public function view(Document $document): StreamedResponse
-    {
-        abort_unless(Storage::disk('local')->exists($document->storage_path), 404);
-
-        return Storage::disk('local')->response(
-            $document->storage_path,
-            $document->original_filename,
-            [
-                'Content-Type' => $document->mime_type,
-                'X-Content-Type-Options' => 'nosniff',
-            ],
-            'inline',
-        );
-    }
-
-    public function ocrPdf(Document $document): StreamedResponse
-    {
-        $ocrPdfPath = $document->ocr_pdf_path;
-
-        if ($document->hasStoredOcrPdf() && is_string($ocrPdfPath)) {
-            return Storage::disk('local')->response(
-                $ocrPdfPath,
-                pathinfo($document->original_filename, PATHINFO_FILENAME).'-ocr.pdf',
-                [
-                    'Content-Type' => 'application/pdf',
-                    'X-Content-Type-Options' => 'nosniff',
-                ],
-                'inline',
-            );
-        }
-
-        return $this->view($document);
     }
 
     /**
-     * @return list<array{id: string, name: string, drawers: list<array{id: string, label: string, books: list<array{id: string, label: string}>}>}>
+     * @return list<array{id: string, name: string, drawers: list<array{id: string, label: string, books: list<array{id: string, label: string, kind: string, coverTitle: string}>}>}>
      */
     private function archivePlacementTree(): array
     {
-        return Cabinet::query()
-            ->with('drawers.books')
-            ->orderBy('name')
-            ->get()
-            ->map(fn (Cabinet $cabinet): array => [
-                'id' => (string) $cabinet->id,
-                'name' => $cabinet->name,
-                'drawers' => $cabinet->drawers
-                    ->map(fn (Drawer $drawer): array => [
-                        'id' => (string) $drawer->id,
-                        'label' => $drawer->label,
-                        'books' => $drawer->books
-                            ->map(fn (Book $book): array => [
-                                'id' => (string) $book->id,
-                                'label' => $book->label,
-                                'kind' => $book->kind,
-                            ])
-                            ->values()
-                            ->all(),
-                    ])
-                    ->values()
-                    ->all(),
-            ])
-            ->values()
-            ->all();
-    }
+        $archive = [];
 
-    private function assertPreviousDeclarationIsNotSelf(?string $previousNumber, ?string $taxDeclarationNumber): void
-    {
-        if (! filled($previousNumber) || ! filled($taxDeclarationNumber)) {
-            return;
+        foreach (Cabinet::query()->with('drawers.books')->orderBy('name')->get() as $cabinet) {
+            $drawers = [];
+
+            foreach ($cabinet->drawers as $drawer) {
+                $books = [];
+
+                foreach ($drawer->books as $book) {
+                    $books[] = [
+                        'id' => (string) $book->id,
+                        'label' => $book->label,
+                        'kind' => $book->kind,
+                        'coverTitle' => $book->cover_title ?: Book::DEFAULT_COVER_TITLE,
+                    ];
+                }
+
+                $drawers[] = ['id' => (string) $drawer->id, 'label' => $drawer->label, 'books' => $books];
+            }
+
+            $archive[] = ['id' => (string) $cabinet->id, 'name' => $cabinet->name, 'drawers' => $drawers];
         }
 
-        if (strcasecmp(trim($previousNumber), trim($taxDeclarationNumber)) === 0) {
-            throw ValidationException::withMessages([
-                'previous_tax_declaration_number' => 'The previous tax declaration number cannot be the same as this document.',
-            ]);
-        }
+        return $archive;
     }
 }

@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Models\Cabinet;
-use App\Models\Drawer;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -15,37 +14,29 @@ class CabinetController extends Controller
 {
     public function index(): Response
     {
-        $cabinets = Cabinet::query()
-            ->with('drawers.books')
-            ->orderBy('name')
-            ->get()
-            ->map(fn (Cabinet $cabinet): array => [
-                'id' => (string) $cabinet->id,
-                'name' => $cabinet->name,
-                'location' => $cabinet->location,
-                'drawers' => $cabinet->drawers
-                    ->map(fn (Drawer $drawer): array => [
-                        'id' => (string) $drawer->id,
-                        'label' => $drawer->label,
-                        'position' => $drawer->position,
-                        'books' => $drawer->books
-                            ->map(fn (Book $book): array => [
-                                'id' => (string) $book->id,
-                                'label' => $book->label,
-                                'kind' => $book->kind,
-                                'coverTitle' => $book->cover_title !== ''
-                                    ? $book->cover_title
-                                    : Book::DEFAULT_COVER_TITLE,
-                                'position' => $book->position,
-                            ])
-                            ->values()
-                            ->all(),
-                    ])
-                    ->values()
-                    ->all(),
-            ])
-            ->values()
-            ->all();
+        $cabinets = [];
+
+        foreach (Cabinet::query()->with('drawers.books')->orderBy('name')->get() as $cabinet) {
+            $drawers = [];
+
+            foreach ($cabinet->drawers as $drawer) {
+                $books = [];
+
+                foreach ($drawer->books as $book) {
+                    $books[] = [
+                        'id' => (string) $book->id,
+                        'label' => $book->label,
+                        'kind' => $book->kind,
+                        'coverTitle' => $book->cover_title !== '' ? $book->cover_title : Book::DEFAULT_COVER_TITLE,
+                        'position' => $book->position,
+                    ];
+                }
+
+                $drawers[] = ['id' => (string) $drawer->id, 'label' => $drawer->label, 'position' => $drawer->position, 'books' => $books];
+            }
+
+            $cabinets[] = ['id' => (string) $cabinet->id, 'name' => $cabinet->name, 'location' => $cabinet->location, 'drawers' => $drawers];
+        }
 
         return Inertia::render('manage/cabinets/index', [
             'cabinets' => $cabinets,

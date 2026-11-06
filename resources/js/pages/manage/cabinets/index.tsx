@@ -1,13 +1,14 @@
+import { store as storeFilingItem } from '@/routes/manage/drawers/books';
+import { index as cabinetsIndex } from '@/routes/manage/cabinets';
 import { Head, useForm } from '@inertiajs/react';
 import { Plus } from 'lucide-react';
 import { useState, type FormEvent } from 'react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
-import type {
-    CabinetListDrawer,
-    CabinetListItem,
-} from '@/pages/archive/data/cabinets';
-import AddBookDialog, { type BookForm } from './add-book-dialog';
+import type { CabinetListDrawer, CabinetListItem } from '@/types/filing';
+import AddFilingItemDialog, {
+    type FilingItemForm,
+} from './add-filing-item-dialog';
 import AddCabinetDialog from './add-cabinet-dialog';
 import CabinetRenameTitle from './cabinet-rename-title';
 import DrawerRenameRow from './drawer-rename-row';
@@ -22,13 +23,13 @@ export default function Cabinets({
     folderCoverTitle: string;
 }) {
     const [addOpen, setAddOpen] = useState(false);
-    const [addBookDrawer, setAddBookDrawer] =
+    const [addItemDrawer, setAddItemDrawer] =
         useState<CabinetListDrawer | null>(null);
     const form = useForm({
         name: '',
         drawers: ['Drawer 1', 'Drawer 2', 'Drawer 3', 'Drawer 4'],
     });
-    const bookForm = useForm<BookForm>({
+    const itemForm = useForm<FilingItemForm>({
         label: '',
         kind: 'book',
     });
@@ -36,7 +37,7 @@ export default function Cabinets({
     function submitCabinet(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
-        form.post('/manage/cabinets', {
+        form.post(cabinetsIndex.url(), {
             onSuccess: () => {
                 setAddOpen(false);
                 form.reset();
@@ -45,30 +46,30 @@ export default function Cabinets({
         });
     }
 
-    function openAddBook(drawer: CabinetListDrawer) {
+    function openAddItem(drawer: CabinetListDrawer) {
         const kind = drawer.books[0]?.kind ?? 'book';
-        bookForm.setData({
+        itemForm.setData({
             kind,
             label: `${kind === 'folder' ? 'Folder' : 'Book'} ${drawer.books.length + 1}`,
         });
-        bookForm.clearErrors();
-        setAddBookDrawer(drawer);
+        itemForm.clearErrors();
+        setAddItemDrawer(drawer);
     }
 
-    function submitBook(event: FormEvent<HTMLFormElement>) {
+    function submitItem(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
-        if (!addBookDrawer) {
+        if (!addItemDrawer) {
             return;
         }
 
-        bookForm.post(`/manage/drawers/${addBookDrawer.id}/books`, {
+        itemForm.post(storeFilingItem.url(Number(addItemDrawer.id)), {
             preserveScroll: true,
             onSuccess: () => {
-                setAddBookDrawer(null);
-                bookForm.reset();
+                setAddItemDrawer(null);
+                itemForm.reset();
                 toast.success(
-                    `${bookForm.data.kind === 'folder' ? 'Folder' : 'Book'} added.`,
+                    `${itemForm.data.kind === 'folder' ? 'Folder' : 'Book'} added.`,
                 );
             },
         });
@@ -142,7 +143,7 @@ export default function Cabinets({
                                                 <DrawerRenameRow
                                                     key={drawer.id}
                                                     drawer={drawer}
-                                                    onAddBook={openAddBook}
+                                                    onAddItem={openAddItem}
                                                 />
                                             ))}
                                         </ul>
@@ -163,19 +164,19 @@ export default function Cabinets({
                 onOpenChange={setAddOpen}
                 onSubmit={submitCabinet}
             />
-            <AddBookDialog
-                form={bookForm}
+            <AddFilingItemDialog
+                form={itemForm}
                 coverTitle={coverTitle}
                 folderCoverTitle={folderCoverTitle}
-                lockedKind={addBookDrawer?.books[0]?.kind}
-                drawerLabel={addBookDrawer?.label ?? ''}
-                open={addBookDrawer !== null}
+                lockedKind={addItemDrawer?.books[0]?.kind}
+                drawerLabel={addItemDrawer?.label ?? ''}
+                open={addItemDrawer !== null}
                 onOpenChange={(open) => {
                     if (!open) {
-                        setAddBookDrawer(null);
+                        setAddItemDrawer(null);
                     }
                 }}
-                onSubmit={submitBook}
+                onSubmit={submitItem}
             />
         </>
     );
@@ -185,11 +186,11 @@ Cabinets.layout = {
     breadcrumbs: [
         {
             title: 'Manage',
-            href: '/manage/cabinets',
+            href: cabinetsIndex.url(),
         },
         {
             title: 'Cabinets',
-            href: '/manage/cabinets',
+            href: cabinetsIndex.url(),
         },
     ],
 };

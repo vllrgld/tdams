@@ -1,3 +1,6 @@
+import { index as foldersIndex } from '@/routes/manage/folders';
+import { index as booksIndex } from '@/routes/manage/books';
+import { update as updateDrawer } from '@/routes/manage/drawers';
 import { Link, useForm } from '@inertiajs/react';
 import { Pencil, Plus } from 'lucide-react';
 import { useRef, useState } from 'react';
@@ -5,23 +8,23 @@ import { toast } from 'sonner';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import type { CabinetListDrawer } from '@/pages/archive/data/cabinets';
+import type { CabinetListDrawer } from '@/types/filing';
 
-const MAX_BOOKS_PER_DRAWER = 16;
+const MAX_ITEMS_PER_DRAWER = 16;
 
 export default function DrawerRenameRow({
     drawer,
-    onAddBook,
+    onAddItem,
 }: {
     drawer: CabinetListDrawer;
-    onAddBook: (drawer: CabinetListDrawer) => void;
+    onAddItem: (drawer: CabinetListDrawer) => void;
 }) {
     const [editing, setEditing] = useState(false);
     const saving = useRef(false);
     const form = useForm({
         label: drawer.label,
     });
-    const canAddBook = drawer.books.length < MAX_BOOKS_PER_DRAWER;
+    const canAddItem = drawer.books.length < MAX_ITEMS_PER_DRAWER;
     const bookCount = drawer.books.length;
     const kind = drawer.books[0]?.kind;
     const itemName = kind === 'folder' ? 'folder' : 'book';
@@ -53,7 +56,7 @@ export default function DrawerRenameRow({
 
         saving.current = true;
         form.setData('label', next);
-        form.patch(`/manage/drawers/${drawer.id}`, {
+        form.patch(updateDrawer.url(Number(drawer.id)), {
             preserveScroll: true,
             onSuccess: () => {
                 saving.current = false;
@@ -112,7 +115,15 @@ export default function DrawerRenameRow({
                 )}
                 {bookCount > 0 ? (
                     <Link
-                        href={`/manage/${kind === 'folder' ? 'folders' : 'books'}?drawer=${drawer.id}`}
+                        href={
+                            kind === 'folder'
+                                ? foldersIndex.url({
+                                      query: { drawer: drawer.id },
+                                  })
+                                : booksIndex.url({
+                                      query: { drawer: drawer.id },
+                                  })
+                        }
                         aria-label={
                             bookCount > 0
                                 ? `View ${bookCount} ${itemName}${bookCount === 1 ? '' : 's'} in ${drawer.label}`
@@ -134,14 +145,14 @@ export default function DrawerRenameRow({
                     </span>
                 )}
                 <div className="flex items-center justify-end gap-1">
-                    {canAddBook && (
+                    {canAddItem && (
                         <Button
                             type="button"
                             variant="ghost"
                             size="icon"
                             aria-label={addLabel}
                             title={addLabel}
-                            onClick={() => onAddBook(drawer)}
+                            onClick={() => onAddItem(drawer)}
                             className="size-8 shrink-0 rounded-none text-slate-500 hover:text-blue-900 dark:text-neutral-400 dark:hover:text-blue-200"
                         >
                             <Plus aria-hidden="true" className="size-3.5" />

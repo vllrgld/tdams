@@ -1,3 +1,4 @@
+import { update as updateCabinet } from '@/routes/manage/cabinets';
 import { useForm } from '@inertiajs/react';
 import { Pencil } from 'lucide-react';
 import { useRef, useState } from 'react';
@@ -5,7 +6,7 @@ import { toast } from 'sonner';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import type { CabinetListItem } from '@/pages/archive/data/cabinets';
+import type { CabinetListItem } from '@/types/filing';
 
 export default function CabinetRenameTitle({
     cabinet,
@@ -44,7 +45,7 @@ export default function CabinetRenameTitle({
 
         saving.current = true;
         form.setData('name', next);
-        form.patch(`/manage/cabinets/${cabinet.id}`, {
+        form.patch(updateCabinet.url(Number(cabinet.id)), {
             preserveScroll: true,
             onSuccess: () => {
                 saving.current = false;

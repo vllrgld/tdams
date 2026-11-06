@@ -6,11 +6,14 @@ use App\Jobs\OcrDocument;
 use App\Models\Document;
 use App\Models\OcrSetting;
 use App\Models\User;
+use App\Services\Documents\DocumentWriter;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\Request;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Sleep;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -19,6 +22,130 @@ use Tests\TestCase;
 class OcrDocumentTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function test_failed_ocr_can_be_retried_without_uploading_another_document(): void
+    {
+        Queue::fake();
+        $user = User::factory()->create();
+        $document = $this->document();
+        $document->forceFill(['ocr_status' => 'failed', 'ocr_error' => 'Queue unavailable.'])->saveQuietly();
+
+        $this->actingAs($user)->postJson(route('documents.ocr.retry', $document))
+            ->assertOk()->assertJsonPath('status', 'pending')->assertJsonPath('error', null);
+        $this->postJson(route('documents.ocr.retry', $document))->assertOk()->assertJsonPath('status', 'pending');
+
+        Queue::assertPushed(OcrDocument::class, 1);
+        Queue::assertPushed(OcrDocument::class, fn (OcrDocument $job): bool => $job->documentId === $document->id);
+        $this->assertSame('pending', $document->refresh()->ocr_status);
+        $this->assertDatabaseCount('documents', 1);
+    }
+
+    public function test_retry_reports_another_queue_failure_on_the_same_document(): void
+    {
+        Bus::shouldReceive('dispatch')->once()->andThrow(new \RuntimeException('Queue still unavailable.'));
+        $document = $this->document();
+        $document->forceFill(['ocr_status' => 'failed'])->saveQuietly();
+
+        $this->actingAs(User::factory()->create())->postJson(route('documents.ocr.retry', $document))
+            ->assertOk()->assertJsonPath('status', 'failed')->assertJsonPath('error', 'Queue still unavailable.');
+
+        $this->assertSame('failed', $document->refresh()->ocr_status);
+        $this->assertDatabaseCount('documents', 1);
+    }
+
+    public function test_guests_cannot_retry_ocr(): void
+    {
+        Queue::fake();
+
+        $this->postJson(route('documents.ocr.retry', $this->document()))->assertUnauthorized();
+
+        Queue::assertNothingPushed();
+    }
+
+    #[DataProvider('activeOcrStatuses')]
+    public function test_retry_does_not_requeue_active_or_completed_ocr(string $status): void
+    {
+        Queue::fake();
+        $document = $this->document();
+        $document->forceFill(['ocr_status' => $status, 'ocr_text' => 'Existing text'])->saveQuietly();
+
+        $this->actingAs(User::factory()->create())->postJson(route('documents.ocr.retry', $document))
+            ->assertOk()->assertJsonPath('status', $status)->assertJsonPath('text', 'Existing text');
+
+        Queue::assertNothingPushed();
+    }
+
+    #[DataProvider('alreadyClaimedOcrStatuses')]
+    public function test_duplicate_job_does_not_reprocess_active_or_completed_ocr(string $status): void
+    {
+        Http::fake();
+        $document = $this->document();
+        $document->forceFill(['ocr_status' => $status, 'ocr_text' => 'Existing text'])->saveQuietly();
+
+        OcrDocument::dispatchSync($document->id);
+
+        Http::assertNothingSent();
+        $this->assertSame($status, $document->refresh()->ocr_status);
+        $this->assertSame('Existing text', $document->ocr_text);
+    }
+
+    /** @return array<string, array{string}> */
+    public static function activeOcrStatuses(): array
+    {
+        return ['pending' => ['pending'], ...self::alreadyClaimedOcrStatuses()];
+    }
+
+    /** @return array<string, array{string}> */
+    public static function alreadyClaimedOcrStatuses(): array
+    {
+        return ['processing' => ['processing'], 'completed' => ['completed']];
+    }
+
+    public function test_database_queue_keeps_long_running_ocr_reserved_until_after_its_timeout(): void
+    {
+        $this->freezeTime();
+        $queue = Queue::connection('database');
+        $queue->push(new OcrDocument(1));
+
+        $this->assertNotNull($queue->pop());
+
+        $this->travel(361)->seconds();
+        $this->assertNull($queue->pop());
+
+        $this->travel(60)->seconds();
+        $this->assertNotNull($queue->pop());
+    }
+
+    public function test_terminal_queue_failure_marks_a_processing_document_failed(): void
+    {
+        $document = $this->document();
+        $document->forceFill(['ocr_status' => 'processing'])->save();
+
+        (new OcrDocument($document->id))->failed(new \RuntimeException('OCR worker timed out.'));
+
+        $document->refresh();
+        $this->assertSame('failed', $document->ocr_status);
+        $this->assertSame('OCR worker timed out.', $document->ocr_error);
+        $this->assertNull($document->ocr_completed_at);
+    }
+
+    public function test_late_queue_failure_preserves_a_completed_document(): void
+    {
+        $document = $this->document();
+        $document->forceFill([
+            'ocr_status' => 'completed',
+            'ocr_text' => 'Verified OCR result',
+            'ocr_completed_at' => now(),
+        ])->save();
+
+        (new OcrDocument($document->id))->failed(new \RuntimeException('Expired duplicate reservation.'));
+
+        $document->refresh();
+        $this->assertSame('completed', $document->ocr_status);
+        $this->assertSame('Verified OCR result', $document->ocr_text);
+        $this->assertNull($document->ocr_error);
+        $this->assertNotNull($document->ocr_completed_at);
+    }
 
     public function test_job_stores_ocr_text_and_pages(): void
     {
@@ -981,7 +1108,7 @@ class OcrDocumentTest extends TestCase
     public function test_authenticated_user_can_read_ocr_text(): void
     {
         $user = User::factory()->create();
-        $document = Document::query()->create([
+        $document = app(DocumentWriter::class)->create([
             'original_filename' => 'scan.pdf',
             'storage_path' => 'documents/scan.pdf',
             'mime_type' => 'application/pdf',
@@ -1012,7 +1139,7 @@ class OcrDocumentTest extends TestCase
      */
     private function document(array $attributes = []): Document
     {
-        return Document::query()->create([
+        return app(DocumentWriter::class)->create([
             'original_filename' => 'scan.pdf',
             'storage_path' => 'documents/scan.pdf',
             'mime_type' => 'application/pdf',

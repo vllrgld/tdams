@@ -8,6 +8,7 @@ use App\Models\Owner;
 use App\Models\Property;
 use App\Models\TaxDeclaration;
 use Illuminate\Support\Carbon;
+use Illuminate\Validation\ValidationException;
 
 class DeclarationRecorder
 {
@@ -27,6 +28,11 @@ class DeclarationRecorder
         }
 
         $declaration = $this->declarationFor($document, $fields);
+
+        if ($declaration->exists) {
+            $declaration = TaxDeclaration::query()->whereKey($declaration->id)->lockForUpdate()->firstOrFail();
+        }
+
         $this->fillDeclaration($declaration, $fields);
         $this->fillProperty($declaration, $fields);
         $declaration->save();
@@ -106,7 +112,7 @@ class DeclarationRecorder
         }
 
         if (array_key_exists('declaration_date', $fields)) {
-            $declaration->declaration_date = $this->nullableString($fields['declaration_date']);
+            $declaration->setAttribute('declaration_date', $this->nullableString($fields['declaration_date']));
         }
 
         if (array_key_exists('remarks', $fields)) {
@@ -225,7 +231,7 @@ class DeclarationRecorder
         if ($owner instanceof Owner && $this->ownerIsShared($owner, $declaration)) {
             $declaration->owners()->detach($owner->id);
             $declaration->unsetRelation('owners');
-            $owner = null;
+            $owner = $owner->replicate();
         }
 
         if (! $owner instanceof Owner) {
@@ -233,7 +239,7 @@ class DeclarationRecorder
                 return;
             }
 
-            $owner = new Owner;
+            $owner = new Owner(['name' => '', 'normalized_name' => '']);
         }
 
         foreach ($mapped as $column => $value) {
@@ -245,11 +251,6 @@ class DeclarationRecorder
             }
 
             $owner->setAttribute($column, $value);
-        }
-
-        if ($owner->name === null) {
-            $owner->name = '';
-            $owner->normalized_name = '';
         }
 
         $owner->save();
@@ -275,36 +276,61 @@ class DeclarationRecorder
         }
 
         if (array_key_exists('previous_declaration_date', $fields)) {
-            $declaration->previous_declaration_date = $this->nullableString($fields['previous_declaration_date']);
+            $declaration->setAttribute('previous_declaration_date', $this->nullableString($fields['previous_declaration_date']));
         }
 
         $number = $declaration->previous_tax_declaration_number;
-        $previousId = $number === null ? null : $this->findByNumber($number)?->id;
+        $previous = $number === null ? null : $this->findByNumber($number);
 
-        $declaration->previous_declaration_id = $previousId !== null && $declaration->id !== null && $previousId !== $declaration->id
-            ? $previousId
-            : null;
+        $this->validatePreviousLink($declaration, $previous);
+        $declaration->previous_declaration_id = $previous?->id;
     }
 
     private function linkFollowers(TaxDeclaration $declaration): void
     {
         $number = $declaration->tax_declaration_number;
 
-        if ($number === null || $number === '' || $declaration->id === null) {
+        if ($number === null || $number === '') {
             return;
         }
 
-        TaxDeclaration::query()
+        $followers = TaxDeclaration::query()
             ->whereNull('previous_declaration_id')
             ->where('id', '!=', $declaration->id)
             ->whereRaw('LOWER(previous_tax_declaration_number) = ?', [mb_strtolower($number)])
-            ->update(['previous_declaration_id' => $declaration->id]);
+            ->orderBy('id')
+            ->lockForUpdate()
+            ->get();
+
+        foreach ($followers as $follower) {
+            $this->validatePreviousLink($follower, $declaration);
+            $follower->update(['previous_declaration_id' => $declaration->id]);
+        }
+    }
+
+    private function validatePreviousLink(TaxDeclaration $declaration, ?TaxDeclaration $previous): void
+    {
+        $seen = [$declaration->id => true];
+
+        while ($previous instanceof TaxDeclaration) {
+            if (isset($seen[$previous->id])) {
+                throw ValidationException::withMessages([
+                    'previous_tax_declaration_number' => 'The previous tax declaration would create a circular history.',
+                ]);
+            }
+
+            $seen[$previous->id] = true;
+            $previous = $previous->previous_declaration_id === null
+                ? null
+                : TaxDeclaration::query()->whereKey($previous->previous_declaration_id)->lockForUpdate()->first();
+        }
     }
 
     private function findByNumber(string $number): ?TaxDeclaration
     {
         return TaxDeclaration::query()
             ->whereRaw('LOWER(tax_declaration_number) = ?', [mb_strtolower($number)])
+            ->lockForUpdate()
             ->first();
     }
 

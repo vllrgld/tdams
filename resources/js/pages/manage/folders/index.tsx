@@ -1,13 +1,15 @@
-import BookManagement from '../books';
-import type { BookManagementProps } from '../books';
+import FilingItemManagement, {
+    type FilingItemManagementProps,
+} from '../components/filing-item-management';
+import { index } from '@/routes/manage/folders';
 
-export default function Folders(props: BookManagementProps) {
-    return <BookManagement {...props} kind="folder" />;
+export default function Folders(props: FilingItemManagementProps) {
+    return <FilingItemManagement {...props} kind="folder" />;
 }
 
 Folders.layout = {
     breadcrumbs: [
-        { title: 'Manage', href: '/manage/folders' },
-        { title: 'Folders', href: '/manage/folders' },
+        { title: 'Manage', href: index() },
+        { title: 'Folders', href: index() },
     ],
 };

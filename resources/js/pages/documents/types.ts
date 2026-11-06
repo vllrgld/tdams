@@ -1,59 +1,23 @@
-export type ArchivedDocument = {
-    id: number;
-    taxDeclarationNumber: string | null;
-    declarationDate: string | null;
-    lotNumber: string | null;
-    registeredOwner: string | null;
-    municipality: string | null;
-    barangay: string | null;
-    originalFilename: string;
-    mimeType: string;
-    fileSize: number;
-    ocrPdfSize: number | null;
-    createdAt: string | null;
-    viewUrl: string;
-    thumbnailUrl: string | null;
-    ocrPdfUrl: string | null;
-    previousTaxDeclarationNumber: string | null;
-    previousDeclarationDate: string | null;
-    titleNumber: string | null;
-    propertyLocationStreet: string | null;
-    propertyLocationBarangay: string | null;
-    propertyLocationDistrict: string | null;
-    propertyLocationMunicipality: string | null;
-    ownerAddressStreet: string | null;
-    ownerAddressBarangay: string | null;
-    ownerAddressDistrict: string | null;
-    ownerAddressCityMunicipality: string | null;
-    province: string | null;
-    pin: string | null;
-    boundaryNorth: string | null;
-    boundaryNortheast: string | null;
-    boundaryEast: string | null;
-    boundarySoutheast: string | null;
-    boundarySouth: string | null;
-    boundarySouthwest: string | null;
-    boundaryWest: string | null;
-    boundaryNorthwest: string | null;
-    area: string | null;
-    remarks: string | null;
-};
+import type { ArchivedDocument } from '@/types/documents';
+
+export type DocumentViewMode = 'cards' | 'preview' | 'list';
 
 export type SearchFieldOption = {
     value: string;
     label: string;
 };
 
-export type ArchivePlacementBook = {
+export type ArchivePlacementItem = {
     id: string;
     label: string;
     kind: 'book' | 'folder';
+    coverTitle: string;
 };
 
 export type ArchivePlacementDrawer = {
     id: string;
     label: string;
-    books: ArchivePlacementBook[];
+    books: ArchivePlacementItem[];
 };
 
 export type ArchivePlacementCabinet = {
@@ -78,12 +42,11 @@ export type DocumentsPageProps = {
     };
     searchFields: SearchFieldOption[];
     mappingModels: string[];
+    fieldSections: DocumentFieldSection[];
     selectedDocument?: ArchivedDocument | null;
 };
 
-export type UploadForm = {
-    file: File | null;
-    book_id: string;
+export type DocumentFieldValues = {
     tax_declaration_number: string;
     declaration_date: string;
     lot_number: string;
@@ -113,25 +76,22 @@ export type UploadForm = {
     remarks: string;
 };
 
-export type MetadataField = Exclude<keyof UploadForm, 'file' | 'book_id'>;
+export type MetadataField = keyof DocumentFieldValues;
 
-export type DeclarationNumberMatch = {
-    id: number;
-    taxDeclarationNumber: string;
-    registeredOwner: string | null;
-    lotNumber: string | null;
-    municipality: string | null;
-    declarationDate: string | null;
-    createdAt: string | null;
+export type UploadDocumentPayload = { file: File; book_id: string };
+
+export type SaveDocumentFieldsPayload = Partial<DocumentFieldValues>;
+
+export type DocumentFieldDefinition = {
+    name: MetadataField;
+    label: string;
+    maxLength: number;
+    type: 'text' | 'number' | 'date' | 'textarea';
 };
 
-export type PreviousDeclarationEntry = {
-    taxDeclarationNumber: string;
-    document: ArchivedDocument | null;
-    declarationDate: string | null;
-};
-
-export type DocumentChainResponse = {
-    originId: number;
-    entries: PreviousDeclarationEntry[];
+export type DocumentFieldSection = {
+    id: 'declaration' | 'property' | 'owner' | 'boundaries' | 'remarks';
+    title: string;
+    tabLabel: string;
+    fields: DocumentFieldDefinition[];
 };

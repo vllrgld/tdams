@@ -5,7 +5,8 @@ use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 
 $getNetworkAddresses = static function (): array {
-    $addresses = gethostbynamel(gethostname());
+    $hostname = gethostname();
+    $addresses = $hostname === false ? false : gethostbynamel($hostname);
 
     return collect($addresses === false ? [] : $addresses)
         ->filter(fn (string $address): bool => filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)
@@ -49,7 +50,7 @@ Artisan::command('network:watch {--port=8000}', function () use ($getNetworkAddr
     $port = (int) $this->option('port');
     $previousAddresses = $getNetworkAddresses();
 
-    while (true) {
+    for (; ;) {
         sleep(3);
 
         $currentAddresses = $getNetworkAddresses();

@@ -6,7 +6,7 @@ import { Separator } from '@/components/ui/separator';
 import { useCurrentUrl } from '@/hooks/use-current-url';
 import { cn, toUrl } from '@/lib/utils';
 import { edit as editAppearance } from '@/routes/appearance';
-import { edit as editAnimations } from '@/routes/animations';
+import { edit as editAccessibility } from '@/routes/accessibility';
 import { edit as editOcr } from '@/routes/ocr';
 import { edit } from '@/routes/profile';
 import { edit as editSecurity } from '@/routes/security';
@@ -29,8 +29,8 @@ const sidebarNavItems: NavItem[] = [
         icon: null,
     },
     {
-        title: 'Animations',
-        href: editAnimations(),
+        title: 'Accessibility',
+        href: editAccessibility(),
         icon: null,
     },
     {

@@ -6,12 +6,17 @@ use App\Jobs\OcrDocument;
 use App\Models\Book;
 use App\Models\Cabinet;
 use App\Models\Document;
+use App\Models\Owner;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Exceptions;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Testing\AssertableInertia as Assert;
+use RuntimeException;
 use Tests\TestCase;
 
 class DocumentUploadTest extends TestCase
@@ -55,6 +60,10 @@ class DocumentUploadTest extends TestCase
             'province' => 'Ilocos Norte',
             'pin' => '012-34-567-890',
             'boundary_north' => 'Road',
+            'boundary_northeast' => 'Lot NE',
+            'boundary_southeast' => 'Lot SE',
+            'boundary_southwest' => 'Lot SW',
+            'boundary_northwest' => 'Lot NW',
             'boundary_south' => 'Lot 12',
             'boundary_east' => 'Creek',
             'boundary_west' => 'Lot 10',
@@ -79,11 +88,44 @@ class DocumentUploadTest extends TestCase
         $this->assertSame('012-34-567-890', $document->pin);
         $this->assertEquals(1250.5, (float) $document->area);
         $this->assertSame('Road', $document->boundary_north);
+        $this->assertDatabaseHas('properties', [
+            'boundary_northeast' => 'Lot NE',
+            'boundary_southeast' => 'Lot SE',
+            'boundary_southwest' => 'Lot SW',
+            'boundary_northwest' => 'Lot NW',
+        ]);
         $this->assertSame('Sample remarks', $document->remarks);
         $this->assertSame($user->id, $document->uploaded_by);
         $this->assertSame($book->id, $document->book_id);
         $this->assertSame(1, $document->position);
         Storage::disk('local')->assertExists($document->storage_path);
+    }
+
+    public function test_failed_related_record_write_removes_uploaded_file_and_does_not_queue_ocr(): void
+    {
+        Storage::fake('local');
+        Exceptions::fake();
+        $user = User::factory()->create();
+        $book = $this->bookForUpload();
+        Event::listen('eloquent.saving: '.Owner::class, function (): void {
+            throw new RuntimeException('Owner could not be saved.');
+        });
+
+        $this->actingAs($user)->postJson(route('documents.store'), [
+            'file' => UploadedFile::fake()->create('declaration.pdf', 10, 'application/pdf'),
+            'book_id' => $book->id,
+            'tax_declaration_number' => 'TD-ROLLBACK',
+            'lot_number' => 'LOT-ROLLBACK',
+            'registered_owner' => 'Unsaved Owner',
+        ])->assertInternalServerError();
+
+        $this->assertDatabaseCount('documents', 0);
+        $this->assertDatabaseCount('tax_declarations', 0);
+        $this->assertDatabaseCount('properties', 0);
+        $this->assertDatabaseCount('owners', 0);
+        $this->assertSame([], Storage::disk('local')->allFiles('documents'));
+        Queue::assertNothingPushed();
+        Exceptions::assertReported(RuntimeException::class);
     }
 
     public function test_upload_queues_ocr_and_leaves_the_document_pending(): void
@@ -281,10 +323,30 @@ class DocumentUploadTest extends TestCase
         $this->assertSame('pending', Document::query()->sole()->ocr_status);
     }
 
+    public function test_queue_dispatch_failure_returns_the_stored_document_with_recoverable_ocr_failure(): void
+    {
+        Storage::fake('local');
+        Bus::shouldReceive('dispatch')->once()->andThrow(new RuntimeException('Queue unavailable.'));
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->postJson(route('documents.store'), [
+            'file' => UploadedFile::fake()->create('declaration.pdf', 100, 'application/pdf'),
+            'book_id' => $this->bookForUpload()->id,
+        ]);
+
+        $document = Document::query()->sole();
+        $response->assertOk()->assertJsonPath('id', $document->id);
+        $this->assertSame('failed', $document->ocr_status);
+        $this->assertSame('Queue unavailable.', $document->ocr_error);
+        Storage::disk('local')->assertExists($document->storage_path);
+        $this->assertDatabaseCount('documents', 1);
+    }
+
     public function test_documents_page_includes_archive_placement_tree(): void
     {
         $user = User::factory()->create();
         $book = $this->bookForUpload();
+        $book->update(['kind' => 'folder', 'cover_title' => 'Property Records']);
 
         $this->actingAs($user)
             ->get(route('documents.index'))
@@ -293,7 +355,9 @@ class DocumentUploadTest extends TestCase
                 ->component('documents/index')
                 ->has('archive', 1)
                 ->where('archive.0.drawers.0.books.0.id', (string) $book->id)
-                ->where('archive.0.drawers.0.books.0.label', $book->label));
+                ->where('archive.0.drawers.0.books.0.label', $book->label)
+                ->where('archive.0.drawers.0.books.0.kind', 'folder')
+                ->where('archive.0.drawers.0.books.0.coverTitle', 'Property Records'));
     }
 
     private function bookForUpload(): Book

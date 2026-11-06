@@ -22,6 +22,8 @@ class OcrDocument implements ShouldQueue
 
     public int $tries = 1;
 
+    public bool $failOnTimeout = true;
+
     public function __construct(public int $documentId) {}
 
     public function handle(OcrManager $manager, OcrPdfOptimizer $pdfOptimizer, LocalThumbnailClient $thumbnails): void
@@ -32,10 +34,18 @@ class OcrDocument implements ShouldQueue
             return;
         }
 
-        $document->forceFill([
-            'ocr_status' => 'processing',
-            'ocr_error' => null,
-        ])->save();
+        $claimed = Document::query()->whereKey($this->documentId)
+            ->whereIn('ocr_status', ['pending', 'failed'])
+            ->update([
+                'ocr_status' => 'processing',
+                'ocr_error' => null,
+            ]);
+
+        if ($claimed === 0) {
+            return;
+        }
+
+        $document->refresh();
 
         try {
             $contents = Storage::disk('local')->get($document->storage_path);
@@ -95,17 +105,29 @@ class OcrDocument implements ShouldQueue
                 ]);
             }
         } catch (Throwable $exception) {
-            $document->forceFill([
-                'ocr_status' => 'failed',
-                'ocr_error' => mb_substr($exception->getMessage(), 0, 500),
-                'ocr_completed_at' => null,
-            ])->save();
-
-            Log::warning('Document OCR failed.', [
-                'document_id' => $document->id,
-                'message' => $exception->getMessage(),
-            ]);
+            $this->failed($exception);
         }
+    }
+
+    public function failed(?Throwable $exception): void
+    {
+        $message = $exception?->getMessage() ?: 'Document OCR failed.';
+        $updated = Document::query()->whereKey($this->documentId)
+            ->whereIn('ocr_status', ['pending', 'processing'])
+            ->update([
+                'ocr_status' => 'failed',
+                'ocr_error' => mb_substr($message, 0, 500),
+                'ocr_completed_at' => null,
+            ]);
+
+        if ($updated === 0) {
+            return;
+        }
+
+        Log::warning('Document OCR failed.', [
+            'document_id' => $this->documentId,
+            'message' => $message,
+        ]);
     }
 
     private function storePreviewPdf(Document $document, string $pdf): string

@@ -4,6 +4,7 @@ namespace Tests\Feature\Documents;
 
 use App\Models\Document;
 use App\Models\User;
+use App\Services\Documents\DocumentWriter;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -348,6 +349,77 @@ class DocumentSearchTest extends TestCase
             ->assertRedirect(route('login'));
     }
 
+    public function test_document_previews_include_readable_ocr_text_without_the_full_ocr_payload(): void
+    {
+        $user = User::factory()->create();
+        $this->makeDocument($user, [
+            'ocr_text' => "  Tax declaration\n\nOwner\tName\fLot 12  ",
+            'ocr_status' => 'completed',
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('documents.index'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('documents.data.0.ocrTextExcerpt', 'Tax declaration Owner Name Lot 12')
+                ->missing('documents.data.0.ocr_text')
+                ->missing('documents.data.0.ocr_pages')
+                ->missing('documents.data.0.ocr_regions'));
+    }
+
+    public function test_document_preview_ocr_text_is_limited_to_a_short_excerpt(): void
+    {
+        $user = User::factory()->create();
+        $this->makeDocument($user, [
+            'ocr_text' => str_repeat('a', 600).'Omitted text at the end',
+            'ocr_status' => 'completed',
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('documents.index'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('documents.data.0.ocrTextExcerpt', str_repeat('a', 600).'...'));
+    }
+
+    /** @return array<string, array{0: string|null}> */
+    public static function unavailableOcrTextProvider(): array
+    {
+        return [
+            'not processed' => [null],
+            'blank OCR result' => [" \n\t\f "],
+        ];
+    }
+
+    #[DataProvider('unavailableOcrTextProvider')]
+    public function test_document_previews_have_no_excerpt_when_ocr_text_is_unavailable(?string $text): void
+    {
+        $user = User::factory()->create();
+        $this->makeDocument($user, ['ocr_text' => $text]);
+
+        $this->actingAs($user)
+            ->get(route('documents.index'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('documents.data.0.ocrTextExcerpt', null));
+    }
+
+    public function test_documents_with_equal_upload_times_have_a_stable_order(): void
+    {
+        $this->freezeTime();
+        $user = User::factory()->create();
+        $first = $this->makeDocument($user, ['tax_declaration_number' => 'TD-ORDER-1']);
+        $second = $this->makeDocument($user, ['tax_declaration_number' => 'TD-ORDER-2']);
+
+        $this->actingAs($user)
+            ->get(route('documents.index', ['q' => 'TD-ORDER']))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('documents.data.0.id', $second->id)
+                ->where('documents.data.1.id', $first->id)
+                ->where('documents.total', 2));
+    }
+
     /**
      * @param  array<string, mixed>  $attributes
      */
@@ -356,7 +428,7 @@ class DocumentSearchTest extends TestCase
         static $count = 0;
         $count++;
 
-        return Document::query()->create([
+        return app(DocumentWriter::class)->create([
             'original_filename' => "scan-{$count}.pdf",
             'storage_path' => "documents/scan-{$count}.pdf",
             'mime_type' => 'application/pdf',

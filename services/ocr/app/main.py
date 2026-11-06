@@ -1,11 +1,14 @@
 import asyncio
 import base64
+import io
 import logging
 import os
 import re
 import subprocess
 import tempfile
+import threading
 from pathlib import Path
+from typing import Callable, TypeVar
 
 import ocrmypdf
 from fastapi import FastAPI, File, Form, Header, HTTPException, UploadFile
@@ -19,6 +22,11 @@ logger = logging.getLogger(__name__)
 
 ALLOWED_SUFFIXES = {".pdf", ".jpg", ".jpeg", ".png", ".tif", ".tiff"}
 SKIPPED_PAGE = re.compile(r"^\[OCR skipped on page\(s\) .+\]$")
+MAX_UPLOAD_BYTES = 50 * 1024 * 1024
+UPLOAD_CHUNK_BYTES = 1024 * 1024
+processing_lock = threading.Lock()
+processing_tasks: set[asyncio.Task] = set()
+ProcessingResult = TypeVar("ProcessingResult")
 
 
 def pages_from_sidecar(text: str) -> list[str]:
@@ -186,20 +194,85 @@ def run_optimize(data: bytes, suffix: str, optimize: int = 3) -> bytes:
 
 
 async def read_upload(file: UploadFile, optimize: int) -> tuple[bytes, str, int]:
-    suffix = Path(file.filename or "").suffix.lower()
+    try:
+        suffix = Path(file.filename or "").suffix.lower()
 
-    if suffix not in ALLOWED_SUFFIXES:
-        raise HTTPException(status_code=415, detail="Unsupported file type")
+        if suffix not in ALLOWED_SUFFIXES:
+            raise HTTPException(status_code=415, detail="Unsupported file type")
 
-    if optimize not in (0, 1, 2, 3):
-        raise HTTPException(status_code=422, detail="Compression level must be 0, 1, 2, or 3.")
+        if optimize not in (0, 1, 2, 3):
+            raise HTTPException(status_code=422, detail="Compression level must be 0, 1, 2, or 3.")
 
-    data = await file.read()
+        if file.size is not None and file.size > MAX_UPLOAD_BYTES:
+            raise HTTPException(status_code=413, detail="The uploaded file exceeds 50 MB.")
 
-    if data == b"":
-        raise HTTPException(status_code=422, detail="The uploaded file is empty")
+        with io.BytesIO() as buffer:
+            while chunk := await file.read(min(UPLOAD_CHUNK_BYTES, MAX_UPLOAD_BYTES - buffer.tell() + 1)):
+                if buffer.tell() + len(chunk) > MAX_UPLOAD_BYTES:
+                    raise HTTPException(status_code=413, detail="The uploaded file exceeds 50 MB.")
+                buffer.write(chunk)
+            data = buffer.getvalue()
 
-    return data, suffix, optimize
+        if data == b"":
+            raise HTTPException(status_code=422, detail="The uploaded file is empty")
+
+        return data, suffix, optimize
+    finally:
+        await file.close()
+
+
+async def process_upload(
+    file: UploadFile,
+    optimize: int,
+    process: Callable[[bytes, str, int], ProcessingResult],
+) -> ProcessingResult:
+    if not processing_lock.acquire(blocking=False):
+        await file.close()
+        raise HTTPException(status_code=503, detail="The OCR service is busy. Try again shortly.",
+                            headers={"Retry-After": "2"})
+
+    try:
+        data, suffix, optimize = await read_upload(file, optimize)
+        task = asyncio.create_task(asyncio.to_thread(process, data, suffix, optimize))
+    except BaseException:
+        processing_lock.release()
+        raise
+
+    def finished(completed: asyncio.Task) -> None:
+        processing_tasks.discard(completed)
+        processing_lock.release()
+        if not completed.cancelled():
+            completed.exception()
+
+    # A disconnected request must not free the slot while its thread is still running.
+    processing_tasks.add(task)
+    task.add_done_callback(finished)
+
+    try:
+        return await asyncio.shield(task)
+    except Exception as exception:
+        raise HTTPException(status_code=500, detail=str(exception)) from exception
+
+
+def ocr_response(data: bytes, suffix: str, optimize: int) -> dict[str, object]:
+    text, pages, pdf, regions = run_ocr(data, suffix, optimize)
+    return {
+        "text": text,
+        "pages": pages,
+        "page_count": len(pages),
+        "regions": regions,
+        "pdf_base64": base64.b64encode(pdf).decode("ascii") if pdf else None,
+    }
+
+
+def thumbnail_response(data: bytes, suffix: str, optimize: int) -> dict[str, str]:
+    jpeg = render_thumbnail(data)
+    return {"jpeg_base64": base64.b64encode(jpeg).decode("ascii")}
+
+
+def pdf_response(data: bytes, suffix: str, optimize: int) -> dict[str, object]:
+    pdf = run_optimize(data, suffix, optimize)
+    return {"pdf_base64": base64.b64encode(pdf).decode("ascii")}
 
 
 @app.get("/health")
@@ -214,20 +287,7 @@ async def ocr(
     authorization: str | None = Header(default=None),
 ) -> dict[str, object]:
     require_token(authorization)
-    data, suffix, optimize = await read_upload(file, optimize)
-
-    try:
-        text, pages, pdf, regions = await asyncio.to_thread(run_ocr, data, suffix, optimize)
-    except Exception as exception:
-        raise HTTPException(status_code=500, detail=str(exception)) from exception
-
-    return {
-        "text": text,
-        "pages": pages,
-        "page_count": len(pages),
-        "regions": regions,
-        "pdf_base64": base64.b64encode(pdf).decode("ascii") if pdf else None,
-    }
+    return await process_upload(file, optimize, ocr_response)
 
 
 @app.post("/v1/thumbnail")
@@ -239,21 +299,10 @@ async def thumbnail(
     suffix = Path(file.filename or "").suffix.lower()
 
     if suffix != ".pdf":
+        await file.close()
         raise HTTPException(status_code=415, detail="Thumbnails are only rendered for PDFs")
 
-    data = await file.read()
-
-    if data == b"":
-        raise HTTPException(status_code=422, detail="The uploaded file is empty")
-
-    try:
-        jpeg = await asyncio.to_thread(render_thumbnail, data)
-    except Exception as exception:
-        raise HTTPException(status_code=500, detail=str(exception)) from exception
-
-    return {
-        "jpeg_base64": base64.b64encode(jpeg).decode("ascii"),
-    }
+    return await process_upload(file, 0, thumbnail_response)
 
 
 @app.post("/v1/pdf")
@@ -263,13 +312,4 @@ async def optimize_pdf(
     authorization: str | None = Header(default=None),
 ) -> dict[str, object]:
     require_token(authorization)
-    data, suffix, optimize = await read_upload(file, optimize)
-
-    try:
-        pdf_bytes = await asyncio.to_thread(run_optimize, data, suffix, optimize)
-    except Exception as exception:
-        raise HTTPException(status_code=500, detail=str(exception)) from exception
-
-    return {
-        "pdf_base64": base64.b64encode(pdf_bytes).decode("ascii"),
-    }
+    return await process_upload(file, optimize, pdf_response)

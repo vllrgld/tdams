@@ -1,3 +1,4 @@
+import { index as documentsIndex } from '@/routes/documents';
 import { useState } from 'react';
 import { Head, Link } from '@inertiajs/react';
 import { ArrowRight, FileSearch } from 'lucide-react';
@@ -101,7 +102,7 @@ export default function Dashboard() {
                             </p>
                         </div>
                         <Button
-                            render={<Link href="/documents" />}
+                            render={<Link href={documentsIndex.url()} />}
                             className="w-full rounded-none bg-blue-900 text-white hover:bg-blue-800 sm:w-auto"
                         >
                             <FileSearch aria-hidden="true" />

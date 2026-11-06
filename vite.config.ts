@@ -22,8 +22,8 @@ export default defineConfig({
             input: ['resources/css/app.css', 'resources/js/app.tsx'],
             refresh: true,
             fonts: [
-                bunny('Instrument Sans', {
-                    weights: [400, 500, 600],
+                bunny('Source Sans 3', {
+                    weights: [400, 500, 600, 700],
                 }),
                 bunny('Cinzel', {
                     weights: [600, 700],
@@ -71,6 +71,11 @@ export default defineConfig({
     },
     lint: {
         ignorePatterns: [
+            'graphify-out/**',
+            'storage/**',
+            '.codex/**',
+            '.impeccable/**',
+            '.github/prompts/**',
             'vendor/**',
             'node_modules/**',
             'public/**',
@@ -94,10 +99,13 @@ export default defineConfig({
         singleAttributePerLine: false,
         htmlWhitespaceSensitivity: 'css',
         ignorePatterns: [
+            'graphify-out/**',
+            'storage/**',
+            '.codex/**',
+            '.impeccable/**',
             '.github/**',
             'composer.json',
             'resources/js/components/ui/*',
-            'resources/js/pages/dashboard/data/ilocos-norte-geo.ts',
             'resources/views/mail/*',
         ],
         sortTailwindcss: {

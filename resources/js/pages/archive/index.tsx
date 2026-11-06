@@ -1,23 +1,24 @@
+import { locate as locateDocument } from '@/routes/archive/documents';
+import { index as archiveIndex } from '@/routes/archive';
+import { index as cabinetsIndex } from '@/routes/manage/cabinets';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Button, buttonVariants } from '@/components/ui/button';
-import { useSetArchiveHeaderTrail } from '@/components/archive-header-context';
-import DocumentViewerDialog from '@/pages/documents/components/document-viewer-dialog';
-import type { ArchivedDocument } from '@/pages/documents/types';
+import { useSetArchiveHeaderTrail } from '@/components/layout/archive-header-context';
+import DocumentViewerDialog from '@/components/documents/viewer/document-viewer-dialog';
+import type { ArchivedDocument } from '@/types/documents';
 import CabinetSearch, {
     CABINET_SEARCH_FIELDS,
     type CabinetSearchField,
-} from './components/cabinets/cabinet-search';
-import { BookPortalProvider } from './components/shared/book-portal';
-import FilingCabinet from './components/cabinets/filing-cabinet';
-import FilingItemViewer from './components/shared/filing-item-viewer';
-import type { OpenedFilingItem } from './components/shared/filing-item-types';
-import {
-    filingCover,
-    type FilingCabinet as FilingCabinetData,
-} from './data/cabinets';
+} from '@/components/filing/cabinets/cabinet-search';
+import { FilingItemPortalProvider } from '@/components/filing/shared/filing-item-portal';
+import FilingCabinet from '@/components/filing/cabinets/filing-cabinet';
+import FilingItemViewer from '@/components/filing/shared/filing-item-viewer';
+import type { OpenedFilingItem } from '@/components/filing/shared/filing-item-types';
+import { filingCover } from '@/lib/filing-appearance';
+import type { FilingCabinet as FilingCabinetData } from '@/types/filing';
 
 type ArchiveLocateResponse = {
     document: ArchivedDocument | null;
@@ -33,20 +34,20 @@ function scrollToCabinet(id: string, smooth: boolean): void {
     });
 }
 
-function findBook(
+function findFilingItem(
     cabinets: FilingCabinetData[],
     bookId: string,
 ): {
     cabinet: FilingCabinetData;
     drawer: FilingCabinetData['drawers'][number];
-    book: FilingCabinetData['drawers'][number]['books'][number];
+    item: FilingCabinetData['drawers'][number]['books'][number];
 } | null {
     for (const cabinet of cabinets) {
         for (const drawer of cabinet.drawers) {
             const book = drawer.books.find((item) => item.id === bookId);
 
             if (book) {
-                return { cabinet, drawer, book };
+                return { cabinet, drawer, item: book };
             }
         }
     }
@@ -103,7 +104,7 @@ export default function Archive({
     );
     const [zoomedCabinetId, setZoomedCabinetId] = useState<string | null>(null);
     const [openDrawerId, setOpenDrawerId] = useState<string | null>(null);
-    const [openedBook, setOpenedBook] = useState<OpenedFilingItem | null>(null);
+    const [openedItem, setOpenedItem] = useState<OpenedFilingItem | null>(null);
     const [viewingDocument, setViewingDocument] =
         useState<ArchivedDocument | null>(null);
     const [documentInfoOpen, setDocumentInfoOpen] = useState(false);
@@ -136,7 +137,7 @@ export default function Archive({
     useEffect(() => {
         const params = new URL(pageUrl, window.location.origin).searchParams;
         const located = params.get('book')
-            ? findBook(cabinets, params.get('book')!)
+            ? findFilingItem(cabinets, params.get('book')!)
             : null;
         const cabinet =
             located?.cabinet ??
@@ -148,11 +149,11 @@ export default function Archive({
         setFocusedCabinetId(cabinet.id);
         setOpenDrawerId(drawer?.id ?? null);
         setZoomedCabinetId(drawer ? cabinet.id : null);
-        setOpenedBook(
+        setOpenedItem(
             located
                 ? {
-                      book: located.book,
-                      cover: filingCover(located.book.kind),
+                      item: located.item,
+                      cover: filingCover(located.item.kind),
                       drawerLabel: located.drawer.label,
                       cabinetName: located.cabinet.name,
                       origin: null,
@@ -175,7 +176,7 @@ export default function Archive({
             (item) => item.id === openDrawerId,
         );
         function closeDocumentAndBook() {
-            setOpenedBook(null);
+            setOpenedItem(null);
             setPendingDocumentId(null);
             setViewingDocument(null);
             setDocumentInfoOpen(false);
@@ -217,14 +218,14 @@ export default function Archive({
                       },
                   ]
                 : []),
-            ...(openedBook ? [{ title: openedBook.book.label }] : []),
+            ...(openedItem ? [{ title: openedItem.item.label }] : []),
         ]);
         return () => setHeaderTrail([]);
     }, [
         cabinets,
         focusedCabinetId,
         openDrawerId,
-        openedBook,
+        openedItem,
         reduceMotion,
         setHeaderTrail,
         zoomedCabinetId,
@@ -246,7 +247,7 @@ export default function Archive({
                 return;
             }
 
-            if (openedBook) {
+            if (openedItem) {
                 return;
             }
 
@@ -256,7 +257,7 @@ export default function Archive({
         window.addEventListener('keydown', handleKeyDown);
 
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [openedBook, viewingDocument, zoomedCabinetId]);
+    }, [openedItem, viewingDocument, zoomedCabinetId]);
 
     function closeOverlayLayer(): void {
         if (viewingDocument) {
@@ -265,7 +266,7 @@ export default function Archive({
             return;
         }
 
-        if (openedBook) {
+        if (openedItem) {
             return;
         }
 
@@ -273,9 +274,8 @@ export default function Archive({
     }
 
     async function openPreviousDeclaration(number: string): Promise<void> {
-        const params = new URLSearchParams({ number });
         const response = await fetch(
-            `/archive/documents?${params.toString()}`,
+            locateDocument.url({ query: { number } }),
             {
                 headers: { Accept: 'application/json' },
                 credentials: 'same-origin',
@@ -297,7 +297,7 @@ export default function Archive({
             return;
         }
 
-        const located = findBook(cabinets, data.bookId);
+        const located = findFilingItem(cabinets, data.bookId);
 
         if (!located) {
             return;
@@ -306,9 +306,9 @@ export default function Archive({
         setOpenDrawerId(located.drawer.id);
         setFocusedCabinetId(located.cabinet.id);
         setZoomedCabinetId(located.cabinet.id);
-        setOpenedBook({
-            book: located.book,
-            cover: filingCover(located.book.kind),
+        setOpenedItem({
+            item: located.item,
+            cover: filingCover(located.item.kind),
             drawerLabel: located.drawer.label,
             cabinetName: located.cabinet.name,
             origin: null,
@@ -320,7 +320,7 @@ export default function Archive({
     }
 
     return (
-        <BookPortalProvider>
+        <FilingItemPortalProvider>
             <Head title="Archive" />
             <main className="min-h-full flex-1 bg-background p-4 sm:p-6 xl:p-8">
                 {typeof document !== 'undefined' &&
@@ -356,7 +356,7 @@ export default function Archive({
                             </p>
                         </div>
                         <Link
-                            href="/manage/cabinets"
+                            href={cabinetsIndex.url()}
                             className={buttonVariants({
                                 variant: 'outline',
                                 className:
@@ -425,7 +425,7 @@ export default function Archive({
                                         organizing the archive.
                                     </p>
                                     <Link
-                                        href="/manage/cabinets"
+                                        href={cabinetsIndex.url()}
                                         className={buttonVariants({
                                             variant: 'outline',
                                             className:
@@ -462,7 +462,7 @@ export default function Archive({
                                         }
                                         onOpenDrawerChange={(drawerId) => {
                                             setFocusedCabinetId(cabinet.id);
-                                            setOpenedBook(null);
+                                            setOpenedItem(null);
                                             setPendingDocumentId(null);
                                             setViewingDocument(null);
                                             setDocumentInfoOpen(false);
@@ -479,7 +479,7 @@ export default function Archive({
                                         onZoomChange={(zoomed) => {
                                             setFocusedCabinetId(cabinet.id);
                                             if (!zoomed) {
-                                                setOpenedBook(null);
+                                                setOpenedItem(null);
                                                 setPendingDocumentId(null);
                                                 setViewingDocument(null);
                                                 setDocumentInfoOpen(false);
@@ -489,18 +489,18 @@ export default function Archive({
 
                                             setZoomedCabinetId(cabinet.id);
                                         }}
-                                        openedBookId={
-                                            openedBook?.book.id ?? null
+                                        openedItemId={
+                                            openedItem?.item.id ?? null
                                         }
-                                        onOpenBook={(
+                                        onOpenItem={(
                                             book,
                                             cover,
                                             drawerLabel,
                                             origin,
                                         ) => {
                                             setFocusedCabinetId(cabinet.id);
-                                            setOpenedBook({
-                                                book,
+                                            setOpenedItem({
+                                                item: book,
                                                 cover,
                                                 drawerLabel,
                                                 cabinetName: cabinet.name,
@@ -528,10 +528,10 @@ export default function Archive({
             {typeof document !== 'undefined' &&
                 createPortal(
                     <AnimatePresence>
-                        {openedBook && (
+                        {openedItem && (
                             <FilingItemViewer
-                                key={openedBook.book.id}
-                                opened={openedBook}
+                                key={openedItem.item.id}
+                                opened={openedItem}
                                 dimmed={viewingDocument !== null}
                                 initialDocumentId={pendingDocumentId}
                                 onClose={() => {
@@ -539,7 +539,7 @@ export default function Archive({
                                         return;
                                     }
 
-                                    setOpenedBook(null);
+                                    setOpenedItem(null);
                                     setPendingDocumentId(null);
                                 }}
                                 onOpenDocument={setViewingDocument}
@@ -558,7 +558,7 @@ export default function Archive({
                 onDocumentChange={setViewingDocument}
                 onInfoOpenChange={setDocumentInfoOpen}
             />
-        </BookPortalProvider>
+        </FilingItemPortalProvider>
     );
 }
 
@@ -566,7 +566,7 @@ Archive.layout = {
     breadcrumbs: [
         {
             title: 'Archive',
-            href: '/archive',
+            href: archiveIndex.url(),
         },
     ],
 };

@@ -38,30 +38,24 @@ class Cabinet extends Model
      */
     public function toFilingArray(): array
     {
-        return [
-            'id' => (string) $this->id,
-            'name' => $this->name,
-            'location' => $this->location,
-            'drawers' => $this->drawers
-                ->map(fn (Drawer $drawer): array => [
-                    'id' => (string) $drawer->id,
-                    'label' => $drawer->label,
-                    'range' => $drawer->range ?? '',
-                    'books' => $drawer->books
-                        ->map(fn (Book $book): array => [
-                            'id' => (string) $book->id,
-                            'label' => $book->label,
-                            'kind' => $book->kind,
-                            'coverTitle' => $book->cover_title !== ''
-                                ? $book->cover_title
-                                : Book::DEFAULT_COVER_TITLE,
-                            'documentCount' => (int) ($book->documents_count ?? 0),
-                        ])
-                        ->values()
-                        ->all(),
-                ])
-                ->values()
-                ->all(),
-        ];
+        $drawers = [];
+
+        foreach ($this->drawers as $drawer) {
+            $books = [];
+
+            foreach ($drawer->books as $book) {
+                $books[] = [
+                    'id' => (string) $book->id,
+                    'label' => $book->label,
+                    'kind' => $book->kind,
+                    'coverTitle' => $book->cover_title !== '' ? $book->cover_title : Book::DEFAULT_COVER_TITLE,
+                    'documentCount' => (int) ($book->documents_count ?? 0),
+                ];
+            }
+
+            $drawers[] = ['id' => (string) $drawer->id, 'label' => $drawer->label, 'range' => $drawer->range ?? '', 'books' => $books];
+        }
+
+        return ['id' => (string) $this->id, 'name' => $this->name, 'location' => $this->location, 'drawers' => $drawers];
     }
 }

@@ -5,6 +5,7 @@ namespace Tests\Feature\Documents;
 use App\Models\Cabinet;
 use App\Models\Document;
 use App\Models\User;
+use App\Services\Documents\DocumentWriter;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
@@ -100,7 +101,7 @@ class HeaderDocumentSearchTest extends TestCase
 
     private function makeDocument(User $user, array $attributes = []): Document
     {
-        return Document::query()->create([
+        return app(DocumentWriter::class)->create([
             'original_filename' => 'header-search.pdf',
             'storage_path' => 'documents/header-search.pdf',
             'mime_type' => 'application/pdf',

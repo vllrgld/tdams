@@ -1,0 +1,157 @@
+{
+    "model": "gemma4:31b",
+    "stream": false,
+    "messages": [
+        {
+            "role": "system",
+            "content": "Extract tax declaration fields from the OCR text.\nReturn only the requested JSON object.\nUse an empty string when a value is not present. Do not guess.\nDates must be YYYY-MM-DD.\nArea must be digits and an optional decimal point, without units.\nFor remarks, extract the actual text in areas labeled Remarks, Note, Notes, or Memoranda. Include printed notes as well as typed or handwritten annotations. Taxation and valuation notes are remarks too: retain their full wording, including ordinance and resolution citations, dates, and exceptions. Preserve the source wording; do not summarize or add unrelated page text. Exclude blank cancellation or previous-assessment templates, officer names, job titles, signatures, office headings, and routing stamps. Do not treat the word Memoranda followed only by staff credentials as a remark. Do not discard a note because it is printed, legal wording, or near a signature or page footer. Keep populated cancellation details and property-specific remarks. Treat section labels as boundaries: a Notes paragraph after a Memoranda staff block is a separate entry. Example: for \"Remarks: This declaration cancels TD No. ____ PIN ____ Previous A.V Php ____ Previous Owner: ____. Memoranda: TEST OFFICER, ASSESSOR. Notes: For taxation purposes only under Ordinance No. 123.\", return \"For taxation purposes only under Ordinance No. 123.\" as remarks. If multiple relevant entries exist, include them all. If these areas are blank or contain only the excluded material, return an empty string for remarks.\ntax_declaration_number: Tax declaration number\ndeclaration_date: Declaration date (YYYY-MM-DD)\nprevious_tax_declaration_number: Previous tax declaration number\nprevious_declaration_date: Previous declaration date (YYYY-MM-DD)\ntitle_number: Title number\nregistered_owner: Owner or property\nlot_number: Lot number\npin: PIN\nproperty_location_street: Property street\nproperty_location_barangay: Property barangay\nproperty_location_district: Property district\nproperty_location_municipality: Property city or municipality\nowner_address_street: Owner street\nowner_address_barangay: Owner barangay\nowner_address_district: Owner district\nowner_address_city_municipality: Owner city or municipality\nprovince: Province\narea: Area as a number without units\nboundary_north: North boundary\nboundary_northeast: Northeast boundary\nboundary_east: East boundary\nboundary_southeast: Southeast boundary\nboundary_south: South boundary\nboundary_southwest: Southwest boundary\nboundary_west: West boundary\nboundary_northwest: Northwest boundary\nremarks: Remarks"
+        },
+        {
+            "role": "user",
+            "content": "TAX DECLARATION\nTD-TEST-42\nOwner: Test Owner\nDate: 2026-11-05\nNorth: Road"
+        }
+    ],
+    "format": {
+        "type": "object",
+        "properties": {
+            "tax_declaration_number": {
+                "type": "string",
+                "description": "Tax declaration number. Use an empty string when the text does not contain this value."
+            },
+            "declaration_date": {
+                "type": "string",
+                "description": "Declaration date (YYYY-MM-DD). Use an empty string when the text does not contain this value."
+            },
+            "previous_tax_declaration_number": {
+                "type": "string",
+                "description": "Previous tax declaration number. Use an empty string when the text does not contain this value."
+            },
+            "previous_declaration_date": {
+                "type": "string",
+                "description": "Previous declaration date (YYYY-MM-DD). Use an empty string when the text does not contain this value."
+            },
+            "title_number": {
+                "type": "string",
+                "description": "Title number. Use an empty string when the text does not contain this value."
+            },
+            "registered_owner": {
+                "type": "string",
+                "description": "Owner or property. Use an empty string when the text does not contain this value."
+            },
+            "lot_number": {
+                "type": "string",
+                "description": "Lot number. Use an empty string when the text does not contain this value."
+            },
+            "pin": {
+                "type": "string",
+                "description": "PIN. Use an empty string when the text does not contain this value."
+            },
+            "property_location_street": {
+                "type": "string",
+                "description": "Property street. Use an empty string when the text does not contain this value."
+            },
+            "property_location_barangay": {
+                "type": "string",
+                "description": "Property barangay. Use an empty string when the text does not contain this value."
+            },
+            "property_location_district": {
+                "type": "string",
+                "description": "Property district. Use an empty string when the text does not contain this value."
+            },
+            "property_location_municipality": {
+                "type": "string",
+                "description": "Property city or municipality. Use an empty string when the text does not contain this value."
+            },
+            "owner_address_street": {
+                "type": "string",
+                "description": "Owner street. Use an empty string when the text does not contain this value."
+            },
+            "owner_address_barangay": {
+                "type": "string",
+                "description": "Owner barangay. Use an empty string when the text does not contain this value."
+            },
+            "owner_address_district": {
+                "type": "string",
+                "description": "Owner district. Use an empty string when the text does not contain this value."
+            },
+            "owner_address_city_municipality": {
+                "type": "string",
+                "description": "Owner city or municipality. Use an empty string when the text does not contain this value."
+            },
+            "province": {
+                "type": "string",
+                "description": "Province. Use an empty string when the text does not contain this value."
+            },
+            "area": {
+                "type": "string",
+                "description": "Area as a number without units. Use an empty string when the text does not contain this value."
+            },
+            "boundary_north": {
+                "type": "string",
+                "description": "North boundary. Use an empty string when the text does not contain this value."
+            },
+            "boundary_northeast": {
+                "type": "string",
+                "description": "Northeast boundary. Use an empty string when the text does not contain this value."
+            },
+            "boundary_east": {
+                "type": "string",
+                "description": "East boundary. Use an empty string when the text does not contain this value."
+            },
+            "boundary_southeast": {
+                "type": "string",
+                "description": "Southeast boundary. Use an empty string when the text does not contain this value."
+            },
+            "boundary_south": {
+                "type": "string",
+                "description": "South boundary. Use an empty string when the text does not contain this value."
+            },
+            "boundary_southwest": {
+                "type": "string",
+                "description": "Southwest boundary. Use an empty string when the text does not contain this value."
+            },
+            "boundary_west": {
+                "type": "string",
+                "description": "West boundary. Use an empty string when the text does not contain this value."
+            },
+            "boundary_northwest": {
+                "type": "string",
+                "description": "Northwest boundary. Use an empty string when the text does not contain this value."
+            },
+            "remarks": {
+                "type": "string",
+                "description": "For remarks, extract the actual text in areas labeled Remarks, Note, Notes, or Memoranda. Include printed notes as well as typed or handwritten annotations. Taxation and valuation notes are remarks too: retain their full wording, including ordinance and resolution citations, dates, and exceptions. Preserve the source wording; do not summarize or add unrelated page text. Exclude blank cancellation or previous-assessment templates, officer names, job titles, signatures, office headings, and routing stamps. Do not treat the word Memoranda followed only by staff credentials as a remark. Do not discard a note because it is printed, legal wording, or near a signature or page footer. Keep populated cancellation details and property-specific remarks. Treat section labels as boundaries: a Notes paragraph after a Memoranda staff block is a separate entry. Example: for \"Remarks: This declaration cancels TD No. ____ PIN ____ Previous A.V Php ____ Previous Owner: ____. Memoranda: TEST OFFICER, ASSESSOR. Notes: For taxation purposes only under Ordinance No. 123.\", return \"For taxation purposes only under Ordinance No. 123.\" as remarks. If multiple relevant entries exist, include them all. If these areas are blank or contain only the excluded material, return an empty string for remarks."
+            }
+        },
+        "required": [
+            "tax_declaration_number",
+            "declaration_date",
+            "previous_tax_declaration_number",
+            "previous_declaration_date",
+            "title_number",
+            "registered_owner",
+            "lot_number",
+            "pin",
+            "property_location_street",
+            "property_location_barangay",
+            "property_location_district",
+            "property_location_municipality",
+            "owner_address_street",
+            "owner_address_barangay",
+            "owner_address_district",
+            "owner_address_city_municipality",
+            "province",
+            "area",
+            "boundary_north",
+            "boundary_northeast",
+            "boundary_east",
+            "boundary_southeast",
+            "boundary_south",
+            "boundary_southwest",
+            "boundary_west",
+            "boundary_northwest",
+            "remarks"
+        ],
+        "additionalProperties": false
+    }
+}

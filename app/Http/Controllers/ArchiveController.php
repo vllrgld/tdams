@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\DocumentResource;
 use App\Models\Book;
 use App\Models\Cabinet;
 use App\Models\Document;
@@ -34,7 +35,7 @@ class ArchiveController extends Controller
         $documents = $book->documents()
             ->with(Document::archiveRelations())
             ->get()
-            ->map(fn (Document $document): array => $document->toArchiveArray())
+            ->map(fn (Document $document): array => (new DocumentResource($document))->resolve())
             ->values()
             ->all();
 
@@ -76,7 +77,7 @@ class ArchiveController extends Controller
         }
 
         return response()->json([
-            'document' => $document->toArchiveArray(),
+            'document' => (new DocumentResource($document))->resolve(),
             'cabinetId' => (string) $drawer->cabinet_id,
             'drawerId' => (string) $drawer->id,
             'bookId' => (string) $book->id,

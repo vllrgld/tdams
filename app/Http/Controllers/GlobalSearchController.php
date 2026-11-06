@@ -88,9 +88,9 @@ class GlobalSearchController extends Controller
             ->get()
             ->map(function (Book $book): ?array {
                 $drawer = $book->drawer;
-                $cabinet = $drawer?->cabinet;
+                $cabinet = $drawer->cabinet;
 
-                if ($drawer === null || $cabinet === null) {
+                if ($cabinet === null) {
                     return null;
                 }
 

@@ -42,10 +42,10 @@ class OllamaClient
                 'model' => $model,
                 'stream' => false,
                 'messages' => [
-                    ['role' => 'system', 'content' => DocumentFields::instructions()],
+                    ['role' => 'system', 'content' => OllamaFieldSchema::instructions()],
                     ['role' => 'user', 'content' => $text],
                 ],
-                'format' => DocumentFields::jsonSchema(),
+                'format' => OllamaFieldSchema::jsonSchema(),
             ]);
 
         if ($response->failed()) {
@@ -56,7 +56,7 @@ class OllamaClient
                 : 'Ollama returned HTTP '.$response->status().'.');
         }
 
-        return DocumentFields::normalize($this->decodeContent($response->json('message.content')));
+        return OllamaFieldSchema::normalize($this->decodeContent($response->json('message.content')));
     }
 
     /**

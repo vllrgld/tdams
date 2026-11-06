@@ -2,6 +2,7 @@
 
 namespace App\Services\Documents;
 
+use App\Http\Resources\DocumentResource;
 use App\Models\Document;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -12,44 +13,16 @@ class DocumentSearcher
      */
     public function paginate(string $search, string $field, int $perPage = 20): LengthAwarePaginator
     {
-        if ($search === '') {
-            return $this->mapPage(
-                Document::query()->with(Document::archiveRelations())->latest()->paginate($perPage),
-            );
+        $query = Document::query()->with(Document::archiveRelations());
+
+        if ($search !== '') {
+            $query->search($search, $field);
         }
 
-        return $this->mapPage(
-            Document::query()
-                ->with(Document::archiveRelations())
-                ->search($search, $field)
-                ->latest()
-                ->paginate($perPage),
-        );
-    }
+        /** @var LengthAwarePaginator<int, array<string, mixed>> $page */
+        $page = $query->latest()->latest('id')->paginate($perPage)
+            ->through(fn (Document $document): array => (new DocumentResource($document))->resolve());
 
-    /**
-     * @param  \Illuminate\Contracts\Pagination\LengthAwarePaginator<int, mixed>  $paginator
-     * @return LengthAwarePaginator<int, array<string, mixed>>
-     */
-    private function mapPage(\Illuminate\Contracts\Pagination\LengthAwarePaginator $paginator): LengthAwarePaginator
-    {
-        $items = [];
-
-        foreach (array_values($paginator->items()) as $document) {
-            $items[] = $document instanceof Document
-                ? $document->toArchiveArray()
-                : [];
-        }
-
-        return (new LengthAwarePaginator(
-            $items,
-            $paginator->total(),
-            $paginator->perPage(),
-            $paginator->currentPage(),
-            [
-                'path' => LengthAwarePaginator::resolveCurrentPath(),
-                'pageName' => 'page',
-            ],
-        ))->withQueryString();
+        return $page->withQueryString();
     }
 }
