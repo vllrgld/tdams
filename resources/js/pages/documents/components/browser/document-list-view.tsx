@@ -45,7 +45,7 @@ export default function DocumentListView({
                                 <span className="flex max-w-72 items-center gap-2">
                                     <FileText
                                         aria-hidden="true"
-                                        className="size-4 shrink-0 text-blue-900 dark:text-blue-200"
+                                        className="size-4 shrink-0 text-blue-900 dark:text-white"
                                     />
                                     <DocumentFileName
                                         document={document}

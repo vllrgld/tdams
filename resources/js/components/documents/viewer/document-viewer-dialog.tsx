@@ -874,7 +874,7 @@ function BoundaryCell({
 }) {
     return (
         <div className="flex min-h-16 min-w-0 flex-col gap-1 bg-card p-2">
-            <dt className="text-[10px] font-semibold text-blue-900 dark:text-blue-300">
+            <dt className="text-[10px] font-semibold text-blue-900 dark:text-white">
                 <abbr title={label} className="no-underline">
                     {direction}
                 </abbr>
@@ -909,7 +909,7 @@ function InfoField({
                     <button
                         type="button"
                         onClick={onClick}
-                        className="text-left underline decoration-slate-400 underline-offset-2 hover:text-blue-800 focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:outline-none dark:decoration-neutral-500 dark:hover:text-blue-300"
+                        className="text-left underline decoration-slate-400 underline-offset-2 hover:text-blue-800 focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:outline-none dark:decoration-neutral-500 dark:hover:text-white"
                     >
                         {value}
                     </button>

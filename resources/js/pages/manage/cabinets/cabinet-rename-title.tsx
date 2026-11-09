@@ -99,7 +99,7 @@ export default function CabinetRenameTitle({
                 type="button"
                 onClick={startEditing}
                 title={cabinet.name}
-                className="min-w-0 flex-1 truncate py-1 text-left text-sm font-semibold text-slate-950 hover:text-blue-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700 dark:text-white dark:hover:text-blue-200"
+                className="min-w-0 flex-1 truncate py-1 text-left text-sm font-semibold text-slate-950 hover:text-blue-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700 dark:text-white dark:hover:text-white"
             >
                 {cabinet.name}
             </button>
@@ -110,7 +110,7 @@ export default function CabinetRenameTitle({
                 aria-label={`Rename ${cabinet.name}`}
                 title={`Rename ${cabinet.name}`}
                 onClick={startEditing}
-                className="size-8 shrink-0 rounded-none text-slate-500 hover:text-blue-900 dark:text-neutral-400 dark:hover:text-blue-200"
+                className="size-8 shrink-0 rounded-none text-slate-500 hover:text-blue-900 dark:text-neutral-400 dark:hover:text-white"
             >
                 <Pencil aria-hidden="true" className="size-3.5" />
             </Button>

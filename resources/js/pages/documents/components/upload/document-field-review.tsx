@@ -338,7 +338,7 @@ function BoundaryEditor({
             >
                 <Label
                     htmlFor={`document-${side.name}`}
-                    className="text-[10px] font-semibold text-blue-900 dark:text-blue-300"
+                    className="text-[10px] font-semibold text-blue-900 dark:text-white"
                 >
                     <abbr title={side.label} className="no-underline">
                         {side.direction}

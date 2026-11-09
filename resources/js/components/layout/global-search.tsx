@@ -231,7 +231,7 @@ function documentHint(match: DocumentMatch): string {
     return details.length > 0 ? details.join(' · ') : 'Documents';
 }
 
-export default function GlobalSearch() {
+export default function GlobalSearch({ className }: { className?: string }) {
     const [open, setOpen] = useState(false);
     const [navigating, setNavigating] = useState(false);
     const [query, setQuery] = useState('');
@@ -568,7 +568,10 @@ export default function GlobalSearch() {
                         type="button"
                         variant="ghost"
                         size="icon"
-                        className="size-8 shrink-0 md:w-[calc(100%-3rem)] md:justify-start md:border md:border-white/20 md:bg-white/10 md:px-2.5 md:hover:bg-white/15"
+                        className={cn(
+                            'size-[31px] shrink-0 md:w-[calc(100%-3rem)] md:justify-start md:border md:border-white/20 md:bg-white/10 md:px-2.5 md:hover:bg-white/15',
+                            className,
+                        )}
                         aria-label="Search"
                         title="Search (Ctrl+K)"
                     />

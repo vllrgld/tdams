@@ -349,6 +349,210 @@ class DocumentSearchTest extends TestCase
             ->assertRedirect(route('login'));
     }
 
+    /**
+     * @return array<string, array{0: string, 1: string, 2: list<string>}>
+     */
+    public static function declarationDateRangeProvider(): array
+    {
+        return [
+            'inclusive range' => ['2024-01-01', '2024-12-31', ['end.pdf', 'middle.pdf', 'start.pdf']],
+            'start only' => ['2024-12-31', '', ['after.pdf', 'end.pdf']],
+            'end only' => ['', '2024-01-01', ['start.pdf', 'before.pdf']],
+            'single day' => ['2024-06-15', '2024-06-15', ['middle.pdf']],
+            'no matches' => ['2020-01-01', '2020-12-31', []],
+            'cleared range includes undated documents' => ['', '', ['undated.pdf', 'after.pdf', 'end.pdf', 'middle.pdf', 'start.pdf', 'before.pdf']],
+        ];
+    }
+
+    #[DataProvider('declarationDateRangeProvider')]
+    public function test_declaration_date_filters_use_inclusive_bounds_and_allow_open_ranges(string $from, string $to, array $filenames): void
+    {
+        $this->freezeTime();
+        $user = User::factory()->create();
+        foreach ([
+            'before' => '2023-12-31',
+            'start' => '2024-01-01',
+            'middle' => '2024-06-15',
+            'end' => '2024-12-31',
+            'after' => '2025-01-01',
+            'undated' => null,
+        ] as $name => $date) {
+            $this->makeDocument($user, ['original_filename' => $name.'.pdf', 'declaration_date' => $date]);
+        }
+
+        $this->actingAs($user)
+            ->get(route('documents.index', ['declaration_date_from' => $from, 'declaration_date_to' => $to]))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('filters.declaration_date_from', $from)
+                ->where('filters.declaration_date_to', $to)
+                ->where('documents.total', count($filenames))
+                ->where('documents.data', fn ($data): bool => collect($data)->pluck('originalFilename')->all() === $filenames));
+    }
+
+    public function test_declaration_date_range_combines_with_the_selected_search_field(): void
+    {
+        $user = User::factory()->create();
+        $match = $this->makeDocument($user, ['registered_owner' => 'Alpha Owner', 'declaration_date' => '2024-06-15']);
+        $this->makeDocument($user, ['registered_owner' => 'Alpha Owner', 'declaration_date' => '2023-06-15']);
+        $this->makeDocument($user, ['registered_owner' => 'Beta Owner', 'declaration_date' => '2024-06-15']);
+
+        $this->actingAs($user)
+            ->get(route('documents.index', [
+                'q' => 'Alpha', 'field' => 'registered_owner',
+                'declaration_date_from' => '2024-01-01', 'declaration_date_to' => '2024-12-31',
+            ]))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('filters.q', 'Alpha')
+                ->where('filters.field', 'registered_owner')
+                ->where('documents.total', 1)
+                ->where('documents.data.0.id', $match->id));
+    }
+
+    /**
+     * @return array<string, array{0: string, 1: string, 2: string, 3: list<string>}>
+     */
+    public static function dateAddedRangeProvider(): array
+    {
+        return [
+            'Manila whole day' => ['2024-06-15', '2024-06-15', 'Asia/Manila', ['end.pdf', 'middle.pdf', 'start.pdf']],
+            'start only' => ['2024-06-15', '', 'Asia/Manila', ['after.pdf', 'end.pdf', 'middle.pdf', 'start.pdf']],
+            'end only' => ['', '2024-06-15', 'Asia/Manila', ['end.pdf', 'middle.pdf', 'start.pdf', 'before.pdf']],
+            'UTC whole day' => ['2024-06-15', '2024-06-15', 'UTC', ['after.pdf', 'end.pdf', 'middle.pdf']],
+            'no matches' => ['2024-06-01', '2024-06-01', 'Asia/Manila', []],
+            'cleared dates' => ['', '', 'Asia/Manila', ['after.pdf', 'end.pdf', 'middle.pdf', 'start.pdf', 'before.pdf']],
+        ];
+    }
+
+    #[DataProvider('dateAddedRangeProvider')]
+    public function test_date_added_filters_include_the_whole_local_day_and_allow_open_ranges(string $from, string $to, string $timezone, array $filenames): void
+    {
+        $user = User::factory()->create();
+        foreach ([
+            'before' => '2024-06-14 15:59:59',
+            'start' => '2024-06-14 16:00:00',
+            'middle' => '2024-06-15 04:00:00',
+            'end' => '2024-06-15 15:59:59',
+            'after' => '2024-06-15 16:00:00',
+        ] as $name => $timestamp) {
+            $this->makeDocument($user, ['original_filename' => $name.'.pdf', 'created_at' => $timestamp]);
+        }
+
+        $this->actingAs($user)
+            ->get(route('documents.index', ['date_added_from' => $from, 'date_added_to' => $to, 'date_timezone' => $timezone]))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('filters.date_added_from', $from)
+                ->where('filters.date_added_to', $to)
+                ->where('filters.date_timezone', $timezone)
+                ->where('documents.total', count($filenames))
+                ->where('documents.data', fn ($data): bool => collect($data)->pluck('originalFilename')->all() === $filenames));
+    }
+
+    public function test_both_date_ranges_and_text_search_must_match_the_same_document(): void
+    {
+        $user = User::factory()->create();
+        $match = $this->makeDocument($user, [
+            'registered_owner' => 'Alpha Owner', 'declaration_date' => '1990-06-15', 'created_at' => '2024-06-15 04:00:00',
+        ]);
+        $this->makeDocument($user, ['registered_owner' => 'Alpha Owner', 'declaration_date' => '1991-06-15', 'created_at' => '2024-06-15 04:00:00']);
+        $this->makeDocument($user, ['registered_owner' => 'Alpha Owner', 'declaration_date' => '1990-06-15', 'created_at' => '2023-06-15 04:00:00']);
+        $this->makeDocument($user, ['registered_owner' => 'Beta Owner', 'declaration_date' => '1990-06-15', 'created_at' => '2024-06-15 04:00:00']);
+
+        $this->actingAs($user)
+            ->get(route('documents.index', [
+                'q' => 'Alpha', 'field' => 'registered_owner',
+                'declaration_date_from' => '1990-01-01', 'declaration_date_to' => '1990-12-31',
+                'date_added_from' => '2024-06-15', 'date_added_to' => '2024-06-15', 'date_timezone' => 'Asia/Manila',
+            ]))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('documents.total', 1)
+                ->where('documents.data.0.id', $match->id));
+    }
+
+    public function test_date_filter_is_applied_before_pagination_and_preserved_in_page_links(): void
+    {
+        $this->freezeTime();
+        $user = User::factory()->create();
+        $first = $this->makeDocument($user, ['registered_owner' => 'Alpha Owner', 'declaration_date' => '2024-06-15']);
+        $last = $first;
+        for ($index = 0; $index < 24; $index++) {
+            $last = $this->makeDocument($user, ['registered_owner' => 'Alpha Owner', 'declaration_date' => '2024-06-15']);
+        }
+        $this->makeDocument($user, ['registered_owner' => 'Alpha Owner', 'declaration_date' => '2023-06-15']);
+
+        $this->actingAs($user)
+            ->get(route('documents.index', [
+                'q' => 'Alpha', 'field' => 'registered_owner',
+                'direction' => 'asc', 'sort' => 'declaration_date',
+                'declaration_date_from' => '2024-01-01', 'declaration_date_to' => '2024-12-31',
+                'date_added_from' => today()->toDateString(), 'date_added_to' => today()->toDateString(), 'date_timezone' => 'UTC',
+            ]))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('documents.total', 25)
+                ->where('documents.per_page', 24)
+                ->where('documents.current_page', 1)
+                ->where('documents.last_page', 2)
+                ->has('documents.data', 24));
+
+        $response = $this->actingAs($user)
+            ->get(route('documents.index', [
+                'q' => 'Alpha', 'field' => 'registered_owner', 'page' => 2,
+                'direction' => 'asc', 'sort' => 'declaration_date',
+                'declaration_date_from' => '2024-01-01', 'declaration_date_to' => '2024-12-31',
+                'date_added_from' => today()->toDateString(), 'date_added_to' => today()->toDateString(), 'date_timezone' => 'UTC',
+            ]))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('documents.total', 25)
+                ->where('documents.current_page', 2)
+                ->has('documents.data', 1)
+                ->where('documents.data.0.id', $last->id));
+
+        parse_str((string) parse_url($response->inertiaProps('documents.prev_page_url'), PHP_URL_QUERY), $query);
+        $this->assertSame([
+            'q' => 'Alpha', 'field' => 'registered_owner',
+            'direction' => 'asc', 'sort' => 'declaration_date',
+            'declaration_date_from' => '2024-01-01', 'declaration_date_to' => '2024-12-31',
+            'date_added_from' => today()->toDateString(), 'date_added_to' => today()->toDateString(), 'date_timezone' => 'UTC',
+            'page' => '1',
+        ], $query);
+    }
+
+    /**
+     * @return array<string, array{0: array<string, mixed>, 1: string, 2: string}>
+     */
+    public static function invalidDateFilterProvider(): array
+    {
+        return [
+            'impossible start date' => [['declaration_date_from' => '2024-02-30'], 'declaration_date_from', 'Enter a valid declaration start date in YYYY-MM-DD format.'],
+            'malformed end date' => [['declaration_date_to' => '12/31/2024'], 'declaration_date_to', 'Enter a valid declaration end date in YYYY-MM-DD format.'],
+            'relative start date' => [['declaration_date_from' => 'yesterday'], 'declaration_date_from', 'Enter a valid declaration start date in YYYY-MM-DD format.'],
+            'timestamp instead of date' => [['declaration_date_to' => '2024-12-31T12:00:00Z'], 'declaration_date_to', 'Enter a valid declaration end date in YYYY-MM-DD format.'],
+            'array instead of date' => [['declaration_date_from' => ['2024-01-01']], 'declaration_date_from', 'Enter a valid declaration start date in YYYY-MM-DD format.'],
+            'reversed range' => [['declaration_date_from' => '2024-12-31', 'declaration_date_to' => '2024-01-01'], 'declaration_date_to', 'The end date must be on or after the start date.'],
+            'invalid date added start' => [['date_added_from' => '2024-02-30'], 'date_added_from', 'Enter a valid date added start date in YYYY-MM-DD format.'],
+            'invalid date added end' => [['date_added_to' => 'yesterday'], 'date_added_to', 'Enter a valid date added end date in YYYY-MM-DD format.'],
+            'date added array' => [['date_added_from' => ['2024-01-01']], 'date_added_from', 'Enter a valid date added start date in YYYY-MM-DD format.'],
+            'reversed date added range' => [['date_added_from' => '2024-12-31', 'date_added_to' => '2024-01-01'], 'date_added_to', 'The date added end date must be on or after the start date.'],
+            'invalid timezone' => [['date_timezone' => 'Invalid/Timezone'], 'date_timezone', 'Choose a valid timezone for the date added filter.'],
+            'timezone array' => [['date_timezone' => ['UTC']], 'date_timezone', 'Choose a valid timezone for the date added filter.'],
+        ];
+    }
+
+    #[DataProvider('invalidDateFilterProvider')]
+    public function test_invalid_date_filters_are_rejected(array $filters, string $field, string $message): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->get(route('documents.index', $filters))
+            ->assertSessionHasErrors([$field => $message]);
+    }
+
     public function test_document_previews_include_readable_ocr_text_without_the_full_ocr_payload(): void
     {
         $user = User::factory()->create();
@@ -404,6 +608,86 @@ class DocumentSearchTest extends TestCase
                 ->where('documents.data.0.ocrTextExcerpt', null));
     }
 
+    /** @return array<string, array{0: string, 1: list<string>}> */
+    public static function sortDirectionProvider(): array
+    {
+        return [
+            'ascending' => ['asc', ['old.pdf', 'new.pdf', 'tie.pdf']],
+            'descending' => ['desc', ['tie.pdf', 'new.pdf', 'old.pdf']],
+        ];
+    }
+
+    /** @param list<string> $filenames */
+    #[DataProvider('sortDirectionProvider')]
+    public function test_documents_sort_by_date_added_with_a_stable_order_for_equal_times(string $direction, array $filenames): void
+    {
+        $user = User::factory()->create();
+        $this->makeDocument($user, ['original_filename' => 'new.pdf', 'created_at' => '2026-02-02 12:00:00']);
+        $this->makeDocument($user, ['original_filename' => 'old.pdf', 'created_at' => '2026-02-01 12:00:00']);
+        $this->makeDocument($user, ['original_filename' => 'tie.pdf', 'created_at' => '2026-02-02 12:00:00']);
+
+        $this->actingAs($user)
+            ->get(route('documents.index', ['direction' => $direction]))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('filters.direction', $direction)
+                ->where('documents.total', 3)
+                ->where('documents.data', fn ($data): bool => collect($data)->pluck('originalFilename')->all() === $filenames));
+    }
+
+    /** @return array<string, array{0: string, 1: list<string>}> */
+    public static function declarationSortProvider(): array
+    {
+        return [
+            'ascending, missing dates last' => ['asc', ['early.pdf', 'late.pdf', 'undated.pdf', 'unlinked.pdf']],
+            'descending, missing dates last' => ['desc', ['late.pdf', 'early.pdf', 'unlinked.pdf', 'undated.pdf']],
+        ];
+    }
+
+    /** @param list<string> $filenames */
+    #[DataProvider('declarationSortProvider')]
+    public function test_documents_sort_by_declaration_date_with_missing_dates_last(string $direction, array $filenames): void
+    {
+        $user = User::factory()->create();
+        $this->makeDocument($user, ['original_filename' => 'early.pdf', 'declaration_date' => '2020-01-01', 'created_at' => '2026-02-02 12:00:00']);
+        $this->makeDocument($user, ['original_filename' => 'late.pdf', 'declaration_date' => '2025-01-01', 'created_at' => '2026-02-01 12:00:00']);
+        $this->makeDocument($user, ['original_filename' => 'undated.pdf', 'registered_owner' => 'Undated Owner']);
+        $this->makeDocument($user, ['original_filename' => 'unlinked.pdf']);
+
+        $this->actingAs($user)
+            ->get(route('documents.index', ['sort' => 'declaration_date', 'direction' => $direction]))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('filters.sort', 'declaration_date')
+                ->where('filters.direction', $direction)
+                ->where('documents.total', 4)
+                ->where('documents.data', fn ($data): bool => collect($data)->pluck('originalFilename')->all() === $filenames));
+    }
+
+    /** @return array<string, array{0: array<string, mixed>, 1: string, 2: string}> */
+    public static function invalidSortProvider(): array
+    {
+        return [
+            'unknown direction' => [['direction' => 'sideways'], 'direction', 'Choose ascending or descending order.'],
+            'SQL direction expression' => [['direction' => 'asc; DROP TABLE documents'], 'direction', 'Choose ascending or descending order.'],
+            'array instead of direction' => [['direction' => ['asc']], 'direction', 'Choose ascending or descending order.'],
+            'unknown field' => [['sort' => 'registered_owner'], 'sort', 'Choose date added or declaration date.'],
+            'SQL sort expression' => [['sort' => 'created_at; DROP TABLE documents'], 'sort', 'Choose date added or declaration date.'],
+            'array instead of field' => [['sort' => ['created_at']], 'sort', 'Choose date added or declaration date.'],
+        ];
+    }
+
+    /** @param array<string, mixed> $filters */
+    #[DataProvider('invalidSortProvider')]
+    public function test_invalid_sort_options_are_rejected(array $filters, string $field, string $message): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->get(route('documents.index', $filters))
+            ->assertSessionHasErrors([$field => $message]);
+    }
+
     public function test_documents_with_equal_upload_times_have_a_stable_order(): void
     {
         $this->freezeTime();
@@ -417,6 +701,8 @@ class DocumentSearchTest extends TestCase
             ->assertInertia(fn (Assert $page) => $page
                 ->where('documents.data.0.id', $second->id)
                 ->where('documents.data.1.id', $first->id)
+                ->where('filters.direction', 'desc')
+                ->where('filters.sort', 'created_at')
                 ->where('documents.total', 2));
     }
 
@@ -428,7 +714,7 @@ class DocumentSearchTest extends TestCase
         static $count = 0;
         $count++;
 
-        return app(DocumentWriter::class)->create([
+        $document = app(DocumentWriter::class)->create([
             'original_filename' => "scan-{$count}.pdf",
             'storage_path' => "documents/scan-{$count}.pdf",
             'mime_type' => 'application/pdf',
@@ -436,5 +722,11 @@ class DocumentSearchTest extends TestCase
             'uploaded_by' => $user->id,
             ...$attributes,
         ]);
+
+        if (array_key_exists('created_at', $attributes)) {
+            $document->forceFill(['created_at' => $attributes['created_at']])->saveQuietly();
+        }
+
+        return $document;
     }
 }

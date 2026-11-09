@@ -3,8 +3,11 @@ import DocumentThumbnail from '@/components/documents/document-thumbnail';
 import { formatDate, formatFileSize } from '@/lib/document-formatters';
 import type { ArchivedDocument } from '@/types/documents';
 import { getPropertyLocation } from './document-view-helpers';
+import DocumentThumbnailActions, {
+    type DocumentThumbnailActionHandlers,
+} from './document-thumbnail-actions';
 
-type DocumentPreviewViewProps = {
+type DocumentPreviewViewProps = DocumentThumbnailActionHandlers & {
     documents: ArchivedDocument[];
     onViewDocument: (document: ArchivedDocument) => void;
 };
@@ -12,6 +15,9 @@ type DocumentPreviewViewProps = {
 export default function DocumentPreviewView({
     documents,
     onViewDocument,
+    bookmarkedIds,
+    onToggleBookmark,
+    onShowChain,
 }: DocumentPreviewViewProps) {
     return (
         <div className="flex flex-col gap-3 p-3 sm:p-4">
@@ -23,13 +29,7 @@ export default function DocumentPreviewView({
                         key={document.id}
                         className="grid min-w-0 grid-cols-[7rem_minmax(0,1fr)] overflow-hidden border border-slate-200 bg-card shadow-sm transition-colors focus-within:border-blue-800 hover:border-blue-800 motion-reduce:transition-none sm:grid-cols-[12rem_minmax(0,1fr)] dark:border-neutral-800 dark:focus-within:border-blue-600 dark:hover:border-blue-600"
                     >
-                        <button
-                            type="button"
-                            onClick={() => onViewDocument(document)}
-                            aria-label={`Open ${document.originalFilename}`}
-                            title={`Open ${document.originalFilename}`}
-                            className="relative min-h-44 cursor-pointer overflow-hidden border-r border-slate-200 bg-white focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:outline-none focus-visible:ring-inset dark:border-neutral-800"
-                        >
+                        <div className="relative min-h-44 overflow-hidden border-r border-slate-200 bg-white dark:border-neutral-800">
                             <DocumentThumbnail
                                 mimeType={document.mimeType}
                                 url={document.viewUrl}
@@ -39,10 +39,23 @@ export default function DocumentPreviewView({
                                 className="absolute inset-0 [&_img]:object-top"
                                 fill
                             />
-                        </button>
+                            <button
+                                type="button"
+                                onClick={() => onViewDocument(document)}
+                                aria-label={`Open ${document.originalFilename}`}
+                                title={`Open ${document.originalFilename}`}
+                                className="absolute inset-0 z-10 cursor-pointer focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:outline-none focus-visible:ring-inset"
+                            />
+                            <DocumentThumbnailActions
+                                document={document}
+                                bookmarkedIds={bookmarkedIds}
+                                onToggleBookmark={onToggleBookmark}
+                                onShowChain={onShowChain}
+                            />
+                        </div>
                         <div className="flex min-w-0 flex-col gap-2 p-3 sm:p-4">
                             <div className="min-w-0 space-y-1">
-                                <h2 className="text-sm leading-5 font-semibold text-blue-900 sm:text-base sm:leading-6 dark:text-blue-200">
+                                <h2 className="text-sm leading-5 font-semibold text-blue-900 sm:text-base sm:leading-6 dark:text-white">
                                     <button
                                         type="button"
                                         onClick={() => onViewDocument(document)}

@@ -234,7 +234,10 @@ export function useDocumentUpload({
                 setStage({ phase: 'ocr', documentId: stage.documentId });
             }
             if (documentId !== null) {
-                router.reload({ only: ['documents'] });
+                router.reload({
+                    only: ['documents', 'cabinets'],
+                    preserveErrors: true,
+                });
             }
         }
         onOpenChange(next);

@@ -23,7 +23,7 @@ export function DocumentFileName({
             type="button"
             onClick={() => onViewDocument(document)}
             title={`View ${document.originalFilename}`}
-            className="truncate text-left font-medium text-blue-900 underline decoration-blue-900/30 underline-offset-4 hover:decoration-blue-900 focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:outline-none dark:text-blue-200 dark:decoration-blue-200/30 dark:hover:decoration-blue-200"
+            className="truncate text-left font-medium text-blue-900 underline decoration-blue-900/30 underline-offset-4 hover:decoration-blue-900 focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:outline-none dark:text-white dark:decoration-white/30 dark:hover:decoration-white"
         >
             {document.originalFilename}
         </button>

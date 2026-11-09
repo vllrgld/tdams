@@ -2,6 +2,29 @@ import type { ArchivedDocument } from '@/types/documents';
 
 export type DocumentViewMode = 'cards' | 'preview' | 'list';
 
+export type DocumentSortDirection = 'asc' | 'desc';
+
+export type DocumentSortField = 'created_at' | 'declaration_date';
+
+export type DocumentSortFilters = {
+    sort: DocumentSortField;
+    direction: DocumentSortDirection;
+};
+
+export type DocumentUploadOptions = {
+    archive: ArchivePlacementCabinet[];
+    mappingModels: string[];
+    fieldSections: DocumentFieldSection[];
+};
+
+export type DocumentDateFilters = {
+    declaration_date_from: string;
+    declaration_date_to: string;
+    date_added_from: string;
+    date_added_to: string;
+    date_timezone: string;
+};
+
 export type SearchFieldOption = {
     value: string;
     label: string;
@@ -39,7 +62,9 @@ export type DocumentsPageProps = {
     filters: {
         q: string;
         field: string;
-    };
+        direction: DocumentSortDirection;
+        sort: DocumentSortField;
+    } & DocumentDateFilters;
     searchFields: SearchFieldOption[];
     mappingModels: string[];
     fieldSections: DocumentFieldSection[];

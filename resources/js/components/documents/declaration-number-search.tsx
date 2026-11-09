@@ -236,7 +236,7 @@ export default function DeclarationNumberSearch({
                                         }}
                                         className={`flex w-full flex-col gap-0.5 px-3 py-2 text-left text-sm ${
                                             index === activeIndex
-                                                ? 'bg-blue-50 text-blue-950 dark:bg-blue-950 dark:text-blue-100'
+                                                ? 'bg-blue-50 text-blue-950 dark:bg-blue-950 dark:text-white'
                                                 : 'text-slate-900 dark:text-neutral-100'
                                         }`}
                                     >

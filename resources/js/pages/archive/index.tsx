@@ -387,7 +387,7 @@ export default function Archive({
                                         <Button
                                             type="button"
                                             variant="ghost"
-                                            className="h-10 rounded-none px-3 text-blue-900 dark:text-blue-200"
+                                            className="h-10 rounded-none px-3 text-blue-900 dark:text-white"
                                             onClick={() => setSearchQuery('')}
                                         >
                                             Clear search

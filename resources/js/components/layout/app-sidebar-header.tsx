@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { type Ref, useEffect, useState } from 'react';
 import { Fragment } from 'react';
 import {
     BellDot,
@@ -7,8 +7,10 @@ import {
     Minimize,
     Moon,
     Sun,
+    Upload,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Spinner } from '@/components/ui/spinner';
 import { Breadcrumbs } from '@/components/layout/breadcrumbs';
 import { useArchiveHeaderTrail } from '@/components/layout/archive-header-context';
 import GlobalSearch from '@/components/layout/global-search';
@@ -29,13 +31,22 @@ import {
 import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
 import { Separator } from '@/components/ui/separator';
 import { useAppearance } from '@/hooks/use-appearance';
+import { cn } from '@/lib/utils';
 import type { BreadcrumbItem as BreadcrumbItemType } from '@/types';
 import { toast } from 'sonner';
 
 export function AppSidebarHeader({
     breadcrumbs = [],
+    onUploadDocument,
+    loadingUpload = false,
+    onUploadIntent,
+    uploadButtonRef,
 }: {
     breadcrumbs?: BreadcrumbItemType[];
+    onUploadDocument?: () => void;
+    loadingUpload?: boolean;
+    onUploadIntent?: () => void;
+    uploadButtonRef?: Ref<HTMLButtonElement>;
 }) {
     const { resolvedAppearance, updateAppearance } = useAppearance();
     const { isMobile, open } = useSidebar();
@@ -76,7 +87,11 @@ export function AppSidebarHeader({
 
     return (
         <header
-            className="app-sidebar-header fixed top-0 right-0 z-30 grid h-16 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 border-b border-sidebar-border/50 px-4 md:grid-cols-[minmax(8rem,1fr)_minmax(0,36rem)_minmax(8rem,1fr)]"
+            className={cn(
+                'app-sidebar-header fixed top-0 right-0 z-30 grid h-16 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 border-b border-sidebar-border/50 px-4 md:grid-cols-[minmax(8rem,1fr)_minmax(0,36rem)_minmax(8rem,1fr)]',
+                onUploadDocument &&
+                    'grid-cols-[minmax(0,1fr)_auto_auto] gap-1 px-2 sm:gap-2 sm:px-4',
+            )}
             style={{
                 left: isMobile
                     ? 0
@@ -89,7 +104,10 @@ export function AppSidebarHeader({
                 <SidebarTrigger className="-ml-1 size-8 shrink-0" />
                 <Separator
                     orientation="vertical"
-                    className="mr-1 shrink-0 bg-blue-100/25 data-[orientation=vertical]:h-4"
+                    className={cn(
+                        'mr-1 shrink-0 bg-blue-100/25 data-[orientation=vertical]:h-4',
+                        onUploadDocument && 'hidden sm:block',
+                    )}
                 />
                 <div className="min-w-0 flex-1">
                     {archiveTrail.length > 0 ? (
@@ -180,8 +198,35 @@ export function AppSidebarHeader({
                     )}
                 </div>
             </div>
-            <div className="flex min-w-0 justify-center">
-                <GlobalSearch />
+            <div className="flex min-w-0 items-center justify-center gap-2">
+                <GlobalSearch
+                    className={
+                        onUploadDocument ? 'md:min-w-0 md:flex-1' : undefined
+                    }
+                />
+                {onUploadDocument && (
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="h-[31px] shrink-0 gap-1.5 border border-white/20 bg-white/10 px-2.5 text-xs hover:bg-white/15"
+                        aria-label="Upload document"
+                        ref={uploadButtonRef}
+                        aria-busy={loadingUpload}
+                        disabled={loadingUpload}
+                        title="Upload document"
+                        onClick={onUploadDocument}
+                        onPointerEnter={onUploadIntent}
+                        onFocus={onUploadIntent}
+                    >
+                        {loadingUpload ? (
+                            <Spinner className="size-4" />
+                        ) : (
+                            <Upload aria-hidden="true" className="size-4" />
+                        )}
+                        <span>Upload</span>
+                    </Button>
+                )}
             </div>
             <div className="ml-auto flex shrink-0 items-center gap-1">
                 <DropdownMenu>

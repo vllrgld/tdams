@@ -27,12 +27,15 @@ export default function Documents({
     return (
         <>
             <Head title="Documents" />
-            <main className="min-h-full bg-background p-4 pb-24 sm:p-6 sm:pb-24 xl:p-8">
+            <main className="min-h-full bg-background p-4 sm:p-6 xl:p-8">
                 <div className="mx-auto w-full max-w-[1600px]">
                     <DocumentBrowser
                         documents={documents}
                         searchQuery={filters.q}
                         searchField={filters.field}
+                        dateFilters={filters}
+                        sortDirection={filters.direction}
+                        sortField={filters.sort}
                         searchFields={searchFields}
                         viewMode={viewMode}
                         onViewModeChange={setViewMode}

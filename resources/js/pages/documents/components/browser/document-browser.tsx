@@ -1,10 +1,20 @@
 import { router } from '@inertiajs/react';
-import { FileSearch, LayoutGrid, LayoutList, List, Search } from 'lucide-react';
+import {
+    FileSearch,
+    FilterX,
+    LayoutGrid,
+    LayoutList,
+    List,
+    Search,
+} from 'lucide-react';
 import { Fragment, type FormEvent, useEffect, useRef, useState } from 'react';
 import DocumentCardView from './document-card-view';
+import DocumentAdvancedFilters from './document-advanced-filters';
 import DocumentListView from './document-list-view';
+import DocumentPagination from './document-pagination';
 import DocumentPreviewView from './document-preview-view';
-import { Badge } from '@/components/ui/badge';
+import DocumentSortMenu from './document-sort-menu';
+import DocumentChain from '@/components/documents/history/document-chain';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -20,7 +30,11 @@ import { index as documentsIndex } from '@/routes/documents';
 import type { ArchivedDocument } from '@/types/documents';
 import type {
     DocumentsPageProps,
+    DocumentDateFilters,
     DocumentViewMode,
+    DocumentSortDirection,
+    DocumentSortField,
+    DocumentSortFilters,
     SearchFieldOption,
 } from '../../types';
 
@@ -35,6 +49,9 @@ type DocumentBrowserProps = {
     documents: DocumentsPageProps['documents'];
     searchQuery: string;
     searchField: string;
+    dateFilters: DocumentDateFilters;
+    sortDirection: DocumentSortDirection;
+    sortField: DocumentSortField;
     searchFields: SearchFieldOption[];
     viewMode: DocumentViewMode;
     onViewModeChange: (viewMode: DocumentViewMode) => void;
@@ -45,6 +62,9 @@ export default function DocumentBrowser({
     documents,
     searchQuery,
     searchField,
+    dateFilters: initialDateFilters,
+    sortDirection,
+    sortField,
     searchFields,
     viewMode,
     onViewModeChange,
@@ -52,8 +72,26 @@ export default function DocumentBrowser({
 }: DocumentBrowserProps) {
     const [query, setQuery] = useState(searchQuery);
     const [field, setField] = useState(searchField);
+    const {
+        declaration_date_from: declarationDateFrom,
+        declaration_date_to: declarationDateTo,
+        date_added_from: dateAddedFrom,
+        date_added_to: dateAddedTo,
+        date_timezone: dateTimezone,
+    } = initialDateFilters;
+    const [dateFilters, setDateFilters] = useState(initialDateFilters);
+    const [direction, setDirection] = useState(sortDirection);
+    const [sort, setSort] = useState(sortField);
+    const [isSearching, setIsSearching] = useState(false);
+    const [chainDocument, setChainDocument] = useState<ArchivedDocument | null>(
+        null,
+    );
+    const [bookmarkedIds, setBookmarkedIds] = useState<Set<number>>(
+        () => new Set(),
+    );
     const debounceRef = useRef<number | null>(null);
     const isTypingRef = useRef(false);
+    const activeSearchRef = useRef<symbol | null>(null);
 
     useEffect(() => {
         if (!isTypingRef.current) {
@@ -64,6 +102,27 @@ export default function DocumentBrowser({
     useEffect(() => {
         setField(searchField);
     }, [searchField]);
+
+    useEffect(() => {
+        setDirection(sortDirection);
+        setSort(sortField);
+    }, [sortDirection, sortField]);
+
+    useEffect(() => {
+        setDateFilters({
+            declaration_date_from: declarationDateFrom,
+            declaration_date_to: declarationDateTo,
+            date_added_from: dateAddedFrom,
+            date_added_to: dateAddedTo,
+            date_timezone: dateTimezone,
+        });
+    }, [
+        declarationDateFrom,
+        declarationDateTo,
+        dateAddedFrom,
+        dateAddedTo,
+        dateTimezone,
+    ]);
 
     useEffect(() => {
         return () => {
@@ -81,6 +140,36 @@ export default function DocumentBrowser({
         field === 'all'
             ? 'Search documents…'
             : `Search ${selectedLabel.toLowerCase()}…`;
+    const hasDateFilters = Boolean(
+        declarationDateFrom ||
+        declarationDateTo ||
+        dateAddedFrom ||
+        dateAddedTo,
+    );
+    const documentCount = `${documents.total.toLocaleString()} ${documents.total === 1 ? 'document' : 'documents'}`;
+    const paginationDisabled = isSearching || query.trim() !== searchQuery;
+    const hasFilters = Boolean(
+        query.trim() ||
+        field !== 'all' ||
+        dateFilters.declaration_date_from ||
+        dateFilters.declaration_date_to ||
+        dateFilters.date_added_from ||
+        dateFilters.date_added_to,
+    );
+
+    function toggleBookmark(documentId: number) {
+        setBookmarkedIds((current) => {
+            const next = new Set(current);
+
+            if (next.has(documentId)) {
+                next.delete(documentId);
+            } else {
+                next.add(documentId);
+            }
+
+            return next;
+        });
+    }
 
     function clearDebounce() {
         if (debounceRef.current !== null) {
@@ -89,14 +178,34 @@ export default function DocumentBrowser({
         }
     }
 
-    function visitSearch(nextQuery: string, nextField: string) {
+    function visitSearch(
+        nextQuery: string,
+        nextField: string,
+        nextDates = dateFilters,
+        page?: number,
+        nextDirection = direction,
+        nextSort = sort,
+    ) {
         const q = nextQuery.trim();
         const nextNormalizedField = nextField === '' ? 'all' : nextField;
         const currentField = searchField === '' ? 'all' : searchField;
 
         isTypingRef.current = false;
 
-        if (q === searchQuery && nextNormalizedField === currentField) {
+        if (
+            q === searchQuery &&
+            nextNormalizedField === currentField &&
+            nextDirection === sortDirection &&
+            nextSort === sortField &&
+            nextDates.declaration_date_from === declarationDateFrom &&
+            nextDates.declaration_date_to === declarationDateTo &&
+            nextDates.date_added_from === dateAddedFrom &&
+            nextDates.date_added_to === dateAddedTo &&
+            (!(nextDates.date_added_from || nextDates.date_added_to) ||
+                nextDates.date_timezone === dateTimezone) &&
+            (page === undefined || page === documents.current_page) &&
+            activeSearchRef.current === null
+        ) {
             return;
         }
 
@@ -110,6 +219,25 @@ export default function DocumentBrowser({
             params.field = nextNormalizedField;
         }
 
+        for (const key of [
+            'declaration_date_from',
+            'declaration_date_to',
+            'date_added_from',
+            'date_added_to',
+        ] as const) {
+            if (nextDates[key] !== '') params[key] = nextDates[key];
+        }
+        if (nextDates.date_added_from || nextDates.date_added_to) {
+            params.date_timezone = nextDates.date_timezone;
+        }
+        if (page !== undefined && page > 1) params.page = String(page);
+        if (nextDirection !== 'desc') params.direction = nextDirection;
+        if (nextSort !== 'created_at') params.sort = nextSort;
+
+        const visit = Symbol();
+        activeSearchRef.current = visit;
+        setIsSearching(true);
+
         router.get(
             documentsIndex.url(
                 Object.keys(params).length === 0 ? {} : { query: params },
@@ -117,11 +245,29 @@ export default function DocumentBrowser({
             {},
             {
                 preserveState: true,
-                preserveScroll: true,
-                replace: true,
+                preserveScroll: page === undefined,
+                replace: page === undefined,
                 only: ['documents', 'filters'],
+                onFinish: () => {
+                    if (activeSearchRef.current === visit) {
+                        activeSearchRef.current = null;
+                        setIsSearching(false);
+                    }
+                },
             },
         );
+    }
+
+    function changePage(page: number) {
+        if (
+            paginationDisabled ||
+            page < 1 ||
+            page > documents.last_page ||
+            page === documents.current_page
+        )
+            return;
+        clearDebounce();
+        visitSearch(query, field, dateFilters, page);
     }
 
     function scheduleSearch(nextQuery: string, nextField: string) {
@@ -130,6 +276,41 @@ export default function DocumentBrowser({
             debounceRef.current = null;
             visitSearch(nextQuery, nextField);
         }, SEARCH_DEBOUNCE_MS);
+    }
+
+    function applyDateFilters(filters: DocumentDateFilters) {
+        clearDebounce();
+        setDateFilters(filters);
+        visitSearch(query, field, filters);
+    }
+
+    function changeSort(next: DocumentSortFilters) {
+        clearDebounce();
+        setDirection(next.direction);
+        setSort(next.sort);
+        visitSearch(
+            query,
+            field,
+            dateFilters,
+            undefined,
+            next.direction,
+            next.sort,
+        );
+    }
+
+    function clearFilters() {
+        clearDebounce();
+        const dates = {
+            declaration_date_from: '',
+            declaration_date_to: '',
+            date_added_from: '',
+            date_added_to: '',
+            date_timezone: dateFilters.date_timezone,
+        };
+        setQuery('');
+        setField('all');
+        setDateFilters(dates);
+        visitSearch('', 'all', dates);
     }
 
     function submitSearch(event: FormEvent<HTMLFormElement>) {
@@ -158,21 +339,18 @@ export default function DocumentBrowser({
     }
 
     return (
-        <Card className="min-w-0 gap-0 overflow-visible rounded-none border-slate-200 bg-card py-0 shadow-none dark:border-neutral-800 dark:bg-black">
-            <CardHeader className="items-end border-b border-slate-200 px-4 py-4 sm:px-5 dark:border-neutral-800">
-                <Badge
-                    variant="outline"
-                    className="w-fit rounded-none border-slate-300 text-slate-700 dark:border-neutral-700 dark:text-neutral-300"
-                >
-                    {documents.total.toLocaleString()}{' '}
-                    {documents.total === 1 ? 'document' : 'documents'}
-                </Badge>
-            </CardHeader>
-
+        <Card className="isolate min-w-0 gap-0 overflow-visible rounded-none border-slate-200 bg-card py-0 shadow-none dark:border-neutral-800 dark:bg-black">
+            <CardHeader
+                aria-hidden="true"
+                className="h-14 shrink-0 border-b border-slate-200 dark:border-neutral-800"
+            />
             <CardContent className="px-0 py-0">
-                <div className="flex flex-col gap-3 border-b border-slate-200 p-3 sm:flex-row sm:p-4 dark:border-neutral-800">
-                    <form onSubmit={submitSearch} className="min-w-0 flex-1">
-                        <div className="flex h-10 min-w-0 rounded-md bg-card dark:bg-black">
+                <div className="sticky top-16 z-30 flex flex-wrap items-center gap-2 border-b border-slate-200 bg-card p-3 shadow-sm dark:border-neutral-800 dark:bg-black">
+                    <form
+                        onSubmit={submitSearch}
+                        className="min-w-0 basis-full lg:flex-1 lg:basis-0"
+                    >
+                        <div className="flex h-[31px] min-w-0 rounded-md bg-card dark:bg-black">
                             <Select
                                 value={field}
                                 onValueChange={changeSearchField}
@@ -180,14 +358,14 @@ export default function DocumentBrowser({
                             >
                                 <SelectTrigger
                                     aria-label="Search in"
-                                    className="z-10 h-full w-40 shrink-0 rounded-none rounded-l-md border border-blue-900 bg-transparent px-3 text-blue-900 shadow-none focus-visible:border-blue-900 focus-visible:ring-[3px] focus-visible:ring-blue-900/20 data-[size=default]:h-full *:data-[slot=select-value]:min-w-0 *:data-[slot=select-value]:flex-1 *:data-[slot=select-value]:truncate dark:bg-transparent [&_svg]:opacity-100 [&_svg:not([class*='text-'])]:text-blue-900"
+                                    className="z-10 h-full w-auto max-w-[50%] shrink-0 rounded-none rounded-l-md border border-blue-900 bg-transparent px-2.5 py-1 text-[13px] text-blue-900 shadow-none hover:bg-blue-900 hover:text-white focus-visible:border-blue-900 focus-visible:ring-[3px] focus-visible:ring-blue-900/20 data-[size=default]:h-full *:data-[slot=select-value]:min-w-0 *:data-[slot=select-value]:flex-1 *:data-[slot=select-value]:truncate dark:bg-transparent dark:text-white dark:hover:bg-blue-900 dark:focus-visible:ring-white/50 [&_svg]:opacity-100 [&_svg:not([class*='text-'])]:text-current"
                                 >
                                     <SelectValue placeholder="All" />
                                 </SelectTrigger>
                                 <SelectContent
                                     align="start"
                                     side="bottom"
-                                    className="min-w-40 rounded-none border-blue-900 text-blue-900"
+                                    className="w-(--anchor-width) min-w-36 rounded-none rounded-l-md border-blue-900 text-blue-900 *:min-w-0 dark:text-white"
                                 >
                                     {searchFields.map((option, index) => (
                                         <Fragment key={option.value}>
@@ -196,7 +374,7 @@ export default function DocumentBrowser({
                                             ) : null}
                                             <SelectItem
                                                 value={option.value}
-                                                className="rounded-none focus:bg-blue-50 focus:text-blue-900 data-highlighted:bg-blue-50 data-highlighted:text-blue-900 dark:focus:bg-blue-900 dark:focus:text-white dark:data-highlighted:bg-blue-900 dark:data-highlighted:text-white [&_svg:not([class*='text-'])]:text-current"
+                                                className="rounded-none text-sm focus:bg-blue-900 focus:text-white data-highlighted:bg-blue-900 data-highlighted:text-white [&_svg:not([class*='text-'])]:text-current"
                                             >
                                                 {option.label}
                                             </SelectItem>
@@ -207,7 +385,7 @@ export default function DocumentBrowser({
                             <div className="relative min-w-0 flex-1 rounded-r-md border border-l-0 border-slate-300 focus-within:border-slate-400 focus-within:ring-[3px] focus-within:ring-slate-300/40 dark:border-neutral-700 dark:focus-within:border-neutral-500 dark:focus-within:ring-neutral-500/40">
                                 <Search
                                     aria-hidden="true"
-                                    className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-slate-400"
+                                    className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-slate-400"
                                 />
                                 <Input
                                     name="q"
@@ -219,15 +397,19 @@ export default function DocumentBrowser({
                                     autoComplete="off"
                                     aria-label="Search documents"
                                     placeholder={placeholder}
-                                    className="h-full rounded-none rounded-r-md border-0 bg-transparent pl-9 shadow-none focus-visible:border-transparent focus-visible:ring-0"
+                                    className="h-full rounded-none rounded-r-md border-0 bg-transparent pl-8.5 text-[13px] shadow-none focus-visible:border-transparent focus-visible:ring-0"
                                 />
                             </div>
                         </div>
                     </form>
+                    <DocumentAdvancedFilters
+                        value={dateFilters}
+                        onApply={applyDateFilters}
+                    />
                     <div
                         role="group"
                         aria-label="Document view"
-                        className="inline-flex h-10 w-fit shrink-0 overflow-hidden rounded-md border border-blue-900 bg-slate-50 p-0 dark:bg-neutral-900"
+                        className="inline-flex h-[31px] w-fit shrink-0 overflow-hidden rounded-md border border-blue-900 bg-slate-50 p-0 dark:bg-neutral-900"
                     >
                         {DOCUMENT_VIEWS.map(
                             ({ value, label, icon: ViewIcon }) => (
@@ -240,13 +422,42 @@ export default function DocumentBrowser({
                                     aria-pressed={viewMode === value}
                                     title={label}
                                     onClick={() => onViewModeChange(value)}
-                                    className="h-full w-9 rounded-none text-slate-600 shadow-none hover:bg-slate-200 hover:text-blue-900 focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:ring-inset aria-pressed:bg-blue-900 aria-pressed:text-white aria-pressed:hover:bg-blue-800 aria-pressed:focus-visible:ring-white motion-reduce:transition-none dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-white dark:aria-pressed:text-white dark:aria-pressed:hover:bg-blue-800"
+                                    className="h-full w-[31px] rounded-none text-slate-600 shadow-none hover:bg-blue-900 hover:text-white focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:ring-inset aria-pressed:bg-blue-900 aria-pressed:text-white aria-pressed:hover:bg-blue-900 aria-pressed:focus-visible:ring-white motion-reduce:transition-none dark:text-neutral-400 dark:hover:text-white dark:aria-pressed:text-white"
                                 >
-                                    <ViewIcon aria-hidden="true" />
+                                    <ViewIcon
+                                        aria-hidden="true"
+                                        className="size-4"
+                                    />
                                 </Button>
                             ),
                         )}
                     </div>
+                    <DocumentSortMenu
+                        value={{ sort, direction }}
+                        onChange={changeSort}
+                    />
+                    <Button
+                        type="button"
+                        variant="outline"
+                        disabled={!hasFilters}
+                        onClick={clearFilters}
+                        className="h-[31px] shrink-0 gap-2 border-blue-900 bg-white px-2.5 text-[13px] font-normal text-blue-900 shadow-none hover:bg-blue-900 hover:text-white focus-visible:border-blue-900 focus-visible:ring-blue-900/20 dark:bg-neutral-900 dark:text-white dark:hover:bg-blue-900 dark:focus-visible:ring-white/50"
+                    >
+                        <FilterX aria-hidden="true" className="size-4" />
+                        Clear filters
+                    </Button>
+                </div>
+                <div
+                    className="flex items-center justify-between gap-3 px-3 pt-2 text-xs text-slate-600 dark:text-neutral-400"
+                    data-slot="document-results"
+                >
+                    <span aria-live="polite">{documentCount}</span>
+                    <DocumentPagination
+                        currentPage={documents.current_page}
+                        pageCount={documents.last_page}
+                        disabled={paginationDisabled}
+                        onPageChange={changePage}
+                    />
                 </div>
 
                 {documents.data.length > 0 ? (
@@ -260,11 +471,17 @@ export default function DocumentBrowser({
                             <DocumentPreviewView
                                 documents={documents.data}
                                 onViewDocument={onViewDocument}
+                                bookmarkedIds={bookmarkedIds}
+                                onToggleBookmark={toggleBookmark}
+                                onShowChain={setChainDocument}
                             />
                         ) : (
                             <DocumentCardView
                                 documents={documents.data}
                                 onViewDocument={onViewDocument}
+                                bookmarkedIds={bookmarkedIds}
+                                onToggleBookmark={toggleBookmark}
+                                onShowChain={setChainDocument}
                             />
                         )}
                         <div className="flex flex-col justify-between gap-2 border-t border-slate-200 px-4 py-3 text-xs text-slate-500 sm:flex-row sm:items-center sm:px-5 dark:border-neutral-800 dark:text-neutral-400">
@@ -272,27 +489,35 @@ export default function DocumentBrowser({
                                 Showing {documents.from}–{documents.to} of{' '}
                                 {documents.total} documents
                             </span>
-                            <span className="tabular-nums">
-                                Page {documents.current_page} of{' '}
-                                {documents.last_page}
-                            </span>
+                            <DocumentPagination
+                                currentPage={documents.current_page}
+                                pageCount={documents.last_page}
+                                disabled={paginationDisabled}
+                                onPageChange={changePage}
+                            />
                         </div>
                     </>
                 ) : (
                     <div className="flex min-h-64 flex-col items-center justify-center px-4 py-12 text-center">
-                        <span className="mb-4 flex size-12 items-center justify-center bg-blue-50 text-blue-900 dark:bg-blue-950 dark:text-blue-200">
+                        <span className="mb-4 flex size-12 items-center justify-center bg-blue-50 text-blue-900 dark:bg-blue-950 dark:text-white">
                             <FileSearch aria-hidden="true" className="size-6" />
                         </span>
-                        {searchQuery !== '' ? (
+                        {searchQuery !== '' || hasDateFilters ? (
                             <>
                                 <h2 className="text-base font-semibold text-slate-950 dark:text-white">
                                     No matching documents
                                 </h2>
                                 <p className="mt-1 max-w-md text-sm text-slate-600 dark:text-neutral-400">
-                                    Nothing in the archive matches “
-                                    {searchQuery}” in{' '}
-                                    {selectedLabel.toLowerCase()}. Try a
-                                    different term or field.
+                                    {hasDateFilters ? (
+                                        'No documents match these filters. Try a different date range or clear the date filter.'
+                                    ) : (
+                                        <>
+                                            Nothing in the archive matches “
+                                            {searchQuery}” in{' '}
+                                            {selectedLabel.toLowerCase()}. Try a
+                                            different term or field.
+                                        </>
+                                    )}
                                 </p>
                             </>
                         ) : (
@@ -309,6 +534,15 @@ export default function DocumentBrowser({
                     </div>
                 )}
             </CardContent>
+            <DocumentChain
+                document={chainDocument}
+                onViewDocument={onViewDocument}
+                onOpenChange={(open) => {
+                    if (!open) {
+                        setChainDocument(null);
+                    }
+                }}
+            />
         </Card>
     );
 }

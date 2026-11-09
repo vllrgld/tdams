@@ -53,12 +53,13 @@ function SelectContent({
   side = "bottom",
   sideOffset = 4,
   align = "center",
+  positionerClassName,
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Popup> &
   Pick<
     React.ComponentProps<typeof SelectPrimitive.Positioner>,
     "align" | "alignItemWithTrigger" | "side" | "sideOffset"
-  >) {
+  > & { positionerClassName?: string }) {
   return (
     <SelectPrimitive.Portal>
       <SelectPrimitive.Positioner
@@ -71,7 +72,7 @@ function SelectContent({
           align: "none",
           fallbackAxisSide: "none",
         }}
-        className="isolate z-50"
+        className={cn("isolate z-50", positionerClassName)}
       >
         <SelectPrimitive.Popup
           data-slot="select-content"

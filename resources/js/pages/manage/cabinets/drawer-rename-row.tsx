@@ -108,7 +108,7 @@ export default function DrawerRenameRow({
                         type="button"
                         onClick={startEditing}
                         title={drawer.label}
-                        className="min-w-0 truncate py-1 text-left text-sm text-slate-800 hover:text-blue-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700 dark:text-neutral-200 dark:hover:text-blue-200"
+                        className="min-w-0 truncate py-1 text-left text-sm text-slate-800 hover:text-blue-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700 dark:text-neutral-200 dark:hover:text-white"
                     >
                         {drawer.label}
                     </button>
@@ -134,7 +134,7 @@ export default function DrawerRenameRow({
                                 ? `View ${bookCount} ${itemName}${bookCount === 1 ? '' : 's'} in ${drawer.label}`
                                 : undefined
                         }
-                        className="text-xs whitespace-nowrap text-slate-600 tabular-nums underline-offset-4 hover:text-blue-900 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700 dark:text-neutral-400 dark:hover:text-blue-200"
+                        className="text-xs whitespace-nowrap text-slate-600 tabular-nums underline-offset-4 hover:text-blue-900 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700 dark:text-neutral-400 dark:hover:text-white"
                     >
                         {bookCount} {itemName}
                         {bookCount === 1 ? '' : 's'}
@@ -153,7 +153,7 @@ export default function DrawerRenameRow({
                             aria-label={addLabel}
                             title={addLabel}
                             onClick={() => onAddItem(drawer)}
-                            className="size-8 shrink-0 rounded-none text-slate-500 hover:text-blue-900 dark:text-neutral-400 dark:hover:text-blue-200"
+                            className="size-8 shrink-0 rounded-none text-slate-500 hover:text-blue-900 dark:text-neutral-400 dark:hover:text-white"
                         >
                             <Plus aria-hidden="true" className="size-3.5" />
                         </Button>
@@ -166,7 +166,7 @@ export default function DrawerRenameRow({
                             aria-label={`Rename ${drawer.label}`}
                             title={`Rename ${drawer.label}`}
                             onClick={startEditing}
-                            className="size-8 shrink-0 rounded-none text-slate-500 hover:text-blue-900 dark:text-neutral-400 dark:hover:text-blue-200"
+                            className="size-8 shrink-0 rounded-none text-slate-500 hover:text-blue-900 dark:text-neutral-400 dark:hover:text-white"
                         >
                             <Pencil aria-hidden="true" className="size-3.5" />
                         </Button>

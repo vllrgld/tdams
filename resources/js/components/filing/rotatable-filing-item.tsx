@@ -252,7 +252,7 @@ export default function RotatableFilingItem({
                 <button
                     type="button"
                     onClick={() => setRotation(REST)}
-                    className="text-slate-600 underline-offset-2 hover:text-blue-900 hover:underline dark:text-neutral-400 dark:hover:text-blue-200"
+                    className="text-slate-600 underline-offset-2 hover:text-blue-900 hover:underline dark:text-neutral-400 dark:hover:text-white"
                 >
                     Reset view
                 </button>

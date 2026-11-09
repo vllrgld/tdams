@@ -1,5 +1,4 @@
-import { ScanLine } from 'lucide-react';
-import { useMemo } from 'react';
+import { type ComponentProps, useMemo } from 'react';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import {
@@ -32,6 +31,7 @@ type DocumentUploadDialogProps = {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     reviewDocument?: ArchivedDocument | null;
+    finalFocus?: ComponentProps<typeof DialogContent>['finalFocus'];
 };
 
 export default function DocumentUploadDialog({
@@ -41,6 +41,7 @@ export default function DocumentUploadDialog({
     open,
     onOpenChange,
     reviewDocument,
+    finalFocus,
 }: DocumentUploadDialogProps) {
     const workflow = useDocumentUpload({
         open,
@@ -97,18 +98,9 @@ export default function DocumentUploadDialog({
 
     return (
         <>
-            <Button
-                type="button"
-                aria-label="Upload document"
-                title="Upload document"
-                onClick={() => onOpenChange(true)}
-                className="fixed right-5 bottom-5 z-40 size-14 rounded-full bg-blue-900 text-white shadow-lg shadow-slate-950/20 transition-transform hover:scale-105 hover:bg-blue-800 sm:right-8 sm:bottom-8 dark:bg-blue-700 dark:hover:bg-blue-600"
-            >
-                <ScanLine aria-hidden="true" className="size-6" />
-            </Button>
-
             <Dialog open={open} onOpenChange={close}>
                 <DialogContent
+                    finalFocus={finalFocus}
                     showClose={canDismiss}
                     className={
                         reviewing
@@ -151,7 +143,7 @@ export default function DocumentUploadDialog({
                                 onChange={(event) =>
                                     setFile(event.target.files?.[0] ?? null)
                                 }
-                                className="h-auto rounded-none border-dashed p-3 file:mr-3 file:rounded-none file:border-0 file:bg-blue-50 file:px-3 file:py-1.5 file:font-medium file:text-blue-950 dark:file:bg-blue-950 dark:file:text-blue-100"
+                                className="h-auto rounded-none border-dashed p-3 file:mr-3 file:rounded-none file:border-0 file:bg-blue-50 file:px-3 file:py-1.5 file:font-medium file:text-blue-950 dark:file:bg-blue-950 dark:file:text-white"
                             />
                             <p className="text-xs text-slate-500 dark:text-neutral-400">
                                 PDF, JPEG, PNG, or TIFF · maximum file size 50

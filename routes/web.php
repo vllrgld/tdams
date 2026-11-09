@@ -18,6 +18,7 @@ Route::redirect('/', '/dashboard')->name('home');
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'dashboard/index')->name('dashboard');
     Route::get('documents', [DocumentController::class, 'index'])->name('documents.index');
+    Route::get('documents/upload-options', [DocumentController::class, 'uploadOptions'])->name('documents.upload-options');
     Route::post('documents', [DocumentController::class, 'store'])->name('documents.store');
     Route::get('documents/search', DocumentSearchController::class)->name('documents.search');
     Route::get('search', GlobalSearchController::class)->name('system.search');

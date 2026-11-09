@@ -202,7 +202,7 @@ function BookNavigation({
                                                                 'flex w-full items-center gap-2.5 py-2.5 pr-4 pl-9 text-left text-sm focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-blue-900 disabled:cursor-wait dark:focus-visible:outline-blue-200',
                                                                 book.id ===
                                                                     selectedId
-                                                                    ? 'bg-blue-50 font-medium text-blue-900 dark:bg-blue-950/50 dark:text-blue-100'
+                                                                    ? 'bg-blue-50 font-medium text-blue-900 dark:bg-blue-950/50 dark:text-white'
                                                                     : 'text-slate-700 hover:bg-slate-50 dark:text-neutral-300 dark:hover:bg-neutral-900',
                                                             )}
                                                         >
@@ -362,7 +362,7 @@ export default function FilingItemManagement({
                             </p>
                             <Link
                                 href={cabinetsIndex.url()}
-                                className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-blue-900 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-900 dark:text-blue-200"
+                                className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-blue-900 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-900 dark:text-white"
                             >
                                 Go to Manage Cabinets{' '}
                                 <ArrowUpRight
