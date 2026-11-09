@@ -21,6 +21,8 @@ import {
     ScanText,
     Search,
     Shield,
+    SlidersHorizontal,
+    Upload,
     UserRound,
     type LucideIcon,
 } from 'lucide-react';
@@ -42,8 +44,15 @@ import {
     DialogTrigger,
 } from '@/components/ui/dialog';
 import { cn, toUrl } from '@/lib/utils';
+import {
+    commandSearchGroups as groupOrder,
+    getActiveCommandIndex,
+    matchesCommand,
+    orderCommandResults,
+} from '@/lib/command-search';
 import { dashboard } from '@/routes';
 import { edit as editAppearance } from '@/routes/appearance';
+import { edit as editAccessibility } from '@/routes/accessibility';
 import { edit as editOcr } from '@/routes/ocr';
 import { edit as editProfile } from '@/routes/profile';
 import { edit as editSecurity } from '@/routes/security';
@@ -92,9 +101,8 @@ type SearchItem = {
     group: string;
     title: string;
     hint: string;
-    url: string;
     icon: LucideIcon;
-};
+} & ({ url: string; action?: never } | { action: () => void; url?: never });
 
 const pages: PageEntry[] = [
     {
@@ -110,7 +118,8 @@ const pages: PageEntry[] = [
         group: 'Pages',
         hint: 'Menu',
         href: documentsIndex.url(),
-        keywords: 'declaration tax file search',
+        keywords:
+            'declaration tax file search ocr content cards preview list filter filters dates date added relative sort sorting ascending descending clear reset',
         icon: FileSearch,
     },
     {
@@ -178,6 +187,15 @@ const pages: PageEntry[] = [
         icon: Palette,
     },
     {
+        title: 'Accessibility',
+        group: 'Settings',
+        hint: 'Settings > Account',
+        href: toUrl(editAccessibility()),
+        keywords:
+            'settings accessibility animation animations motion pickup return fade books folders',
+        icon: SlidersHorizontal,
+    },
+    {
         title: 'OCR',
         group: 'Settings',
         hint: 'Settings > Account',
@@ -187,38 +205,23 @@ const pages: PageEntry[] = [
     },
 ];
 
-const groupOrder = [
-    'Pages',
-    'Settings',
-    'Cabinets',
-    'Drawers',
-    'Books',
-    'Folders',
-    'Documents',
-];
+const uploadCommand = {
+    title: 'Upload document',
+    hint: 'Add a PDF or scanned image',
+    keywords: 'upload import scan scanned pdf image add new document',
+};
 
-function pageMatches(page: PageEntry, query: string): boolean {
-    if (query === '') {
-        return true;
-    }
-
-    const haystack =
-        `${page.title} ${page.hint} ${page.keywords}`.toLowerCase();
-    const words = haystack
-        .split(/[^a-z0-9]+/)
-        .filter((word) => word.length >= 3);
-
-    return query
-        .toLowerCase()
-        .split(/\s+/)
-        .filter(Boolean)
-        .every(
-            (term) =>
-                haystack.includes(term) ||
-                words.some(
-                    (word) => term.startsWith(word) || word.startsWith(term),
-                ),
-        );
+async function fetchSearchResults<T>(
+    url: string,
+    signal: AbortSignal,
+): Promise<T> {
+    const response = await fetch(url, {
+        headers: { Accept: 'application/json' },
+        credentials: 'same-origin',
+        signal,
+    });
+    if (!response.ok) throw new Error('Search unavailable');
+    return (await response.json()) as T;
 }
 
 function documentHint(match: DocumentMatch): string {
@@ -231,7 +234,13 @@ function documentHint(match: DocumentMatch): string {
     return details.length > 0 ? details.join(' · ') : 'Documents';
 }
 
-export default function GlobalSearch({ className }: { className?: string }) {
+export default function GlobalSearch({
+    className,
+    onUploadDocument,
+}: {
+    className?: string;
+    onUploadDocument?: () => void;
+}) {
     const [open, setOpen] = useState(false);
     const [navigating, setNavigating] = useState(false);
     const [query, setQuery] = useState('');
@@ -256,7 +265,7 @@ export default function GlobalSearch({ className }: { className?: string }) {
 
     const items = useMemo(() => {
         const next: SearchItem[] = pages
-            .filter((page) => pageMatches(page, normalizedQuery))
+            .filter((page) => matchesCommand(page, normalizedQuery))
             .map((page) => ({
                 key: `page-${page.href}`,
                 group: page.group,
@@ -266,8 +275,22 @@ export default function GlobalSearch({ className }: { className?: string }) {
                 icon: page.icon,
             }));
 
+        if (
+            onUploadDocument &&
+            matchesCommand(uploadCommand, normalizedQuery)
+        ) {
+            next.push({
+                key: 'action-upload',
+                group: 'Actions',
+                title: uploadCommand.title,
+                hint: uploadCommand.hint,
+                action: onUploadDocument,
+                icon: Upload,
+            });
+        }
+
         if (!canSearch || places === null || documents === null) {
-            return next;
+            return orderCommandResults(next);
         }
 
         for (const cabinet of places.cabinets) {
@@ -325,8 +348,8 @@ export default function GlobalSearch({ className }: { className?: string }) {
             });
         }
 
-        return next;
-    }, [canSearch, documents, normalizedQuery, places]);
+        return orderCommandResults(next);
+    }, [canSearch, documents, normalizedQuery, onUploadDocument, places]);
 
     const groups = groupOrder
         .map((name) => ({
@@ -456,37 +479,35 @@ export default function GlobalSearch({ className }: { className?: string }) {
         const controller = new AbortController();
         const timer = window.setTimeout(async () => {
             try {
-                const [placeResponse, documentResponse] = await Promise.all([
-                    fetch(systemSearch.url({ query: { q: normalizedQuery } }), {
-                        headers: { Accept: 'application/json' },
-                        credentials: 'same-origin',
-                        signal: controller.signal,
-                    }),
-                    fetch(
+                const [placeResult, documentResult] = await Promise.allSettled([
+                    fetchSearchResults<PlaceResult>(
+                        systemSearch.url({ query: { q: normalizedQuery } }),
+                        controller.signal,
+                    ),
+                    fetchSearchResults<DocumentResult>(
                         searchDocuments.url({ query: { q: normalizedQuery } }),
-                        {
-                            headers: { Accept: 'application/json' },
-                            credentials: 'same-origin',
-                            signal: controller.signal,
-                        },
+                        controller.signal,
                     ),
                 ]);
-
-                if (!placeResponse.ok || !documentResponse.ok) {
-                    throw new Error('Search unavailable');
-                }
-
-                const placeData = (await placeResponse.json()) as PlaceResult;
-                const documentData =
-                    (await documentResponse.json()) as DocumentResult;
 
                 if (controller.signal.aborted) {
                     return;
                 }
 
-                setPlaces(placeData);
-                setDocuments(documentData);
-                setError(false);
+                setPlaces(
+                    placeResult.status === 'fulfilled'
+                        ? placeResult.value
+                        : { cabinets: [], drawers: [], books: [] },
+                );
+                setDocuments(
+                    documentResult.status === 'fulfilled'
+                        ? documentResult.value
+                        : { data: [], hasMore: false },
+                );
+                setError(
+                    placeResult.status === 'rejected' ||
+                        documentResult.status === 'rejected',
+                );
             } catch {
                 if (!controller.signal.aborted) {
                     setError(true);
@@ -501,9 +522,8 @@ export default function GlobalSearch({ className }: { className?: string }) {
     }, [attempt, canSearch, normalizedQuery, open]);
 
     useEffect(() => {
-        if (activeIndex >= items.length) {
-            setActiveIndex(items.length > 0 ? 0 : -1);
-        }
+        const nextIndex = getActiveCommandIndex(activeIndex, items.length);
+        if (nextIndex !== activeIndex) setActiveIndex(nextIndex);
     }, [activeIndex, items.length]);
 
     useEffect(() => {
@@ -525,10 +545,14 @@ export default function GlobalSearch({ className }: { className?: string }) {
         inputRef.current?.focus();
     }
 
-    function navigate(url: string) {
+    function activate(item: SearchItem) {
         setNavigating(true);
         setOpen(false);
-        router.visit(url);
+        if (item.action) {
+            item.action();
+        } else {
+            router.visit(item.url);
+        }
     }
 
     function moveActive(direction: 1 | -1) {
@@ -601,8 +625,8 @@ export default function GlobalSearch({ className }: { className?: string }) {
             >
                 <DialogTitle className="sr-only">Search the system</DialogTitle>
                 <DialogDescription className="sr-only">
-                    Find a page, setting, cabinet, folder, book, or document.
-                    Arrow keys move, Enter opens.
+                    Find a page, setting, action, cabinet, folder, book, or
+                    document. Arrow keys move, Enter opens.
                 </DialogDescription>
                 <div className="flex items-center gap-2 border-b px-3">
                     <Search
@@ -645,7 +669,7 @@ export default function GlobalSearch({ className }: { className?: string }) {
                                 moveActive(-1);
                             } else if (event.key === 'Enter' && selected) {
                                 event.preventDefault();
-                                navigate(selected.url);
+                                activate(selected);
                             }
                         }}
                     />
@@ -680,24 +704,22 @@ export default function GlobalSearch({ className }: { className?: string }) {
                             Searching…
                         </p>
                     )}
-                    {groups.length === 0 && !loading && (
+                    {groups.length === 0 && !loading && !error && (
                         <p
                             role="status"
                             className="px-3 py-10 text-center text-sm text-muted-foreground"
                         >
-                            {error
-                                ? 'Search is unavailable. Try again.'
-                                : 'No matches. Try a page, cabinet, or declaration.'}
+                            No matches. Try a page, cabinet, or declaration.
                         </p>
                     )}
-                    {error && groups.length > 0 && (
+                    {error && (
                         <div
                             role="alert"
                             className="flex items-center justify-between gap-3 border-b px-3 py-2 text-xs text-muted-foreground"
                         >
                             <span>
-                                Archive search is unavailable. Pages below still
-                                work.
+                                Some archive results could not be loaded.
+                                Available results still work.
                             </span>
                             <Button
                                 type="button"
@@ -708,6 +730,7 @@ export default function GlobalSearch({ className }: { className?: string }) {
                                     setPlaces(null);
                                     setDocuments(null);
                                     setAttempt((value) => value + 1);
+                                    inputRef.current?.focus();
                                 }}
                             >
                                 Try again
@@ -747,7 +770,7 @@ export default function GlobalSearch({ className }: { className?: string }) {
                                         onPointerDown={(event) =>
                                             event.preventDefault()
                                         }
-                                        onClick={() => navigate(item.url)}
+                                        onClick={() => activate(item)}
                                     >
                                         <span className="flex size-8 shrink-0 items-center justify-center rounded-md border bg-background text-muted-foreground">
                                             <Icon

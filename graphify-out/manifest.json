@@ -3690,9 +3690,9 @@
     "semantic_hash": ""
   },
   "resources/js/components/layout/app-sidebar-header.tsx": {
-    "mtime": 1794210983.1286705,
-    "seen": 1794211124.14749,
-    "ast_hash": "6f9a55534acaa30d9b21d4e8fa9972ac",
+    "mtime": 1794212159.856995,
+    "seen": 1794212579.3042762,
+    "ast_hash": "0acb7d1cf546ddbc711341b99fb5657c",
     "semantic_hash": ""
   },
   "resources/js/components/layout/app-sidebar.tsx": {
@@ -3714,9 +3714,9 @@
     "semantic_hash": ""
   },
   "resources/js/components/layout/global-search.tsx": {
-    "mtime": 1794210978.5774033,
-    "seen": 1794211124.1475544,
-    "ast_hash": "0b35902a3a21d2bb2e648be2155fe5c4",
+    "mtime": 1794212868.1514568,
+    "seen": 1794213103.341774,
+    "ast_hash": "8180c3ca87106ef9edef4de5483683ae",
     "semantic_hash": ""
   },
   "resources/js/components/layout/nav-footer.tsx": {
@@ -4491,6 +4491,66 @@
     "mtime": 1794210687.2873135,
     "seen": 1794211124.1489313,
     "ast_hash": "42c59f3caea98a712afec0726de188ff",
+    "semantic_hash": ""
+  },
+  "resources/js/lib/command-search.ts": {
+    "mtime": 1794212631.4753463,
+    "seen": 1794212792.6317813,
+    "ast_hash": "b8a9e3d021889dcb894db0ae8b0f44f1",
+    "semantic_hash": ""
+  },
+  "tests/Unit/CommandSearch.test.mjs": {
+    "mtime": 1794212643.4658227,
+    "seen": 1794212792.6333878,
+    "ast_hash": "183da208627583736902d682ac98b614",
+    "semantic_hash": ""
+  },
+  ".impeccable/review/header-controls-31-dark.png": {
+    "mtime": 1794211230.9534452,
+    "seen": 1794212579.3129213,
+    "ast_hash": "d6ef6bb02156505e1c2f187a152cfd01",
+    "semantic_hash": ""
+  },
+  ".impeccable/review/header-controls-31-desktop.png": {
+    "mtime": 1794211230.504274,
+    "seen": 1794212579.312932,
+    "ast_hash": "8965defc6e71c1a0b2c7ace79eac8d1e",
+    "semantic_hash": ""
+  },
+  ".impeccable/review/header-controls-31-mobile.png": {
+    "mtime": 1794211232.1909518,
+    "seen": 1794212579.3129394,
+    "ast_hash": "125313745c4f13de3a836c2d245c8f10",
+    "semantic_hash": ""
+  },
+  ".impeccable/review/header-controls-31-small.png": {
+    "mtime": 1794211232.4856894,
+    "seen": 1794212579.312947,
+    "ast_hash": "2fdb6692e63dbd1be726af6ebbcdaa11",
+    "semantic_hash": ""
+  },
+  ".impeccable/review/command-search-update-dark.png": {
+    "mtime": 1794212994.163179,
+    "seen": 1794213103.3433216,
+    "ast_hash": "119beb87ed1593879cf78ff2022722d6",
+    "semantic_hash": ""
+  },
+  ".impeccable/review/command-search-update-desktop.png": {
+    "mtime": 1794212992.3995018,
+    "seen": 1794213103.3433254,
+    "ast_hash": "bdd9529e3424eafa9a4da55dc4c6b459",
+    "semantic_hash": ""
+  },
+  ".impeccable/review/command-search-update-mobile.png": {
+    "mtime": 1794212995.84844,
+    "seen": 1794213103.3433282,
+    "ast_hash": "cc850e75e624d07fafb9a38c965d4f2d",
+    "semantic_hash": ""
+  },
+  ".impeccable/review/command-search-update-small.png": {
+    "mtime": 1794212997.241207,
+    "seen": 1794213103.3433313,
+    "ast_hash": "fc003be55d76be5f3cb3647a75d310e4",
     "semantic_hash": ""
   }
 }

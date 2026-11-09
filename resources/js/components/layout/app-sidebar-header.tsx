@@ -200,6 +200,7 @@ export function AppSidebarHeader({
             </div>
             <div className="flex min-w-0 items-center justify-center gap-2">
                 <GlobalSearch
+                    onUploadDocument={onUploadDocument}
                     className={
                         onUploadDocument ? 'md:min-w-0 md:flex-1' : undefined
                     }
