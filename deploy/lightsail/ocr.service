@@ -11,6 +11,8 @@ EnvironmentFile=-/etc/dtms-ocr.env
 ExecStart=/var/www/dtms/services/ocr/.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8001 --workers 1
 Restart=on-failure
 RestartSec=5
+TimeoutStopSec=360
+KillMode=mixed
 NoNewPrivileges=true
 
 [Install]

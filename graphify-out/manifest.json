@@ -1656,9 +1656,9 @@
     "semantic_hash": ""
   },
   "deploy/lightsail/setup.sh": {
-    "mtime": 1793061522.4642751,
-    "seen": 1793068760.4449353,
-    "ast_hash": "428db8528c1dd919532859a42606d94c",
+    "mtime": 1794213743.8281524,
+    "seen": 1794213956.6486218,
+    "ast_hash": "ff7c3ae856fb3225f1196f497263ed23",
     "semantic_hash": ""
   },
   "app/Jobs/OcrDocument.php": {
@@ -1776,15 +1776,15 @@
     "semantic_hash": ""
   },
   "deploy/lightsail/setup-ocr.sh": {
-    "mtime": 1793078852.1915157,
-    "seen": 1793078930.636877,
-    "ast_hash": "7ceed33e49d3595b5c23fdfb286251f0",
+    "mtime": 1794213748.6927438,
+    "seen": 1794213956.6486075,
+    "ast_hash": "71a197666b5bab5775d2f3db297df7af",
     "semantic_hash": ""
   },
   "deploy/lightsail/OCR.md": {
-    "mtime": 1793078855.7350438,
-    "seen": 1793078930.6433225,
-    "ast_hash": "439ffead2b0c01e971698aa35c4aa3c9",
+    "mtime": 1794213752.4766216,
+    "seen": 1794213956.6520405,
+    "ast_hash": "cd9c5b3e8cb463c8478daeb4f7e1b256",
     "semantic_hash": ""
   },
   "app/Models/DeclarationOwner.php": {
@@ -4551,6 +4551,18 @@
     "mtime": 1794212997.241207,
     "seen": 1794213103.3433313,
     "ast_hash": "fc003be55d76be5f3cb3647a75d310e4",
+    "semantic_hash": ""
+  },
+  "deploy/lightsail/update.sh": {
+    "mtime": 1794214085.4527934,
+    "seen": 1794214278.8762183,
+    "ast_hash": "e5c7b906c4e1876b20e578a90546ec0d",
+    "semantic_hash": ""
+  },
+  "deploy/lightsail/README.md": {
+    "mtime": 1794214257.2369595,
+    "seen": 1794214278.8800013,
+    "ast_hash": "f777a1044d66ecdd137b7576032e4385",
     "semantic_hash": ""
   }
 }

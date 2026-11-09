@@ -107,11 +107,13 @@ systemctl restart dtms-ocr.service dtms-queue.service
 
 cd "${APP_DIR}"
 sudo -u www-data php artisan config:cache
+sudo -u www-data php artisan queue:restart
 
 echo
 echo "FastAPI listens on 127.0.0.1:8001 (--workers 1). Queue runs one job at a time."
 echo "Use Settings → OCR → Paddle. Do not use Local OCRmyPDF as the default on 1 GB RAM."
 echo "Paste PADDLE_OCR_TOKEN and OLLAMA_API_KEY into ${APP_DIR}/.env, then:"
 echo "  sudo -u www-data php artisan config:cache"
+echo "  sudo -u www-data php artisan queue:restart"
 echo "Health: curl -sS http://127.0.0.1:8001/health"
 echo "Status: systemctl status dtms-ocr dtms-queue"

@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Trial host for a 1 GB Lightsail instance.
+# First installation only. For later releases use update.sh; see README.md.
 #
 # Console steps when the AWS CLI is not signed in on the workstation:
 #   1. Run `npm run build` on the workstation so public/build exists.
@@ -154,6 +155,8 @@ fi
 sudo -u www-data php artisan migrate --force
 sudo -u www-data php artisan storage:link
 sudo -u www-data php artisan config:cache
+sudo -u www-data php artisan event:cache
+sudo -u www-data php artisan route:cache
 sudo -u www-data php artisan view:cache
 
 echo
