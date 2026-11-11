@@ -1,4 +1,4 @@
-import { Bookmark, Link } from 'lucide-react';
+import { Bookmark, Network } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import type { ArchivedDocument } from '@/types/documents';
@@ -47,7 +47,7 @@ export default function DocumentThumbnailActions({
                 title="Show document chain"
                 className={cn(ACTION_CLASS_NAME, 'right-2')}
             >
-                <Link aria-hidden="true" className="size-4" />
+                <Network aria-hidden="true" className="size-4" />
             </Button>
         </>
     );

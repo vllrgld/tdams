@@ -223,11 +223,18 @@ class OcrDocumentTest extends TestCase
         $document->refresh();
 
         $this->assertSame('completed', $document->ocr_status);
-        $this->assertSame([['kind' => 'line', ...$region]], $document->ocr_regions);
+        $expected = [
+            ['kind' => 'line', ...$region],
+            ['kind' => 'line', ...$region, 'box' => null],
+            ['kind' => 'line', ...$region, 'box' => null],
+            ['kind' => 'line', ...$region, 'box' => null],
+            ['kind' => 'line', ...$region, 'box' => null, 'pageWidth' => null],
+        ];
+        $this->assertSame($expected, $document->ocr_regions);
         $this->actingAs(User::factory()->create())
             ->getJson('/documents/'.$document->id.'/ocr')
             ->assertOk()
-            ->assertJsonPath('regions', [['kind' => 'line', ...$region]]);
+            ->assertJsonPath('regions', $expected);
     }
 
     public function test_job_stores_a_first_page_thumbnail_for_a_pdf(): void

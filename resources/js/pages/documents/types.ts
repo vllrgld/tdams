@@ -2,6 +2,8 @@ import type { ArchivedDocument } from '@/types/documents';
 
 export type DocumentViewMode = 'cards' | 'preview' | 'list';
 
+export type DocumentOcrReviewFilter = 'all' | 'reviewed' | 'unreviewed';
+
 export type DocumentSortDirection = 'asc' | 'desc';
 
 export type DocumentSortField = 'created_at' | 'declaration_date';
@@ -64,6 +66,7 @@ export type DocumentsPageProps = {
         field: string;
         direction: DocumentSortDirection;
         sort: DocumentSortField;
+        ocr_review: DocumentOcrReviewFilter;
     } & DocumentDateFilters;
     searchFields: SearchFieldOption[];
     mappingModels: string[];
@@ -112,6 +115,7 @@ export type DocumentFieldDefinition = {
     label: string;
     maxLength: number;
     type: 'text' | 'number' | 'date' | 'textarea';
+    help?: string;
 };
 
 export type DocumentFieldSection = {

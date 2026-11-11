@@ -3,11 +3,13 @@ import {
     useLayoutEffect,
     useRef,
     useState,
+    type ReactNode,
     type SetStateAction,
 } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
+import type { PDFDocumentProxy } from 'pdfjs-dist';
 import PdfViewerControls from '@/components/pdf/pdf-viewer-controls';
-import { useDragToPan } from '@/hooks/use-drag-to-pan';
+import PannableViewport from '@/components/pdf/pannable-viewport';
 import { usePdfPageScale } from '@/components/pdf/use-pdf-page-scale';
 import type { PdfFitMode } from '@/components/pdf/use-pdf-page-scale';
 import { cn } from '@/lib/utils';
@@ -23,8 +25,6 @@ export type PdfHighlight = {
 export type PdfViewport = {
     fitWidth: number;
     fitHeight: number;
-    pageWidth: number;
-    zoom: number;
     pages: Record<number, { width: number; height: number }>;
 };
 
@@ -33,10 +33,14 @@ type PdfPreviewProps = {
     title: string;
     highlights?: PdfHighlight[];
     selectedHighlightId?: number | null;
+    hoveredHighlightId?: number | null;
     onSelectHighlight?: (id: number) => void;
+    onHoverHighlight?: (id: number | null) => void;
     focusPage?: number | null;
     onViewportChange?: (viewport: PdfViewport) => void;
+    onDocumentLoad?: (document: PDFDocumentProxy | null) => void;
     defaultFit?: PdfFitMode;
+    extraControls?: ReactNode;
 };
 
 export default function PdfPreview({
@@ -44,10 +48,14 @@ export default function PdfPreview({
     title,
     highlights = [],
     selectedHighlightId = null,
+    hoveredHighlightId = null,
     onSelectHighlight,
+    onHoverHighlight,
     focusPage = null,
     onViewportChange,
+    onDocumentLoad,
     defaultFit = 'width',
+    extraControls,
 }: PdfPreviewProps) {
     const viewerRef = useRef<HTMLDivElement>(null);
     const [viewerWidth, setViewerWidth] = useState(0);
@@ -116,6 +124,10 @@ export default function PdfPreview({
         setScrollAnchor(null);
         if (viewerRef.current) viewerRef.current.scrollTop = 0;
     }, [url]);
+
+    useEffect(() => {
+        return () => onDocumentLoad?.(null);
+    }, [onDocumentLoad, url]);
 
     useEffect(() => {
         const viewer = viewerRef.current;
@@ -222,7 +234,6 @@ export default function PdfPreview({
             defaultFit,
             resetKey: url,
         });
-    const { panning, panHandlers } = useDragToPan(canPan);
 
     function rememberScrollPosition() {
         const viewer = viewerRef.current;
@@ -269,11 +280,9 @@ export default function PdfPreview({
         onViewportChange?.({
             fitWidth,
             fitHeight,
-            pageWidth,
-            zoom,
             pages: pageSizes,
         });
-    }, [onViewportChange, fitWidth, fitHeight, pageWidth, pageSizes, zoom]);
+    }, [onViewportChange, fitWidth, fitHeight, pageSizes]);
 
     return (
         <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden border border-slate-200 dark:border-neutral-800">
@@ -284,17 +293,13 @@ export default function PdfPreview({
                 onPageChange={goToPage}
                 onZoomChange={changeZoom}
                 onFitPage={fitPage}
+                extraControls={extraControls}
             />
 
-            <div
-                ref={viewerRef}
-                {...panHandlers}
-                className={cn(
-                    'relative min-h-0 flex-1 overflow-auto bg-slate-200 p-2 dark:bg-neutral-900',
-                    canPan &&
-                        'cursor-grab touch-none select-none [&_button]:cursor-grab',
-                    panning && 'cursor-grabbing [&_button]:cursor-grabbing',
-                )}
+            <PannableViewport
+                viewerRef={viewerRef}
+                enabled={canPan}
+                className="bg-slate-200 p-2 dark:bg-neutral-900"
             >
                 {!pageReady && !loadError && (
                     <div className="absolute inset-0 z-10 flex items-center justify-center bg-slate-200 dark:bg-neutral-900">
@@ -307,12 +312,17 @@ export default function PdfPreview({
                     <Document
                         file={url}
                         suspense={false}
-                        onLoadSuccess={({ numPages }) => {
+                        onLoadSuccess={(document) => {
+                            const { numPages } = document;
                             setPageCount(numPages);
                             setPageNumber(1);
                             setLoadError(null);
+                            onDocumentLoad?.(document);
                         }}
-                        onLoadError={(error) => setLoadError(error.message)}
+                        onLoadError={(error) => {
+                            setLoadError(error.message);
+                            onDocumentLoad?.(null);
+                        }}
                         loading={
                             <p className="p-6 text-center text-sm text-slate-600 dark:text-neutral-300">
                                 Loading PDF…
@@ -427,6 +437,10 @@ export default function PdfPreview({
                                                 const selected =
                                                     selectedHighlightId ===
                                                     highlight.id;
+                                                const highlighted =
+                                                    (hoveredHighlightId ??
+                                                        selectedHighlightId) ===
+                                                    highlight.id;
 
                                                 return (
                                                     <button
@@ -435,6 +449,26 @@ export default function PdfPreview({
                                                         type="button"
                                                         aria-label={`OCR region on page ${page}`}
                                                         aria-pressed={selected}
+                                                        onPointerEnter={() =>
+                                                            onHoverHighlight?.(
+                                                                highlight.id,
+                                                            )
+                                                        }
+                                                        onPointerLeave={() =>
+                                                            onHoverHighlight?.(
+                                                                null,
+                                                            )
+                                                        }
+                                                        onFocus={() =>
+                                                            onHoverHighlight?.(
+                                                                highlight.id,
+                                                            )
+                                                        }
+                                                        onBlur={() =>
+                                                            onHoverHighlight?.(
+                                                                null,
+                                                            )
+                                                        }
                                                         onClick={() =>
                                                             onSelectHighlight?.(
                                                                 highlight.id,
@@ -442,7 +476,7 @@ export default function PdfPreview({
                                                         }
                                                         className={cn(
                                                             'absolute border',
-                                                            selected
+                                                            highlighted
                                                                 ? 'z-10 border-blue-900 bg-blue-900/20'
                                                                 : 'z-0 border-blue-900/40 bg-blue-900/5',
                                                         )}
@@ -462,7 +496,7 @@ export default function PdfPreview({
                         })}
                     </Document>
                 ) : null}
-            </div>
+            </PannableViewport>
             <span className="sr-only">{title}</span>
         </div>
     );

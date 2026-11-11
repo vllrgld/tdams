@@ -93,6 +93,45 @@ class PdfRegionTests(unittest.TestCase):
             engine.assert_called_once()
             self.assertEqual((directory / "regions" / output.name).read_text(), HOCR)
 
+    def test_hocr_keeps_word_boxes_for_widely_separated_columns(self):
+        source = '''<html><body><div class="ocr_page" title="bbox 0 0 1000 1000">
+        <span class="ocr_line" title="bbox 10 10 900 40">
+        <span class="ocrx_word" title="bbox 10 10 80 40">LABEL</span>
+        <span class="ocrx_word" title="bbox 800 10 900 40">VALUE</span>
+        </span></div></body></html>'''
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            (directory / "000001_ocr_hocr.hocr").write_text(source)
+            pages, regions = hocr_text_regions(directory)
+        self.assertEqual(pages, {1})
+        self.assertEqual(regions[0]["text"], "LABEL VALUE")
+        self.assertEqual(regions[0]["words"], [
+            {"text": "LABEL", "box": [10, 10, 80, 40]},
+            {"text": "VALUE", "box": [800, 10, 900, 40]},
+        ])
+
+    def test_hocr_recovers_missing_line_boxes_and_keeps_unpositioned_text(self):
+        source = '''<html><body><div class="ocr_page" title="bbox 0 0 1000 1000">
+        <span class="ocr_line"><span class="ocrx_word" title="bbox 10 10 100 40">BOXED</span></span>
+        <span class="ocr_line"><span class="ocrx_word">NO BOX</span></span>
+        </div></body></html>'''
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            (directory / "000001_ocr_hocr.hocr").write_text(source)
+            pages, regions = hocr_text_regions(directory)
+        self.assertEqual(pages, {1})
+        self.assertEqual([region["text"] for region in regions], ["BOXED", "NO BOX"])
+        self.assertEqual(regions[0]["box"], [10, 10, 100, 40])
+        self.assertIsNone(regions[1]["box"])
+
+    def test_empty_hocr_does_not_disable_pdf_position_fallback(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            (directory / "000001_ocr_hocr.hocr").write_text('<html><div class="ocr_page" title="bbox 0 0 100 100"></div></html>')
+            pages, regions = hocr_text_regions(directory)
+        self.assertEqual(pages, set())
+        self.assertEqual(regions, [])
+
     def test_crop_box_matches_visible_page_and_excludes_hidden_lines(self):
         region, = self.regions([{"crop": "50 100 550 750", "stream":
             "BT /F1 12 Tf 100 700 Td (Owner Sample) Tj ET "

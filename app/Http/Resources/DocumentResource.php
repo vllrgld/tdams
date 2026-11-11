@@ -41,6 +41,7 @@ class DocumentResource extends JsonResource
             'mimeType' => $this->document->mime_type,
             'fileSize' => $this->document->file_size,
             'ocrPdfSize' => $this->document->ocr_pdf_size,
+            'ocrReviewedAt' => $this->document->ocr_status === 'completed' ? $this->document->ocr_reviewed_at?->toIso8601String() : null,
             'ocrTextExcerpt' => $ocrText === '' ? null : Str::limit($ocrText, 600),
             'createdAt' => $this->document->created_at?->toIso8601String(),
             'viewUrl' => route('documents.view', $this->document),

@@ -1,4 +1,5 @@
 import { FileText } from 'lucide-react';
+import OcrReviewBadge from '@/components/documents/ocr/ocr-review-badge';
 import { formatDate, formatFileSize } from '@/lib/document-formatters';
 import type { ArchivedDocument } from '@/types/documents';
 import { DocumentFileName, getPropertyLocation } from './document-view-helpers';
@@ -23,6 +24,7 @@ export default function DocumentListView({
                             'Registered owner',
                             'Lot no.',
                             'Municipality / barangay',
+                            'OCR review',
                             'Date added',
                         ].map((title, index) => (
                             <th
@@ -67,6 +69,12 @@ export default function DocumentListView({
                             </td>
                             <td className="px-3 py-3.5">
                                 {getPropertyLocation(document) || '—'}
+                            </td>
+                            <td className="px-3 py-3.5 whitespace-nowrap text-slate-600 dark:text-neutral-400">
+                                <OcrReviewBadge
+                                    reviewedAt={document.ocrReviewedAt}
+                                    compact
+                                />
                             </td>
                             <td className="px-3 py-3.5 whitespace-nowrap text-slate-600 dark:text-neutral-400">
                                 {formatDate(document.createdAt)}

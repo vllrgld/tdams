@@ -6,7 +6,7 @@ import xml.etree.ElementTree as ET
 from collections.abc import Iterator
 from math import isfinite
 from pathlib import Path
-from typing import TypedDict
+from typing import NotRequired, TypedDict
 
 from pdfminer.converter import PDFPageAggregator
 from pdfminer.layout import LAParams, LTContainer, LTTextLine
@@ -18,12 +18,18 @@ logger = logging.getLogger(__name__)
 BBOX = re.compile(r"\bbbox\s+(-?\d+)\s+(-?\d+)\s+(-?\d+)\s+(-?\d+)")
 
 
+class OcrWord(TypedDict):
+    text: str
+    box: list[float]
+
+
 class OcrRegion(TypedDict):
     page: int
     text: str
-    box: list[float]
+    box: list[float] | None
     pageWidth: float
     pageHeight: float
+    words: NotRequired[list[OcrWord]]
 
 
 def hocr_text_regions(directory: Path) -> tuple[set[int], list[OcrRegion]]:
@@ -48,24 +54,46 @@ def hocr_text_regions(directory: Path) -> tuple[set[int], list[OcrRegion]]:
             if width <= 0 or height <= 0:
                 continue
 
-            pages.add(page_number)
+            page_regions: list[OcrRegion] = []
+
+            def visible_box(value):
+                if value is None:
+                    return None
+                x1, y1, x2, y2 = value
+                result = [max(0.0, x1 - left), max(0.0, y1 - top),
+                          min(width, x2 - left), min(height, y2 - top)]
+                return result if result[2] > result[0] and result[3] > result[1] else None
+
             for line in page.iter():
                 classes = set(line.get("class", "").split())
                 if not classes.intersection({"ocr_line", "ocrx_line", "ocr_header", "ocr_caption", "ocr_textfloat"}):
                     continue
-                box = bbox(line)
-                words = ["".join(word.itertext()).strip() for word in line.iter()
-                         if "ocrx_word" in word.get("class", "").split()]
-                text = " ".join(words).strip()
-                if not text or box is None:
+                elements = [word for word in line.iter()
+                            if "ocrx_word" in word.get("class", "").split()
+                            and "".join(word.itertext()).strip()]
+                words = [{"text": "".join(word.itertext()).strip(),
+                          "box": visible_box(bbox(word))} for word in elements]
+                text = " ".join(word["text"] for word in words) if words else "".join(line.itertext()).strip()
+                if not text:
                     continue
-                x1, y1, x2, y2 = box
-                box = [max(0.0, x1 - left), max(0.0, y1 - top),
-                       min(width, x2 - left), min(height, y2 - top)]
-                if box[2] <= box[0] or box[3] <= box[1]:
-                    continue
-                regions.append({"page": page_number, "text": text, "box": box,
-                                "pageWidth": width, "pageHeight": height})
+                box = visible_box(bbox(line))
+                positioned_words = [word for word in words if word["box"] is not None]
+                if positioned_words:
+                    word_bounds = [min(word["box"][0] for word in positioned_words),
+                                   min(word["box"][1] for word in positioned_words),
+                                   max(word["box"][2] for word in positioned_words),
+                                   max(word["box"][3] for word in positioned_words)]
+                    box = word_bounds if box is None else [min(box[0], word_bounds[0]), min(box[1], word_bounds[1]),
+                                                          max(box[2], word_bounds[2]), max(box[3], word_bounds[3])]
+                region: OcrRegion = {"page": page_number, "text": text, "box": box,
+                                     "pageWidth": width, "pageHeight": height}
+                if words and len(positioned_words) == len(words):
+                    region["words"] = positioned_words
+                page_regions.append(region)
+
+            if page_regions:
+                pages.add(page_number)
+                regions.extend(page_regions)
         except (OSError, ValueError, StopIteration, ET.ParseError):
             logger.exception("Could not read Tesseract text positions")
 

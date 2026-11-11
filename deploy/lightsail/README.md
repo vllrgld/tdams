@@ -43,6 +43,8 @@ For later updates, once the helper is in the live checkout, use `sudo bash deplo
 
 This enables maintenance mode and waits for the current queue job to finish before stopping the worker. It can take up to seven minutes. Leave the OCR service running until the queue has stopped.
 
+Preparation also makes `storage` and `bootstrap/cache` writable by the app directory's owner and the `www-data` group. Keep the app directory owned by your deployment user (normally `ubuntu`) so Git can update tracked files in these directories. The finishing step reapplies the same ownership instead of transferring these directories exclusively to the web server.
+
 ## 3. Copy the latest source and build
 
 If the server has a Git checkout, run as the owner of that checkout:

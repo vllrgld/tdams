@@ -4554,15 +4554,15 @@
     "semantic_hash": ""
   },
   "deploy/lightsail/update.sh": {
-    "mtime": 1794213841.9779477,
-    "seen": 1794213956.6486328,
-    "ast_hash": "fce16100c090df629df92ca47b94d602",
+    "mtime": 1794214085.4527934,
+    "seen": 1794214278.8762183,
+    "ast_hash": "e5c7b906c4e1876b20e578a90546ec0d",
     "semantic_hash": ""
   },
   "deploy/lightsail/README.md": {
-    "mtime": 1794213844.0007968,
-    "seen": 1794213956.6520524,
-    "ast_hash": "0642f7e67c8b68a93f41a26f8207ebaa",
+    "mtime": 1794214257.2369595,
+    "seen": 1794214278.8800013,
+    "ast_hash": "f777a1044d66ecdd137b7576032e4385",
     "semantic_hash": ""
   }
 }

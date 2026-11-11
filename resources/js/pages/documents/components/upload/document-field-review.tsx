@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/select';
 import type { useDocumentUpload } from '@/pages/documents/hooks/use-document-upload';
 import { filled, sectionCanBeChecked } from '../../lib/metadata';
+import { mappingModelLabel } from '../../lib/mapping-models';
 import type {
     DocumentFieldDefinition,
     DocumentFieldSection,
@@ -74,7 +75,7 @@ export default function DocumentFieldReview({
                         }
                         items={mappingModels.map((item) => ({
                             value: item,
-                            label: item,
+                            label: mappingModelLabel(item),
                         }))}
                     >
                         <SelectTrigger
@@ -90,7 +91,7 @@ export default function DocumentFieldReview({
                                     value={item}
                                     className="rounded-none"
                                 >
-                                    {item}
+                                    {mappingModelLabel(item)}
                                 </SelectItem>
                             ))}
                         </SelectContent>
@@ -293,7 +294,7 @@ export default function DocumentFieldReview({
                         updateValue('remarks', event.target.value)
                     }
                     maxLength={remarksField?.maxLength}
-                    rows={3}
+                    rows={8}
                     className="w-full min-w-0 rounded-none border border-input bg-background px-3 py-2 text-sm shadow-xs outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
                 />
                 <InputError message={fieldErrors.remarks} />

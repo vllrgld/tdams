@@ -14,6 +14,7 @@ import DocumentListView from './document-list-view';
 import DocumentPagination from './document-pagination';
 import DocumentPreviewView from './document-preview-view';
 import DocumentSortMenu from './document-sort-menu';
+import DocumentOcrFilter from './document-ocr-filter';
 import DocumentChain from '@/components/documents/history/document-chain';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
@@ -36,6 +37,7 @@ import type {
     DocumentSortField,
     DocumentSortFilters,
     SearchFieldOption,
+    DocumentOcrReviewFilter,
 } from '../../types';
 
 const SEARCH_DEBOUNCE_MS = 300;
@@ -49,6 +51,7 @@ type DocumentBrowserProps = {
     documents: DocumentsPageProps['documents'];
     searchQuery: string;
     searchField: string;
+    ocrReview?: DocumentOcrReviewFilter;
     dateFilters: DocumentDateFilters;
     sortDirection: DocumentSortDirection;
     sortField: DocumentSortField;
@@ -62,6 +65,7 @@ export default function DocumentBrowser({
     documents,
     searchQuery,
     searchField,
+    ocrReview: initialOcrReview = 'all',
     dateFilters: initialDateFilters,
     sortDirection,
     sortField,
@@ -72,6 +76,8 @@ export default function DocumentBrowser({
 }: DocumentBrowserProps) {
     const [query, setQuery] = useState(searchQuery);
     const [field, setField] = useState(searchField);
+    const [ocrReview, setOcrReview] = useState(initialOcrReview);
+    useEffect(() => setOcrReview(initialOcrReview), [initialOcrReview]);
     const {
         declaration_date_from: declarationDateFrom,
         declaration_date_to: declarationDateTo,
@@ -147,10 +153,14 @@ export default function DocumentBrowser({
         dateAddedTo,
     );
     const documentCount = `${documents.total.toLocaleString()} ${documents.total === 1 ? 'document' : 'documents'}`;
-    const paginationDisabled = isSearching || query.trim() !== searchQuery;
+    const paginationDisabled =
+        isSearching ||
+        query.trim() !== searchQuery ||
+        ocrReview !== initialOcrReview;
     const hasFilters = Boolean(
         query.trim() ||
         field !== 'all' ||
+        ocrReview !== 'all' ||
         dateFilters.declaration_date_from ||
         dateFilters.declaration_date_to ||
         dateFilters.date_added_from ||
@@ -185,6 +195,7 @@ export default function DocumentBrowser({
         page?: number,
         nextDirection = direction,
         nextSort = sort,
+        nextOcrReview = ocrReview,
     ) {
         const q = nextQuery.trim();
         const nextNormalizedField = nextField === '' ? 'all' : nextField;
@@ -197,6 +208,7 @@ export default function DocumentBrowser({
             nextNormalizedField === currentField &&
             nextDirection === sortDirection &&
             nextSort === sortField &&
+            nextOcrReview === initialOcrReview &&
             nextDates.declaration_date_from === declarationDateFrom &&
             nextDates.declaration_date_to === declarationDateTo &&
             nextDates.date_added_from === dateAddedFrom &&
@@ -233,6 +245,7 @@ export default function DocumentBrowser({
         if (page !== undefined && page > 1) params.page = String(page);
         if (nextDirection !== 'desc') params.direction = nextDirection;
         if (nextSort !== 'created_at') params.sort = nextSort;
+        if (nextOcrReview !== 'all') params.ocr_review = nextOcrReview;
 
         const visit = Symbol();
         activeSearchRef.current = visit;
@@ -309,8 +322,23 @@ export default function DocumentBrowser({
         };
         setQuery('');
         setField('all');
+        setOcrReview('all');
         setDateFilters(dates);
-        visitSearch('', 'all', dates);
+        visitSearch('', 'all', dates, undefined, direction, sort, 'all');
+    }
+
+    function changeOcrReview(value: DocumentOcrReviewFilter) {
+        clearDebounce();
+        setOcrReview(value);
+        visitSearch(
+            query,
+            field,
+            dateFilters,
+            undefined,
+            direction,
+            sort,
+            value,
+        );
     }
 
     function submitSearch(event: FormEvent<HTMLFormElement>) {
@@ -406,6 +434,10 @@ export default function DocumentBrowser({
                         value={dateFilters}
                         onApply={applyDateFilters}
                     />
+                    <DocumentOcrFilter
+                        value={ocrReview}
+                        onChange={changeOcrReview}
+                    />
                     <div
                         role="group"
                         aria-label="Document view"
@@ -441,7 +473,7 @@ export default function DocumentBrowser({
                         variant="outline"
                         disabled={!hasFilters}
                         onClick={clearFilters}
-                        className="h-[31px] shrink-0 gap-2 border-blue-900 bg-white px-2.5 text-[13px] font-normal text-blue-900 shadow-none hover:bg-blue-900 hover:text-white focus-visible:border-blue-900 focus-visible:ring-blue-900/20 dark:bg-neutral-900 dark:text-white dark:hover:bg-blue-900 dark:focus-visible:ring-white/50"
+                        className="h-[31px] shrink-0 gap-1.5 border-blue-900 bg-white px-2.5 text-[13px] font-normal text-blue-900 shadow-none hover:bg-blue-900 hover:text-white focus-visible:border-blue-900 focus-visible:ring-blue-900/20 has-[>svg]:px-2.5 dark:bg-neutral-900 dark:text-white dark:hover:bg-blue-900 dark:focus-visible:ring-white/50"
                     >
                         <FilterX aria-hidden="true" className="size-4" />
                         Clear filters
@@ -502,13 +534,17 @@ export default function DocumentBrowser({
                         <span className="mb-4 flex size-12 items-center justify-center bg-blue-50 text-blue-900 dark:bg-blue-950 dark:text-white">
                             <FileSearch aria-hidden="true" className="size-6" />
                         </span>
-                        {searchQuery !== '' || hasDateFilters ? (
+                        {searchQuery !== '' ||
+                        hasDateFilters ||
+                        initialOcrReview !== 'all' ? (
                             <>
                                 <h2 className="text-base font-semibold text-slate-950 dark:text-white">
                                     No matching documents
                                 </h2>
                                 <p className="mt-1 max-w-md text-sm text-slate-600 dark:text-neutral-400">
-                                    {hasDateFilters ? (
+                                    {initialOcrReview !== 'all' ? (
+                                        'No documents match these filters. Choose a different OCR review status or clear the filters.'
+                                    ) : hasDateFilters ? (
                                         'No documents match these filters. Try a different date range or clear the date filter.'
                                     ) : (
                                         <>

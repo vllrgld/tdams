@@ -6,7 +6,7 @@ import {
     ZoomIn,
     ZoomOut,
 } from 'lucide-react';
-import type { Dispatch, SetStateAction } from 'react';
+import type { Dispatch, ReactNode, SetStateAction } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -17,6 +17,7 @@ export default function PdfViewerControls({
     onPageChange,
     onZoomChange,
     onFitPage,
+    extraControls,
     label = 'PDF viewer',
 }: {
     pageNumber: number;
@@ -25,6 +26,7 @@ export default function PdfViewerControls({
     onPageChange: (page: number) => void;
     onZoomChange: Dispatch<SetStateAction<number>>;
     onFitPage?: () => void;
+    extraControls?: ReactNode;
     label?: string;
 }) {
     return (
@@ -86,7 +88,7 @@ export default function PdfViewerControls({
                 </Button>
             </div>
 
-            <div className="flex items-center gap-1">
+            <div className="flex flex-wrap items-center gap-1">
                 <Button
                     type="button"
                     variant="outline"
@@ -153,6 +155,7 @@ export default function PdfViewerControls({
                         Fit page
                     </Button>
                 )}
+                {extraControls}
             </div>
         </div>
     );

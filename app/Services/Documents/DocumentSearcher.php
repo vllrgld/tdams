@@ -25,11 +25,20 @@ class DocumentSearcher
         string $dateTimezone = 'UTC',
         string $sort = 'created_at',
         string $direction = 'desc',
+        string $ocrReview = 'all',
     ): LengthAwarePaginator {
         $query = Document::query()->with(Document::archiveRelations());
 
         if ($search !== '') {
             $query->search($search, $field);
+        }
+
+        if ($ocrReview === 'reviewed') {
+            $query->where('ocr_status', 'completed')->whereNotNull('ocr_reviewed_at');
+        } elseif ($ocrReview === 'unreviewed') {
+            $query->where(function (Builder $review): void {
+                $review->whereNull('ocr_reviewed_at')->orWhere('ocr_status', '!=', 'completed');
+            });
         }
 
         if ($dateFrom !== '' || $dateTo !== '') {

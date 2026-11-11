@@ -105,6 +105,15 @@ systemctl daemon-reload
 sudo -u www-data php artisan down --render="errors::503" --retry=60
 systemctl stop dtms-queue.service
 
+set_runtime_permissions() {
+    local deploy_uid
+    deploy_uid="$(stat -c '%u' "${APP_DIR}")"
+    chown -R "${deploy_uid}:www-data" storage bootstrap/cache
+    chmod -R ug+rwX storage bootstrap/cache
+}
+
+set_runtime_permissions
+
 if ${PREPARE_ONLY}; then
     echo "Maintenance enabled and queue stopped. Copy the new code and public/build now."
     echo "Then run: sudo bash deploy/lightsail/update.sh (add --ocr if services/ocr changed)."
@@ -128,8 +137,8 @@ if ${UPDATE_OCR}; then
         --max-time 5 http://127.0.0.1:8001/health
 fi
 
-chown -R www-data:www-data storage bootstrap/cache public/build
-chmod -R ug+rwX storage bootstrap/cache
+chown -R www-data:www-data public/build
+set_runtime_permissions
 sudo -u www-data php artisan migrate --force --no-interaction
 if [[ ! -e public/storage && ! -L public/storage ]]; then
     sudo -u www-data php artisan storage:link

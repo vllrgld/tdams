@@ -19,7 +19,11 @@ class DocumentUploadOptionsTest extends TestCase
             'kind' => 'folder',
             'cover_title' => 'Property Records',
         ]);
-        config(['services.ollama.models' => ['test-model']]);
+        config([
+            'services.ollama.models' => ['test-model'],
+            'services.groq.models' => ['groq-test'],
+            'services.bedrock.models' => ['bedrock-test'],
+        ]);
 
         $this->actingAs($user)->getJson(route('documents.upload-options'))
             ->assertOk()
@@ -27,7 +31,7 @@ class DocumentUploadOptionsTest extends TestCase
             ->assertJsonPath('archive.0.drawers.0.books.0.label', 'Property files')
             ->assertJsonPath('archive.0.drawers.0.books.0.kind', 'folder')
             ->assertJsonPath('archive.0.drawers.0.books.0.coverTitle', 'Property Records')
-            ->assertJsonPath('mappingModels', ['test-model'])
+            ->assertJsonPath('mappingModels', ['test-model', 'groq-test', 'bedrock-test'])
             ->assertJsonPath('fieldSections.0.id', 'declaration')
             ->assertJsonMissingPath('documents')
             ->assertJsonMissingPath('component');

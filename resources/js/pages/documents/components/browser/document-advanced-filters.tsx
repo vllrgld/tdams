@@ -107,7 +107,7 @@ export default function DocumentAdvancedFilters({
                 }
                 title={summary || 'Filter by declaration date and date added'}
                 className={cn(
-                    'h-[31px] max-w-full min-w-0 shrink-0 gap-2 border-blue-900 px-2.5 text-[13px] font-normal shadow-none hover:bg-blue-900 hover:text-white focus-visible:border-blue-900 focus-visible:ring-blue-900/20 dark:hover:bg-blue-900 dark:hover:text-white dark:focus-visible:ring-white/50',
+                    'h-[31px] max-w-full min-w-0 shrink-0 gap-1.5 border-blue-900 px-2.5 text-[13px] font-normal shadow-none hover:bg-blue-900 hover:text-white focus-visible:border-blue-900 focus-visible:ring-blue-900/20 has-[>svg]:px-2.5 dark:hover:bg-blue-900 dark:hover:text-white dark:focus-visible:ring-white/50',
                     activeRanges.length > 0
                         ? 'bg-blue-900 text-white dark:bg-blue-900'
                         : 'bg-white text-blue-900 dark:bg-neutral-900 dark:text-white',

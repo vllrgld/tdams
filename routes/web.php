@@ -25,6 +25,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('documents/declaration-numbers', [DocumentLinkController::class, 'index'])->name('documents.declaration-numbers');
     Route::get('documents/{document}/history', [DocumentLinkController::class, 'history'])->name('documents.history');
     Route::get('documents/{document}/ocr', [DocumentOcrController::class, 'show'])->name('documents.ocr');
+    Route::patch('documents/{document}/ocr/review', [DocumentOcrController::class, 'review'])->name('documents.ocr.review');
+    Route::patch('documents/{document}/ocr/regions/{region}', [DocumentOcrController::class, 'update'])->whereNumber('region')->name('documents.ocr.regions.update');
     Route::post('documents/{document}/ocr/retry', [DocumentOcrController::class, 'retry'])->name('documents.ocr.retry');
     Route::post('documents/{document}/map', [DocumentFieldsController::class, 'map'])->name('documents.map');
     Route::put('documents/{document}/fields', [DocumentFieldsController::class, 'update'])->name('documents.fields');

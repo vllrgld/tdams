@@ -12,6 +12,7 @@ type DeclarationNumberSearchProps = {
     excludeNumber?: string | null;
     maxLength?: number;
     disabled?: boolean;
+    'aria-describedby'?: string;
 };
 
 export default function DeclarationNumberSearch({
@@ -22,6 +23,7 @@ export default function DeclarationNumberSearch({
     excludeNumber,
     maxLength = 100,
     disabled = false,
+    'aria-describedby': describedBy,
 }: DeclarationNumberSearchProps) {
     const listboxId = useId();
     const rootRef = useRef<HTMLDivElement>(null);
@@ -133,6 +135,7 @@ export default function DeclarationNumberSearch({
     return (
         <div ref={rootRef} className="relative">
             <Input
+                aria-describedby={describedBy}
                 id={id}
                 role="combobox"
                 aria-autocomplete="list"

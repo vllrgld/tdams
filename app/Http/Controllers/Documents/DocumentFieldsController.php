@@ -6,8 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Documents\SaveDocumentFieldsRequest;
 use App\Http\Resources\DocumentResource;
 use App\Models\Document;
+use App\Services\Documents\DocumentFieldMapper;
 use App\Services\Documents\DocumentWriter;
-use App\Services\Ollama\OllamaClient;
+use App\Services\Ocr\OcrContentParser;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -16,11 +17,10 @@ use RuntimeException;
 
 class DocumentFieldsController extends Controller
 {
-    public function map(Request $request, Document $document, OllamaClient $client): JsonResponse
+    public function map(Request $request, Document $document, DocumentFieldMapper $mapper, OcrContentParser $parser): JsonResponse
     {
-        $models = config('services.ollama.models');
         $validated = $request->validate([
-            'model' => ['required', 'string', Rule::in(is_array($models) ? $models : [])],
+            'model' => ['required', 'string', Rule::in($mapper->models())],
         ]);
 
         if ($document->ocr_status !== 'completed' || ! is_string($document->ocr_text) || trim($document->ocr_text) === '') {
@@ -30,7 +30,7 @@ class DocumentFieldsController extends Controller
         }
 
         try {
-            $fields = $client->mapFields($validated['model'], $document->ocr_text);
+            $fields = $mapper->mapFields($validated['model'], $parser->mappingText($document->ocr_text, $document->ocr_regions));
         } catch (RuntimeException $exception) {
             throw ValidationException::withMessages([
                 'model' => $exception->getMessage(),

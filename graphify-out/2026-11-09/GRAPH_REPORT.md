@@ -1,7 +1,7 @@
 # Graph Report - dtms  (2026-11-09)
 
 ## Corpus Check
-- 426 files · ~763,326 words
+- 426 files · ~763,462 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 52 file(s) not represented in the graph (top: (none) 16, .csv 16, .css 5)
 
@@ -780,7 +780,7 @@ Nodes (17): FADE_PICKUP_HOLD_MS, useFilingItemTransition(), useArchiveAnimations
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `SKILL.md (design-system)` connect `generate-tokens.cjs` to `component-tokens.md`, `Brand Context Sync`, `Token Architecture Layers`, `Token Usage Validator`, `pathlib`?**
-  _High betweenness centrality (0.024) - this node is a cross-community bridge._
+  _High betweenness centrality (0.025) - this node is a cross-community bridge._
 - **What connects `DEBIAN_FRONTEND`, `DEBIAN_FRONTEND`, `COMPOSER_MEMORY_LIMIT` to the rest of the system?**
   _112 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Button` be split into smaller, more focused modules?**

@@ -1,71 +1,68 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { memo, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
+import type { PDFDocumentProxy } from 'pdfjs-dist';
+import { Image, ImageOff } from 'lucide-react';
 import type { PdfViewport } from '@/components/pdf/pdf-preview';
 import PdfViewerControls from '@/components/pdf/pdf-viewer-controls';
-import { useDragToPan } from '@/hooks/use-drag-to-pan';
+import PannableViewport from '@/components/pdf/pannable-viewport';
+import { Button } from '@/components/ui/button';
 import { usePdfPageScale } from '@/components/pdf/use-pdf-page-scale';
 import { cn } from '@/lib/utils';
-import type { OcrRegion } from './document-ocr-panel';
+import OcrContent from './ocr-content';
+import OcrPageBackground from './ocr-page-background';
+import OcrRegionControl from './ocr-region-control';
+import {
+    contentText,
+    displayOcrText,
+    hasPosition,
+    wordPositions,
+} from './ocr-content-data';
+import type { OcrContentBlock, OcrRegion } from './ocr-content-data';
 
 type Props = {
     documentId: number;
     pdfViewport?: PdfViewport | null;
+    pdfDocument?: PDFDocumentProxy | null;
+    imageUrl?: string;
     regions: OcrRegion[];
     pages: string[];
+    pageContents?: OcrContentBlock[][];
     selectedRegion: number | null;
+    hoveredRegion?: number | null;
     onSelectRegion?: (index: number) => void;
+    onHoverRegion?: (index: number | null) => void;
+    onCorrectRegion?: (index: number) => void;
     loading?: boolean;
     status?: ReactNode;
 };
 
-function hasPosition(region: OcrRegion): boolean {
-    const { box, pageWidth, pageHeight } = region;
-    return (
-        !!box &&
-        box.length === 4 &&
-        box.every(Number.isFinite) &&
-        Number.isFinite(pageWidth) &&
-        Number.isFinite(pageHeight) &&
-        (pageWidth ?? 0) > 0 &&
-        (pageHeight ?? 0) > 0 &&
-        box[0] >= 0 &&
-        box[1] >= 0 &&
-        box[2] > box[0] &&
-        box[3] > box[1] &&
-        box[2] <= pageWidth! &&
-        box[3] <= pageHeight!
-    );
-}
-
-function PositionedText({
-    id,
+function FittedContent({
     text,
+    content,
     width,
     height,
-    scale,
+    ready,
     singleLine,
-    selected,
-    onSelect,
 }: {
-    id: string;
     text: string;
+    content?: OcrContentBlock[];
     width: number;
     height: number;
-    scale: number;
+    ready: boolean;
     singleLine: boolean;
-    selected: boolean;
-    onSelect: () => void;
 }) {
-    const textRef = useRef<HTMLSpanElement>(null);
+    const textRef = useRef<HTMLDivElement>(null);
     useLayoutEffect(() => {
         const element = textRef.current;
-        if (!element) return;
+        if (!element || !ready) return;
         const fit = () => {
             if (element.getBoundingClientRect().width === 0) return;
             // scroll sizes round to whole pixels and omit glyphs outside the
             // line box. Measure actual text, in the SVG's scaled coordinates.
             const range = document.createRange();
             range.selectNodeContents(element);
+            const cellRange = document.createRange();
+            const cells = Array.from(element.querySelectorAll('td, th'));
             let low = 0.1;
             let high = height / 1.15;
             const fits = (size: number) => {
@@ -77,7 +74,27 @@ function PositionedText({
                 const top = Math.max(0, bounds.top - textBounds.top);
                 element.style.paddingTop = `${scaleY > 0 ? top / scaleY + 0.05 : 0}px`;
                 const adjusted = range.getBoundingClientRect();
+                const scaleX = bounds.width / width;
+                const cellsFit = cells.every((cell) => {
+                    const cellBounds = cell.getBoundingClientRect();
+                    const style = getComputedStyle(cell);
+                    cellRange.selectNodeContents(cell);
+                    return Array.from(cellRange.getClientRects()).every(
+                        (rect) =>
+                            rect.left >=
+                                cellBounds.left +
+                                    parseFloat(style.paddingLeft) * scaleX -
+                                    0.1 &&
+                            rect.right <=
+                                cellBounds.right -
+                                    parseFloat(style.paddingRight) * scaleX +
+                                    0.1 &&
+                            rect.top >= cellBounds.top - 0.1 &&
+                            rect.bottom <= cellBounds.bottom + 0.1,
+                    );
+                });
                 return (
+                    cellsFit &&
                     adjusted.left >= bounds.left - 0.1 &&
                     adjusted.right <= bounds.right + 0.1 &&
                     adjusted.top >= bounds.top - 0.1 &&
@@ -95,48 +112,140 @@ function PositionedText({
         // The app font can finish loading after the initial measurement.
         document.fonts.addEventListener('loadingdone', fit);
         return () => document.fonts.removeEventListener('loadingdone', fit);
-    }, [height, scale, singleLine, text, width]);
+    }, [content, height, ready, singleLine, text, width]);
     return (
-        <button
-            id={id}
-            data-pan-region
-            type="button"
-            aria-label={text}
-            aria-pressed={selected}
-            onClick={onSelect}
-            className={`relative block size-full cursor-pointer overflow-hidden border-0 p-0 text-left align-top text-slate-950 outline-1 -outline-offset-1 selection:bg-blue-200 focus-visible:outline-2 focus-visible:outline-blue-900 ${selected ? 'bg-blue-100 outline-blue-900' : 'bg-transparent outline-blue-900/25 hover:bg-blue-50 hover:outline-blue-900'}`}
+        <div
+            ref={textRef}
+            className={cn(
+                'absolute inset-0 block size-full font-sans leading-[1.15]',
+                singleLine
+                    ? 'whitespace-pre'
+                    : 'wrap-anywhere whitespace-pre-wrap',
+            )}
+            style={{ fontSize: Math.max(0.1, height / 1.15) }}
         >
-            <span
-                ref={textRef}
-                className={cn(
-                    'absolute inset-0 block size-full font-sans leading-[1.15]',
-                    singleLine
-                        ? 'whitespace-pre'
-                        : 'wrap-anywhere whitespace-pre-wrap',
-                )}
-                style={{ fontSize: Math.max(0.1, height / 1.15) }}
-            >
-                {singleLine ? text.replace(/\r?\n/g, ' ') : text}
-            </span>
-        </button>
+            {content ? (
+                <OcrContent content={content} fill />
+            ) : singleLine ? (
+                displayOcrText(text.replace(/\r?\n/g, ' '))
+            ) : (
+                displayOcrText(text)
+            )}
+        </div>
     );
 }
+
+const PositionedText = memo(function PositionedText({
+    id,
+    index,
+    region,
+    width,
+    height,
+    ready,
+    selected,
+    highlighted,
+    overDocument,
+    onSelect,
+    onHover,
+    onCorrect,
+}: {
+    id: string;
+    index: number;
+    region: OcrRegion;
+    width: number;
+    height: number;
+    ready: boolean;
+    selected: boolean;
+    highlighted: boolean;
+    overDocument: boolean;
+    onSelect?: (index: number) => void;
+    onHover?: (index: number | null) => void;
+    onCorrect?: (index: number) => void;
+}) {
+    const words = wordPositions(region);
+    return (
+        <div
+            data-pan-region
+            className={cn(
+                'relative block size-full overflow-hidden text-left outline-1 -outline-offset-1 selection:bg-blue-200 selection:text-slate-950',
+                overDocument ? 'text-slate-950' : 'text-foreground',
+                highlighted
+                    ? overDocument
+                        ? 'bg-blue-100/70 outline-blue-900'
+                        : 'bg-blue-100 outline-blue-900 dark:bg-blue-900 dark:text-white'
+                    : overDocument
+                      ? 'bg-white/70 outline-blue-900/25 hover:bg-blue-50/80 hover:outline-blue-900'
+                      : 'bg-transparent outline-blue-900/25 hover:bg-blue-50 hover:outline-blue-900 dark:hover:bg-blue-900 dark:hover:text-white',
+            )}
+        >
+            {words.length > 0 ? (
+                words.map((word, index) => (
+                    <div
+                        key={index}
+                        className="absolute"
+                        style={{
+                            left: `${word.left * 100}%`,
+                            top: `${word.top * 100}%`,
+                            width: `${word.width * 100}%`,
+                            height: `${word.height * 100}%`,
+                        }}
+                    >
+                        <FittedContent
+                            text={word.text}
+                            width={width * word.width}
+                            height={height * word.height}
+                            ready={ready}
+                            singleLine
+                        />
+                    </div>
+                ))
+            ) : (
+                <FittedContent
+                    text={region.text}
+                    content={region.content}
+                    width={width}
+                    height={height}
+                    ready={ready}
+                    singleLine={region.kind === 'line'}
+                />
+            )}
+            <OcrRegionControl
+                id={id}
+                index={index}
+                label={contentText(region.content, region.text)}
+                selected={selected}
+                onHover={onHover}
+                onSelect={onSelect}
+                onCorrect={onCorrect}
+            />
+        </div>
+    );
+});
 
 export default function OcrPageLayout({
     documentId,
     pdfViewport,
+    pdfDocument,
+    imageUrl,
     regions,
     pages,
+    pageContents,
     selectedRegion,
+    hoveredRegion = null,
     onSelectRegion,
+    onHoverRegion,
+    onCorrectRegion,
     loading = false,
     status,
 }: Props) {
     const viewerRef = useRef<HTMLDivElement>(null);
     const [width, setWidth] = useState(0);
     const [height, setHeight] = useState(0);
-    const { panning, panHandlers } = useDragToPan();
+    const [showBackground, setShowBackground] = useState(true);
     const [pageNumber, setPageNumber] = useState(1);
+    useEffect(() => {
+        setShowBackground(true);
+    }, [documentId]);
     const goToPage = (page: number) => {
         setPageNumber(page);
         viewerRef.current
@@ -232,17 +341,62 @@ export default function OcrPageLayout({
                 onPageChange={goToPage}
                 onZoomChange={onZoomChange}
                 onFitPage={onFitPage}
+                extraControls={
+                    <>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            aria-label={
+                                showBackground
+                                    ? 'Hide document background'
+                                    : 'Show document background'
+                            }
+                            title={
+                                showBackground
+                                    ? 'Hide document background'
+                                    : 'Show document background'
+                            }
+                            aria-pressed={showBackground}
+                            disabled={
+                                Boolean(status) ||
+                                !(pdfDocument || imageUrl) ||
+                                !regions.some(hasPosition)
+                            }
+                            onClick={() =>
+                                setShowBackground((current) => !current)
+                            }
+                            className="size-8 rounded-none bg-white text-black hover:bg-slate-100 hover:text-black dark:bg-white dark:text-black dark:hover:bg-slate-100 dark:hover:text-black"
+                        >
+                            <span
+                                className="relative size-4"
+                                aria-hidden="true"
+                            >
+                                <Image
+                                    className={cn(
+                                        'absolute inset-0 size-4 transition-[opacity,transform] duration-150 ease-out motion-reduce:transition-none',
+                                        showBackground
+                                            ? 'scale-100 opacity-100'
+                                            : 'scale-75 opacity-0',
+                                    )}
+                                />
+                                <ImageOff
+                                    className={cn(
+                                        'absolute inset-0 size-4 transition-[opacity,transform] duration-150 ease-out motion-reduce:transition-none',
+                                        showBackground
+                                            ? 'scale-75 opacity-0'
+                                            : 'scale-100 opacity-100',
+                                    )}
+                                />
+                            </span>
+                        </Button>
+                    </>
+                }
             />
             <div className="relative flex min-h-0 flex-1 flex-col">
-                <div
-                    ref={viewerRef}
-                    {...panHandlers}
-                    className={cn(
-                        'relative min-h-0 flex-1 touch-none overflow-auto bg-slate-200 p-2 select-none dark:bg-neutral-900',
-                        panning
-                            ? 'cursor-grabbing [&_button]:cursor-grabbing'
-                            : 'cursor-grab [&_button]:cursor-grab',
-                    )}
+                <PannableViewport
+                    viewerRef={viewerRef}
+                    className="bg-slate-200 p-2 dark:bg-neutral-900"
                 >
                     <div className="flex w-max min-w-full flex-col items-center gap-4">
                         {pageNumbers.map((page) => {
@@ -256,11 +410,17 @@ export default function OcrPageLayout({
                                 ({ region }) => !hasPosition(region),
                             );
                             const size = positioned[0]?.region;
+                            const hasPageBackground = Boolean(
+                                pdfDocument || (imageUrl && page === 1),
+                            );
+                            const overDocument =
+                                !showBackground || hasPageBackground;
                             const pageText =
-                                pages[page - 1]?.trim() ||
+                                pages[page - 1] ||
                                 entries
                                     .map(({ region }) => region.text)
                                     .join('\n');
+                            const fullContent = pageContents?.[page - 1];
                             const pdfSize = pdfViewport?.pages[page];
                             const aspectRatio = pdfSize
                                 ? pdfSize.height / pdfSize.width
@@ -284,98 +444,140 @@ export default function OcrPageLayout({
                                     {status ? (
                                         <div
                                             aria-hidden="true"
-                                            className="bg-white"
+                                            className="bg-transparent"
                                             style={{ height: pageHeight }}
                                         />
                                     ) : size ? (
-                                        <svg
-                                            viewBox={`0 0 ${size.pageWidth} ${size.pageHeight}`}
-                                            width={pageWidth}
-                                            height={pageHeight}
-                                            preserveAspectRatio="none"
-                                            role="group"
-                                            aria-label={`Positioned OCR text on page ${page}`}
-                                            className="block bg-white"
+                                        <div
+                                            className={cn(
+                                                'relative isolate',
+                                                overDocument &&
+                                                    'bg-white shadow-lg',
+                                            )}
                                         >
-                                            {positioned.map(
-                                                ({ region, index }) => {
-                                                    const [x1, y1, x2, y2] =
-                                                        region.box!;
-                                                    // Normalize to page coordinates before SVG scales both text and boxes.
-                                                    const x =
-                                                        (x1 /
-                                                            region.pageWidth!) *
-                                                        size.pageWidth!;
-                                                    const y =
-                                                        (y1 /
-                                                            region.pageHeight!) *
-                                                        size.pageHeight!;
-                                                    const boxWidth =
-                                                        ((x2 - x1) /
-                                                            region.pageWidth!) *
-                                                        size.pageWidth!;
-                                                    const boxHeight =
-                                                        ((y2 - y1) /
-                                                            region.pageHeight!) *
-                                                        size.pageHeight!;
-                                                    return (
-                                                        <foreignObject
-                                                            key={index}
-                                                            x={x}
-                                                            y={y}
-                                                            width={boxWidth}
-                                                            height={boxHeight}
-                                                        >
-                                                            <PositionedText
-                                                                id={`ocr-region-${documentId}-${index}`}
-                                                                text={
-                                                                    region.text
-                                                                }
+                                            {showBackground &&
+                                                hasPageBackground && (
+                                                    <OcrPageBackground
+                                                        pdfDocument={
+                                                            pdfDocument
+                                                        }
+                                                        imageUrl={imageUrl}
+                                                        pageNumber={page}
+                                                        sourceWidth={
+                                                            size.pageWidth!
+                                                        }
+                                                        viewerRef={viewerRef}
+                                                    />
+                                                )}
+                                            <svg
+                                                viewBox={`0 0 ${size.pageWidth} ${size.pageHeight}`}
+                                                width={pageWidth}
+                                                height={pageHeight}
+                                                preserveAspectRatio="none"
+                                                role="group"
+                                                aria-label={`Positioned OCR text on page ${page}`}
+                                                className="relative block bg-transparent"
+                                            >
+                                                {positioned.map(
+                                                    ({ region, index }) => {
+                                                        const [x1, y1, x2, y2] =
+                                                            region.box!;
+                                                        // Normalize to page coordinates before SVG scales both text and boxes.
+                                                        const x =
+                                                            (x1 /
+                                                                region.pageWidth!) *
+                                                            size.pageWidth!;
+                                                        const y =
+                                                            (y1 /
+                                                                region.pageHeight!) *
+                                                            size.pageHeight!;
+                                                        const boxWidth =
+                                                            ((x2 - x1) /
+                                                                region.pageWidth!) *
+                                                            size.pageWidth!;
+                                                        const boxHeight =
+                                                            ((y2 - y1) /
+                                                                region.pageHeight!) *
+                                                            size.pageHeight!;
+                                                        return (
+                                                            <foreignObject
+                                                                key={index}
+                                                                x={x}
+                                                                y={y}
                                                                 width={boxWidth}
                                                                 height={
                                                                     boxHeight
                                                                 }
-                                                                scale={
-                                                                    pageWidth /
-                                                                    size.pageWidth!
-                                                                }
-                                                                singleLine={
-                                                                    region.kind ===
-                                                                    'line'
-                                                                }
-                                                                selected={
-                                                                    selectedRegion ===
-                                                                    index
-                                                                }
-                                                                onSelect={() =>
-                                                                    onSelectRegion?.(
-                                                                        index,
-                                                                    )
-                                                                }
-                                                            />
-                                                        </foreignObject>
-                                                    );
-                                                },
-                                            )}
-                                        </svg>
+                                                            >
+                                                                <PositionedText
+                                                                    id={`ocr-region-${documentId}-${index}`}
+                                                                    index={
+                                                                        index
+                                                                    }
+                                                                    region={
+                                                                        region
+                                                                    }
+                                                                    width={
+                                                                        boxWidth
+                                                                    }
+                                                                    height={
+                                                                        boxHeight
+                                                                    }
+                                                                    ready={
+                                                                        pageWidth >
+                                                                        1
+                                                                    }
+                                                                    selected={
+                                                                        selectedRegion ===
+                                                                        index
+                                                                    }
+                                                                    highlighted={
+                                                                        (hoveredRegion ??
+                                                                            selectedRegion) ===
+                                                                        index
+                                                                    }
+                                                                    overDocument={
+                                                                        overDocument
+                                                                    }
+                                                                    onSelect={
+                                                                        onSelectRegion
+                                                                    }
+                                                                    onHover={
+                                                                        onHoverRegion
+                                                                    }
+                                                                    onCorrect={
+                                                                        onCorrectRegion
+                                                                    }
+                                                                />
+                                                            </foreignObject>
+                                                        );
+                                                    },
+                                                )}
+                                            </svg>
+                                        </div>
                                     ) : (
                                         <div
-                                            className="overflow-auto bg-white p-4 text-sm text-slate-950"
+                                            className="overflow-auto bg-transparent p-4 text-sm text-foreground"
                                             style={{ height: pageHeight }}
                                         >
-                                            <p className="mb-3 text-xs text-slate-600">
+                                            <p className="mb-3 text-xs text-muted-foreground">
                                                 Page positions are unavailable
                                                 for this OCR result.
                                             </p>
-                                            <p
+                                            <div
                                                 className="whitespace-pre-wrap select-text"
                                                 onPointerDown={(event) =>
                                                     event.stopPropagation()
                                                 }
                                             >
-                                                {pageText ||
-                                                    'No recognized text on this page.'}
-                                            </p>
+                                                <OcrContent
+                                                    content={fullContent}
+                                                    text={
+                                                        pageText ||
+                                                        'No recognized text on this page.'
+                                                    }
+                                                />
+                                            </div>
                                         </div>
                                     )}
                                     {!status &&
@@ -387,24 +589,41 @@ export default function OcrPageLayout({
                                                 </p>
                                                 {unpositioned.map(
                                                     ({ region, index }) => (
-                                                        <button
+                                                        <div
                                                             key={index}
                                                             data-pan-region
-                                                            id={`ocr-region-${documentId}-${index}`}
-                                                            type="button"
-                                                            aria-pressed={
-                                                                selectedRegion ===
-                                                                index
-                                                            }
-                                                            onClick={() =>
-                                                                onSelectRegion?.(
-                                                                    index,
-                                                                )
-                                                            }
-                                                            className={`block w-full border p-3 text-left text-sm whitespace-pre-wrap text-foreground focus-visible:outline-2 focus-visible:outline-blue-700 ${selectedRegion === index ? 'border-blue-900 bg-blue-100 dark:bg-blue-900 dark:text-white' : 'border-border bg-card'}`}
+                                                            className={`relative block w-full border p-3 text-left text-sm whitespace-pre-wrap text-foreground ${(hoveredRegion ?? selectedRegion) === index ? 'border-blue-900 bg-blue-100 dark:bg-blue-900 dark:text-white' : 'border-border bg-transparent'}`}
                                                         >
-                                                            {region.text}
-                                                        </button>
+                                                            <OcrContent
+                                                                content={
+                                                                    region.content
+                                                                }
+                                                                text={
+                                                                    region.text
+                                                                }
+                                                            />
+                                                            <OcrRegionControl
+                                                                id={`ocr-region-${documentId}-${index}`}
+                                                                index={index}
+                                                                label={contentText(
+                                                                    region.content,
+                                                                    region.text,
+                                                                )}
+                                                                selected={
+                                                                    selectedRegion ===
+                                                                    index
+                                                                }
+                                                                onSelect={
+                                                                    onSelectRegion
+                                                                }
+                                                                onHover={
+                                                                    onHoverRegion
+                                                                }
+                                                                onCorrect={
+                                                                    onCorrectRegion
+                                                                }
+                                                            />
+                                                        </div>
                                                     ),
                                                 )}
                                             </div>
@@ -413,7 +632,7 @@ export default function OcrPageLayout({
                             );
                         })}
                     </div>
-                </div>
+                </PannableViewport>
                 {status && (
                     <div className="pointer-events-none absolute inset-0 flex items-center justify-center p-6 text-center">
                         {status}

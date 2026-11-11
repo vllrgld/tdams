@@ -37,6 +37,7 @@ class PaddleOcrClient implements OcrExtractor
         $jobId = $this->submit($jobUrl, $token, $model, $contents, $filename);
         $jsonUrl = $this->poll($jobUrl, $token, $jobId);
         $parsed = $this->readJsonl($this->downloadJsonl($jsonUrl));
+
         $pages = $parsed['pages'];
 
         if ($pages === []) {
@@ -162,6 +163,7 @@ class PaddleOcrClient implements OcrExtractor
                 'useDocOrientationClassify' => false,
                 'useDocUnwarping' => false,
                 'useChartRecognition' => false,
+                'prettifyMarkdown' => true,
             ];
         }
 
@@ -204,13 +206,13 @@ class PaddleOcrClient implements OcrExtractor
             $result = $decoded['result'];
 
             if (is_array($result['ocrResults'] ?? null)) {
-                foreach ($result['ocrResults'] as $ocrResult) {
+                foreach (array_values($result['ocrResults']) as $index => $ocrResult) {
                     if (! is_array($ocrResult)) {
                         continue;
                     }
 
                     $page = count($pages) + 1;
-                    $parsed = $this->pageFromRecTexts($ocrResult, $page);
+                    $parsed = $this->pageFromRecTexts($ocrResult, $page, $this->dataPageSize($result['dataInfo'] ?? null, $index));
                     $pages[] = $parsed['text'];
                     array_push($regions, ...$parsed['regions']);
                 }
@@ -219,15 +221,19 @@ class PaddleOcrClient implements OcrExtractor
             }
 
             if (is_array($result['layoutParsingResults'] ?? null)) {
-                foreach ($result['layoutParsingResults'] as $layoutResult) {
+                foreach (array_values($result['layoutParsingResults']) as $index => $layoutResult) {
                     if (! is_array($layoutResult)) {
                         continue;
                     }
 
                     $page = count($pages) + 1;
-                    $text = $layoutResult['markdown']['text'] ?? '';
-                    $pages[] = is_string($text) ? $text : '';
-                    array_push($regions, ...$this->regionsFromLayout($layoutResult, $page));
+                    $markdown = $layoutResult['markdown'] ?? null;
+                    $text = is_array($markdown) ? ($markdown['text'] ?? '') : $markdown;
+                    $pageRegions = $this->regionsFromLayout($layoutResult, $page, $this->dataPageSize($result['dataInfo'] ?? null, $index));
+                    $pages[] = is_string($text) && trim($text) !== ''
+                        ? $text
+                        : implode("\n", array_column($pageRegions, 'text'));
+                    array_push($regions, ...$pageRegions);
                 }
             }
         }
@@ -240,9 +246,10 @@ class PaddleOcrClient implements OcrExtractor
 
     /**
      * @param  array<string, mixed>  $ocrResult
+     * @param  array{0: int|null, 1: int|null}  $fallbackSize
      * @return array{text: string, regions: list<array{kind?: 'line'|'block', page: int, text: string, box: list<int>|null, pageWidth: int|null, pageHeight: int|null}>}
      */
-    private function pageFromRecTexts(array $ocrResult, int $page): array
+    private function pageFromRecTexts(array $ocrResult, int $page, array $fallbackSize): array
     {
         $pruned = is_array($ocrResult['prunedResult'] ?? null) ? $ocrResult['prunedResult'] : $ocrResult;
         $texts = $pruned['rec_texts'] ?? [];
@@ -252,6 +259,8 @@ class PaddleOcrClient implements OcrExtractor
             'width' => $pruned['width'] ?? $ocrResult['width'] ?? null,
             'height' => $pruned['height'] ?? $ocrResult['height'] ?? null,
         ]);
+        $pageWidth ??= $fallbackSize[0];
+        $pageHeight ??= $fallbackSize[1];
 
         if (! is_array($texts)) {
             return ['text' => '', 'regions' => []];
@@ -285,9 +294,10 @@ class PaddleOcrClient implements OcrExtractor
 
     /**
      * @param  array<string, mixed>  $layoutResult
+     * @param  array{0: int|null, 1: int|null}  $fallbackSize
      * @return list<array{kind?: 'line'|'block', page: int, text: string, box: list<int>|null, pageWidth: int|null, pageHeight: int|null}>
      */
-    private function regionsFromLayout(array $layoutResult, int $page): array
+    private function regionsFromLayout(array $layoutResult, int $page, array $fallbackSize): array
     {
         $pruned = is_array($layoutResult['prunedResult'] ?? null) ? $layoutResult['prunedResult'] : $layoutResult;
         $blocks = $pruned['parsing_res_list'] ?? $layoutResult['parsing_res_list'] ?? [];
@@ -295,6 +305,8 @@ class PaddleOcrClient implements OcrExtractor
             'width' => $pruned['width'] ?? $layoutResult['width'] ?? null,
             'height' => $pruned['height'] ?? $layoutResult['height'] ?? null,
         ]);
+        $pageWidth ??= $fallbackSize[0];
+        $pageHeight ??= $fallbackSize[1];
 
         if (! is_array($blocks)) {
             return [];
@@ -326,6 +338,20 @@ class PaddleOcrClient implements OcrExtractor
         return $regions;
     }
 
+    /** @return array{0: int|null, 1: int|null} */
+    private function dataPageSize(mixed $dataInfo, int $pageIndex): array
+    {
+        if (! is_array($dataInfo)) {
+            return [null, null];
+        }
+
+        $page = is_array($dataInfo['pages'] ?? null)
+            ? ($dataInfo['pages'][$pageIndex] ?? null)
+            : $dataInfo;
+
+        return is_array($page) ? $this->pageSize($page) : [null, null];
+    }
+
     /**
      * @param  array<string, mixed>  $source
      * @return array{0: int|null, 1: int|null}
@@ -336,8 +362,8 @@ class PaddleOcrClient implements OcrExtractor
         $height = $source['height'] ?? null;
 
         return [
-            is_numeric($width) ? (int) $width : null,
-            is_numeric($height) ? (int) $height : null,
+            is_numeric($width) && is_finite((float) $width) && (int) $width > 0 ? (int) $width : null,
+            is_numeric($height) && is_finite((float) $height) && (int) $height > 0 ? (int) $height : null,
         ];
     }
 

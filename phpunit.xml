@@ -42,6 +42,7 @@
         <env name="PADDLE_OCR_MODEL" value="PP-OCRv6"/>
         <env name="OLLAMA_URL" value="https://ollama.test"/>
         <env name="OLLAMA_API_KEY" value="test-key"/>
+        <env name="FIELD_MAPPING_PROVIDER" value="ollama" force="true"/>
         <env name="OLLAMA_TIMEOUT" value="5"/>
     </php>
 </phpunit>

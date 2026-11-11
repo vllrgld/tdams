@@ -5,6 +5,7 @@
     type PointerEvent as ReactPointerEvent,
     type MouseEvent as ReactMouseEvent,
 } from 'react';
+import { createPanScrollController } from './pan-scroll';
 
 // Delay pointer capture until movement becomes a pan, preserving ordinary
 // region clicks and keyboard activation inside the viewer.
@@ -19,18 +20,21 @@ export function useDragToPan(enabled = true) {
     } | null>(null);
     const suppressClick = useRef(false);
     const resetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const [scroll] = useState(() => createPanScrollController());
     const [panning, setPanning] = useState(false);
 
     useEffect(
         () => () => {
             if (resetTimer.current !== null) clearTimeout(resetTimer.current);
+            scroll.cancel();
         },
-        [],
+        [scroll],
     );
 
     const finish = (event: ReactPointerEvent<HTMLDivElement>) => {
         const current = drag.current;
         if (!current || current.pointerId !== event.pointerId) return;
+        scroll.flush();
         drag.current = null;
         setPanning(false);
         if (event.currentTarget.hasPointerCapture(event.pointerId)) {
@@ -88,8 +92,11 @@ export function useDragToPan(enabled = true) {
                     event.currentTarget.setPointerCapture(event.pointerId);
                     setPanning(true);
                 }
-                event.currentTarget.scrollLeft = current.left - dx;
-                event.currentTarget.scrollTop = current.top - dy;
+                scroll.queue(
+                    event.currentTarget,
+                    current.left - dx,
+                    current.top - dy,
+                );
                 event.preventDefault();
             },
             onPointerUp: finish,

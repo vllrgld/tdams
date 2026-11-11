@@ -306,12 +306,19 @@ class DocumentFieldMappingTest extends TestCase
 
     public function test_documents_page_lists_the_mapping_models(): void
     {
+        config([
+            'services.groq.models' => ['openai/gpt-oss-120b'],
+            'services.bedrock.models' => ['global.amazon.nova-2-lite-v1:0'],
+        ]);
+
         $this->actingAs(User::factory()->create())
             ->get(route('documents.index'))
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
-                ->has('mappingModels', 7)
-                ->where('mappingModels.3', 'gpt-oss:20b'));
+                ->has('mappingModels', 9)
+                ->where('mappingModels.3', 'gpt-oss:20b')
+                ->where('mappingModels.7', 'openai/gpt-oss-120b')
+                ->where('mappingModels.8', 'global.amazon.nova-2-lite-v1:0'));
     }
 
     public function test_review_schema_exposes_field_limits_and_stable_section_identifiers(): void

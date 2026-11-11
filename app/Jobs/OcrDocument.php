@@ -39,6 +39,8 @@ class OcrDocument implements ShouldQueue
             ->update([
                 'ocr_status' => 'processing',
                 'ocr_error' => null,
+                'ocr_reviewed_at' => null,
+                'ocr_reviewed_by' => null,
             ]);
 
         if ($claimed === 0) {

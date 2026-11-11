@@ -2,6 +2,7 @@
 
 namespace App\Services\Ollama;
 
+use App\Services\Documents\DocumentFieldSchema;
 use Illuminate\Support\Facades\Http;
 use RuntimeException;
 
@@ -42,10 +43,10 @@ class OllamaClient
                 'model' => $model,
                 'stream' => false,
                 'messages' => [
-                    ['role' => 'system', 'content' => OllamaFieldSchema::instructions()],
+                    ['role' => 'system', 'content' => DocumentFieldSchema::instructions()],
                     ['role' => 'user', 'content' => $text],
                 ],
-                'format' => OllamaFieldSchema::jsonSchema(),
+                'format' => DocumentFieldSchema::jsonSchema(),
             ]);
 
         if ($response->failed()) {
@@ -56,7 +57,7 @@ class OllamaClient
                 : 'Ollama returned HTTP '.$response->status().'.');
         }
 
-        return OllamaFieldSchema::normalize($this->decodeContent($response->json('message.content')));
+        return DocumentFieldSchema::normalize($this->decodeContent($response->json('message.content')));
     }
 
     /**

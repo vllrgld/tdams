@@ -48,6 +48,26 @@ return [
         ],
     ],
 
+    'field_mapping' => [
+        'provider' => env('FIELD_MAPPING_PROVIDER', 'groq'),
+    ],
+
+    'bedrock' => [
+        'region' => env('BEDROCK_REGION', 'ap-southeast-2'),
+        'key' => env('AWS_BEARER_TOKEN_BEDROCK'),
+        'models' => [env('BEDROCK_MODEL', 'global.amazon.nova-2-lite-v1:0')],
+        'timeout' => (int) env('BEDROCK_TIMEOUT', 180),
+        'max_tokens' => (int) env('BEDROCK_MAX_TOKENS', 4096),
+    ],
+
+    'groq' => [
+        'url' => env('GROQ_URL', 'https://api.groq.com/openai/v1'),
+        'key' => env('GROQ_API_KEY'),
+        'models' => [env('GROQ_MODEL', 'openai/gpt-oss-120b')],
+        'timeout' => (int) env('GROQ_TIMEOUT', 180),
+        'max_tokens' => (int) env('GROQ_MAX_TOKENS', 4096),
+    ],
+
     'ollama' => [
         'url' => env('OLLAMA_URL', 'https://ollama.com'),
         'key' => env('OLLAMA_API_KEY'),

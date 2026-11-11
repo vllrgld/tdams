@@ -1,5 +1,6 @@
 import { CalendarDays, FileText, MapPin, UserRound } from 'lucide-react';
 import DocumentThumbnail from '@/components/documents/document-thumbnail';
+import OcrReviewBadge from '@/components/documents/ocr/ocr-review-badge';
 import { formatDate, formatFileSize } from '@/lib/document-formatters';
 import type { ArchivedDocument } from '@/types/documents';
 import { getPropertyLocation } from './document-view-helpers';
@@ -84,56 +85,65 @@ export default function DocumentPreviewView({
                                 {document.ocrTextExcerpt ||
                                     'No OCR text available yet.'}
                             </p>
-                            <div className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-1.5 pt-1 text-xs leading-4 text-slate-500 dark:text-neutral-300">
-                                <span
-                                    className="flex min-w-0 items-center gap-1.5"
-                                    title={document.originalFilename}
-                                >
-                                    <FileText
-                                        aria-hidden="true"
-                                        className="size-3.5 shrink-0"
-                                    />
-                                    <span className="max-w-48 truncate">
-                                        {document.originalFilename}
-                                    </span>
-                                    <span className="shrink-0">
-                                        {formatFileSize(document.fileSize)}
-                                    </span>
-                                </span>
-                                <span className="flex items-center gap-1.5">
-                                    <CalendarDays
-                                        aria-hidden="true"
-                                        className="size-3.5 shrink-0"
-                                    />
-                                    <span className="sr-only">
-                                        Declaration date:
-                                    </span>
-                                    <time
-                                        dateTime={
-                                            document.declarationDate ??
-                                            undefined
-                                        }
-                                    >
-                                        {formatDate(document.declarationDate)}
-                                    </time>
-                                </span>
-                                {location && (
+                            <div className="mt-auto space-y-2 pt-1">
+                                <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs leading-4 text-slate-500 dark:text-neutral-300">
                                     <span
                                         className="flex min-w-0 items-center gap-1.5"
-                                        title={location}
+                                        title={document.originalFilename}
                                     >
-                                        <MapPin
+                                        <FileText
+                                            aria-hidden="true"
+                                            className="size-3.5 shrink-0"
+                                        />
+                                        <span className="max-w-48 truncate">
+                                            {document.originalFilename}
+                                        </span>
+                                        <span className="shrink-0">
+                                            {formatFileSize(document.fileSize)}
+                                        </span>
+                                    </span>
+                                    <span className="flex items-center gap-1.5">
+                                        <CalendarDays
                                             aria-hidden="true"
                                             className="size-3.5 shrink-0"
                                         />
                                         <span className="sr-only">
-                                            Property location:
+                                            Declaration date:
                                         </span>
-                                        <span className="truncate">
-                                            {location}
-                                        </span>
+                                        <time
+                                            dateTime={
+                                                document.declarationDate ??
+                                                undefined
+                                            }
+                                        >
+                                            {formatDate(
+                                                document.declarationDate,
+                                            )}
+                                        </time>
                                     </span>
-                                )}
+                                    {location && (
+                                        <span
+                                            className="flex min-w-0 items-center gap-1.5"
+                                            title={location}
+                                        >
+                                            <MapPin
+                                                aria-hidden="true"
+                                                className="size-3.5 shrink-0"
+                                            />
+                                            <span className="sr-only">
+                                                Property location:
+                                            </span>
+                                            <span className="truncate">
+                                                {location}
+                                            </span>
+                                        </span>
+                                    )}
+                                </div>
+                                <OcrReviewBadge
+                                    reviewedAt={document.ocrReviewedAt}
+                                    compact
+                                    tone="details"
+                                />
                             </div>
                         </div>
                     </article>

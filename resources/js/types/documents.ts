@@ -10,6 +10,7 @@ export type ArchivedDocument = {
     mimeType: string;
     fileSize: number;
     ocrPdfSize: number | null;
+    ocrReviewedAt: string | null;
     ocrTextExcerpt: string | null;
     createdAt: string | null;
     viewUrl: string;

@@ -58,6 +58,8 @@ use Laravel\Scout\Searchable;
  * @property int|null $ocr_pdf_size
  * @property string|null $ocr_error
  * @property Carbon|null $ocr_completed_at
+ * @property Carbon|null $ocr_reviewed_at
+ * @property int|null $ocr_reviewed_by
  * @property string|null $thumbnail_path
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -241,6 +243,8 @@ class Document extends Model
             'ocr_regions' => 'array',
             'ocr_pdf_size' => 'integer',
             'ocr_completed_at' => 'datetime',
+            'ocr_reviewed_at' => 'datetime',
+            'ocr_reviewed_by' => 'integer',
         ];
     }
 

@@ -8,7 +8,7 @@ use RuntimeException;
 class LocalOcrClient implements OcrExtractor
 {
     /**
-     * @return array{text: string, pages: list<string>, page_count: int, pdf: string|null, regions: list<array{kind?: 'line'|'block', page: int, text: string, box: list<int|float>|null, pageWidth: int|float|null, pageHeight: int|float|null}>}
+     * @return array{text: string, pages: list<string>, page_count: int, pdf: string|null, regions: list<array{kind?: 'line'|'block', page: int, text: string, box: list<int|float>|null, pageWidth: int|float|null, pageHeight: int|float|null, words?: list<array{text: string, box: list<float>}>}>}
      */
     public function extract(string $contents, string $filename): array
     {
@@ -75,7 +75,7 @@ class LocalOcrClient implements OcrExtractor
     }
 
     /**
-     * @return list<array{kind?: 'line'|'block', page: int, text: string, box: list<float>, pageWidth: float, pageHeight: float}>
+     * @return list<array{kind: 'line', page: int, text: string, box: list<float>|null, pageWidth: float|null, pageHeight: float|null, words?: list<array{text: string, box: list<float>}>}>
      */
     private function regions(mixed $payload, int $pageCount): array
     {
@@ -89,31 +89,14 @@ class LocalOcrClient implements OcrExtractor
             if (! is_array($region)
                 || ! is_int($region['page'] ?? null)
                 || $region['page'] < 1 || $region['page'] > $pageCount
-                || ! is_string($region['text'] ?? null) || trim($region['text']) === ''
-                || ! is_numeric($region['pageWidth'] ?? null) || ! is_numeric($region['pageHeight'] ?? null)
-                || ! is_array($region['box'] ?? null) || count($region['box']) !== 4) {
+                || ! is_string($region['text'] ?? null) || trim($region['text']) === '') {
                 continue;
             }
 
-            $width = (float) $region['pageWidth'];
-            $height = (float) $region['pageHeight'];
-            $box = [];
-
-            foreach (array_values($region['box']) as $coordinate) {
-                if (! is_numeric($coordinate) || ! is_finite((float) $coordinate)) {
-                    continue 2;
-                }
-
-                $box[] = (float) $coordinate;
-            }
-
-            if (! is_finite($width) || ! is_finite($height) || $width <= 0 || $height <= 0
-                || $box[0] < 0 || $box[1] < 0 || $box[2] > $width || $box[3] > $height
-                || $box[2] <= $box[0] || $box[3] <= $box[1]) {
-                continue;
-            }
-
-            $regions[] = [
+            $width = $this->dimension($region['pageWidth'] ?? null);
+            $height = $this->dimension($region['pageHeight'] ?? null);
+            $box = $this->box($region['box'] ?? null, $width, $height);
+            $parsed = [
                 'kind' => 'line',
                 'page' => $region['page'],
                 'text' => $region['text'],
@@ -121,8 +104,60 @@ class LocalOcrClient implements OcrExtractor
                 'pageWidth' => $width,
                 'pageHeight' => $height,
             ];
+
+            $words = [];
+
+            foreach (is_array($region['words'] ?? null) ? $region['words'] : [] as $word) {
+                if (! is_array($word) || ! is_string($word['text'] ?? null) || trim($word['text']) === '') {
+                    $words = [];
+                    break;
+                }
+
+                $wordBox = $this->box($word['box'] ?? null, $width, $height);
+
+                if ($box === null || $wordBox === null || $wordBox[0] < $box[0] || $wordBox[1] < $box[1]
+                    || $wordBox[2] > $box[2] || $wordBox[3] > $box[3]) {
+                    $words = [];
+                    break;
+                }
+
+                $words[] = ['text' => $word['text'], 'box' => $wordBox];
+            }
+
+            if ($words !== [] && preg_replace('/\s+/u', ' ', trim(implode(' ', array_column($words, 'text'))))
+                === preg_replace('/\s+/u', ' ', trim($region['text']))) {
+                $parsed['words'] = $words;
+            }
+
+            $regions[] = $parsed;
         }
 
         return $regions;
+    }
+
+    private function dimension(mixed $value): ?float
+    {
+        return is_numeric($value) && is_finite((float) $value) && (float) $value > 0 ? (float) $value : null;
+    }
+
+    /** @return list<float>|null */
+    private function box(mixed $value, ?float $width, ?float $height): ?array
+    {
+        if ($width === null || $height === null || ! is_array($value) || count($value) !== 4) {
+            return null;
+        }
+
+        $box = [];
+
+        foreach (array_values($value) as $coordinate) {
+            if (! is_numeric($coordinate) || ! is_finite((float) $coordinate)) {
+                return null;
+            }
+
+            $box[] = (float) $coordinate;
+        }
+
+        return $box[0] >= 0 && $box[1] >= 0 && $box[2] <= $width && $box[3] <= $height
+            && $box[2] > $box[0] && $box[3] > $box[1] ? $box : null;
     }
 }

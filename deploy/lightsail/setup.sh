@@ -140,8 +140,9 @@ cd "${APP_DIR}"
 export COMPOSER_MEMORY_LIMIT=512M
 composer install --no-dev --optimize-autoloader --no-interaction
 
-chown -R www-data:www-data storage bootstrap/cache public
-chmod -R ug+rwx storage bootstrap/cache
+chown -R www-data:www-data public
+chown -R "$(stat -c '%u' "${APP_DIR}"):www-data" storage bootstrap/cache
+chmod -R ug+rwX storage bootstrap/cache
 
 if ! grep -q '^APP_KEY=' .env; then
     echo 'APP_KEY=' >> .env

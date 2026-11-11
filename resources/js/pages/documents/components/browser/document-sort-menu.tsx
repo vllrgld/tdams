@@ -31,7 +31,7 @@ export default function DocumentSortMenu({
                 render={<Button variant="outline" />}
                 aria-label="Sort documents"
                 title={`${fieldLabel}, ${directionLabel.toLowerCase()}`}
-                className="h-[31px] shrink-0 gap-2 border-blue-900 bg-white px-2.5 text-[13px] font-normal text-blue-900 shadow-none hover:bg-blue-900 hover:text-white focus-visible:border-blue-900 focus-visible:ring-blue-900/20 data-popup-open:bg-blue-900 data-popup-open:text-white dark:bg-neutral-900 dark:text-white dark:hover:bg-blue-900 dark:focus-visible:ring-white/50 dark:data-popup-open:bg-blue-900"
+                className="h-[31px] shrink-0 gap-1.5 border-blue-900 bg-white px-2.5 text-[13px] font-normal text-blue-900 shadow-none hover:bg-blue-900 hover:text-white focus-visible:border-blue-900 focus-visible:ring-blue-900/20 has-[>svg]:px-2.5 data-popup-open:bg-blue-900 data-popup-open:text-white dark:bg-neutral-900 dark:text-white dark:hover:bg-blue-900 dark:focus-visible:ring-white/50 dark:data-popup-open:bg-blue-900"
             >
                 <SortIcon aria-hidden="true" className="size-4" />
                 <span>Sort</span>

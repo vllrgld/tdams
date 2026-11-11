@@ -33,6 +33,8 @@ class DocumentOcrDispatcher
                 'ocr_status' => 'pending',
                 'ocr_error' => null,
                 'ocr_completed_at' => null,
+                'ocr_reviewed_at' => null,
+                'ocr_reviewed_by' => null,
             ])->saveQuietly();
 
             $this->dispatch($lockedDocument->id);

@@ -9,6 +9,7 @@ import {
     updateReviewField,
 } from '@/pages/documents/lib/metadata';
 import { createUploadSession } from '@/pages/documents/lib/upload-session';
+import { resolveMappingModel } from '@/pages/documents/lib/mapping-models';
 import {
     pollOcrStatus,
     type OcrStatus,
@@ -111,11 +112,8 @@ export function useDocumentUpload({
     const [review, setReview] = useState(() =>
         createReviewState(fieldSections),
     );
-    const [model, setModel] = useState(
-        mappingModels.includes('gpt-oss:20b')
-            ? 'gpt-oss:20b'
-            : (mappingModels[0] ?? ''),
-    );
+    const [selectedModel, setModel] = useState('');
+    const model = resolveMappingModel(mappingModels, selectedModel);
     const [error, setError] = useState<string | null>(null);
     const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
     const [confirmSave, setConfirmSave] = useState(false);
