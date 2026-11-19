@@ -47,8 +47,12 @@ export function DocumentDetails({
     document: ArchivedDocument;
     onOpenPrevious?: (number: string) => void;
 }) {
-    const title = document.taxDeclarationNumber || document.originalFilename;
-    const showFilename = Boolean(document.taxDeclarationNumber);
+    const title = document.usesTaxFields
+        ? document.taxDeclarationNumber || document.originalFilename
+        : document.title || document.originalFilename;
+    const showFilename = document.usesTaxFields
+        ? Boolean(document.taxDeclarationNumber)
+        : Boolean(document.title);
     const previous = document.previousTaxDeclarationNumber;
 
     return (
@@ -58,38 +62,65 @@ export function DocumentDetails({
                     {title}
                 </p>
                 <div className="space-y-3">
-                    {previous && onOpenPrevious ? (
-                        <div>
-                            <p className="text-[10px] font-medium tracking-wide text-neutral-500 uppercase">
-                                Previous declaration
-                            </p>
-                            <button
-                                type="button"
-                                onClick={(event) => {
-                                    event.stopPropagation();
-                                    onOpenPrevious(previous);
-                                }}
-                                className="mt-0.5 text-left text-sm break-words text-blue-900 underline-offset-2 hover:underline focus-visible:underline focus-visible:outline-none"
-                            >
-                                {previous}
-                            </button>
-                        </div>
+                    {document.usesTaxFields ? (
+                        <>
+                            {previous && onOpenPrevious ? (
+                                <div>
+                                    <p className="text-[10px] font-medium tracking-wide text-neutral-500 uppercase">
+                                        Previous declaration
+                                    </p>
+                                    <button
+                                        type="button"
+                                        onClick={(event) => {
+                                            event.stopPropagation();
+                                            onOpenPrevious(previous);
+                                        }}
+                                        className="mt-0.5 text-left text-sm break-words text-blue-900 underline-offset-2 hover:underline focus-visible:underline focus-visible:outline-none"
+                                    >
+                                        {previous}
+                                    </button>
+                                </div>
+                            ) : (
+                                <DetailRow
+                                    label="Previous declaration"
+                                    value={previous}
+                                />
+                            )}
+                            <DetailRow
+                                label="Owner"
+                                value={document.registeredOwner}
+                            />
+                            <DetailRow label="Lot" value={document.lotNumber} />
+                            <DetailRow
+                                label="Date"
+                                value={
+                                    document.declarationDate
+                                        ? formatDate(document.declarationDate)
+                                        : null
+                                }
+                            />
+                        </>
                     ) : (
-                        <DetailRow
-                            label="Previous declaration"
-                            value={previous}
-                        />
+                        <>
+                            <DetailRow
+                                label="Correspondent"
+                                value={document.correspondent}
+                            />
+                            <DetailRow
+                                label="Date of letter"
+                                value={
+                                    document.letterDate
+                                        ? formatDate(document.letterDate)
+                                        : null
+                                }
+                            />
+                            <DetailRow
+                                label="Type"
+                                value={document.documentTypeName}
+                            />
+                            <DetailRow label="Remarks" value={document.remarks} />
+                        </>
                     )}
-                    <DetailRow label="Owner" value={document.registeredOwner} />
-                    <DetailRow label="Lot" value={document.lotNumber} />
-                    <DetailRow
-                        label="Date"
-                        value={
-                            document.declarationDate
-                                ? formatDate(document.declarationDate)
-                                : null
-                        }
-                    />
                 </div>
             </div>
             {showFilename ? (

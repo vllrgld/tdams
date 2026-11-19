@@ -1,4 +1,4 @@
-export type FilingKind = 'book' | 'folder';
+export type FilingKind = 'book' | 'folder' | 'lever_arch';
 
 export type FilingItemCover = { cover: string; spine: string; text: string };
 
@@ -39,6 +39,7 @@ export type FilingCabinet = {
     id: string;
     name: string;
     location: string;
+    color?: CabinetColor;
     drawers: CabinetDrawer[];
 };
 
@@ -54,6 +55,7 @@ export type ManagedFilingItem = {
     id: string;
     kind: FilingKind;
     label: string;
+    coverTitle: string;
     position: number;
     drawerId: string;
     drawerLabel: string;
@@ -72,5 +74,7 @@ export type CabinetListItem = {
     id: string;
     name: string;
     location: string;
+    color?: CabinetColor;
     drawers: CabinetListDrawer[];
 };
+import type { CabinetColor } from '@/lib/cabinet-colors';

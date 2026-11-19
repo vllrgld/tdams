@@ -5,9 +5,13 @@ namespace App\Services\Documents;
 use App\Http\Resources\DocumentResource;
 use App\Models\Document;
 use App\Models\TaxDeclaration;
+use App\Services\Offices\CurrentOffice;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class DeclarationChain
 {
+    public function __construct(private CurrentOffice $currentOffice) {}
+
     /**
      * @return list<array{taxDeclarationNumber: string, document: array<string, mixed>|null, declarationDate: string|null}>
      */
@@ -30,7 +34,7 @@ class DeclarationChain
 
             if (is_int($previousId) && ! in_array($previousId, $seenDeclarationIds, true)) {
                 $previous = TaxDeclaration::query()
-                    ->with(['property', 'owners', 'documents'])
+                    ->with(['property', 'owners', 'documents' => fn (HasMany $documents) => $this->currentOffice->constrain($documents->getQuery())])
                     ->find($previousId);
 
                 if (! $previous instanceof TaxDeclaration) {
@@ -97,7 +101,7 @@ class DeclarationChain
 
         while (true) {
             $next = TaxDeclaration::query()
-                ->with(['property', 'owners', 'documents'])
+                ->with(['property', 'owners', 'documents' => fn (HasMany $documents) => $this->currentOffice->constrain($documents->getQuery())])
                 ->where('previous_declaration_id', $current->id)
                 ->latest('id')
                 ->first();

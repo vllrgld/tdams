@@ -25,7 +25,7 @@ class OcrReviewFilterTest extends TestCase
         $this->document('failed', 'failed');
         $this->document('old-review', 'processing', true);
 
-        $this->get(route('documents.index', $filter === null ? [] : ['ocr_review' => $filter, 'direction' => 'asc']))
+        $this->get($this->taxDocumentsIndex($filter === null ? [] : ['ocr_review' => $filter, 'direction' => 'asc']))
             ->assertOk()->assertInertia(fn (Assert $page) => $page
             ->where('filters.ocr_review', $filter ?? 'all')
             ->where('documents.total', count($expected))
@@ -55,7 +55,7 @@ class OcrReviewFilterTest extends TestCase
         $this->document('other-date', 'completed', false, [...$matching, 'declaration_date' => '2020-01-01']);
         $this->document('failed-other-owner', 'failed', true, [...$matching, 'registered_owner' => 'Beta Owner']);
 
-        $this->get(route('documents.index', [
+        $this->get($this->taxDocumentsIndex([
             'q' => 'Alpha', 'field' => 'registered_owner', 'ocr_review' => 'unreviewed',
             'declaration_date_from' => '2024-01-01', 'declaration_date_to' => '2024-12-31',
             'sort' => 'declaration_date', 'direction' => 'asc',
@@ -73,12 +73,12 @@ class OcrReviewFilterTest extends TestCase
         }
         $this->document('not-reviewed', 'completed');
 
-        $this->get(route('documents.index', ['ocr_review' => 'reviewed']))->assertOk()
+        $this->get($this->taxDocumentsIndex(['ocr_review' => 'reviewed']))->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->where('documents.total', 25)->has('documents.data', 24)
                 ->where('documents.last_page', 2)
                 ->where('documents.next_page_url', fn ($url): bool => str_contains($url, 'ocr_review=reviewed')));
-        $this->get(route('documents.index', ['ocr_review' => 'reviewed', 'page' => 2]))->assertOk()
+        $this->get($this->taxDocumentsIndex(['ocr_review' => 'reviewed', 'page' => 2]))->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->where('documents.total', 25)->has('documents.data', 1)
                 ->where('documents.data.0.originalFilename', 'reviewed-0.pdf'));
@@ -88,21 +88,21 @@ class OcrReviewFilterTest extends TestCase
     {
         $document = $this->document('sample', 'completed');
         $this->actingAs(User::factory()->create());
-        $this->get(route('documents.index', ['ocr_review' => 'unreviewed']))->assertInertia(fn (Assert $page) => $page->where('documents.total', 1));
+        $this->get($this->taxDocumentsIndex(['ocr_review' => 'unreviewed']))->assertInertia(fn (Assert $page) => $page->where('documents.total', 1));
 
         $this->patchJson(route('documents.ocr.review', $document), [
             'reviewed' => true, 'revision' => DocumentOcrEditor::revision($document),
         ])->assertOk();
 
-        $this->get(route('documents.index', ['ocr_review' => 'unreviewed']))->assertInertia(fn (Assert $page) => $page->where('documents.total', 0));
-        $this->get(route('documents.index', ['ocr_review' => 'reviewed']))->assertInertia(fn (Assert $page) => $page->where('documents.data.0.id', $document->id));
-        $this->get(route('documents.index'))->assertInertia(fn (Assert $page) => $page->where('filters.ocr_review', 'all')->where('documents.total', 1));
+        $this->get($this->taxDocumentsIndex(['ocr_review' => 'unreviewed']))->assertInertia(fn (Assert $page) => $page->where('documents.total', 0));
+        $this->get($this->taxDocumentsIndex(['ocr_review' => 'reviewed']))->assertInertia(fn (Assert $page) => $page->where('documents.data.0.id', $document->id));
+        $this->get($this->taxDocumentsIndex())->assertInertia(fn (Assert $page) => $page->where('filters.ocr_review', 'all')->where('documents.total', 1));
     }
 
     #[DataProvider('invalidFilters')]
     public function test_invalid_review_filters_are_rejected(mixed $filter): void
     {
-        $this->actingAs(User::factory()->create())->getJson(route('documents.index', ['ocr_review' => $filter]))
+        $this->actingAs(User::factory()->create())->getJson($this->taxDocumentsIndex(['ocr_review' => $filter]))
             ->assertUnprocessable()->assertJsonValidationErrors('ocr_review');
     }
 

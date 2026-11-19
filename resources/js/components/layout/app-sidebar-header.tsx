@@ -1,3 +1,4 @@
+import { router, usePage } from '@inertiajs/react';
 import { type Ref, useEffect, useState } from 'react';
 import { Fragment } from 'react';
 import {
@@ -27,7 +28,10 @@ import {
     DropdownMenuContent,
     DropdownMenuTrigger,
     DropdownMenuItem,
+    DropdownMenuRadioGroup,
+    DropdownMenuRadioItem,
 } from '@/components/ui/dropdown-menu';
+import { update as updateCurrentOffice } from '@/routes/offices/current';
 import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
 import { Separator } from '@/components/ui/separator';
 import { useAppearance } from '@/hooks/use-appearance';
@@ -51,6 +55,10 @@ export function AppSidebarHeader({
     const { resolvedAppearance, updateAppearance } = useAppearance();
     const { isMobile, open } = useSidebar();
     const archiveTrail = useArchiveHeaderTrail();
+    const page = usePage();
+    const officeName = page.props.officeName?.trim() || null;
+    const officeId = page.props.officeId ?? null;
+    const offices = page.props.offices ?? [];
     const isDark = resolvedAppearance === 'dark';
     const [isFullscreen, setIsFullscreen] = useState(false);
 
@@ -230,6 +238,74 @@ export function AppSidebarHeader({
                 )}
             </div>
             <div className="ml-auto flex shrink-0 items-center gap-1">
+                {officeName ? (
+                    <DropdownMenu>
+                        <DropdownMenuTrigger
+                            render={
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="h-[31px] max-w-28 shrink-0 gap-1.5 px-2.5 text-sm font-medium sm:max-w-48"
+                                    aria-label={`Office: ${officeName}`}
+                                    title={officeName}
+                                />
+                            }
+                        >
+                            <span className="truncate">{officeName}</span>
+                            <ChevronDown
+                                aria-hidden="true"
+                                className="size-3.5 shrink-0"
+                            />
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent
+                            align="end"
+                            className="max-h-72 min-w-48 overflow-y-auto"
+                        >
+                            <DropdownMenuRadioGroup
+                                aria-label="Office"
+                                value={
+                                    officeId === null ? '' : String(officeId)
+                                }
+                                onValueChange={(next: unknown) => {
+                                    if (
+                                        typeof next !== 'string' ||
+                                        next === ''
+                                    ) {
+                                        return;
+                                    }
+
+                                    const nextId = Number(next);
+
+                                    if (
+                                        !Number.isInteger(nextId) ||
+                                        nextId === officeId
+                                    ) {
+                                        return;
+                                    }
+
+                                    router.put(
+                                        updateCurrentOffice.url(),
+                                        { office_id: nextId },
+                                        {
+                                            preserveScroll: true,
+                                            preserveState: false,
+                                        },
+                                    );
+                                }}
+                            >
+                                {offices.map((office) => (
+                                    <DropdownMenuRadioItem
+                                        key={office.id}
+                                        value={String(office.id)}
+                                        closeOnClick
+                                    >
+                                        {office.name}
+                                    </DropdownMenuRadioItem>
+                                ))}
+                            </DropdownMenuRadioGroup>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                ) : null}
                 <DropdownMenu>
                     <DropdownMenuTrigger
                         render={

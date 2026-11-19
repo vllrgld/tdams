@@ -2,16 +2,24 @@ import { search as systemSearch } from '@/routes/system';
 import { search as searchDocuments } from '@/routes/documents';
 import { index as documentsIndex } from '@/routes/documents';
 import { index as archiveIndex } from '@/routes/archive';
-import { index as bookmarksIndex } from '@/routes/bookmarks';
 import { index as cabinetsIndex } from '@/routes/manage/cabinets';
 import { index as booksIndex } from '@/routes/manage/books';
+import { index as leverArchIndex } from '@/routes/manage/lever-arch-files';
+import { filingTitle } from '@/lib/filing-appearance';
 import { index as foldersIndex } from '@/routes/manage/folders';
-import { router } from '@inertiajs/react';
+import { index as documentTypesIndex } from '@/routes/manage/document-types';
+import { index as documentRoutesIndex } from '@/routes/manage/document-routes';
+import { edit as editTrackingCodes } from '@/routes/tracking-codes';
+import { router, usePage } from '@inertiajs/react';
 import {
     Archive,
-    Bookmark,
     BookMarked,
+    Building2,
+    Database,
     FileSearch,
+    FileType,
+    Route,
+    Hash,
     Folder,
     Folders,
     LayoutDashboard,
@@ -53,7 +61,9 @@ import {
 import { dashboard } from '@/routes';
 import { edit as editAppearance } from '@/routes/appearance';
 import { edit as editAccessibility } from '@/routes/accessibility';
+import { edit as editData } from '@/routes/data';
 import { edit as editOcr } from '@/routes/ocr';
+import { index as officesIndex } from '@/routes/offices';
 import { edit as editProfile } from '@/routes/profile';
 import { edit as editSecurity } from '@/routes/security';
 
@@ -68,7 +78,7 @@ type PageEntry = {
 
 type RecordMatch = {
     id: number;
-    kind?: 'book' | 'folder';
+    kind?: import('@/types/filing').FilingKind;
     title: string;
     hint: string;
     url: string;
@@ -119,7 +129,7 @@ const pages: PageEntry[] = [
         hint: 'Menu',
         href: documentsIndex.url(),
         keywords:
-            'declaration tax file search ocr content cards preview list filter filters dates date added relative sort sorting ascending descending clear reset',
+            'declaration tax file search ocr types type content cards preview list filter filters dates date added relative sort sorting ascending descending clear reset',
         icon: FileSearch,
     },
     {
@@ -129,14 +139,6 @@ const pages: PageEntry[] = [
         href: archiveIndex.url(),
         keywords: 'filing cabinet drawer book',
         icon: Archive,
-    },
-    {
-        title: 'Bookmarks',
-        group: 'Pages',
-        hint: 'Menu',
-        href: bookmarksIndex.url(),
-        keywords: 'saved favorites',
-        icon: Bookmark,
     },
     {
         title: 'Cabinets',
@@ -161,6 +163,30 @@ const pages: PageEntry[] = [
         href: foldersIndex.url(),
         keywords: 'folder filing manage',
         icon: Folder,
+    },
+    {
+        group: 'Pages',
+        hint: 'Menu > Manage',
+        href: leverArchIndex.url(),
+        keywords: 'lever arch file binder filing manage',
+        icon: BookMarked,
+        title: 'Lever arch files',
+    },
+    {
+        title: 'Document types',
+        group: 'Pages',
+        hint: 'Menu > Manage',
+        href: documentTypesIndex.url(),
+        keywords: 'document type correspondent manage',
+        icon: FileType,
+    },
+    {
+        title: 'Routing',
+        group: 'Pages',
+        hint: 'Menu > Manage',
+        href: documentRoutesIndex.url(),
+        keywords: 'route process routing workflow manage',
+        icon: Route,
     },
     {
         title: 'Profile',
@@ -196,14 +222,39 @@ const pages: PageEntry[] = [
         icon: SlidersHorizontal,
     },
     {
+        title: 'Offices',
+        group: 'Settings',
+        hint: 'Admin',
+        href: officesIndex.url(),
+        keywords: 'settings admin office offices',
+        icon: Building2,
+    },
+    {
         title: 'OCR',
         group: 'Settings',
-        hint: 'Settings > Account',
+        hint: 'Admin',
         href: toUrl(editOcr()),
-        keywords: 'settings scan recognition compression',
+        keywords: 'settings admin scan recognition compression',
         icon: ScanText,
     },
+    {
+        title: 'Tracking codes',
+        group: 'Settings',
+        hint: 'Admin',
+        href: editTrackingCodes.url(),
+        keywords: 'settings admin tracking code prefix receive release',
+        icon: Hash,
+    },
 ];
+
+const dataPage: PageEntry = {
+    title: 'Data',
+    group: 'Settings',
+    hint: 'Admin',
+    href: toUrl(editData()),
+    keywords: 'settings admin data reset archive',
+    icon: Database,
+};
 
 const uploadCommand = {
     title: 'Upload document',
@@ -258,13 +309,22 @@ export default function GlobalSearch({
     const triggerRef = useRef<HTMLButtonElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
     const listId = useId();
+    const { canResetData, officePermissions } = usePage().props;
     const normalizedQuery = query.trim();
     const canSearch = Array.from(normalizedQuery).length >= 2;
     const loading =
         canSearch && (places === null || documents === null) && !error;
 
     const items = useMemo(() => {
-        const next: SearchItem[] = pages
+        const commandPages = canResetData ? [...pages, dataPage] : pages;
+        const next: SearchItem[] = commandPages
+            .filter(
+                (page) =>
+                    (page.title !== 'Routing' ||
+                        officePermissions?.canManageRouting) &&
+                    (page.title !== 'Document types' ||
+                        officePermissions?.canManageDocumentTypes),
+            )
             .filter((page) => matchesCommand(page, normalizedQuery))
             .map((page) => ({
                 key: `page-${page.href}`,
@@ -318,7 +378,7 @@ export default function GlobalSearch({
         for (const book of places.books) {
             next.push({
                 key: `book-${book.id}`,
-                group: book.kind === 'folder' ? 'Folders' : 'Books',
+                group: filingTitle(book.kind, true),
                 title: book.title,
                 hint: book.hint,
                 url: book.url,
@@ -349,7 +409,16 @@ export default function GlobalSearch({
         }
 
         return orderCommandResults(next);
-    }, [canSearch, documents, normalizedQuery, onUploadDocument, places]);
+    }, [
+        canResetData,
+        officePermissions?.canManageRouting,
+        officePermissions?.canManageDocumentTypes,
+        canSearch,
+        documents,
+        normalizedQuery,
+        onUploadDocument,
+        places,
+    ]);
 
     const groups = groupOrder
         .map((name) => ({
@@ -593,7 +662,7 @@ export default function GlobalSearch({
                         variant="ghost"
                         size="icon"
                         className={cn(
-                            'size-[31px] shrink-0 md:w-[calc(100%-3rem)] md:justify-start md:border md:border-white/20 md:bg-white/10 md:px-2.5 md:hover:bg-white/15',
+                            'size-[31px] shrink-0 bg-transparent hover:bg-white/10 md:w-[calc(100%-3rem)] md:justify-start md:border md:border-white/20 md:px-2.5',
                             className,
                         )}
                         aria-label="Search"
@@ -603,13 +672,14 @@ export default function GlobalSearch({
             >
                 <Search aria-hidden="true" className="size-4" />
                 <span className="hidden text-xs md:inline">Search</span>
-                <kbd className="ml-auto hidden rounded border border-white/25 px-1 py-0.5 font-sans text-[10px] text-blue-100 md:inline">
+                <kbd className="ml-auto hidden rounded border border-white/25 px-1 py-0.5 font-sans text-[10px] text-current md:inline">
                     Ctrl K
                 </kbd>
             </DialogTrigger>
             <DialogContent
                 showClose={false}
-                className="top-[12vh] origin-top translate-y-0 gap-0 overflow-hidden rounded-lg p-0 transition-[opacity,scale] ease-out data-ending-style:scale-[var(--search-start-scale,0.95)] data-starting-style:scale-[var(--search-start-scale,0.95)] motion-reduce:transition-none sm:max-w-xl"
+                overlayClassName="command-search-overlay"
+                className="command-search top-[12vh] origin-top translate-y-0 gap-0 overflow-hidden rounded-md p-0 shadow-none transition-[opacity,scale] ease-out data-ending-style:scale-[var(--search-start-scale,0.95)] data-starting-style:scale-[var(--search-start-scale,0.95)] motion-reduce:transition-none sm:max-w-xl"
                 style={
                     dialogBounds
                         ? ({
@@ -628,7 +698,7 @@ export default function GlobalSearch({
                     Find a page, setting, action, cabinet, folder, book, or
                     document. Arrow keys move, Enter opens.
                 </DialogDescription>
-                <div className="flex items-center gap-2 border-b px-3">
+                <div className="flex items-center gap-2 border-b border-border px-2.5">
                     <Search
                         aria-hidden="true"
                         className="size-4 shrink-0 text-muted-foreground"
@@ -639,7 +709,7 @@ export default function GlobalSearch({
                         maxLength={200}
                         autoComplete="off"
                         placeholder="Search the system…"
-                        className="h-12 min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+                        className="h-11 min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
                         role="combobox"
                         aria-label="Search the system"
                         aria-autocomplete="list"
@@ -681,7 +751,7 @@ export default function GlobalSearch({
                     )}
                     <button
                         type="button"
-                        className="shrink-0 rounded px-1 text-sm text-muted-foreground hover:text-foreground disabled:pointer-events-none disabled:opacity-40"
+                        className="shrink-0 rounded-md px-1 text-sm text-muted-foreground hover:text-foreground disabled:pointer-events-none disabled:opacity-40"
                         disabled={normalizedQuery === ''}
                         onMouseDown={(event) => event.preventDefault()}
                         onClick={clearQuery}
@@ -715,7 +785,7 @@ export default function GlobalSearch({
                     {error && (
                         <div
                             role="alert"
-                            className="flex items-center justify-between gap-3 border-b px-3 py-2 text-xs text-muted-foreground"
+                            className="flex items-center justify-between gap-3 border-b border-border px-3 py-2 text-xs text-muted-foreground"
                         >
                             <span>
                                 Some archive results could not be loaded.
@@ -723,8 +793,9 @@ export default function GlobalSearch({
                             </span>
                             <Button
                                 type="button"
-                                variant="outline"
+                                variant="ghost"
                                 size="sm"
+                                className="h-7 border border-border bg-transparent px-2 text-xs text-foreground hover:bg-foreground/5 hover:text-foreground"
                                 onClick={() => {
                                     setError(false);
                                     setPlaces(null);
@@ -743,7 +814,7 @@ export default function GlobalSearch({
                             role="group"
                             aria-label={group.name}
                         >
-                            <div className="sticky top-0 z-10 flex items-center justify-between bg-muted/80 px-3 py-1.5 text-xs font-medium text-muted-foreground backdrop-blur-sm">
+                            <div className="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-background/90 px-3 py-1.5 text-xs font-medium text-muted-foreground backdrop-blur-md">
                                 <span>{group.name}</span>
                                 <span>{group.items.length}</span>
                             </div>
@@ -759,10 +830,10 @@ export default function GlobalSearch({
                                         tabIndex={-1}
                                         type="button"
                                         className={cn(
-                                            'flex w-full items-center gap-3 border-b px-3 py-2.5 text-left outline-none last:border-b-0',
+                                            'flex w-full items-center gap-3 border-b border-border px-3 py-2.5 text-left outline-none last:border-b-0',
                                             activeIndex === index
-                                                ? 'bg-neutral-100 text-foreground dark:bg-neutral-800'
-                                                : 'hover:bg-neutral-50 dark:hover:bg-neutral-800/60',
+                                                ? 'bg-foreground/10 text-foreground'
+                                                : 'hover:bg-foreground/5',
                                         )}
                                         onPointerMove={() =>
                                             setActiveIndex(index)
@@ -772,7 +843,7 @@ export default function GlobalSearch({
                                         }
                                         onClick={() => activate(item)}
                                     >
-                                        <span className="flex size-8 shrink-0 items-center justify-center rounded-md border bg-background text-muted-foreground">
+                                        <span className="flex size-8 shrink-0 items-center justify-center rounded-md bg-foreground/5 text-muted-foreground">
                                             <Icon
                                                 aria-hidden="true"
                                                 className="size-4"
@@ -792,7 +863,7 @@ export default function GlobalSearch({
                         </div>
                     ))}
                 </div>
-                <div className="flex flex-wrap items-center justify-between gap-2 border-t bg-muted/40 px-3 py-2 text-[11px] text-muted-foreground">
+                <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border bg-foreground/5 px-3 py-2 text-[11px] text-muted-foreground">
                     <span>
                         {normalizedQuery === ''
                             ? 'Nothing to clear.'
@@ -804,22 +875,22 @@ export default function GlobalSearch({
                     </span>
                     <div className="flex flex-wrap items-center gap-3">
                         <span className="inline-flex items-center gap-1">
-                            <kbd className="inline-flex h-5 min-w-5 items-center justify-center rounded border bg-background px-1 font-sans text-[10px]">
+                            <kbd className="inline-flex h-5 min-w-5 items-center justify-center rounded border border-border bg-transparent px-1 font-sans text-[10px] text-foreground">
                                 ↑
                             </kbd>
-                            <kbd className="inline-flex h-5 min-w-5 items-center justify-center rounded border bg-background px-1 font-sans text-[10px]">
+                            <kbd className="inline-flex h-5 min-w-5 items-center justify-center rounded border border-border bg-transparent px-1 font-sans text-[10px] text-foreground">
                                 ↓
                             </kbd>
                             move
                         </span>
                         <span className="inline-flex items-center gap-1">
-                            <kbd className="inline-flex h-5 min-w-5 items-center justify-center rounded border bg-background px-1 font-sans text-[10px]">
+                            <kbd className="inline-flex h-5 min-w-5 items-center justify-center rounded border border-border bg-transparent px-1 font-sans text-[10px] text-foreground">
                                 ↵
                             </kbd>
                             open
                         </span>
                         <span className="inline-flex items-center gap-1">
-                            <kbd className="inline-flex h-5 min-w-5 items-center justify-center rounded border bg-background px-1 font-sans text-[10px]">
+                            <kbd className="inline-flex h-5 min-w-5 items-center justify-center rounded border border-border bg-transparent px-1 font-sans text-[10px] text-foreground">
                                 Esc
                             </kbd>
                             {normalizedQuery === '' ? 'close' : 'clear'}

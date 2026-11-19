@@ -1,5 +1,5 @@
 import { update as updateCabinet } from '@/routes/manage/cabinets';
-import { useForm } from '@inertiajs/react';
+import { router, useForm } from '@inertiajs/react';
 import { Pencil } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
@@ -48,6 +48,7 @@ export default function CabinetRenameTitle({
         form.patch(updateCabinet.url(Number(cabinet.id)), {
             preserveScroll: true,
             onSuccess: () => {
+                router.flushAll();
                 saving.current = false;
                 setEditing(false);
                 toast.success('Cabinet renamed.');

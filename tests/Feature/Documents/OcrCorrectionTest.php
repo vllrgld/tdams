@@ -116,9 +116,9 @@ class OcrCorrectionTest extends TestCase
         $this->actingAs(User::factory()->create());
         $this->patchJson($this->endpoint($document), ['text' => 'Lot No. 1543', 'revision' => $this->revision($document)])->assertOk();
         Http::preventStrayRequests();
-        Http::fake(['https://ollama.test/api/chat' => Http::response(['message' => ['content' => '{"lot_number":"1543"}']])]);
+        Http::fake(['https://groq.test/openai/v1/chat/completions' => Http::response(['choices' => [['finish_reason' => 'stop', 'message' => ['content' => '{"lot_number":"1543"}']]]])]);
 
-        $this->postJson(route('documents.map', $document), ['model' => 'gpt-oss:20b'])
+        $this->postJson(route('documents.map', $document), ['model' => 'openai/gpt-oss-120b'])
             ->assertOk()->assertJsonPath('fields.lot_number', '1543');
 
         Http::assertSent(function (Request $request): bool {

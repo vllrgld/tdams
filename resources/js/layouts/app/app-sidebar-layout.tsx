@@ -3,6 +3,7 @@ import { AppShell } from '@/components/layout/app-shell';
 import { AppSidebar } from '@/components/layout/app-sidebar';
 import { AppSidebarHeader } from '@/components/layout/app-sidebar-header';
 import { ArchiveHeaderProvider } from '@/components/layout/archive-header-context';
+import { DocumentUploadProvider } from '@/components/documents/document-upload-context';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -49,6 +50,14 @@ export default function AppSidebarLayout({
     const uploadRequest = useRef<AbortController | null>(null);
     const optionsPage = useRef<typeof page.props | null>(null);
     const uploadButton = useRef<HTMLButtonElement>(null);
+    const uploadFinalFocus = useRef<HTMLButtonElement | null>(null);
+
+    function showUpload(
+        trigger: HTMLButtonElement | null = uploadButton.current,
+    ) {
+        uploadFinalFocus.current = trigger;
+        void openUpload();
+    }
 
     useEffect(() => {
         setUploadOpen(false);
@@ -78,11 +87,17 @@ export default function AppSidebarLayout({
         const suppliedOptions =
             page.props.archive &&
             page.props.mappingModels &&
-            page.props.fieldSections
+            page.props.documentTypes &&
+            page.props.fieldSections &&
+            page.props.metadataFieldSections
                 ? {
                       archive: page.props.archive,
+                      recentArchiveItemIds:
+                          page.props.recentArchiveItemIds ?? [],
                       mappingModels: page.props.mappingModels,
+                      documentTypes: page.props.documentTypes,
                       fieldSections: page.props.fieldSections,
+                      metadataFieldSections: page.props.metadataFieldSections,
                   }
                 : null;
         const availableOptions =
@@ -139,75 +154,79 @@ export default function AppSidebarLayout({
 
     return (
         <ArchiveHeaderProvider>
-            <AppShell variant="sidebar">
-                <AppSidebar />
-                <AppContent
-                    variant="sidebar"
-                    className="min-w-0 overflow-x-clip pt-16"
-                >
-                    <AppSidebarHeader
-                        breadcrumbs={breadcrumbs}
-                        onUploadDocument={openUpload}
-                        onUploadIntent={preloadUpload}
-                        uploadButtonRef={uploadButton}
-                        loadingUpload={loadingUpload}
-                    />
-                    {children}
-                    {uploadOpen &&
-                        (ready ? (
-                            <UploadDialog
-                                {...uploadOptions}
-                                open={uploadOpen}
-                                onOpenChange={changeUploadOpen}
-                                finalFocus={uploadButton}
-                            />
-                        ) : (
-                            <Dialog
-                                open={uploadOpen}
-                                onOpenChange={changeUploadOpen}
-                            >
-                                <DialogContent
-                                    finalFocus={uploadButton}
-                                    className="rounded-none sm:max-w-2xl dark:border-neutral-800 dark:bg-black"
+            <DocumentUploadProvider
+                value={{ openUpload: showUpload, preloadUpload, loadingUpload }}
+            >
+                <AppShell variant="sidebar">
+                    <AppSidebar />
+                    <AppContent
+                        variant="sidebar"
+                        className="min-w-0 overflow-x-clip pt-16"
+                    >
+                        <AppSidebarHeader
+                            breadcrumbs={breadcrumbs}
+                            onUploadDocument={() => showUpload()}
+                            onUploadIntent={preloadUpload}
+                            uploadButtonRef={uploadButton}
+                            loadingUpload={loadingUpload}
+                        />
+                        {children}
+                        {uploadOpen &&
+                            (ready ? (
+                                <UploadDialog
+                                    {...uploadOptions}
+                                    open={uploadOpen}
+                                    onOpenChange={changeUploadOpen}
+                                    finalFocus={uploadFinalFocus}
+                                />
+                            ) : (
+                                <Dialog
+                                    open={uploadOpen}
+                                    onOpenChange={changeUploadOpen}
                                 >
-                                    <DialogHeader>
-                                        <DialogTitle>
-                                            Add document to archive
-                                        </DialogTitle>
-                                        <DialogDescription>
-                                            Choose a scanned PDF or image to
-                                            upload.
-                                        </DialogDescription>
-                                    </DialogHeader>
-                                    {uploadError ? (
-                                        <div className="space-y-3">
-                                            <p
-                                                role="alert"
-                                                className="text-sm text-red-700 dark:text-red-400"
+                                    <DialogContent
+                                        finalFocus={uploadFinalFocus}
+                                        className="rounded-none sm:max-w-xl dark:border-neutral-800 dark:bg-black"
+                                    >
+                                        <DialogHeader>
+                                            <DialogTitle>
+                                                Upload document
+                                            </DialogTitle>
+                                            <DialogDescription>
+                                                Choose Archive or Route before
+                                                selecting your document.
+                                            </DialogDescription>
+                                        </DialogHeader>
+                                        {uploadError ? (
+                                            <div className="space-y-3">
+                                                <p
+                                                    role="alert"
+                                                    className="text-sm text-red-700 dark:text-red-400"
+                                                >
+                                                    {uploadError}
+                                                </p>
+                                                <Button
+                                                    type="button"
+                                                    onClick={openUpload}
+                                                >
+                                                    Try again
+                                                </Button>
+                                            </div>
+                                        ) : (
+                                            <div
+                                                role="status"
+                                                className="flex min-h-32 items-center justify-center gap-2 text-sm text-muted-foreground"
                                             >
-                                                {uploadError}
-                                            </p>
-                                            <Button
-                                                type="button"
-                                                onClick={openUpload}
-                                            >
-                                                Try again
-                                            </Button>
-                                        </div>
-                                    ) : (
-                                        <div
-                                            role="status"
-                                            className="flex min-h-32 items-center justify-center gap-2 text-sm text-muted-foreground"
-                                        >
-                                            <Spinner className="size-4 text-blue-900 dark:text-white" />
-                                            Loading uploader…
-                                        </div>
-                                    )}
-                                </DialogContent>
-                            </Dialog>
-                        ))}
-                </AppContent>
-            </AppShell>
+                                                <Spinner className="size-4 text-blue-900 dark:text-white" />
+                                                Loading uploader…
+                                            </div>
+                                        )}
+                                    </DialogContent>
+                                </Dialog>
+                            ))}
+                    </AppContent>
+                </AppShell>
+            </DocumentUploadProvider>
         </ArchiveHeaderProvider>
     );
 }

@@ -8,6 +8,8 @@ use Illuminate\Validation\ValidationException;
 
 class DocumentOcrEditor
 {
+    public function __construct(private DocumentAuditRecorder $audit) {}
+
     public static function revision(Document $document): string
     {
         return hash('sha256', json_encode([$document->ocr_text, $document->ocr_regions], JSON_THROW_ON_ERROR));
@@ -26,11 +28,13 @@ class DocumentOcrEditor
                 throw ValidationException::withMessages(['revision' => 'The OCR text has changed. Reopen the comparison and review the latest text.']);
             }
 
-            if (! $reviewed || $locked->ocr_reviewed_at === null) {
+            $wasReviewed = $locked->ocr_reviewed_at !== null;
+            if ($wasReviewed !== $reviewed) {
                 $locked->forceFill([
                     'ocr_reviewed_at' => $reviewed ? now() : null,
                     'ocr_reviewed_by' => $reviewed ? $reviewerId : null,
                 ])->saveQuietly();
+                $this->audit->record($locked, $reviewed ? 'ocr_reviewed' : 'ocr_review_reopened', ['ocr_reviewed' => ['before' => $wasReviewed, 'after' => $reviewed]]);
             }
 
             return $locked;
@@ -60,6 +64,11 @@ class DocumentOcrEditor
                 throw ValidationException::withMessages(['text' => 'This OCR block is no longer available. Reopen the document and try again.']);
             }
             $pageIndex = $region['page'] - 1;
+            $previousText = $region['text'];
+            if ($previousText === $text) {
+                return $locked;
+            }
+            $wasReviewed = $locked->ocr_reviewed_at !== null;
 
             $page = $pages[$pageIndex];
             $offset = 0;
@@ -90,6 +99,11 @@ class DocumentOcrEditor
                 'ocr_reviewed_at' => null,
                 'ocr_reviewed_by' => null,
             ])->saveQuietly();
+
+            $this->audit->record($locked, 'ocr_corrected', [
+                'text' => ['before' => $previousText, 'after' => $text],
+                ...($wasReviewed ? ['ocr_reviewed' => ['before' => true, 'after' => false]] : []),
+            ], ['page' => $region['page'], 'region' => $index]);
 
             return $locked;
         }, 3);

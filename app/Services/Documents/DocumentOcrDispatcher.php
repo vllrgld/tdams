@@ -9,6 +9,8 @@ use Throwable;
 
 class DocumentOcrDispatcher
 {
+    public function __construct(private DocumentAuditRecorder $audit) {}
+
     public function dispatch(int $documentId): void
     {
         DB::afterCommit(function () use ($documentId): void {
@@ -36,6 +38,8 @@ class DocumentOcrDispatcher
                 'ocr_reviewed_at' => null,
                 'ocr_reviewed_by' => null,
             ])->saveQuietly();
+
+            $this->audit->record($lockedDocument, 'ocr_retried', ['ocr_status' => ['before' => 'failed', 'after' => 'pending']]);
 
             $this->dispatch($lockedDocument->id);
         });

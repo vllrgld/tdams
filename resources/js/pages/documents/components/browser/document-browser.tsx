@@ -5,7 +5,6 @@ import {
     LayoutGrid,
     LayoutList,
     List,
-    Search,
 } from 'lucide-react';
 import { Fragment, type FormEvent, useEffect, useRef, useState } from 'react';
 import DocumentCardView from './document-card-view';
@@ -15,10 +14,18 @@ import DocumentPagination from './document-pagination';
 import DocumentPreviewView from './document-preview-view';
 import DocumentSortMenu from './document-sort-menu';
 import DocumentOcrFilter from './document-ocr-filter';
+import DocumentStatusFilter from './document-status-filter';
+import DocumentSearchModeSwitch from './document-search-mode-switch';
+import DocumentTypeFilter from './document-type-filter';
 import DocumentChain from '@/components/documents/history/document-chain';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
+import {
+    SearchBar,
+    searchBarSelectorClassName,
+    searchBarOptionsClassName,
+    searchBarOptionClassName,
+} from '@/components/ui/search-bar';
 import {
     Select,
     SelectContent,
@@ -38,6 +45,9 @@ import type {
     DocumentSortFilters,
     SearchFieldOption,
     DocumentOcrReviewFilter,
+    DocumentStatusFilter as DocumentStatusFilterValue,
+    DocumentSearchMode,
+    DocumentTypeOption,
 } from '../../types';
 
 const SEARCH_DEBOUNCE_MS = 300;
@@ -52,6 +62,10 @@ type DocumentBrowserProps = {
     searchQuery: string;
     searchField: string;
     ocrReview?: DocumentOcrReviewFilter;
+    documentStatus?: DocumentStatusFilterValue;
+    searchMode?: DocumentSearchMode;
+    documentType?: string;
+    documentTypes: DocumentTypeOption[];
     dateFilters: DocumentDateFilters;
     sortDirection: DocumentSortDirection;
     sortField: DocumentSortField;
@@ -66,6 +80,10 @@ export default function DocumentBrowser({
     searchQuery,
     searchField,
     ocrReview: initialOcrReview = 'all',
+    documentStatus: initialDocumentStatus = 'all',
+    searchMode: initialSearchMode = 'all',
+    documentType: initialDocumentType = 'all',
+    documentTypes,
     dateFilters: initialDateFilters,
     sortDirection,
     sortField,
@@ -77,8 +95,27 @@ export default function DocumentBrowser({
     const [query, setQuery] = useState(searchQuery);
     const [field, setField] = useState(searchField);
     const [ocrReview, setOcrReview] = useState(initialOcrReview);
+    const [documentStatus, setDocumentStatus] = useState(initialDocumentStatus);
+    const [searchMode, setSearchMode] = useState(initialSearchMode);
+    const [documentType, setDocumentType] = useState(initialDocumentType);
     useEffect(() => setOcrReview(initialOcrReview), [initialOcrReview]);
+    useEffect(
+        () => setDocumentStatus(initialDocumentStatus),
+        [initialDocumentStatus],
+    );
+    useEffect(() => setSearchMode(initialSearchMode), [initialSearchMode]);
+    useEffect(
+        () => setDocumentType(initialDocumentType),
+        [initialDocumentType],
+    );
+    const showSearchModeSwitch = documentType === 'all';
+    const showStatusFilter = !documentTypes.find(
+        (type) => String(type.id) === documentType,
+    )?.usesTaxFields;
     const {
+        date_field: dateField,
+        letter_date_from: letterDateFrom,
+        letter_date_to: letterDateTo,
         declaration_date_from: declarationDateFrom,
         declaration_date_to: declarationDateTo,
         date_added_from: dateAddedFrom,
@@ -92,10 +129,8 @@ export default function DocumentBrowser({
     const [chainDocument, setChainDocument] = useState<ArchivedDocument | null>(
         null,
     );
-    const [bookmarkedIds, setBookmarkedIds] = useState<Set<number>>(
-        () => new Set(),
-    );
     const debounceRef = useRef<number | null>(null);
+    const searchInputRef = useRef<HTMLInputElement>(null);
     const isTypingRef = useRef(false);
     const activeSearchRef = useRef<symbol | null>(null);
 
@@ -116,6 +151,9 @@ export default function DocumentBrowser({
 
     useEffect(() => {
         setDateFilters({
+            date_field: dateField,
+            letter_date_from: letterDateFrom,
+            letter_date_to: letterDateTo,
             declaration_date_from: declarationDateFrom,
             declaration_date_to: declarationDateTo,
             date_added_from: dateAddedFrom,
@@ -123,6 +161,9 @@ export default function DocumentBrowser({
             date_timezone: dateTimezone,
         });
     }, [
+        dateField,
+        letterDateFrom,
+        letterDateTo,
         declarationDateFrom,
         declarationDateTo,
         dateAddedFrom,
@@ -147,6 +188,8 @@ export default function DocumentBrowser({
             ? 'Search documents…'
             : `Search ${selectedLabel.toLowerCase()}…`;
     const hasDateFilters = Boolean(
+        letterDateFrom ||
+        letterDateTo ||
         declarationDateFrom ||
         declarationDateTo ||
         dateAddedFrom ||
@@ -156,29 +199,48 @@ export default function DocumentBrowser({
     const paginationDisabled =
         isSearching ||
         query.trim() !== searchQuery ||
-        ocrReview !== initialOcrReview;
+        ocrReview !== initialOcrReview ||
+        documentStatus !== initialDocumentStatus ||
+        searchMode !== initialSearchMode ||
+        documentType !== initialDocumentType;
     const hasFilters = Boolean(
         query.trim() ||
         field !== 'all' ||
         ocrReview !== 'all' ||
+        documentStatus !== 'all' ||
+        searchMode !== 'all' ||
+        documentType !== 'all' ||
         dateFilters.declaration_date_from ||
         dateFilters.declaration_date_to ||
+        dateFilters.letter_date_from ||
+        dateFilters.letter_date_to ||
+        dateFilters.date_field !== 'letter_date' ||
         dateFilters.date_added_from ||
         dateFilters.date_added_to,
     );
 
-    function toggleBookmark(documentId: number) {
-        setBookmarkedIds((current) => {
-            const next = new Set(current);
-
-            if (next.has(documentId)) {
-                next.delete(documentId);
-            } else {
-                next.add(documentId);
-            }
-
-            return next;
-        });
+    function documentDeleted(document: ArchivedDocument) {
+        if (chainDocument?.id === document.id) setChainDocument(null);
+        const query = Object.fromEntries(
+            new URLSearchParams(window.location.search),
+        );
+        const page =
+            documents.data.length === 1
+                ? Math.max(1, documents.current_page - 1)
+                : documents.current_page;
+        if (page > 1) query.page = String(page);
+        else delete query.page;
+        router.flushAll();
+        router.get(
+            documentsIndex.url({ query }),
+            {},
+            {
+                preserveState: true,
+                preserveScroll: true,
+                onSuccess: () =>
+                    searchInputRef.current?.focus({ preventScroll: true }),
+            },
+        );
     }
 
     function clearDebounce() {
@@ -196,6 +258,9 @@ export default function DocumentBrowser({
         nextDirection = direction,
         nextSort = sort,
         nextOcrReview = ocrReview,
+        nextDocumentType = documentType,
+        nextSearchMode = searchMode,
+        nextStatus = documentStatus,
     ) {
         const q = nextQuery.trim();
         const nextNormalizedField = nextField === '' ? 'all' : nextField;
@@ -209,8 +274,14 @@ export default function DocumentBrowser({
             nextDirection === sortDirection &&
             nextSort === sortField &&
             nextOcrReview === initialOcrReview &&
+            nextStatus === initialDocumentStatus &&
+            nextSearchMode === initialSearchMode &&
+            nextDocumentType === initialDocumentType &&
             nextDates.declaration_date_from === declarationDateFrom &&
             nextDates.declaration_date_to === declarationDateTo &&
+            nextDates.date_field === dateField &&
+            nextDates.letter_date_from === letterDateFrom &&
+            nextDates.letter_date_to === letterDateTo &&
             nextDates.date_added_from === dateAddedFrom &&
             nextDates.date_added_to === dateAddedTo &&
             (!(nextDates.date_added_from || nextDates.date_added_to) ||
@@ -232,6 +303,8 @@ export default function DocumentBrowser({
         }
 
         for (const key of [
+            'letter_date_from',
+            'letter_date_to',
             'declaration_date_from',
             'declaration_date_to',
             'date_added_from',
@@ -242,10 +315,17 @@ export default function DocumentBrowser({
         if (nextDates.date_added_from || nextDates.date_added_to) {
             params.date_timezone = nextDates.date_timezone;
         }
+        if (nextDates.date_field === 'declaration_date')
+            params.date_field = nextDates.date_field;
         if (page !== undefined && page > 1) params.page = String(page);
         if (nextDirection !== 'desc') params.direction = nextDirection;
         if (nextSort !== 'created_at') params.sort = nextSort;
         if (nextOcrReview !== 'all') params.ocr_review = nextOcrReview;
+        if (nextStatus !== 'all') params.status = nextStatus;
+        if (nextDocumentType !== 'all') params.type = nextDocumentType;
+        if (nextDocumentType === 'all' && nextSearchMode === 'tax') {
+            params.search_mode = nextSearchMode;
+        }
 
         const visit = Symbol();
         activeSearchRef.current = visit;
@@ -260,7 +340,7 @@ export default function DocumentBrowser({
                 preserveState: true,
                 preserveScroll: page === undefined,
                 replace: page === undefined,
-                only: ['documents', 'filters'],
+                only: ['documents', 'filters', 'searchFields'],
                 onFinish: () => {
                     if (activeSearchRef.current === visit) {
                         activeSearchRef.current = null;
@@ -314,6 +394,9 @@ export default function DocumentBrowser({
     function clearFilters() {
         clearDebounce();
         const dates = {
+            date_field: 'letter_date' as const,
+            letter_date_from: '',
+            letter_date_to: '',
             declaration_date_from: '',
             declaration_date_to: '',
             date_added_from: '',
@@ -323,8 +406,39 @@ export default function DocumentBrowser({
         setQuery('');
         setField('all');
         setOcrReview('all');
+        setDocumentStatus('all');
+        setSearchMode('all');
+        setDocumentType('all');
         setDateFilters(dates);
-        visitSearch('', 'all', dates, undefined, direction, sort, 'all');
+        visitSearch(
+            '',
+            'all',
+            dates,
+            undefined,
+            direction,
+            sort,
+            'all',
+            'all',
+            'all',
+            'all',
+        );
+    }
+
+    function changeDocumentStatus(value: DocumentStatusFilterValue) {
+        clearDebounce();
+        setDocumentStatus(value);
+        visitSearch(
+            query,
+            field,
+            dateFilters,
+            undefined,
+            direction,
+            sort,
+            ocrReview,
+            documentType,
+            searchMode,
+            value,
+        );
     }
 
     function changeOcrReview(value: DocumentOcrReviewFilter) {
@@ -337,6 +451,48 @@ export default function DocumentBrowser({
             undefined,
             direction,
             sort,
+            value,
+        );
+    }
+
+    function changeDocumentType(value: string) {
+        clearDebounce();
+        const nextStatus = documentTypes.find(
+            (type) => String(type.id) === value,
+        )?.usesTaxFields
+            ? 'all'
+            : documentStatus;
+        setDocumentStatus(nextStatus);
+        setDocumentType(value);
+        setSearchMode('all');
+        setField('all');
+        visitSearch(
+            query,
+            'all',
+            dateFilters,
+            undefined,
+            direction,
+            sort,
+            ocrReview,
+            value,
+            'all',
+            nextStatus,
+        );
+    }
+
+    function changeSearchMode(value: DocumentSearchMode) {
+        clearDebounce();
+        setSearchMode(value);
+        setField('all');
+        visitSearch(
+            query,
+            'all',
+            dateFilters,
+            undefined,
+            direction,
+            sort,
+            ocrReview,
+            documentType,
             value,
         );
     }
@@ -373,71 +529,87 @@ export default function DocumentBrowser({
                 className="h-14 shrink-0 border-b border-slate-200 dark:border-neutral-800"
             />
             <CardContent className="px-0 py-0">
-                <div className="sticky top-16 z-30 flex flex-wrap items-center gap-2 border-b border-slate-200 bg-card p-3 shadow-sm dark:border-neutral-800 dark:bg-black">
+                <div className="sticky top-16 z-30 flex flex-wrap items-center gap-1 border-b border-slate-200 bg-card p-3 shadow-sm dark:border-neutral-800 dark:bg-black">
                     <form
                         onSubmit={submitSearch}
-                        className="min-w-0 basis-full lg:flex-1 lg:basis-0"
+                        className="min-w-0 basis-full xl:flex-1 xl:basis-0"
                     >
-                        <div className="flex h-[31px] min-w-0 rounded-md bg-card dark:bg-black">
-                            <Select
-                                value={field}
-                                onValueChange={changeSearchField}
-                                items={searchFields}
-                            >
-                                <SelectTrigger
-                                    aria-label="Search in"
-                                    className="z-10 h-full w-auto max-w-[50%] shrink-0 rounded-none rounded-l-md border border-blue-900 bg-transparent px-2.5 py-1 text-[13px] text-blue-900 shadow-none hover:bg-blue-900 hover:text-white focus-visible:border-blue-900 focus-visible:ring-[3px] focus-visible:ring-blue-900/20 data-[size=default]:h-full *:data-[slot=select-value]:min-w-0 *:data-[slot=select-value]:flex-1 *:data-[slot=select-value]:truncate dark:bg-transparent dark:text-white dark:hover:bg-blue-900 dark:focus-visible:ring-white/50 [&_svg]:opacity-100 [&_svg:not([class*='text-'])]:text-current"
+                        <SearchBar
+                            ref={searchInputRef}
+                            selector={
+                                <Select
+                                    value={field}
+                                    onValueChange={changeSearchField}
+                                    items={searchFields}
                                 >
-                                    <SelectValue placeholder="All" />
-                                </SelectTrigger>
-                                <SelectContent
-                                    align="start"
-                                    side="bottom"
-                                    className="w-(--anchor-width) min-w-36 rounded-none rounded-l-md border-blue-900 text-blue-900 *:min-w-0 dark:text-white"
-                                >
-                                    {searchFields.map((option, index) => (
-                                        <Fragment key={option.value}>
-                                            {index === 1 ? (
+                                    <SelectTrigger
+                                        aria-label="Search in"
+                                        className={searchBarSelectorClassName}
+                                    >
+                                        <SelectValue placeholder="All" />
+                                    </SelectTrigger>
+                                    <SelectContent
+                                        align="start"
+                                        side="bottom"
+                                        className={searchBarOptionsClassName}
+                                    >
+                                        {showSearchModeSwitch ? (
+                                            <>
+                                                <DocumentSearchModeSwitch
+                                                    value={searchMode}
+                                                    onChange={changeSearchMode}
+                                                />
                                                 <SelectSeparator />
-                                            ) : null}
-                                            <SelectItem
-                                                value={option.value}
-                                                className="rounded-none text-sm focus:bg-blue-900 focus:text-white data-highlighted:bg-blue-900 data-highlighted:text-white [&_svg:not([class*='text-'])]:text-current"
-                                            >
-                                                {option.label}
-                                            </SelectItem>
-                                        </Fragment>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                            <div className="relative min-w-0 flex-1 rounded-r-md border border-l-0 border-slate-300 focus-within:border-slate-400 focus-within:ring-[3px] focus-within:ring-slate-300/40 dark:border-neutral-700 dark:focus-within:border-neutral-500 dark:focus-within:ring-neutral-500/40">
-                                <Search
-                                    aria-hidden="true"
-                                    className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-slate-400"
-                                />
-                                <Input
-                                    name="q"
-                                    value={query}
-                                    onChange={(event) =>
-                                        changeQuery(event.target.value)
-                                    }
-                                    maxLength={200}
-                                    autoComplete="off"
-                                    aria-label="Search documents"
-                                    placeholder={placeholder}
-                                    className="h-full rounded-none rounded-r-md border-0 bg-transparent pl-8.5 text-[13px] shadow-none focus-visible:border-transparent focus-visible:ring-0"
-                                />
-                            </div>
-                        </div>
+                                            </>
+                                        ) : null}
+                                        {searchFields.map((option, index) => (
+                                            <Fragment key={option.value}>
+                                                {index === 1 ? (
+                                                    <SelectSeparator />
+                                                ) : null}
+                                                <SelectItem
+                                                    value={option.value}
+                                                    className={
+                                                        searchBarOptionClassName
+                                                    }
+                                                >
+                                                    {option.label}
+                                                </SelectItem>
+                                            </Fragment>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            }
+                            name="q"
+                            value={query}
+                            onChange={(event) =>
+                                changeQuery(event.target.value)
+                            }
+                            maxLength={200}
+                            autoComplete="off"
+                            aria-label="Search documents"
+                            placeholder={placeholder}
+                        />
                     </form>
                     <DocumentAdvancedFilters
                         value={dateFilters}
                         onApply={applyDateFilters}
                     />
+                    <DocumentTypeFilter
+                        value={documentType}
+                        types={documentTypes}
+                        onChange={changeDocumentType}
+                    />
                     <DocumentOcrFilter
                         value={ocrReview}
                         onChange={changeOcrReview}
                     />
+                    {showStatusFilter && (
+                        <DocumentStatusFilter
+                            value={documentStatus}
+                            onChange={changeDocumentStatus}
+                        />
+                    )}
                     <div
                         role="group"
                         aria-label="Document view"
@@ -473,7 +645,7 @@ export default function DocumentBrowser({
                         variant="outline"
                         disabled={!hasFilters}
                         onClick={clearFilters}
-                        className="h-[31px] shrink-0 gap-1.5 border-blue-900 bg-white px-2.5 text-[13px] font-normal text-blue-900 shadow-none hover:bg-blue-900 hover:text-white focus-visible:border-blue-900 focus-visible:ring-blue-900/20 has-[>svg]:px-2.5 dark:bg-neutral-900 dark:text-white dark:hover:bg-blue-900 dark:focus-visible:ring-white/50"
+                        className="h-[31px] shrink-0 gap-0.5 border-blue-900 bg-white px-1.5 text-[13px] font-normal text-blue-900 shadow-none hover:bg-blue-900 hover:text-white focus-visible:border-blue-900 focus-visible:ring-blue-900/20 has-[>svg]:px-1.5 dark:bg-neutral-900 dark:text-white dark:hover:bg-blue-900 dark:focus-visible:ring-white/50"
                     >
                         <FilterX aria-hidden="true" className="size-4" />
                         Clear filters
@@ -503,16 +675,13 @@ export default function DocumentBrowser({
                             <DocumentPreviewView
                                 documents={documents.data}
                                 onViewDocument={onViewDocument}
-                                bookmarkedIds={bookmarkedIds}
-                                onToggleBookmark={toggleBookmark}
                                 onShowChain={setChainDocument}
                             />
                         ) : (
                             <DocumentCardView
+                                onDocumentDeleted={documentDeleted}
                                 documents={documents.data}
                                 onViewDocument={onViewDocument}
-                                bookmarkedIds={bookmarkedIds}
-                                onToggleBookmark={toggleBookmark}
                                 onShowChain={setChainDocument}
                             />
                         )}
@@ -536,14 +705,20 @@ export default function DocumentBrowser({
                         </span>
                         {searchQuery !== '' ||
                         hasDateFilters ||
-                        initialOcrReview !== 'all' ? (
+                        initialOcrReview !== 'all' ||
+                        initialDocumentStatus !== 'all' ||
+                        initialDocumentType !== 'all' ? (
                             <>
                                 <h2 className="text-base font-semibold text-slate-950 dark:text-white">
                                     No matching documents
                                 </h2>
                                 <p className="mt-1 max-w-md text-sm text-slate-600 dark:text-neutral-400">
-                                    {initialOcrReview !== 'all' ? (
+                                    {initialDocumentStatus !== 'all' ? (
+                                        'No documents match these filters. Choose a different document status or clear the filters.'
+                                    ) : initialOcrReview !== 'all' ? (
                                         'No documents match these filters. Choose a different OCR review status or clear the filters.'
+                                    ) : initialDocumentType !== 'all' ? (
+                                        'No documents match these filters. Choose a different type or clear the filters.'
                                     ) : hasDateFilters ? (
                                         'No documents match these filters. Try a different date range or clear the date filter.'
                                     ) : (

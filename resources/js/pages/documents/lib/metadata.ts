@@ -77,10 +77,92 @@ export function updateReviewField(
     };
 }
 
+export type MappedAttachment = {
+    description: string;
+    page: number | null;
+};
+
+export type MappedDocumentFields = Partial<
+    Record<MetadataField, string | null>
+> & {
+    attachments?: unknown;
+};
+
+export function unusedMappedAttachments(
+    existing: Array<{ description: string }>,
+    mapped: unknown,
+): MappedAttachment[] {
+    if (!Array.isArray(mapped)) {
+        return [];
+    }
+
+    const seen = new Set(
+        existing
+            .map((item) => item.description.trim().toLowerCase())
+            .filter((description) => description !== ''),
+    );
+    const unused: MappedAttachment[] = [];
+
+    for (const item of mapped) {
+        const description = mappedAttachmentDescription(item);
+        const key = description.toLowerCase();
+
+        if (description === '' || seen.has(key)) {
+            continue;
+        }
+
+        seen.add(key);
+        unused.push({
+            description,
+            page: mappedAttachmentPage(item),
+        });
+    }
+
+    return unused;
+}
+
+function mappedAttachmentDescription(value: unknown): string {
+    if (typeof value === 'string') {
+        return value.trim();
+    }
+
+    if (
+        value !== null &&
+        typeof value === 'object' &&
+        !Array.isArray(value) &&
+        'description' in value &&
+        typeof value.description === 'string'
+    ) {
+        return value.description.trim();
+    }
+
+    return '';
+}
+
+function mappedAttachmentPage(value: unknown): number | null {
+    if (
+        value === null ||
+        typeof value !== 'object' ||
+        Array.isArray(value) ||
+        !('page' in value)
+    ) {
+        return null;
+    }
+
+    const page = value.page;
+
+    return typeof page === 'number' &&
+        Number.isInteger(page) &&
+        page >= 1 &&
+        page <= 9999
+        ? page
+        : null;
+}
+
 export function mergeMappedFields(
     state: DocumentReviewState,
     sections: DocumentFieldSection[],
-    fields: Partial<Record<MetadataField, string | null>>,
+    fields: MappedDocumentFields,
 ): DocumentReviewState {
     const values = { ...state.values };
     const checked = { ...state.checked };

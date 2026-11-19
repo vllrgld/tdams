@@ -2,6 +2,7 @@ import { FileText } from 'lucide-react';
 import OcrReviewBadge from '@/components/documents/ocr/ocr-review-badge';
 import { formatDate, formatFileSize } from '@/lib/document-formatters';
 import type { ArchivedDocument } from '@/types/documents';
+import DocumentTrackingCode from '@/components/documents/document-tracking-code';
 import { DocumentFileName, getPropertyLocation } from './document-view-helpers';
 
 type DocumentListViewProps = {
@@ -22,6 +23,8 @@ export default function DocumentListView({
                             'File',
                             'Tax declaration no.',
                             'Registered owner',
+                            'Correspondent',
+                            'Type',
                             'Lot no.',
                             'Municipality / barangay',
                             'OCR review',
@@ -56,13 +59,30 @@ export default function DocumentListView({
                                 </span>
                                 <span className="mt-1 block pl-6 text-xs font-normal text-slate-500 dark:text-neutral-400">
                                     {formatFileSize(document.fileSize)}
+                                    <DocumentTrackingCode
+                                        code={document.trackingCode}
+                                    />
                                 </span>
                             </th>
                             <td className="px-3 py-3.5">
-                                {document.taxDeclarationNumber ?? '—'}
+                                {document.usesTaxFields
+                                    ? (document.taxDeclarationNumber ?? '—')
+                                    : (document.title ?? '—')}
                             </td>
                             <td className="px-3 py-3.5">
                                 {document.registeredOwner ?? '—'}
+                            </td>
+                            <td className="px-3 py-3.5">
+                                {document.correspondent ?? '—'}
+                            </td>
+                            <td className="px-3 py-3.5">
+                                {document.documentTypeName ?? '—'}
+                                {document.filingPath === 'route' &&
+                                document.routeName ? (
+                                    <span className="mt-1 block text-xs text-slate-500 dark:text-neutral-400">
+                                        {document.routeName}
+                                    </span>
+                                ) : null}
                             </td>
                             <td className="px-3 py-3.5">
                                 {document.lotNumber ?? '—'}

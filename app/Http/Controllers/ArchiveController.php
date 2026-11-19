@@ -6,6 +6,8 @@ use App\Http\Resources\DocumentResource;
 use App\Models\Book;
 use App\Models\Cabinet;
 use App\Models\Document;
+use App\Services\Offices\CurrentOffice;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -13,11 +15,14 @@ use Inertia\Response;
 
 class ArchiveController extends Controller
 {
-    public function index(): Response
+    public function index(CurrentOffice $currentOffice): Response
     {
         $cabinets = Cabinet::query()
+            ->forOffice($currentOffice->id())
             ->with([
-                'drawers.books' => fn ($query) => $query->withCount('documents'),
+                'drawers.books' => fn ($query) => $query->withCount([
+                    'documents' => fn (Builder $documents) => $currentOffice->constrain($documents),
+                ]),
             ])
             ->orderBy('name')
             ->get()
@@ -30,10 +35,17 @@ class ArchiveController extends Controller
         ]);
     }
 
-    public function book(Book $book): JsonResponse
+    public function book(Book $book, CurrentOffice $currentOffice): JsonResponse
     {
+        $officeId = $currentOffice->id();
         $documents = $book->documents()
-            ->with(Document::archiveRelations())
+            ->with(Document::archiveRelations());
+
+        if ($officeId !== null) {
+            $documents->forOffice($officeId);
+        }
+
+        $documents = $documents
             ->get()
             ->map(fn (Document $document): array => (new DocumentResource($document))->resolve())
             ->values()
@@ -44,7 +56,7 @@ class ArchiveController extends Controller
         ]);
     }
 
-    public function locate(Request $request): JsonResponse
+    public function locate(Request $request, CurrentOffice $currentOffice): JsonResponse
     {
         $validated = $request->validate([
             'number' => ['required', 'string', 'max:100'],
@@ -58,9 +70,12 @@ class ArchiveController extends Controller
             ]);
         }
 
-        $document = Document::query()
-            ->with(['book.drawer', ...Document::archiveRelations()])
+        $documentQuery = Document::query()
+            ->with(['book.drawer', ...Document::archiveRelations()]);
+        $currentOffice->constrain($documentQuery);
+        $document = $documentQuery
             ->whereNotNull('book_id')
+            ->whereHas('book', fn (Builder $books) => $books->forOffice($currentOffice->id()))
             ->whereHas('taxDeclaration', function ($query) use ($number): void {
                 $query->whereRaw('LOWER(tax_declaration_number) = ?', [mb_strtolower($number)]);
             })

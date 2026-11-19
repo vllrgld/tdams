@@ -1,0 +1,64 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cabinet preview review</title>
+  <style>
+    body { margin: 0; background: #e9edf2; font-family: Arial, sans-serif; }
+    #root { width: min(1060px, calc(100% - 48px)); margin: 32px auto; }
+    .review-shell { background: white; border: 1px solid #dce2e8; border-radius: 12px; padding: 24px; }
+    .review-grid { display: grid; grid-template-columns: minmax(0,1.15fr) minmax(280px,380px); gap: 24px; margin: 20px 0; }
+    .dark body { background: #14191e; color: white; }
+    .dark .review-shell { background: #0a0a0a; border-color: #333; }
+    @media (max-width: 700px) { #root { width: calc(100% - 24px); margin: 12px auto; } .review-shell { padding: 16px; } .review-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <pre id="review-status" style="font-size:11px;padding:0 24px"></pre>
+  <script type="module">
+    import React from 'react';
+    import { createRoot } from 'react-dom/client';
+    import { _roots } from '@react-three/fiber';
+    import ArchiveLocationPreview from '/resources/js/pages/documents/components/upload/archive-location-preview.tsx';
+    import ArchivePlacementSelectors from '/resources/js/pages/documents/components/upload/archive-placement-selectors.tsx';
+    import './cabinet-review.css';
+
+    const params = new URLSearchParams(location.search);
+    if (params.has('dark')) document.documentElement.classList.add('dark');
+    const cabinet = { id: 'cabinet-preview', name: 'Records Cabinet', drawers: Array.from({length: Number(params.get('count') || 4)}, (_, index) => ({
+      id: `drawer-${index}`, label: `Drawer ${index + 1}`, books: [{ id: `book-${index}`, label: 'Book 1', kind: 'book', coverTitle: 'Book 1' }],
+    })) };
+    window.reviewErrors = [];
+    window.reviewRoots = _roots;
+    window.addEventListener('error', event => window.reviewErrors.push(event.message));
+    window.addEventListener('unhandledrejection', event => window.reviewErrors.push(String(event.reason)));
+    function App() {
+      const [drawerId, setDrawerId] = React.useState(params.get('closed') === '1' ? '' : 'drawer-1');
+      const [itemId, setItemId] = React.useState('');
+      const selected = cabinet.drawers.find(drawer => drawer.id === drawerId);
+      window.setReviewDrawer = setDrawerId;
+      return React.createElement('div', {className: 'review-shell'},
+        React.createElement('h1', {className: 'text-xl font-semibold'}, 'Choose archive location'),
+        React.createElement('p', {className: 'mt-2 text-sm text-muted-foreground'}, 'Choose a location in the office archive.'),
+        React.createElement('div', {className: 'review-grid'},
+          React.createElement(ArchiveLocationPreview, {cabinet, drawerId, bookId: itemId}),
+          React.createElement('div', {style: {alignSelf: 'start'}}, React.createElement(ArchivePlacementSelectors, {cabinets: [cabinet], cabinetId: cabinet.id, drawerId, itemId,
+            drawers: cabinet.drawers, items: selected?.books || [], onCabinetChange: () => {}, onDrawerChange: setDrawerId, onItemChange: setItemId,
+          })),
+        ),
+      );
+    }
+    createRoot(document.getElementById('root')).render(React.createElement(App));
+    setInterval(() => {
+      const canvas = document.querySelector('canvas');
+      const status = {canvas: Boolean(canvas), width: canvas?.width, height: canvas?.height, errors: window.reviewErrors};
+      document.getElementById('review-status').textContent = JSON.stringify(status);
+      document.documentElement.dataset.reviewReady = status.canvas && !status.errors.length ? 'true' : 'false';
+    }, 500);
+  </script>
+</body>
+</html>
+
+

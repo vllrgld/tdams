@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Cabinet;
+use App\Models\Office;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,6 +19,7 @@ class CabinetFactory extends Factory
         $location = fake()->unique()->city();
 
         return [
+            'office_id' => Office::query()->where('is_receiving', true)->value('id') ?? Office::factory(),
             'name' => $location,
             'location' => $location,
         ];

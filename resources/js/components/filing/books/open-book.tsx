@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import type { ArchivedDocument } from '@/types/documents';
 import BookCoverFace from '@/components/filing/books/book-cover-face';
+import LeverArchCoverFace from '../folders/lever-arch-cover-face';
 import { useFilingItemPortal } from '../shared/filing-item-portal';
 import type { FilingItemViewerProps } from '../shared/filing-item-types';
 import {
@@ -820,7 +821,11 @@ export default function OpenBook({
         >
             <motion.button
                 type="button"
-                aria-label="Close book"
+                aria-label={
+                    opened.item.kind === 'lever_arch'
+                        ? 'Close lever arch file'
+                        : 'Close book'
+                }
                 className={cn(
                     'absolute inset-0 focus-visible:outline-2 focus-visible:outline-offset-[-4px] focus-visible:outline-blue-300',
                     insideDrawer ? 'bg-transparent' : 'bg-black/70',
@@ -1006,7 +1011,13 @@ export default function OpenBook({
                                     transform: 'translateZ(1px)',
                                 }}
                             >
-                                <BookCoverFace title={opened.item.coverTitle} />
+                                {opened.item.kind === 'lever_arch' ? (
+                                    <LeverArchCoverFace />
+                                ) : (
+                                    <BookCoverFace
+                                        title={opened.item.coverTitle}
+                                    />
+                                )}
                             </div>
                             <div
                                 id="open-book-title"

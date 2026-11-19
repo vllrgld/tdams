@@ -133,3 +133,44 @@
     background-color: var(--header-background);
     color: var(--header-foreground);
 }
+
+[data-slot='dialog-overlay'].command-search-overlay {
+    background-color: rgb(0 0 0 / 0.18);
+}
+
+[data-slot='dialog-content'].command-search {
+    --color-foreground: var(--foreground);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-ring: var(--ring);
+    --color-border: color-mix(in srgb, var(--foreground) 16%, transparent);
+    --color-background: var(--popover);
+    --color-muted: var(--muted);
+
+    border-color: var(--color-border);
+    background-color: color-mix(in srgb, var(--popover) 80%, transparent);
+    color: var(--foreground);
+    box-shadow: 0 18px 40px -14px rgb(0 0 0 / 0.3);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+.dark [data-slot='dialog-content'].command-search {
+    background-color: color-mix(in srgb, var(--popover) 88%, transparent);
+}
+
+.command-search ::selection {
+    background-color: color-mix(in srgb, var(--foreground) 18%, transparent);
+    color: var(--foreground);
+}
+
+.command-search input {
+    caret-color: var(--foreground);
+}
+
+.command-search [role='listbox'] {
+    scrollbar-color: color-mix(in srgb, var(--foreground) 35%, transparent)
+        transparent;
+    scrollbar-width: thin;
+}

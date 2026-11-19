@@ -22,11 +22,14 @@ export default defineConfig({
             input: ['resources/css/app.css', 'resources/js/app.tsx'],
             refresh: true,
             fonts: [
-                bunny('Source Sans 3', {
+                bunny('Geist', {
                     weights: [400, 500, 600, 700],
+                    optimizedFallbacks: false,
                 }),
-                bunny('Cinzel', {
-                    weights: [600, 700],
+                bunny('Geist Mono', {
+                    weights: [400],
+                    preload: false,
+                    optimizedFallbacks: false,
                 }),
             ],
         }),

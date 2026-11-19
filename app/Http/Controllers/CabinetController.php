@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Models\Cabinet;
+use App\Services\Offices\CurrentOffice;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -12,11 +13,11 @@ use Inertia\Response;
 
 class CabinetController extends Controller
 {
-    public function index(): Response
+    public function index(CurrentOffice $currentOffice): Response
     {
         $cabinets = [];
 
-        foreach (Cabinet::query()->with('drawers.books')->orderBy('name')->get() as $cabinet) {
+        foreach (Cabinet::query()->forOffice($currentOffice->id())->with('drawers.books')->orderBy('name')->get() as $cabinet) {
             $drawers = [];
 
             foreach ($cabinet->drawers as $drawer) {
@@ -35,18 +36,19 @@ class CabinetController extends Controller
                 $drawers[] = ['id' => (string) $drawer->id, 'label' => $drawer->label, 'position' => $drawer->position, 'books' => $books];
             }
 
-            $cabinets[] = ['id' => (string) $cabinet->id, 'name' => $cabinet->name, 'location' => $cabinet->location, 'drawers' => $drawers];
+            $cabinets[] = ['id' => (string) $cabinet->id, 'name' => $cabinet->name, 'location' => $cabinet->location, 'color' => $cabinet->color, 'drawers' => $drawers];
         }
 
         return Inertia::render('manage/cabinets/index', [
             'cabinets' => $cabinets,
-            'coverTitle' => Book::coverTitle(),
-            'folderCoverTitle' => Book::coverTitle('folder'),
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request, CurrentOffice $currentOffice): RedirectResponse
     {
+        $office = $currentOffice->office();
+        abort_unless($office !== null, 403, 'Select an office before creating a cabinet.');
+
         $drawers = $request->input('drawers', []);
         $request->merge([
             'drawers' => collect(is_array($drawers) ? $drawers : [])
@@ -56,14 +58,17 @@ class CabinetController extends Controller
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:150'],
+            'color' => ['sometimes', 'required', 'string', 'in:steel_grey,warm_ivory'],
             'drawers' => ['required', 'array', 'min:1', 'max:8'],
             'drawers.*' => ['required', 'string', 'max:100'],
         ]);
 
-        DB::transaction(function () use ($validated): void {
+        DB::transaction(function () use ($validated, $office): void {
             $cabinet = Cabinet::query()->create([
+                'office_id' => $office->id,
                 'name' => $validated['name'],
                 'location' => $validated['name'],
+                'color' => $validated['color'] ?? 'steel_grey',
             ]);
 
             foreach (array_values($validated['drawers']) as $index => $label) {

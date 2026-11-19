@@ -13,6 +13,12 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import RotatableFilingItem from '@/components/filing/rotatable-filing-item';
+import {
+    DEFAULT_COVER_TITLE,
+    FILING_KINDS,
+    filingName,
+    filingTitle,
+} from '@/lib/filing-appearance';
 import type { FilingKind } from '@/types/filing';
 
 export type FilingItemForm = {
@@ -23,8 +29,6 @@ export type FilingItemForm = {
 type AddFilingItemDialogProps = {
     form: InertiaFormProps<FilingItemForm>;
     drawerLabel: string;
-    coverTitle: string;
-    folderCoverTitle: string;
     lockedKind?: FilingKind;
     open: boolean;
     onOpenChange: (open: boolean) => void;
@@ -34,14 +38,12 @@ type AddFilingItemDialogProps = {
 export default function AddFilingItemDialog({
     form,
     drawerLabel,
-    coverTitle,
-    folderCoverTitle,
     lockedKind,
     open,
     onOpenChange,
     onSubmit,
 }: AddFilingItemDialogProps) {
-    const itemName = form.data.kind === 'folder' ? 'folder' : 'book';
+    const itemName = filingName(form.data.kind);
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="flex max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] flex-col gap-0 overflow-hidden rounded-none p-0 sm:max-w-3xl dark:border-neutral-800 dark:bg-black">
@@ -65,11 +67,7 @@ export default function AddFilingItemDialog({
                                         form.data.label.trim() ||
                                         `New ${itemName}`
                                     }
-                                    coverTitle={
-                                        form.data.kind === 'folder'
-                                            ? folderCoverTitle
-                                            : coverTitle
-                                    }
+                                    coverTitle={DEFAULT_COVER_TITLE}
                                     kind={form.data.kind}
                                     compact
                                     upright
@@ -81,53 +79,47 @@ export default function AddFilingItemDialog({
                                 <legend className="mb-2 text-sm font-medium">
                                     File as
                                 </legend>
-                                <div className="flex gap-6">
-                                    {(['book', 'folder'] as const).map(
-                                        (kind) => (
-                                            <label
-                                                key={kind}
-                                                className="flex items-center gap-2 text-sm has-disabled:opacity-50"
-                                            >
-                                                <input
-                                                    type="radio"
-                                                    name="filing-kind"
-                                                    value={kind}
-                                                    checked={
-                                                        form.data.kind === kind
-                                                    }
-                                                    disabled={
-                                                        form.processing ||
-                                                        (lockedKind !==
-                                                            undefined &&
-                                                            lockedKind !== kind)
-                                                    }
-                                                    onChange={() => {
-                                                        const automaticName =
-                                                            form.data.label.match(
-                                                                /^(?:Book|Folder) (\d+)$/,
-                                                            );
-                                                        form.setData({
-                                                            ...form.data,
-                                                            kind,
-                                                            label: automaticName
-                                                                ? `${kind === 'folder' ? 'Folder' : 'Book'} ${automaticName[1]}`
-                                                                : form.data
-                                                                      .label,
-                                                        });
-                                                    }}
-                                                    className="size-4 accent-blue-900"
-                                                />
-                                                {kind === 'book'
-                                                    ? 'Book'
-                                                    : 'Folder'}
-                                            </label>
-                                        ),
-                                    )}
+                                <div className="flex flex-wrap gap-x-5 gap-y-3">
+                                    {FILING_KINDS.map((kind) => (
+                                        <label
+                                            key={kind}
+                                            className="flex items-center gap-2 text-sm has-disabled:opacity-50"
+                                        >
+                                            <input
+                                                type="radio"
+                                                name="filing-kind"
+                                                value={kind}
+                                                checked={
+                                                    form.data.kind === kind
+                                                }
+                                                disabled={
+                                                    form.processing ||
+                                                    (lockedKind !== undefined &&
+                                                        lockedKind !== kind)
+                                                }
+                                                onChange={() => {
+                                                    const automaticName =
+                                                        form.data.label.match(
+                                                            /^(?:Book|Folder|Lever arch file) (\d+)$/,
+                                                        );
+                                                    form.setData({
+                                                        ...form.data,
+                                                        kind,
+                                                        label: automaticName
+                                                            ? `${filingTitle(kind)} ${automaticName[1]}`
+                                                            : form.data.label,
+                                                    });
+                                                }}
+                                                className="size-4 accent-blue-900"
+                                            />
+                                            {filingTitle(kind)}
+                                        </label>
+                                    ))}
                                 </div>
                                 <p className="text-xs leading-5 text-slate-600 dark:text-neutral-400">
                                     {lockedKind
-                                        ? `This drawer holds ${lockedKind}s only.`
-                                        : 'The first item determines whether this drawer holds books or folders.'}
+                                        ? `This drawer holds ${filingName(lockedKind, true)} only.`
+                                        : 'The first item sets the filing type for this drawer.'}
                                 </p>
                                 <InputError message={form.errors.kind} />
                             </fieldset>

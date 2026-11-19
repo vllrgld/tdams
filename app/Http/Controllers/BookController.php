@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Models\Drawer;
+use App\Services\Offices\CurrentOffice;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -14,19 +15,25 @@ use Inertia\Response;
 
 class BookController extends Controller
 {
-    public function index(): Response
+    public function index(CurrentOffice $currentOffice): Response
     {
-        return $this->managementIndex('book');
+        return $this->managementIndex('book', $currentOffice);
     }
 
-    public function folders(): Response
+    public function folders(CurrentOffice $currentOffice): Response
     {
-        return $this->managementIndex('folder');
+        return $this->managementIndex('folder', $currentOffice);
     }
 
-    private function managementIndex(string $kind): Response
+    public function leverArchFiles(CurrentOffice $currentOffice): Response
+    {
+        return $this->managementIndex('lever_arch', $currentOffice);
+    }
+
+    private function managementIndex(string $kind, CurrentOffice $currentOffice): Response
     {
         $books = Book::query()
+            ->forOffice($currentOffice->id())
             ->where('kind', $kind)
             ->with(['drawer.cabinet'])
             ->get()
@@ -40,6 +47,7 @@ class BookController extends Controller
                 'id' => (string) $book->id,
                 'label' => $book->label,
                 'kind' => $book->kind,
+                'coverTitle' => $book->cover_title !== '' ? $book->cover_title : Book::DEFAULT_COVER_TITLE,
                 'position' => $book->position,
                 'drawerId' => (string) $book->drawer->id,
                 'drawerLabel' => $book->drawer->label,
@@ -48,9 +56,12 @@ class BookController extends Controller
             ])
             ->all();
 
-        return Inertia::render($kind === 'folder' ? 'manage/folders/index' : 'manage/books/index', [
+        return Inertia::render(match ($kind) {
+            'folder' => 'manage/folders/index',
+            'lever_arch' => 'manage/lever-arch-files/index',
+            default => 'manage/books/index',
+        }, [
             'books' => $books,
-            'coverTitle' => Book::coverTitle($kind),
             'kind' => $kind,
         ]);
     }
@@ -59,7 +70,7 @@ class BookController extends Controller
     {
         $validated = $request->validate([
             'label' => ['required', 'string', 'max:100'],
-            'kind' => ['sometimes', 'required', Rule::in(['book', 'folder'])],
+            'kind' => ['sometimes', 'required', Rule::in(['book', 'folder', 'lever_arch'])],
         ]);
 
         DB::transaction(function () use ($drawer, $validated): void {
@@ -68,23 +79,24 @@ class BookController extends Controller
             $contents = $lockedDrawer->books()->get();
             $kind = $validated['kind'] ?? 'book';
             $existingKind = $contents->first()?->kind;
+            $itemName = $kind === 'lever_arch' ? 'lever arch file' : $kind;
 
             if ($existingKind !== null && $existingKind !== $kind) {
                 throw ValidationException::withMessages([
-                    'kind' => "This drawer holds {$existingKind}s. Books and folders cannot share a drawer.",
+                    'kind' => 'This drawer holds '.($existingKind === 'lever_arch' ? 'lever arch files' : "{$existingKind}s").' only. Filing types cannot share a drawer.',
                 ]);
             }
 
             if ($contents->count() >= Book::MAX_PER_DRAWER) {
                 throw ValidationException::withMessages([
-                    'label' => "A drawer can hold at most 16 {$kind}s.",
+                    'label' => "A drawer can hold at most 16 {$itemName}s.",
                 ]);
             }
 
             $lockedDrawer->books()->create([
                 'label' => $validated['label'],
                 'kind' => $kind,
-                'cover_title' => Book::coverTitle($kind),
+                'cover_title' => Book::DEFAULT_COVER_TITLE,
                 'position' => (int) $contents->max('position') + 1,
             ]);
         });
@@ -99,17 +111,7 @@ class BookController extends Controller
             'cover_title' => ['sometimes', 'required', 'string', 'max:80'],
         ]);
 
-        DB::transaction(function () use ($book, $validated): void {
-            $book->update([
-                'label' => $validated['label'],
-            ]);
-
-            if (array_key_exists('cover_title', $validated)) {
-                Book::query()->where('kind', $book->kind)->update([
-                    'cover_title' => $validated['cover_title'],
-                ]);
-            }
-        });
+        $book->update($validated);
 
         return back();
     }

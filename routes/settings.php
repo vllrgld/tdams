@@ -3,8 +3,10 @@
 use App\Http\Controllers\Settings\AccessibilitySettingsController;
 use App\Http\Controllers\Settings\DataSettingsController;
 use App\Http\Controllers\Settings\OcrSettingsController;
+use App\Http\Controllers\Settings\OfficeController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\Settings\SecurityController;
+use App\Http\Controllers\Settings\TrackingCodeSettingsController;
 use Illuminate\Auth\Middleware\RequirePassword;
 use Illuminate\Support\Facades\Route;
 
@@ -31,7 +33,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('settings/accessibility', [AccessibilitySettingsController::class, 'update'])->name('accessibility.update');
     Route::redirect('settings/animations', '/settings/accessibility')->name('animations.edit');
 
+    Route::get('settings/offices', [OfficeController::class, 'index'])->name('offices.index');
+    Route::post('settings/offices', [OfficeController::class, 'store'])->name('offices.store');
+    Route::put('settings/offices/current', [OfficeController::class, 'updateCurrent'])->name('offices.current.update');
+    Route::patch('settings/offices/{office}', [OfficeController::class, 'update'])->name('offices.update');
+    Route::patch('settings/offices/{office}/permissions', [OfficeController::class, 'updatePermissions'])->name('offices.permissions.update');
+    Route::delete('settings/offices/{office}', [OfficeController::class, 'destroy'])->name('offices.destroy');
+
     Route::get('settings/ocr', [OcrSettingsController::class, 'edit'])->name('ocr.edit');
+    Route::get('settings/tracking-codes', [TrackingCodeSettingsController::class, 'edit'])->name('tracking-codes.edit');
+    Route::put('settings/tracking-codes', [TrackingCodeSettingsController::class, 'update'])->name('tracking-codes.update');
+    Route::post('settings/tracking-codes/assign', [TrackingCodeSettingsController::class, 'assignMissing'])->name('tracking-codes.assign');
     Route::put('settings/ocr', [OcrSettingsController::class, 'update'])->name('ocr.update');
     Route::redirect('settings/compression', '/settings/ocr');
 

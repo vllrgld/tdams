@@ -6,8 +6,8 @@ export default function AppLogo() {
                 alt=""
                 className="size-8 shrink-0 object-contain"
             />
-            <span className="text-sm font-semibold tracking-wide text-blue-900 group-data-[collapsible=icon]:hidden dark:text-white">
-                TDAMS
+            <span className="max-w-56 text-sm leading-tight font-semibold text-blue-900 group-data-[collapsible=icon]:hidden dark:text-white">
+                Document Archiving and Management System
             </span>
         </span>
     );

@@ -2,7 +2,7 @@
 
 The Laravel trial is installed with `setup.sh`. This package adds **one** queue worker and FastAPI on **127.0.0.1:8001** for Ghostscript compression.
 
-Paddle OCR and Ollama field mapping are HTTPS APIs (almost no RAM). Ghostscript needs CPU and RAM on the box, not a GPU. On 1 GB, keep the **2 GB swap** from `setup.sh` and use **Paddle** in Settings. Local Tesseract as the OCR engine will swap hard or time out.
+Paddle OCR and Groq field mapping are HTTPS APIs (almost no RAM). Ghostscript needs CPU and RAM on the box, not a GPU. On 1 GB, keep the **2 GB swap** from `setup.sh` and use **Paddle** in Settings. Local Tesseract as the OCR engine will swap hard or time out.
 
 Do not run `npm run build` on the instance. Build `public/build` on your PC before copy. For later releases, follow [the update guide](README.md) and use `update.sh --ocr` when the OCR code or requirements changed.
 
@@ -18,7 +18,7 @@ Then paste tokens into `/var/www/dtms/.env`:
 
 ```
 PADDLE_OCR_TOKEN=
-OLLAMA_API_KEY=
+GROQ_API_KEY=
 ```
 
 ```bash

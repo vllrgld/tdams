@@ -48,9 +48,9 @@ export default function Ocr({
         <>
             <Head title="OCR settings" />
 
+            <main className="min-h-full flex-1 bg-background p-4 sm:p-6 xl:p-8">
+            <div className="mx-auto w-full max-w-xl space-y-6">
             <h1 className="sr-only">OCR settings</h1>
-
-            <div className="space-y-6">
                 <Heading
                     variant="small"
                     title="OCR"
@@ -202,6 +202,7 @@ export default function Ocr({
                     )}
                 </Form>
             </div>
+            </main>
         </>
     );
 }

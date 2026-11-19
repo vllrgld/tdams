@@ -18,7 +18,7 @@ These instructions apply to PHP in `app/`, `bootstrap/`, `config/`, `database/`,
 - `app/Http/Resources/`: HTTP response transformations when a dedicated resource improves a public or shared API contract; preserve existing Inertia props and document payloads.
 - `app/Models/`: Eloquent relationships, casts, scopes, and cohesive record behavior. Avoid external HTTP calls and request/session coupling.
 - `app/Services/Documents/`: declaration persistence and document search, following `DeclarationRecorder` and `DocumentSearcher`.
-- `app/Services/Ocr/` and `app/Services/Ollama/`: OCR clients, compression/thumbnail integration, and model mapping. Keep provider-specific payloads out of controllers and models.
+- `app/Services/Ocr/` and `app/Services/Groq/`: OCR clients, compression/thumbnail integration, and model mapping. Keep provider-specific payloads out of controllers and models.
 - `app/Actions/<Feature>/`: a focused use case when it simplifies a controller; existing Fortify actions stay under `Actions/Fortify`. Reuse an existing cohesive service instead of duplicating it with an action.
 - `app/Jobs/`: queued OCR and other long-running processing, with appropriate retry, timeout, and idempotency behavior.
 - `app/Policies/`, `app/Http/Middleware/`, and `app/Providers/`: model authorization, request cross-cutting concerns, and container/framework setup respectively, when needed.

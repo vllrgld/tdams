@@ -50,7 +50,7 @@ export default function BookCoverFace({
             />
             <p
                 className={cn(
-                    'text-center font-cinzel leading-[1.05] font-semibold tracking-[0.04em]',
+                    'text-center font-sans leading-[1.15] font-semibold tracking-[0.02em]',
                     open ? 'text-4xl' : 'text-2xl',
                 )}
             >

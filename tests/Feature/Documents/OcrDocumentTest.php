@@ -175,6 +175,12 @@ class OcrDocumentTest extends TestCase
         $this->assertNotNull($document->ocr_completed_at);
         Storage::disk('local')->assertExists('documents/scan.pdf');
 
+        $audit = $document->audits()->where('action', 'ocr_completed')->sole();
+        $this->assertSame('system', $audit->actor_type);
+        $this->assertNull($audit->actor_id);
+        $this->assertSame(2, $audit->context['pageCount']);
+        $this->assertSame(['before' => 'processing', 'after' => 'completed'], $audit->changes['ocr_status']);
+
         Http::assertSent(function (Request $request): bool {
             return $request->url() === 'http://127.0.0.1:8001/v1/ocr'
                 && $request->hasHeader('Authorization', 'Bearer local-dev-token')

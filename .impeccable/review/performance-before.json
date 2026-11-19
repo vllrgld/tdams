@@ -1,0 +1,196 @@
+{
+  "label": "before",
+  "views": [
+    {
+      "name": "cabinet",
+      "data": [
+        {
+          "view": "cabinet",
+          "calls": 327,
+          "triangles": 47210,
+          "memory": {
+            "geometries": 44,
+            "textures": 10
+          },
+          "programs": 5,
+          "meshes": 168,
+          "dpr": 1.5,
+          "shadowAutoUpdate": true
+        },
+        {
+          "view": "cabinet",
+          "calls": 327,
+          "triangles": 47210,
+          "memory": {
+            "geometries": 44,
+            "textures": 10
+          },
+          "programs": 5,
+          "meshes": 168,
+          "dpr": 1.5,
+          "shadowAutoUpdate": true
+        }
+      ]
+    },
+    {
+      "name": "books",
+      "data": [
+        {
+          "view": "cabinet",
+          "calls": 327,
+          "triangles": 47210,
+          "memory": {
+            "geometries": 44,
+            "textures": 10
+          },
+          "programs": 5,
+          "meshes": 168,
+          "dpr": 1.5,
+          "shadowAutoUpdate": true
+        },
+        {
+          "view": "drawer",
+          "calls": 58,
+          "triangles": 5942,
+          "memory": {
+            "geometries": 32,
+            "textures": 7
+          },
+          "programs": 8,
+          "meshes": 37,
+          "dpr": 1,
+          "shadowAutoUpdate": true
+        }
+      ]
+    },
+    {
+      "name": "folders",
+      "data": [
+        {
+          "view": "cabinet",
+          "calls": 327,
+          "triangles": 47210,
+          "memory": {
+            "geometries": 44,
+            "textures": 10
+          },
+          "programs": 5,
+          "meshes": 168,
+          "dpr": 1.5,
+          "shadowAutoUpdate": true
+        },
+        {
+          "view": "drawer",
+          "calls": 58,
+          "triangles": 8054,
+          "memory": {
+            "geometries": 32,
+            "textures": 7
+          },
+          "programs": 8,
+          "meshes": 37,
+          "dpr": 1,
+          "shadowAutoUpdate": true
+        }
+      ]
+    }
+  ],
+  "animation": [
+    {
+      "view": "cabinet",
+      "calls": 327,
+      "triangles": 47210,
+      "ms": 7.900000002235174
+    },
+    {
+      "view": "cabinet",
+      "calls": 327,
+      "triangles": 47210,
+      "ms": 9
+    },
+    {
+      "view": "cabinet",
+      "calls": 327,
+      "triangles": 47210,
+      "ms": 4.599999997764826
+    },
+    {
+      "view": "cabinet",
+      "calls": 327,
+      "triangles": 47210,
+      "ms": 12.100000001490116
+    },
+    {
+      "view": "cabinet",
+      "calls": 327,
+      "triangles": 47210,
+      "ms": 14
+    },
+    {
+      "view": "cabinet",
+      "calls": 327,
+      "triangles": 47210,
+      "ms": 17.5
+    },
+    {
+      "view": "cabinet",
+      "calls": 327,
+      "triangles": 47210,
+      "ms": 10.099999997764826
+    }
+  ],
+  "idle": [
+    {
+      "name": "cabinet",
+      "extraFrames": 0
+    },
+    {
+      "name": "books",
+      "extraFrames": 0
+    },
+    {
+      "name": "folders",
+      "extraFrames": 0
+    }
+  ],
+  "bookHover": [
+    {
+      "view": "drawer",
+      "calls": 58,
+      "triangles": 5942,
+      "ms": 6.399999998509884
+    },
+    {
+      "view": "drawer",
+      "calls": 58,
+      "triangles": 5942,
+      "ms": 2.7000000029802322
+    },
+    {
+      "view": "drawer",
+      "calls": 58,
+      "triangles": 5942,
+      "ms": 3.199999999254942
+    }
+  ],
+  "folderHover": [
+    {
+      "view": "drawer",
+      "calls": 58,
+      "triangles": 8054,
+      "ms": 2.300000000745058
+    },
+    {
+      "view": "drawer",
+      "calls": 58,
+      "triangles": 8054,
+      "ms": 3.400000002235174
+    },
+    {
+      "view": "drawer",
+      "calls": 58,
+      "triangles": 8054,
+      "ms": 2.899999998509884
+    }
+  ]
+}

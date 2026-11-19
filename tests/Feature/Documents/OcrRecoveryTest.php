@@ -40,12 +40,12 @@ class OcrRecoveryTest extends TestCase
             'ocr_pages' => ['CCT'], 'ocr_regions' => [$region],
         ]);
         Http::preventStrayRequests();
-        Http::fake(['https://ollama.test/api/chat' => Http::response(['message' => ['content' => '{"lot_number":"1543"}']])]);
+        Http::fake(['https://groq.test/openai/v1/chat/completions' => Http::response(['choices' => [['finish_reason' => 'stop', 'message' => ['content' => '{"lot_number":"1543"}']]]])]);
 
         $this->actingAs($user)->getJson(route('documents.ocr', $document))
             ->assertOk()->assertJsonPath('pageContents.0.0.text', 'CCT')
             ->assertJsonPath('regions.0.text', 'Lot No. 1543');
-        $this->postJson(route('documents.map', $document), ['model' => 'gpt-oss:20b'])
+        $this->postJson(route('documents.map', $document), ['model' => 'openai/gpt-oss-120b'])
             ->assertOk()->assertJsonPath('fields.lot_number', '1543');
 
         Http::assertSent(function (Request $request): bool {

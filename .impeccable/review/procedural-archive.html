@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>Archive cabinet review</title></head>
+<body>
+<div id="root"></div>
+<script type="module">
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import { createInertiaApp } from '@inertiajs/react';
+import Archive from '/resources/js/pages/archive/index.tsx';
+import Cabinets from '/resources/js/pages/manage/cabinets/index.tsx';
+import { _roots } from '@react-three/fiber';
+import './cabinet-review.css';
+
+const titles = ['Property records', 'Tax declarations', 'Assessment records', 'Land records'];
+const params = new URLSearchParams(location.search);
+const cabinetCount = Number(params.get('count')) || 2;
+const cabinets = Array.from({length: cabinetCount}, (_, cabinetIndex) => {
+const kind = cabinetIndex % 2 ? 'folder' : 'book';
+return ({
+    id: `review-cabinet-${cabinetIndex}`, name: cabinetIndex > 1 ? `Records cabinet ${cabinetIndex + 1}` : cabinetIndex ? 'Land records cabinet' : 'Tax declaration cabinet', location: 'Records office',
+    color: cabinetIndex === 0 && params.get('color') === 'warm_ivory' ? 'warm_ivory' : 'steel_grey',
+    drawers: Array.from({length: 4}, (_, index) => ({
+        id: `review-drawer-${cabinetIndex}-${index}`, label: `Drawer ${index + 1}`, range: `202${index} records`,
+        books: index === 0 ? Array.from({length: 16}, (_, item) => ({id: String(cabinetIndex * 1000 + item + 1), kind, label: `${kind === 'book' ? 'Book' : 'Folder'} ${String(item + 1).padStart(2, '0')}`, coverTitle: titles[item % titles.length], documentCount: 0})) : [],
+    })),
+});});
+window.reviewErrors = [];
+window.reviewRoots = _roots;
+window.addEventListener('error', event => window.reviewErrors.push(event.message));
+window.addEventListener('unhandledrejection', event => window.reviewErrors.push(String(event.reason)));
+const nativeFetch = window.fetch.bind(window);
+window.fetch = (input, options) => {
+    const url = new URL(typeof input === 'string' ? input : input.url, location.href);
+    if (/\/books\/\d+$/.test(url.pathname)) return Promise.resolve(new Response(JSON.stringify({documents: []}), {status: 200, headers: {'Content-Type': 'application/json'}}));
+    return nativeFetch(input, options);
+};
+const ReviewArchive = props => React.createElement(params.has('manage') ? Cabinets : Archive, props);
+await createInertiaApp({
+    id: 'root',
+    page: {component: 'ArchiveReview', url: '/archive', props: {cabinets, errors: {}, auth: {user: {id: 1, name: 'Review', email: 'review@example.test'}}}, version: null, clearHistory: false, encryptHistory: false, rememberedState: {}},
+    resolve: () => ReviewArchive,
+    setup({el, App, props}) { createRoot(el).render(React.createElement(React.StrictMode, null, React.createElement(App, props))); },
+    progress: false,
+});
+document.documentElement.dataset.reviewReady = 'true';
+</script>
+</body>
+</html>

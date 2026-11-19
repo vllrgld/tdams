@@ -103,13 +103,12 @@ class FoldersTest extends TestCase
         $this->assertSame('Renamed folder', $folder->fresh()->label);
         $this->assertSame('folder', $folder->fresh()->kind);
         $this->assertSame('Land Tax', $book->fresh()->cover_title);
-        $this->assertSame('Land Tax', Book::coverTitle());
         $this->patch(route('manage.books.update', $book), ['label' => 'Book 1', 'cover_title' => 'Tax records'])
             ->assertSessionHasNoErrors();
         $this->assertSame('', $folder->fresh()->cover_title);
     }
 
-    public function test_folder_cover_text_is_shared_independently_and_inherited_by_new_folders(): void
+    public function test_folder_cover_text_is_saved_on_that_folder_only(): void
     {
         $drawer = $this->drawer();
         $folder = $drawer->books()->create(['label' => 'Folder 1', 'kind' => 'folder', 'cover_title' => '', 'position' => 1]);
@@ -122,14 +121,19 @@ class FoldersTest extends TestCase
         $this->assertSame('Land records', $folder->fresh()->label);
         $this->assertSame('Folder 2', $other->fresh()->label);
         $this->assertSame('Property Archive', $folder->fresh()->cover_title);
-        $this->assertSame('Property Archive', $other->fresh()->cover_title);
+        $this->assertSame('', $other->fresh()->cover_title);
         $this->assertSame('Book records', $book->fresh()->cover_title);
-        $this->assertSame('Property Archive', Book::coverTitle('folder'));
 
         $this->get('/manage/folders')->assertInertia(fn (Assert $page) => $page
-            ->where('coverTitle', 'Property Archive'));
+            ->missing('coverTitle')
+            ->where('books', fn ($books) => collect($books)->contains(
+                fn (mixed $item): bool => is_array($item)
+                    && ($item['id'] ?? null) === (string) $folder->id
+                    && ($item['coverTitle'] ?? null) === 'Property Archive',
+            )));
         $this->get('/manage/cabinets')->assertInertia(fn (Assert $page) => $page
-            ->where('folderCoverTitle', 'Property Archive')->where('coverTitle', 'Book records'));
+            ->missing('folderCoverTitle')
+            ->missing('coverTitle'));
         $this->get('/archive')->assertInertia(fn (Assert $page) => $page
             ->where('cabinets', fn ($cabinets) => collect($cabinets)
                 ->flatMap(fn ($cabinet) => $cabinet['drawers'])
@@ -138,14 +142,14 @@ class FoldersTest extends TestCase
 
         $this->post(route('manage.drawers.books.store', $drawer), ['label' => 'Folder 3', 'kind' => 'folder'])
             ->assertSessionHasNoErrors();
-        $this->assertSame('Property Archive', $drawer->books()->where('label', 'Folder 3')->sole()->cover_title);
+        $this->assertSame(Book::DEFAULT_COVER_TITLE, $drawer->books()->where('label', 'Folder 3')->sole()->cover_title);
 
         $this->patch(route('manage.books.update', $book), ['label' => 'Book 1', 'cover_title' => 'New book title'])
             ->assertSessionHasNoErrors();
         $this->assertSame('Property Archive', $folder->fresh()->cover_title);
     }
 
-    public function test_blank_and_overlong_shared_folder_titles_are_rejected_without_renaming(): void
+    public function test_blank_and_overlong_folder_titles_are_rejected_without_renaming(): void
     {
         $folder = $this->drawer()->books()->create(['label' => 'Folder 1', 'kind' => 'folder', 'cover_title' => 'Land records', 'position' => 1]);
         $this->actingAs(User::factory()->create());

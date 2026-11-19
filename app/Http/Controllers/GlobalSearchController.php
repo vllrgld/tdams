@@ -5,12 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use App\Models\Cabinet;
 use App\Models\Drawer;
+use App\Services\Offices\CurrentOffice;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class GlobalSearchController extends Controller
 {
-    public function __invoke(Request $request): JsonResponse
+    public function __invoke(Request $request, CurrentOffice $currentOffice): JsonResponse
     {
         $validated = $request->validate([
             'q' => ['sometimes', 'nullable', 'string', 'max:200'],
@@ -28,6 +29,7 @@ class GlobalSearchController extends Controller
         $like = '%'.addcslashes($query, '%_\\').'%';
 
         $cabinets = Cabinet::query()
+            ->forOffice($currentOffice->id())
             ->where(function ($builder) use ($like): void {
                 $builder->where('name', 'like', $like)
                     ->orWhere('location', 'like', $like);
@@ -46,6 +48,7 @@ class GlobalSearchController extends Controller
             ->values();
 
         $drawers = Drawer::query()
+            ->forOffice($currentOffice->id())
             ->with('cabinet')
             ->where(function ($builder) use ($like): void {
                 $builder->where('label', 'like', $like)
@@ -54,12 +57,8 @@ class GlobalSearchController extends Controller
             ->orderBy('label')
             ->limit(6)
             ->get()
-            ->map(function (Drawer $drawer): ?array {
+            ->map(function (Drawer $drawer): array {
                 $cabinet = $drawer->cabinet;
-
-                if ($cabinet === null) {
-                    return null;
-                }
 
                 return [
                     'id' => $drawer->id,
@@ -71,10 +70,10 @@ class GlobalSearchController extends Controller
                     ], absolute: false),
                 ];
             })
-            ->filter()
             ->values();
 
         $books = Book::query()
+            ->forOffice($currentOffice->id())
             ->with('drawer.cabinet')
             ->where(function ($builder) use ($like): void {
                 $builder->where('label', 'like', $like)
@@ -86,13 +85,9 @@ class GlobalSearchController extends Controller
             ->orderBy('label')
             ->limit(6)
             ->get()
-            ->map(function (Book $book): ?array {
+            ->map(function (Book $book): array {
                 $drawer = $book->drawer;
                 $cabinet = $drawer->cabinet;
-
-                if ($cabinet === null) {
-                    return null;
-                }
 
                 return [
                     'id' => $book->id,
@@ -106,7 +101,6 @@ class GlobalSearchController extends Controller
                     ], absolute: false),
                 ];
             })
-            ->filter()
             ->values();
 
         return response()->json([

@@ -3,6 +3,7 @@ import { ChevronDown } from 'lucide-react';
 import { type FormEvent, useId, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { cn } from '@/lib/utils';
 import {
     Select,
@@ -14,16 +15,27 @@ import {
 import { getDocumentDatePresets } from '../../lib/document-date-presets';
 import type { DocumentDateFilters } from '../../types';
 
-const DATE_RANGES = [
-    {
-        label: 'Declaration date',
-        from: 'declaration_date_from',
-        to: 'declaration_date_to',
-    },
-    { label: 'Date added', from: 'date_added_from', to: 'date_added_to' },
-] as const;
+function dateRanges(field: DocumentDateFilters['date_field']) {
+    return [
+        field === 'declaration_date'
+            ? ({
+                  label: 'Declaration date',
+                  from: 'declaration_date_from',
+                  to: 'declaration_date_to',
+              } as const)
+            : ({
+                  label: 'Date of Letter',
+                  from: 'letter_date_from',
+                  to: 'letter_date_to',
+              } as const),
+        { label: 'Date added', from: 'date_added_from', to: 'date_added_to' },
+    ] as const;
+}
 
 const EMPTY_DATES = {
+    date_field: 'letter_date' as const,
+    letter_date_from: '',
+    letter_date_to: '',
     declaration_date_from: '',
     declaration_date_to: '',
     date_added_from: '',
@@ -59,10 +71,11 @@ export default function DocumentAdvancedFilters({
         () => Intl.DateTimeFormat().resolvedOptions().timeZone,
     );
     const id = useId();
-    const activeRanges = DATE_RANGES.filter(
+    const ranges = dateRanges(draft.date_field);
+    const activeRanges = dateRanges(value.date_field).filter(
         (range) => value[range.from] || value[range.to],
     );
-    const invalid = DATE_RANGES.some(
+    const invalid = ranges.some(
         (range) =>
             draft[range.from] &&
             draft[range.to] &&
@@ -105,9 +118,12 @@ export default function DocumentAdvancedFilters({
                         ? `Dates, ${activeRanges.length} active`
                         : 'Dates'
                 }
-                title={summary || 'Filter by declaration date and date added'}
+                title={
+                    summary ||
+                    'Filter by Date of Letter, Declaration date, or Date added'
+                }
                 className={cn(
-                    'h-[31px] max-w-full min-w-0 shrink-0 gap-1.5 border-blue-900 px-2.5 text-[13px] font-normal shadow-none hover:bg-blue-900 hover:text-white focus-visible:border-blue-900 focus-visible:ring-blue-900/20 has-[>svg]:px-2.5 dark:hover:bg-blue-900 dark:hover:text-white dark:focus-visible:ring-white/50',
+                    'h-[31px] max-w-full min-w-0 shrink-0 gap-0.5 border-blue-900 px-1.5 text-[13px] font-normal shadow-none hover:bg-blue-900 hover:text-white focus-visible:border-blue-900 focus-visible:ring-blue-900/20 has-[>svg]:px-1.5 dark:hover:bg-blue-900 dark:hover:text-white dark:focus-visible:ring-white/50',
                     activeRanges.length > 0
                         ? 'bg-blue-900 text-white dark:bg-blue-900'
                         : 'bg-white text-blue-900 dark:bg-neutral-900 dark:text-white',
@@ -158,7 +174,55 @@ export default function DocumentAdvancedFilters({
                             Either end can be left empty.
                         </Popover.Description>
                         <form onSubmit={apply} className="space-y-5">
-                            {DATE_RANGES.map((range) => {
+                            <ToggleGroup
+                                aria-label="Filter date by"
+                                value={[draft.date_field]}
+                                onValueChange={(values) => {
+                                    const next = values[0];
+                                    if (
+                                        next !== 'letter_date' &&
+                                        next !== 'declaration_date'
+                                    )
+                                        return;
+                                    const previousRange = dateRanges(
+                                        draft.date_field,
+                                    )[0];
+                                    const nextRange = dateRanges(next)[0];
+                                    setDraft((current) => ({
+                                        ...current,
+                                        declaration_date_from: '',
+                                        declaration_date_to: '',
+                                        letter_date_from: '',
+                                        letter_date_to: '',
+                                        date_field: next,
+                                        [nextRange.from]:
+                                            current[previousRange.from],
+                                        [nextRange.to]:
+                                            current[previousRange.to],
+                                    }));
+                                }}
+                                className="w-full border border-blue-900 p-0.5"
+                            >
+                                {[
+                                    {
+                                        value: 'letter_date',
+                                        label: 'Date of Letter',
+                                    },
+                                    {
+                                        value: 'declaration_date',
+                                        label: 'Declaration date',
+                                    },
+                                ].map((choice) => (
+                                    <ToggleGroupItem
+                                        key={choice.value}
+                                        value={choice.value}
+                                        className="h-8 flex-1 rounded-sm px-2 text-[13px] font-normal text-blue-900 hover:bg-blue-50 data-pressed:bg-blue-900 data-pressed:text-white dark:text-white dark:hover:bg-neutral-800 dark:data-pressed:bg-blue-900"
+                                    >
+                                        {choice.label}
+                                    </ToggleGroupItem>
+                                ))}
+                            </ToggleGroup>
+                            {ranges.map((range, index) => {
                                 const invalidRange = Boolean(
                                     draft[range.from] &&
                                     draft[range.to] &&
@@ -170,7 +234,13 @@ export default function DocumentAdvancedFilters({
                                         key={range.from}
                                         className="min-w-0 space-y-2.5"
                                     >
-                                        <legend className="text-[13px] font-semibold">
+                                        <legend
+                                            className={
+                                                index === 0
+                                                    ? 'sr-only'
+                                                    : 'text-[13px] font-semibold'
+                                            }
+                                        >
                                             {range.label}
                                         </legend>
                                         <Select
@@ -337,7 +407,8 @@ export default function DocumentAdvancedFilters({
                                     className="text-[13px]"
                                     disabled={
                                         !activeRanges.length &&
-                                        !DATE_RANGES.some(
+                                        draft.date_field === 'letter_date' &&
+                                        !ranges.some(
                                             (range) =>
                                                 draft[range.from] ||
                                                 draft[range.to],

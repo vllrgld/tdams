@@ -5,12 +5,15 @@ namespace App\Services\Documents;
 use App\Http\Resources\DocumentResource;
 use App\Models\Document;
 use App\Models\TaxDeclaration;
+use App\Services\Offices\CurrentOffice;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class DocumentSearcher
 {
+    public function __construct(private CurrentOffice $currentOffice) {}
+
     /**
      * @return LengthAwarePaginator<int, array<string, mixed>>
      */
@@ -26,11 +29,27 @@ class DocumentSearcher
         string $sort = 'created_at',
         string $direction = 'desc',
         string $ocrReview = 'all',
+        ?int $documentTypeId = null,
+        bool $usesTaxFields = false,
+        string $status = 'all',
+        string $dateField = 'declaration_date',
     ): LengthAwarePaginator {
         $query = Document::query()->with(Document::archiveRelations());
+        $this->currentOffice->constrain($query);
 
         if ($search !== '') {
-            $query->search($search, $field);
+            $query->search($search, $field, $usesTaxFields);
+        }
+
+        if ($documentTypeId !== null) {
+            $query->where('document_type_id', $documentTypeId);
+        }
+
+        if ($status !== 'all') {
+            $query->where('status', $status)
+                ->whereHas('documentType', function (Builder $type): void {
+                    $type->where('uses_tax_declaration_fields', false);
+                });
         }
 
         if ($ocrReview === 'reviewed') {
@@ -41,7 +60,14 @@ class DocumentSearcher
             });
         }
 
-        if ($dateFrom !== '' || $dateTo !== '') {
+        if (($dateFrom !== '' || $dateTo !== '') && $dateField === 'letter_date') {
+            if ($dateFrom !== '') {
+                $query->whereDate('letter_date', '>=', $dateFrom);
+            }
+            if ($dateTo !== '') {
+                $query->whereDate('letter_date', '<=', $dateTo);
+            }
+        } elseif ($dateFrom !== '' || $dateTo !== '') {
             $query->whereHas('taxDeclaration', function (Builder $declaration) use ($dateFrom, $dateTo): void {
                 if ($dateFrom !== '') {
                     $declaration->whereDate('declaration_date', '>=', $dateFrom);

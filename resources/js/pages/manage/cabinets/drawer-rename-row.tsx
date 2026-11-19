@@ -1,7 +1,9 @@
+import { index as leverArchIndex } from '@/routes/manage/lever-arch-files';
+import { filingName } from '@/lib/filing-appearance';
 import { index as foldersIndex } from '@/routes/manage/folders';
 import { index as booksIndex } from '@/routes/manage/books';
 import { update as updateDrawer } from '@/routes/manage/drawers';
-import { Link, useForm } from '@inertiajs/react';
+import { Link, router, useForm } from '@inertiajs/react';
 import { Pencil, Plus } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
@@ -27,8 +29,8 @@ export default function DrawerRenameRow({
     const canAddItem = drawer.books.length < MAX_ITEMS_PER_DRAWER;
     const bookCount = drawer.books.length;
     const kind = drawer.books[0]?.kind;
-    const itemName = kind === 'folder' ? 'folder' : 'book';
-    const addLabel = `Add ${kind ? itemName : 'book or folder'} to ${drawer.label}`;
+    const itemName = filingName(kind);
+    const addLabel = `Add ${kind ? itemName : 'filing item'} to ${drawer.label}`;
 
     function startEditing() {
         form.setData('label', drawer.label);
@@ -59,6 +61,7 @@ export default function DrawerRenameRow({
         form.patch(updateDrawer.url(Number(drawer.id)), {
             preserveScroll: true,
             onSuccess: () => {
+                router.flushAll();
                 saving.current = false;
                 setEditing(false);
                 toast.success('Drawer renamed.');
@@ -116,13 +119,17 @@ export default function DrawerRenameRow({
                 {bookCount > 0 ? (
                     <Link
                         href={
-                            kind === 'folder'
-                                ? foldersIndex.url({
+                            kind === 'lever_arch'
+                                ? leverArchIndex.url({
                                       query: { drawer: drawer.id },
                                   })
-                                : booksIndex.url({
-                                      query: { drawer: drawer.id },
-                                  })
+                                : kind === 'folder'
+                                  ? foldersIndex.url({
+                                        query: { drawer: drawer.id },
+                                    })
+                                  : booksIndex.url({
+                                        query: { drawer: drawer.id },
+                                    })
                         }
                         aria-label={
                             bookCount > 0

@@ -257,7 +257,7 @@ const ClosedFolderMesh = memo(function ClosedFolderMesh({
                             />
                             {showLabel && (
                                 <p
-                                    className="w-full text-center font-cinzel text-[clamp(8px,5cqw,26px)] leading-tight font-semibold break-words"
+                                    className="w-full text-center font-sans text-[clamp(8px,5cqw,26px)] leading-tight font-semibold break-words"
                                     style={{
                                         fontSize:
                                             coverScale === 1

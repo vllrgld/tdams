@@ -29,14 +29,15 @@ class CabinetsTest extends TestCase
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->component('manage/cabinets/index')
-                ->where('coverTitle', Book::DEFAULT_COVER_TITLE));
+                ->missing('coverTitle')
+                ->missing('folderCoverTitle'));
 
         $this->get(route('manage.books.index'))
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->component('manage/books/index')
                 ->has('books', 0)
-                ->where('coverTitle', Book::DEFAULT_COVER_TITLE));
+                ->missing('coverTitle'));
     }
 
     public function test_authenticated_user_can_add_a_cabinet_with_drawers(): void
@@ -54,10 +55,44 @@ class CabinetsTest extends TestCase
 
         $this->assertSame('Sarrat', $cabinet->name);
         $this->assertSame('Sarrat', $cabinet->location);
+        $this->assertSame('steel_grey', $cabinet->color);
         $this->assertSame(3, $cabinet->drawers()->count());
         $this->assertSame(['North', 'East', 'West'], $cabinet->drawers()->pluck('label')->all());
         $this->assertSame([1, 2, 3], $cabinet->drawers()->pluck('position')->all());
         $this->assertSame(3, Drawer::query()->count());
+    }
+
+    public function test_selected_cabinet_colour_is_saved_and_included_in_3d_view_data(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)->post(route('manage.cabinets.store'), [
+            'name' => 'Records',
+            'color' => 'warm_ivory',
+            'drawers' => ['Drawer 1'],
+        ])->assertRedirect(route('manage.cabinets.index'));
+
+        $this->assertDatabaseHas('cabinets', ['name' => 'Records', 'color' => 'warm_ivory']);
+        $this->get(route('manage.cabinets.index'))->assertOk()
+            ->assertInertia(fn (Assert $page) => $page->where('cabinets.0.color', 'warm_ivory'));
+        $this->get(route('archive.index'))->assertOk()
+            ->assertInertia(fn (Assert $page) => $page->where('cabinets.0.color', 'warm_ivory'));
+        $this->getJson(route('documents.upload-options'))->assertOk()
+            ->assertJsonPath('archive.0.color', 'warm_ivory');
+    }
+
+    public function test_unsupported_cabinet_colour_does_not_create_a_cabinet(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)->post(route('manage.cabinets.store'), [
+            'name' => 'Records',
+            'color' => '#ff0000',
+            'drawers' => ['Drawer 1'],
+        ])->assertSessionHasErrors('color');
+
+        $this->assertDatabaseCount('cabinets', 0);
+        $this->assertDatabaseCount('drawers', 0);
     }
 
     public function test_cabinet_fields_are_required(): void
@@ -265,7 +300,7 @@ class CabinetsTest extends TestCase
         $this->assertSame(Book::DEFAULT_COVER_TITLE, $book->fresh()?->cover_title);
     }
 
-    public function test_books_index_lists_a_shared_cover_title(): void
+    public function test_books_index_lists_each_book_cover_title(): void
     {
         $user = User::factory()->create();
         $cabinet = Cabinet::factory()->withDrawers(1)->create([
@@ -286,8 +321,8 @@ class CabinetsTest extends TestCase
                 ->component('manage/books/index')
                 ->has('books', 1)
                 ->where('books.0.label', 'TD 0001–0100')
-                ->missing('books.0.coverTitle')
-                ->where('coverTitle', 'Land Tax')
+                ->where('books.0.coverTitle', 'Land Tax')
+                ->missing('coverTitle')
                 ->where('books.0.cabinetName', 'Laoag City')
                 ->where('books.0.drawerLabel', $drawer->label));
     }
@@ -311,7 +346,7 @@ class CabinetsTest extends TestCase
                 ->where('books.0.drawerId', (string) $drawer->id));
     }
 
-    public function test_updating_cover_title_applies_to_every_book(): void
+    public function test_updating_cover_title_applies_only_to_that_book(): void
     {
         $user = User::factory()->create();
         $cabinet = Cabinet::factory()->withDrawers(1)->create();
@@ -337,10 +372,10 @@ class CabinetsTest extends TestCase
         $this->assertSame('TD 0001–0100', $first->fresh()?->label);
         $this->assertSame('Book 2', $second->fresh()?->label);
         $this->assertSame('Land Tax', $first->fresh()?->cover_title);
-        $this->assertSame('Land Tax', $second->fresh()?->cover_title);
+        $this->assertSame(Book::DEFAULT_COVER_TITLE, $second->fresh()?->cover_title);
     }
 
-    public function test_new_books_inherit_the_shared_cover_title(): void
+    public function test_new_books_use_the_default_cover_title_instead_of_another_book_cover(): void
     {
         $user = User::factory()->create();
         $cabinet = Cabinet::factory()->withDrawers(1)->create();
@@ -356,7 +391,8 @@ class CabinetsTest extends TestCase
             ['label' => 'Book 2'],
         );
 
-        $this->assertSame('Land Tax', $drawer->books()->where('label', 'Book 2')->value('cover_title'));
+        $this->assertSame(Book::DEFAULT_COVER_TITLE, $drawer->books()->where('label', 'Book 2')->value('cover_title'));
+        $this->assertSame('Land Tax', $drawer->books()->where('label', 'Book 1')->value('cover_title'));
     }
 
     public function test_guests_cannot_add_or_rename_a_book(): void

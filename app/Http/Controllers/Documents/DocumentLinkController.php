@@ -7,13 +7,14 @@ use App\Http\Requests\Documents\LinkDocumentRequest;
 use App\Models\Document;
 use App\Services\Documents\DeclarationChain;
 use App\Services\Documents\DocumentWriter;
+use App\Services\Offices\CurrentOffice;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class DocumentLinkController extends Controller
 {
-    public function index(Request $request): JsonResponse
+    public function index(Request $request, CurrentOffice $currentOffice): JsonResponse
     {
         $validated = $request->validate([
             'q' => ['required', 'string', 'min:1', 'max:100'],
@@ -23,7 +24,9 @@ class DocumentLinkController extends Controller
         $term = '%'.addcslashes(mb_strtolower($validated['q']), '%_\\').'%';
 
         $documents = Document::query()
-            ->with(Document::archiveRelations())
+            ->with(Document::archiveRelations());
+        $currentOffice->constrain($documents);
+        $documents = $documents
             ->whereHas('taxDeclaration', function ($query) use ($term): void {
                 $query->whereNotNull('tax_declaration_number')
                     ->where('tax_declaration_number', '!=', '')
@@ -50,11 +53,15 @@ class DocumentLinkController extends Controller
 
     public function history(Document $document, DeclarationChain $chain): JsonResponse
     {
+        $this->ensureTaxDeclarationDocument($document);
+
         return response()->json($chain->previous($document));
     }
 
     public function show(Document $document, DeclarationChain $chain): JsonResponse
     {
+        $this->ensureTaxDeclarationDocument($document);
+
         return response()->json($chain->full($document));
     }
 
@@ -63,5 +70,14 @@ class DocumentLinkController extends Controller
         $writer->linkPrevious($document, $request->validated());
 
         return to_route('documents.index');
+    }
+
+    private function ensureTaxDeclarationDocument(Document $document): void
+    {
+        $document->loadMissing('documentType');
+
+        if ($document->documentType !== null && ! $document->documentType->uses_tax_declaration_fields) {
+            abort(404);
+        }
     }
 }

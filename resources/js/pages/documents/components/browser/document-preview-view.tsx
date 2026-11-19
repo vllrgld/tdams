@@ -3,7 +3,14 @@ import DocumentThumbnail from '@/components/documents/document-thumbnail';
 import OcrReviewBadge from '@/components/documents/ocr/ocr-review-badge';
 import { formatDate, formatFileSize } from '@/lib/document-formatters';
 import type { ArchivedDocument } from '@/types/documents';
-import { getPropertyLocation } from './document-view-helpers';
+import DocumentTrackingCode from '@/components/documents/document-tracking-code';
+import DocumentStatusBadge from '@/components/documents/document-status-badge';
+import {
+    documentCardDate,
+    documentHeading,
+    documentSubheading,
+    getPropertyLocation,
+} from './document-view-helpers';
 import DocumentThumbnailActions, {
     type DocumentThumbnailActionHandlers,
 } from './document-thumbnail-actions';
@@ -16,14 +23,14 @@ type DocumentPreviewViewProps = DocumentThumbnailActionHandlers & {
 export default function DocumentPreviewView({
     documents,
     onViewDocument,
-    bookmarkedIds,
-    onToggleBookmark,
     onShowChain,
 }: DocumentPreviewViewProps) {
     return (
         <div className="flex flex-col gap-3 p-3 sm:p-4">
             {documents.map((document) => {
-                const location = getPropertyLocation(document);
+                const location = document.usesTaxFields
+                    ? getPropertyLocation(document)
+                    : '';
 
                 return (
                     <article
@@ -49,35 +56,57 @@ export default function DocumentPreviewView({
                             />
                             <DocumentThumbnailActions
                                 document={document}
-                                bookmarkedIds={bookmarkedIds}
-                                onToggleBookmark={onToggleBookmark}
                                 onShowChain={onShowChain}
                             />
                         </div>
                         <div className="flex min-w-0 flex-col gap-2 p-3 sm:p-4">
                             <div className="min-w-0 space-y-1">
-                                <h2 className="text-sm leading-5 font-semibold text-blue-900 sm:text-base sm:leading-6 dark:text-white">
-                                    <button
-                                        type="button"
-                                        onClick={() => onViewDocument(document)}
-                                        title={`Open ${document.originalFilename}`}
-                                        className="line-clamp-2 max-w-full cursor-pointer text-left break-words underline-offset-4 hover:underline focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:outline-none"
-                                    >
-                                        {document.taxDeclarationNumber ||
-                                            document.originalFilename}
-                                    </button>
-                                </h2>
+                                <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+                                    <h2 className="min-w-0 text-sm leading-5 font-semibold text-blue-900 sm:text-base sm:leading-6 dark:text-white">
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                onViewDocument(document)
+                                            }
+                                            title={`Open ${document.originalFilename}`}
+                                            className="line-clamp-2 max-w-full cursor-pointer text-left break-words underline-offset-4 hover:underline focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:outline-none"
+                                        >
+                                            {documentHeading(document)}
+                                        </button>
+                                    </h2>
+                                    <DocumentStatusBadge document={document} />
+                                </div>
+                                <DocumentTrackingCode
+                                    code={document.trackingCode}
+                                />
                                 <p className="flex min-w-0 items-center gap-1.5 text-[13px] text-slate-700 dark:text-neutral-200">
                                     <UserRound
                                         aria-hidden="true"
                                         className="size-3.5 shrink-0 text-slate-500 dark:text-neutral-400"
                                     />
                                     <span className="sr-only">
-                                        Registered owner:
+                                        {document.usesTaxFields
+                                            ? 'Registered owner:'
+                                            : 'Correspondent:'}
                                     </span>
                                     <span className="truncate">
-                                        {document.registeredOwner || '—'}
+                                        {documentSubheading(document) || '—'}
                                     </span>
+                                </p>
+                                <p className="truncate text-xs text-slate-500 dark:text-neutral-400">
+                                    <span className="sr-only">
+                                        Document type:
+                                    </span>
+                                    {document.documentTypeName ||
+                                        'Tax declaration'}
+                                    {document.filingPath === 'route' &&
+                                    document.routeName
+                                        ? ` · ${document.routeName}`
+                                        : ''}
+                                    {document.usesTaxFields &&
+                                    document.correspondent
+                                        ? ` · ${document.correspondent}`
+                                        : ''}
                                 </p>
                             </div>
                             <p className="line-clamp-3 text-sm leading-6 break-words text-slate-600 dark:text-neutral-300">
@@ -108,16 +137,18 @@ export default function DocumentPreviewView({
                                             className="size-3.5 shrink-0"
                                         />
                                         <span className="sr-only">
-                                            Declaration date:
+                                            {document.usesTaxFields
+                                                ? 'Declaration date:'
+                                                : 'Date added:'}
                                         </span>
                                         <time
                                             dateTime={
-                                                document.declarationDate ??
+                                                documentCardDate(document) ??
                                                 undefined
                                             }
                                         >
                                             {formatDate(
-                                                document.declarationDate,
+                                                documentCardDate(document),
                                             )}
                                         </time>
                                     </span>

@@ -9,9 +9,12 @@ import {
 import type { PDFDocumentProxy } from 'pdfjs-dist';
 import {
     Columns2,
+    ClipboardList,
     FileText,
     History,
     Info,
+    MapPin,
+    CircleDot,
     Network,
     ScanText,
 } from 'lucide-react';
@@ -37,7 +40,19 @@ import OcrReviewBadge from '../ocr/ocr-review-badge';
 import EditableInfoSection from './editable-info-section';
 import BoundaryCompass from './boundary-compass';
 import ViewerActions from './viewer-actions';
-import { documentInfoFields } from '@/lib/document-info-fields';
+import {
+    documentInfoFields,
+    metadataInfoFields,
+} from '@/lib/document-info-fields';
+import {
+    documentHeading,
+    documentSubheading,
+} from '@/pages/documents/components/browser/document-view-helpers';
+import DocumentAttachmentsSection from './document-attachments-section';
+import DocumentAuditPanel from './document-audit-panel';
+import DocumentLocationPanel from './document-location-panel';
+import DocumentStatusPanel from './document-status-panel';
+import DocumentActionDialog from './document-action-dialog';
 
 const panelButtonClassName =
     'h-8 shrink-0 rounded-md border-0 px-2.5 text-xs text-foreground shadow-none hover:bg-background/60 hover:text-foreground focus-visible:z-10 aria-pressed:bg-background aria-pressed:text-foreground aria-pressed:shadow-xs';
@@ -134,10 +149,12 @@ export default function DocumentViewerDialog({
     onFieldsSaved,
     onOcrReviewChange,
 }: DocumentViewerDialogProps) {
-    const [panelView, setPanelView] = useState<'info' | 'history' | 'ocr'>(
-        'info',
-    );
+    const [panelView, setPanelView] = useState<
+        'info' | 'history' | 'ocr' | 'audit' | 'location' | 'status'
+    >('info');
     const [comparison, setComparison] = useState(false);
+    const [actionOpen, setActionOpen] = useState(false);
+    const actionButton = useRef<HTMLButtonElement | null>(null);
     const [pdfViewport, setPdfViewport] = useState<PdfViewport | null>(null);
     const [pdfDocument, setPdfDocument] = useState<PDFDocumentProxy | null>(
         null,
@@ -145,6 +162,7 @@ export default function DocumentViewerDialog({
     const [regions, setRegions] = useState<OcrRegion[]>([]);
     const [selectedRegion, setSelectedRegion] = useState<number | null>(null);
     const [hoveredRegion, setHoveredRegion] = useState<number | null>(null);
+    const [attachmentPage, setAttachmentPage] = useState<number | null>(null);
     const ignoreDockClose = useRef(false);
     const handleRegions = useCallback((next: OcrRegion[]) => {
         setRegions(next);
@@ -157,6 +175,16 @@ export default function DocumentViewerDialog({
     const [displayedInfoOpen, setDisplayedInfoOpen] = useState(infoOpen);
     const viewing = document ?? displayedDocument;
     const viewerInfoOpen = document ? infoOpen : displayedInfoOpen;
+    const documentActionOptions =
+        viewing && !viewing.usesTaxFields && viewing.filingPath === 'route'
+            ? [
+                  {
+                      label: 'Take action',
+                      Icon: <CircleDot />,
+                      onClick: () => setActionOpen(true),
+                  },
+              ]
+            : [];
     const handleFieldsSaved = (updated: ArchivedDocument) => {
         onDocumentChange(updated);
         onFieldsSaved?.(updated);
@@ -174,6 +202,12 @@ export default function DocumentViewerDialog({
     }, [infoOpen]);
 
     useEffect(() => {
+        if (viewing && !viewing.usesTaxFields && panelView === 'history') {
+            setPanelView('info');
+        }
+    }, [viewing, panelView]);
+
+    useEffect(() => {
         ignoreDockClose.current = false;
         setComparison(false);
         setRegions([]);
@@ -181,6 +215,8 @@ export default function DocumentViewerDialog({
         setPdfDocument(null);
         setSelectedRegion(null);
         setHoveredRegion(null);
+        setAttachmentPage(null);
+        setActionOpen(false);
     }, [document?.id]);
 
     useEffect(() => {
@@ -261,6 +297,17 @@ export default function DocumentViewerDialog({
         [comparison, regions],
     );
 
+    const scannedPageCount =
+        pdfDocument?.numPages ??
+        (viewing &&
+        viewing.mimeType !== 'application/pdf' &&
+        viewing.ocrPdfUrl === null
+            ? 1
+            : null);
+    const goToAttachmentPage = (page: number) => {
+        setSelectedRegion(null);
+        setAttachmentPage(page);
+    };
     const ocrViewControl =
         infoOpen && panelView === 'ocr' ? (
             <Button
@@ -288,10 +335,10 @@ export default function DocumentViewerDialog({
             <Dialog
                 open={document !== null}
                 modal={chainDocument === null}
-                disablePointerDismissal={chainDocument !== null}
+                disablePointerDismissal={chainDocument !== null || actionOpen}
                 onOpenChange={(open) => {
                     if (!open) {
-                        if (chainDocument) {
+                        if (chainDocument || actionOpen) {
                             return;
                         }
 
@@ -314,14 +361,20 @@ export default function DocumentViewerDialog({
                     <div className="flex shrink-0 flex-col gap-3 pr-8 xl:flex-row xl:items-center xl:justify-between">
                         <DialogHeader className="min-w-0 gap-1.5 text-left">
                             <DialogTitle className="text-base leading-6">
-                                {viewing?.taxDeclarationNumber
-                                    ? `Tax declaration ${viewing.taxDeclarationNumber}`
+                                {viewing
+                                    ? viewing.usesTaxFields &&
+                                      viewing.taxDeclarationNumber
+                                        ? `Tax declaration ${viewing.taxDeclarationNumber}`
+                                        : documentHeading(viewing)
                                     : 'Archived document'}
                             </DialogTitle>
                             <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
                                 <DialogDescription className="min-w-0 text-[13px] break-words">
-                                    {viewing?.registeredOwner ||
-                                        'Document preview'}
+                                    {viewing
+                                        ? documentSubheading(viewing) ||
+                                          viewing.documentTypeName ||
+                                          'Document preview'
+                                        : 'Document preview'}
                                 </DialogDescription>
                                 {viewing && (
                                     <OcrReviewBadge
@@ -337,7 +390,7 @@ export default function DocumentViewerDialog({
                             <div
                                 role="group"
                                 aria-label="Document views"
-                                className="inline-flex items-center gap-0.5 rounded-lg bg-muted p-0.5"
+                                className="inline-flex max-w-full flex-wrap items-center gap-0.5 rounded-lg bg-muted p-0.5"
                             >
                                 <Button
                                     type="button"
@@ -361,19 +414,82 @@ export default function DocumentViewerDialog({
                                     <Info aria-hidden="true" />
                                     Info
                                 </Button>
+                                {viewing?.usesTaxFields ? (
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        aria-label="Show document history"
+                                        aria-pressed={
+                                            infoOpen && panelView === 'history'
+                                        }
+                                        title="Document history"
+                                        onClick={handleHistoryToggle}
+                                        className={panelButtonClassName}
+                                    >
+                                        <History aria-hidden="true" />
+                                        History
+                                    </Button>
+                                ) : null}
+                                {(['location', 'status'] as const).map(
+                                    (panel) => {
+                                        const Icon =
+                                            panel === 'location'
+                                                ? MapPin
+                                                : CircleDot;
+                                        const label =
+                                            panel === 'location'
+                                                ? 'Location'
+                                                : 'Status';
+                                        return (
+                                            <Button
+                                                key={panel}
+                                                type="button"
+                                                variant="ghost"
+                                                aria-label={`Show document ${panel}`}
+                                                aria-pressed={
+                                                    infoOpen &&
+                                                    panelView === panel
+                                                }
+                                                title={`Document ${panel}`}
+                                                onClick={() => {
+                                                    if (
+                                                        infoOpen &&
+                                                        panelView === panel
+                                                    ) {
+                                                        onInfoOpenChange(false);
+                                                        return;
+                                                    }
+                                                    onInfoOpenChange(true);
+                                                    setPanelView(panel);
+                                                }}
+                                                className={panelButtonClassName}
+                                            >
+                                                <Icon aria-hidden="true" />
+                                                {label}
+                                            </Button>
+                                        );
+                                    },
+                                )}
                                 <Button
                                     type="button"
                                     variant="ghost"
-                                    aria-label="Show document history"
+                                    aria-label="Show document audit"
                                     aria-pressed={
-                                        infoOpen && panelView === 'history'
+                                        infoOpen && panelView === 'audit'
                                     }
-                                    title="Document history"
-                                    onClick={handleHistoryToggle}
+                                    title="Document audit"
+                                    onClick={() => {
+                                        if (infoOpen && panelView === 'audit') {
+                                            onInfoOpenChange(false);
+                                            return;
+                                        }
+                                        onInfoOpenChange(true);
+                                        setPanelView('audit');
+                                    }}
                                     className={panelButtonClassName}
                                 >
-                                    <History aria-hidden="true" />
-                                    History
+                                    <ClipboardList aria-hidden="true" />
+                                    Audit
                                 </Button>
                                 <Button
                                     type="button"
@@ -396,36 +512,36 @@ export default function DocumentViewerDialog({
                                     OCR
                                 </Button>
                             </div>
-                            <div
-                                role="group"
-                                aria-label="Document actions"
-                                className="flex items-center gap-1 border-l border-border pl-2"
-                            >
-                                <Button
-                                    type="button"
-                                    variant={
-                                        chainDocument ? 'secondary' : 'ghost'
-                                    }
-                                    size="icon"
-                                    aria-label="Show document chain"
-                                    aria-pressed={chainDocument !== null}
-                                    title="Document chain"
-                                    onClick={() => {
-                                        if (!viewing) {
-                                            return;
-                                        }
-
-                                        setChainDocument((current) =>
-                                            current?.id === viewing.id
-                                                ? null
-                                                : viewing,
-                                        );
-                                    }}
-                                    className="size-9 shrink-0 text-foreground"
+                            {viewing?.usesTaxFields ? (
+                                <div
+                                    role="group"
+                                    aria-label="Document actions"
+                                    className="flex items-center gap-1 border-l border-border pl-2"
                                 >
-                                    <Network aria-hidden="true" />
-                                </Button>
-                            </div>
+                                    <Button
+                                        type="button"
+                                        variant={
+                                            chainDocument
+                                                ? 'secondary'
+                                                : 'ghost'
+                                        }
+                                        size="icon"
+                                        aria-label="Show document chain"
+                                        aria-pressed={chainDocument !== null}
+                                        title="Document chain"
+                                        onClick={() => {
+                                            setChainDocument((current) =>
+                                                current?.id === viewing.id
+                                                    ? null
+                                                    : viewing,
+                                            );
+                                        }}
+                                        className="size-9 shrink-0 text-foreground"
+                                    >
+                                        <Network aria-hidden="true" />
+                                    </Button>
+                                </div>
+                            ) : null}
                         </div>
                     </div>
                     {viewing && (
@@ -483,14 +599,16 @@ export default function DocumentViewerDialog({
                                             hoveredHighlightId={hoveredRegion}
                                             onHoverHighlight={setHoveredRegion}
                                             focusPage={
-                                                selectedRegion === null
+                                                attachmentPage ??
+                                                (selectedRegion === null
                                                     ? null
                                                     : (regions[selectedRegion]
-                                                          ?.page ?? null)
+                                                          ?.page ?? null))
                                             }
-                                            onSelectHighlight={
-                                                setSelectedRegion
-                                            }
+                                            onSelectHighlight={(id) => {
+                                                setAttachmentPage(null);
+                                                setSelectedRegion(id);
+                                            }}
                                         />
                                     </ClientOnly>
                                 ) : (
@@ -512,13 +630,24 @@ export default function DocumentViewerDialog({
                                         </div>
                                     </>
                                 )}
-                                <ViewerActions label="Document actions" />
+                                {!comparison &&
+                                    !(
+                                        viewerInfoOpen && panelView === 'ocr'
+                                    ) && (
+                                        <ViewerActions
+                                            label="Document actions"
+                                            triggerRef={actionButton}
+                                            options={documentActionOptions}
+                                        />
+                                    )}
                             </div>
                             {comparison && viewing && (
                                 <div className="flex min-h-0 w-full min-w-0 flex-col overflow-hidden">
                                     <DocumentOcrPanel
                                         key={viewing.id}
                                         document={viewing}
+                                        actionOptions={documentActionOptions}
+                                        actionTriggerRef={actionButton}
                                         comparing
                                         pdfViewport={pdfViewport}
                                         pdfDocument={pdfDocument}
@@ -534,6 +663,28 @@ export default function DocumentViewerDialog({
                         </div>
                     )}
                 </DialogContent>
+                {actionOpen &&
+                    document &&
+                    viewing &&
+                    viewing.filingPath === 'route' &&
+                    !viewing.usesTaxFields && (
+                        <DocumentActionDialog
+                            key={viewing.id}
+                            documentId={viewing.id}
+                            title={
+                                viewing.title ??
+                                viewing.trackingCode ??
+                                'Document'
+                            }
+                            finalFocus={actionButton}
+                            onClose={() => setActionOpen(false)}
+                            onChanged={(status) => {
+                                const updated = { ...viewing, status };
+                                onDocumentChange(updated);
+                                onFieldsSaved?.(updated);
+                            }}
+                        />
+                    )}
             </Dialog>
 
             <Dialog
@@ -553,204 +704,118 @@ export default function DocumentViewerDialog({
                     className="flex h-[90vh] max-h-[90vh] w-[calc(100%-1rem)] max-w-lg flex-col gap-0 overflow-hidden rounded-none p-0 motion-reduce:transition-none sm:w-[min(30vw,32rem)] sm:max-w-none lg:!top-[5vh] lg:!left-[68vw] lg:!h-[90vh] lg:!w-[30vw] lg:!max-w-none lg:!translate-x-0 lg:!translate-y-0 dark:border-neutral-800 dark:bg-black"
                 >
                     {viewing &&
-                        (panelView === 'history' ? (
+                        (panelView === 'history' && viewing.usesTaxFields ? (
                             <DocumentHistory
                                 document={viewing}
                                 onDocumentChange={onDocumentChange}
                                 onShowInfo={() => setPanelView('info')}
                             />
+                        ) : panelView === 'location' ? (
+                            <DocumentLocationPanel
+                                key={viewing.id}
+                                documentId={viewing.id}
+                                onNavigate={() => {
+                                    onInfoOpenChange(false);
+                                    onDocumentChange(null);
+                                }}
+                            />
+                        ) : panelView === 'status' ? (
+                            <DocumentStatusPanel
+                                key={`${viewing.id}:${viewing.status}`}
+                                documentId={viewing.id}
+                                onChanged={(status) => {
+                                    const updated = { ...viewing, status };
+                                    onDocumentChange(updated);
+                                    onFieldsSaved?.(updated);
+                                }}
+                            />
+                        ) : panelView === 'audit' ? (
+                            <DocumentAuditPanel
+                                key={`${viewing.id}:${viewing.status}`}
+                                documentId={viewing.id}
+                            />
                         ) : panelView === 'ocr' ? (
                             <DocumentOcrPanel
                                 key={viewing.id}
                                 document={viewing}
+                                actionOptions={documentActionOptions}
+                                actionTriggerRef={actionButton}
                                 onRegionsChange={handleRegions}
                                 onReviewChange={handleReviewChange}
                             />
                         ) : (
                             <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-                                <div className="flex shrink-0 items-center gap-3 border-b border-slate-200 p-4 pr-12 text-left dark:border-neutral-800">
-                                    <span className="flex size-8 items-center justify-center bg-slate-100 text-slate-700 dark:bg-neutral-800 dark:text-neutral-200">
-                                        <Info
-                                            aria-hidden="true"
-                                            className="size-4"
-                                        />
-                                    </span>
-                                    <div className="min-w-0">
-                                        <div className="text-base font-semibold text-slate-900 dark:text-neutral-100">
+                                <div className="flex shrink-0 items-center gap-3 border-b border-border p-4 pr-12">
+                                    <Info
+                                        aria-hidden="true"
+                                        className="size-5 shrink-0"
+                                    />
+                                    <div className="min-w-0 flex-1">
+                                        <DialogTitle className="text-base font-semibold">
                                             Document information
-                                        </div>
-                                        <div className="truncate text-xs text-slate-500 dark:text-neutral-400">
+                                        </DialogTitle>
+                                        <DialogDescription className="mt-0.5 truncate text-xs">
                                             {viewing.originalFilename}
-                                        </div>
+                                        </DialogDescription>
                                     </div>
                                 </div>
                                 <div className="min-h-0 flex-1 overflow-y-auto">
                                     <div className="grid gap-5 p-4">
-                                        <EditableInfoSection
-                                            key={`${viewing.id}-declaration`}
-                                            title="Declaration details"
-                                            document={viewing}
-                                            fields={
-                                                documentInfoFields.declaration
-                                            }
-                                            active={document !== null}
-                                            onSaved={handleFieldsSaved}
-                                        >
-                                            <InfoField
-                                                label="Tax declaration number"
-                                                value={
-                                                    viewing.taxDeclarationNumber
-                                                }
-                                            />
-                                            <InfoField
-                                                label="Declaration date"
-                                                value={formatDate(
-                                                    viewing.declarationDate,
+                                        {viewing.officeLocation && (
+                                            <InfoSection title="Office location">
+                                                {viewing.trackingCode && (
+                                                    <InfoField
+                                                        label="Tracking code"
+                                                        value={
+                                                            viewing.trackingCode
+                                                        }
+                                                    />
                                                 )}
-                                            />
-                                            <InfoField
-                                                label="Previous tax declaration number"
-                                                value={
-                                                    viewing.previousTaxDeclarationNumber
-                                                }
-                                                onClick={() =>
+                                                <InfoField
+                                                    label={
+                                                        viewing.officeLocation
+                                                            .inTransit
+                                                            ? 'Released from'
+                                                            : 'Current office'
+                                                    }
+                                                    value={
+                                                        viewing.officeLocation
+                                                            .officeName
+                                                    }
+                                                />
+                                                {viewing.officeLocation
+                                                    .inTransit && (
+                                                    <InfoField
+                                                        label="In transit to"
+                                                        value={
+                                                            viewing
+                                                                .officeLocation
+                                                                .destinationOfficeName
+                                                        }
+                                                    />
+                                                )}
+                                            </InfoSection>
+                                        )}
+                                        {viewing.usesTaxFields ? (
+                                            <TaxDocumentInfo
+                                                document={viewing}
+                                                active={document !== null}
+                                                onSaved={handleFieldsSaved}
+                                                onShowHistory={() =>
                                                     setPanelView('history')
                                                 }
                                             />
-                                            <InfoField
-                                                label="Previous declaration date"
-                                                value={formatDate(
-                                                    viewing.previousDeclarationDate,
-                                                )}
-                                            />
-                                            <InfoField
-                                                label="Title number"
-                                                value={viewing.titleNumber}
-                                            />
-                                            <InfoField
-                                                label="Lot number"
-                                                value={viewing.lotNumber}
-                                            />
-                                            <InfoField
-                                                label="PIN"
-                                                value={viewing.pin}
-                                            />
-                                            <InfoField
-                                                label="Owner / property"
-                                                value={viewing.registeredOwner}
-                                                fullWidth
-                                            />
-                                        </EditableInfoSection>
-
-                                        <EditableInfoSection
-                                            key={`${viewing.id}-owner`}
-                                            title="Address of owner"
-                                            document={viewing}
-                                            fields={documentInfoFields.owner}
-                                            active={document !== null}
-                                            onSaved={handleFieldsSaved}
-                                        >
-                                            <InfoField
-                                                label="Street"
-                                                value={
-                                                    viewing.ownerAddressStreet
-                                                }
-                                            />
-                                            <InfoField
-                                                label="Barangay"
-                                                value={
-                                                    viewing.ownerAddressBarangay
-                                                }
-                                            />
-                                            <InfoField
-                                                label="District"
-                                                value={
-                                                    viewing.ownerAddressDistrict
-                                                }
-                                            />
-                                            <InfoField
-                                                label="City / municipality"
-                                                value={
-                                                    viewing.ownerAddressCityMunicipality
-                                                }
-                                            />
-                                        </EditableInfoSection>
-
-                                        <EditableInfoSection
-                                            key={`${viewing.id}-location`}
-                                            title="Location of property"
-                                            document={viewing}
-                                            fields={documentInfoFields.location}
-                                            active={document !== null}
-                                            onSaved={handleFieldsSaved}
-                                        >
-                                            <InfoField
-                                                label="Street"
-                                                value={
-                                                    viewing.propertyLocationStreet
-                                                }
-                                            />
-                                            <InfoField
-                                                label="Barangay"
-                                                value={
-                                                    viewing.propertyLocationBarangay ??
-                                                    viewing.barangay
-                                                }
-                                            />
-                                            <InfoField
-                                                label="District"
-                                                value={
-                                                    viewing.propertyLocationDistrict
-                                                }
-                                            />
-                                            <InfoField
-                                                label="City / municipality"
-                                                value={
-                                                    viewing.propertyLocationMunicipality ??
-                                                    viewing.municipality
-                                                }
-                                            />
-                                        </EditableInfoSection>
-
-                                        <EditableInfoSection
-                                            key={`${viewing.id}-land`}
-                                            title="Land details"
-                                            document={viewing}
-                                            fields={documentInfoFields.land}
-                                            active={document !== null}
-                                            onSaved={handleFieldsSaved}
-                                        >
-                                            <InfoField
-                                                label="Province"
-                                                value={viewing.province}
-                                            />
-                                            <InfoField
-                                                label="Area"
-                                                value={viewing.area}
-                                            />
-                                            <BoundaryCompass
+                                        ) : (
+                                            <MetadataDocumentInfo
                                                 document={viewing}
+                                                active={document !== null}
+                                                onSaved={handleFieldsSaved}
+                                                scannedPageCount={
+                                                    scannedPageCount
+                                                }
+                                                onGoToPage={goToAttachmentPage}
                                             />
-                                        </EditableInfoSection>
-
-                                        <EditableInfoSection
-                                            key={`${viewing.id}-remarks`}
-                                            title="Remarks"
-                                            document={viewing}
-                                            fields={documentInfoFields.remarks}
-                                            active={document !== null}
-                                            onSaved={handleFieldsSaved}
-                                        >
-                                            <div className="min-w-0 sm:col-span-2">
-                                                <dt className="sr-only">
-                                                    Remarks
-                                                </dt>
-                                                <dd className="text-sm break-words whitespace-pre-wrap text-foreground">
-                                                    {viewing.remarks || '?'}
-                                                </dd>
-                                            </div>
-                                        </EditableInfoSection>
-
+                                        )}
                                         <InfoSection title="File details">
                                             <InfoField
                                                 label="File type"
@@ -786,7 +851,7 @@ export default function DocumentViewerDialog({
                 </DialogContent>
             </Dialog>
             <DocumentChain
-                document={chainDocument}
+                document={viewing?.usesTaxFields ? chainDocument : null}
                 onViewDocument={onDocumentChange}
                 onOpenChange={(open) => {
                     if (!open) {
@@ -794,6 +859,197 @@ export default function DocumentViewerDialog({
                     }
                 }}
             />
+        </>
+    );
+}
+
+function TaxDocumentInfo({
+    document,
+    active,
+    onSaved,
+    onShowHistory,
+}: {
+    document: ArchivedDocument;
+    active: boolean;
+    onSaved: (document: ArchivedDocument) => void;
+    onShowHistory: () => void;
+}) {
+    return (
+        <>
+            <EditableInfoSection
+                key={`${document.id}-declaration`}
+                title="Declaration details"
+                document={document}
+                fields={documentInfoFields.declaration}
+                active={active}
+                onSaved={onSaved}
+            >
+                <InfoField
+                    label="Tax declaration number"
+                    value={document.taxDeclarationNumber}
+                />
+                <InfoField
+                    label="Declaration date"
+                    value={formatDate(document.declarationDate)}
+                />
+                <InfoField
+                    label="Previous tax declaration number"
+                    value={document.previousTaxDeclarationNumber}
+                    onClick={onShowHistory}
+                />
+                <InfoField
+                    label="Previous declaration date"
+                    value={formatDate(document.previousDeclarationDate)}
+                />
+                <InfoField label="Title number" value={document.titleNumber} />
+                <InfoField label="Lot number" value={document.lotNumber} />
+                <InfoField label="PIN" value={document.pin} />
+                <InfoField
+                    label="Owner / property"
+                    value={document.registeredOwner}
+                    fullWidth
+                />
+            </EditableInfoSection>
+            <EditableInfoSection
+                key={`${document.id}-owner`}
+                title="Address of owner"
+                document={document}
+                fields={documentInfoFields.owner}
+                active={active}
+                onSaved={onSaved}
+            >
+                <InfoField label="Street" value={document.ownerAddressStreet} />
+                <InfoField
+                    label="Barangay"
+                    value={document.ownerAddressBarangay}
+                />
+                <InfoField
+                    label="District"
+                    value={document.ownerAddressDistrict}
+                />
+                <InfoField
+                    label="City / municipality"
+                    value={document.ownerAddressCityMunicipality}
+                />
+            </EditableInfoSection>
+            <EditableInfoSection
+                key={`${document.id}-location`}
+                title="Location of property"
+                document={document}
+                fields={documentInfoFields.location}
+                active={active}
+                onSaved={onSaved}
+            >
+                <InfoField
+                    label="Street"
+                    value={document.propertyLocationStreet}
+                />
+                <InfoField
+                    label="Barangay"
+                    value={
+                        document.propertyLocationBarangay ?? document.barangay
+                    }
+                />
+                <InfoField
+                    label="District"
+                    value={document.propertyLocationDistrict}
+                />
+                <InfoField
+                    label="City / municipality"
+                    value={
+                        document.propertyLocationMunicipality ??
+                        document.municipality
+                    }
+                />
+            </EditableInfoSection>
+            <EditableInfoSection
+                key={`${document.id}-land`}
+                title="Land details"
+                document={document}
+                fields={documentInfoFields.land}
+                active={active}
+                onSaved={onSaved}
+            >
+                <InfoField label="Province" value={document.province} />
+                <InfoField label="Area" value={document.area} />
+                <BoundaryCompass document={document} />
+            </EditableInfoSection>
+            <EditableInfoSection
+                key={`${document.id}-remarks`}
+                title="Remarks"
+                document={document}
+                fields={documentInfoFields.remarks}
+                active={active}
+                onSaved={onSaved}
+            >
+                <div className="min-w-0 sm:col-span-2">
+                    <dt className="sr-only">Remarks</dt>
+                    <dd className="text-sm break-words whitespace-pre-wrap text-foreground">
+                        {document.remarks || '—'}
+                    </dd>
+                </div>
+            </EditableInfoSection>
+        </>
+    );
+}
+
+function MetadataDocumentInfo({
+    document,
+    active,
+    onSaved,
+    scannedPageCount,
+    onGoToPage,
+}: {
+    document: ArchivedDocument;
+    active: boolean;
+    onSaved: (document: ArchivedDocument) => void;
+    scannedPageCount: number | null;
+    onGoToPage: (page: number) => void;
+}) {
+    return (
+        <>
+            <EditableInfoSection
+                key={`${document.id}-document`}
+                title="Document"
+                document={document}
+                fields={metadataInfoFields.document}
+                active={active}
+                onSaved={onSaved}
+            >
+                <InfoField label="Title" value={document.title} fullWidth />
+                <InfoField
+                    label="Correspondent"
+                    value={document.correspondent}
+                    fullWidth
+                />
+                <InfoField
+                    label="Date of letter"
+                    value={formatDate(document.letterDate)}
+                />
+            </EditableInfoSection>
+            <DocumentAttachmentsSection
+                documentId={document.id}
+                attachments={document.attachments}
+                active={active}
+                onSaved={onSaved}
+                scannedPageCount={scannedPageCount}
+                onGoToPage={onGoToPage}
+            />
+            <EditableInfoSection
+                key={`${document.id}-remarks`}
+                title="Remarks"
+                document={document}
+                fields={metadataInfoFields.remarks}
+                active={active}
+                onSaved={onSaved}
+            >
+                <div className="min-w-0 sm:col-span-2">
+                    <dt className="sr-only">Remarks</dt>
+                    <dd className="text-sm break-words whitespace-pre-wrap text-foreground">
+                        {document.remarks || '—'}
+                    </dd>
+                </div>
+            </EditableInfoSection>
         </>
     );
 }

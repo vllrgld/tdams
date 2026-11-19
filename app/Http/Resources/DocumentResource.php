@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Models\Document;
+use App\Models\DocumentAttachment;
 use App\Services\Documents\DocumentFieldDefinitions;
 use DateTimeInterface;
 use Illuminate\Http\Request;
@@ -34,6 +35,27 @@ class DocumentResource extends JsonResource
 
         return [
             'id' => $this->document->id,
+            'status' => $this->document->status,
+            'trackingCode' => $this->document->tracking_code,
+            'correspondent' => $this->document->correspondent?->name,
+            'title' => $this->document->title,
+            'letterDate' => $this->document->letter_date?->toDateString(),
+            'attachments' => $this->document->attachments
+                ->map(fn (DocumentAttachment $attachment): array => $attachment->toArrayPayload())
+                ->values()
+                ->all(),
+            'documentTypeId' => $this->document->document_type_id,
+            'documentTypeName' => $this->document->documentType?->name,
+            'usesTaxFields' => $this->document->usesTaxDeclarationFields(),
+            'filingPath' => $this->document->filing_path,
+            'routeName' => $this->document->documentRoute?->name,
+            'routeSteps' => $this->document->documentRoute?->toOptionArray()['steps'] ?? [],
+            'officeLocation' => [
+                'officeName' => $this->document->office?->name,
+                'inTransit' => $this->document->pendingTransfer !== null,
+                'destinationOfficeName' => $this->document->pendingTransfer?->toOffice?->name,
+                'releasedAt' => $this->document->pendingTransfer?->released_at->toIso8601String(),
+            ],
             ...$fields,
             'municipality' => $this->document->municipality,
             'barangay' => $this->document->barangay,

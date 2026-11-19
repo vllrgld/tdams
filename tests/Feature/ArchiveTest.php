@@ -73,7 +73,7 @@ class ArchiveTest extends TestCase
                 ->component('archive/index')
                 ->has('cabinets.0.drawers.0.books', 1)
                 ->where('cabinets.0.drawers.0.books.0.label', 'TD 0001–0100')
-                ->where('cabinets.0.drawers.0.books.0.coverTitle', 'Tax Declaration')
+                ->where('cabinets.0.drawers.0.books.0.coverTitle', 'PGIN')
                 ->where('cabinets.0.drawers.0.books.0.documentCount', 0)
                 ->missing('cabinets.0.drawers.0.books.0.documents'));
     }

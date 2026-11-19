@@ -11,6 +11,15 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@keyframes progress-indeterminate {
+    from {
+        transform: translateX(-100%);
+    }
+    to {
+        transform: translateX(250%);
+    }
+}
+
 @layer base {
     * {
         @apply border-border;

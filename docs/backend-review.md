@@ -28,7 +28,7 @@ Narrow the scope to a feature or controller when possible. Ask for fixes after r
 
 ## Existing organization
 
-The project already separates controllers, settings Form Requests, Eloquent models, Fortify actions, OCR jobs, document services, OCR clients, and Ollama integration into appropriate Laravel namespaces. Follow those boundaries when adding code.
+The project already separates controllers, settings Form Requests, Eloquent models, Fortify actions, OCR jobs, document services, OCR clients, and Groq integration into appropriate Laravel namespaces. Follow those boundaries when adding code.
 
 One useful future review target is the substantial inline validation and workflow coordination in `DocumentController` and `BookController`. Form Requests and focused services/actions can simplify these incrementally. Their current placement alone is not a defect, and no automatic relocation is needed to enable Boost.
 

@@ -6,19 +6,20 @@ import AppLayout from '@/layouts/app-layout';
 import AuthLayout from '@/layouts/auth-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 
-const appName = 'TDAMS';
+const appName = 'Document Archiving and Management System';
 
 void createInertiaApp({
-    title: (title) =>
-        title
-            ? `${title} · ${appName}`
-            : `${appName} · Tax Declaration Archive Management System`,
+    title: (title) => (title ? `${title} · ${appName}` : appName),
     layout: (name) => {
         switch (true) {
             case name === 'auth/login':
                 return null;
             case name.startsWith('auth/'):
                 return AuthLayout;
+            case name === 'settings/offices':
+            case name === 'settings/ocr':
+            case name === 'settings/data':
+                return AppLayout;
             case name.startsWith('settings/'):
                 return [AppLayout, SettingsLayout];
             default:

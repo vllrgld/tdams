@@ -3,6 +3,7 @@
 namespace Tests\Feature\Documents;
 
 use App\Models\Document;
+use App\Models\DocumentType;
 use App\Models\User;
 use App\Services\Documents\DocumentWriter;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -61,6 +62,8 @@ class DocumentSearchTest extends TestCase
         $this->assertNotContains('mime_type', Document::SEARCHABLE_COLUMNS);
         $this->assertSame(array_keys(Document::SEARCH_FIELDS), array_column(Document::searchFieldOptions(), 'value'));
         $this->assertSame(array_keys(Document::SEARCH_FIELDS), array_keys(Document::SEARCH_FIELD_LABELS));
+        $this->assertSame(array_keys(Document::OTHER_SEARCH_FIELDS), array_column(Document::searchFieldOptions(false), 'value'));
+        $this->assertSame(array_keys(Document::OTHER_SEARCH_FIELDS), array_keys(Document::OTHER_SEARCH_FIELD_LABELS));
 
         foreach (Document::SEARCH_FIELDS as $field => $columns) {
             if ($columns === null) {
@@ -93,7 +96,7 @@ class DocumentSearchTest extends TestCase
         ]);
 
         $this->actingAs($user)
-            ->get(route('documents.index', ['q' => $query]))
+            ->get($this->taxDocumentsIndex(['q' => $query]))
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->component('documents/index')
@@ -112,7 +115,7 @@ class DocumentSearchTest extends TestCase
         ]);
 
         $this->actingAs($user)
-            ->get(route('documents.index', ['q' => '999-11-222']))
+            ->get($this->taxDocumentsIndex(['q' => '999-11-222']))
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->component('documents/index')
@@ -130,14 +133,14 @@ class DocumentSearchTest extends TestCase
         ]);
 
         $this->actingAs($user)
-            ->get(route('documents.index', ['q' => 'TD-PREV-888']))
+            ->get($this->taxDocumentsIndex(['q' => 'TD-PREV-888']))
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->component('documents/index')
                 ->where('documents.total', 0));
 
         $this->actingAs($user)
-            ->get(route('documents.index', ['q' => 'unique-scan-file']))
+            ->get($this->taxDocumentsIndex(['q' => 'unique-scan-file']))
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->component('documents/index')
@@ -157,7 +160,7 @@ class DocumentSearchTest extends TestCase
         ]);
 
         $this->actingAs($user)
-            ->get(route('documents.index', [
+            ->get($this->taxDocumentsIndex([
                 'q' => 'Alpha',
                 'field' => 'registered_owner',
             ]))
@@ -185,7 +188,7 @@ class DocumentSearchTest extends TestCase
         ]);
 
         $this->actingAs($user)
-            ->get(route('documents.index', [
+            ->get($this->taxDocumentsIndex([
                 'q' => 'Unique Location',
                 'field' => 'property_location',
             ]))
@@ -208,7 +211,7 @@ class DocumentSearchTest extends TestCase
         ]);
 
         $this->actingAs($user)
-            ->get(route('documents.index', [
+            ->get($this->taxDocumentsIndex([
                 'q' => 'Ilocos Norte Unique',
                 'field' => 'property_location',
             ]))
@@ -225,7 +228,7 @@ class DocumentSearchTest extends TestCase
         $user = User::factory()->create();
 
         $this->actingAs($user)
-            ->get(route('documents.index', [
+            ->get($this->taxDocumentsIndex([
                 'q' => 'Alpha',
                 'field' => 'pin',
             ]))
@@ -245,7 +248,7 @@ class DocumentSearchTest extends TestCase
         ]);
 
         $this->actingAs($user)
-            ->get(route('documents.index', ['q' => 'Alpha LOT-Z']))
+            ->get($this->taxDocumentsIndex(['q' => 'Alpha LOT-Z']))
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->component('documents/index')
@@ -270,7 +273,7 @@ class DocumentSearchTest extends TestCase
         ]);
 
         $this->actingAs($user)
-            ->get(route('documents.index', [
+            ->get($this->taxDocumentsIndex([
                 'q' => 'mineral rights unique',
                 'field' => 'content',
             ]))
@@ -299,7 +302,7 @@ class DocumentSearchTest extends TestCase
         ]);
 
         $this->actingAs($user)
-            ->get(route('documents.index', ['q' => 'cadastral monument unique']))
+            ->get($this->taxDocumentsIndex(['q' => 'cadastral monument unique']))
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->component('documents/index')
@@ -317,7 +320,7 @@ class DocumentSearchTest extends TestCase
         ]);
 
         $this->actingAs($user)
-            ->get(route('documents.index', ['q' => 'no-such-document']))
+            ->get($this->taxDocumentsIndex(['q' => 'no-such-document']))
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->component('documents/index')
@@ -334,7 +337,7 @@ class DocumentSearchTest extends TestCase
         $this->makeDocument($user, ['tax_declaration_number' => 'TD-TWO']);
 
         $this->actingAs($user)
-            ->get(route('documents.index', ['q' => '   ']))
+            ->get($this->taxDocumentsIndex(['q' => '   ']))
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->component('documents/index')
@@ -347,6 +350,172 @@ class DocumentSearchTest extends TestCase
     {
         $this->get(route('documents.index', ['q' => 'TD']))
             ->assertRedirect(route('login'));
+    }
+
+    /**
+     * @return array<string, array{0: string, 1: bool}>
+     */
+    public static function otherArchiveSearchProvider(): array
+    {
+        return [
+            'correspondent' => ['Governor Unique', true],
+            'title' => ['circular unique', true],
+            'content' => ['mineral rights unique', true],
+            'tax declaration number' => ['TD-GOV-UNIQUE', false],
+            'owner' => ['Alpha Owner Unique', false],
+        ];
+    }
+
+    #[DataProvider('otherArchiveSearchProvider')]
+    public function test_default_all_search_matches_correspondent_title_and_content_on_other_types(string $query, bool $matches): void
+    {
+        $user = User::factory()->create();
+        $memo = DocumentType::query()->create([
+            'name' => 'Memorandum',
+            'slug' => 'memorandum',
+            'uses_tax_declaration_fields' => false,
+        ]);
+        $match = $this->makeDocument($user, [
+            'document_type_id' => $memo->id,
+            'correspondent' => 'Office of the Governor Unique',
+            'title' => 'Budget circular unique',
+            'ocr_status' => 'completed',
+            'ocr_text' => 'Hidden mineral rights unique',
+        ]);
+        $this->makeDocument($user, [
+            'tax_declaration_number' => 'TD-GOV-UNIQUE',
+            'registered_owner' => 'Alpha Owner Unique',
+            'ocr_status' => 'completed',
+            'ocr_text' => 'Unrelated tax scan text',
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('documents.index', ['q' => $query]))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('filters.type', 'all')
+                ->where('filters.search_mode', 'all')
+                ->where('filters.field', 'all')
+                ->where('searchFields.1.value', 'correspondent')
+                ->where('documents.total', $matches ? 1 : 0)
+                ->where('documents.data', fn ($data): bool => ! $matches || collect($data)->pluck('id')->all() === [$match->id]));
+    }
+
+    public function test_default_search_can_be_limited_to_correspondent(): void
+    {
+        $user = User::factory()->create();
+        $memo = DocumentType::query()->create([
+            'name' => 'Memorandum',
+            'slug' => 'memorandum',
+            'uses_tax_declaration_fields' => false,
+        ]);
+        $match = $this->makeDocument($user, [
+            'document_type_id' => $memo->id,
+            'correspondent' => 'Alpha Office',
+            'title' => 'Beta subject',
+        ]);
+        $this->makeDocument($user, [
+            'document_type_id' => $memo->id,
+            'correspondent' => 'Beta Office',
+            'title' => 'Alpha subject',
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('documents.index', ['q' => 'Alpha', 'field' => 'correspondent']))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('filters.field', 'correspondent')
+                ->where('filters.type', 'all')
+                ->where('documents.total', 1)
+                ->where('documents.data.0.id', $match->id));
+    }
+
+    public function test_a_non_tax_type_can_search_remarks_without_matching_title(): void
+    {
+        $user = User::factory()->create();
+        $application = DocumentType::query()->create([
+            'name' => 'Application',
+            'slug' => 'application',
+            'uses_tax_declaration_fields' => false,
+        ]);
+        $match = $this->makeDocument($user, [
+            'document_type_id' => $application->id,
+            'remarks' => 'Unique filing note',
+            'title' => 'Other title',
+        ]);
+        $this->makeDocument($user, [
+            'document_type_id' => $application->id,
+            'remarks' => 'Unrelated remarks',
+            'title' => 'Unique filing note',
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('documents.index', [
+                'q' => 'Unique filing',
+                'field' => 'remarks',
+                'type' => $application->id,
+            ]))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('filters.field', 'remarks')
+                ->where('filters.type', (string) $application->id)
+                ->where('documents.total', 1)
+                ->where('documents.data.0.id', $match->id));
+    }
+
+    public function test_a_tax_search_field_is_coerced_to_all_on_the_default_search_mode(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->get(route('documents.index', ['field' => 'registered_owner']))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('filters.type', 'all')
+                ->where('filters.search_mode', 'all')
+                ->where('filters.field', 'all')
+                ->where('searchFields.1.value', 'correspondent'));
+    }
+
+    public function test_tax_search_mode_matches_tax_declaration_fields_across_all_types(): void
+    {
+        $user = User::factory()->create();
+        $memo = DocumentType::query()->create([
+            'name' => 'Memorandum',
+            'slug' => 'memorandum',
+            'uses_tax_declaration_fields' => false,
+        ]);
+        $match = $this->makeDocument($user, [
+            'tax_declaration_number' => 'TD-GOV-UNIQUE',
+            'registered_owner' => 'Alpha Owner Unique',
+        ]);
+        $this->makeDocument($user, [
+            'document_type_id' => $memo->id,
+            'title' => 'TD-GOV-UNIQUE',
+            'correspondent' => 'Alpha Owner Unique',
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('documents.index', ['q' => 'TD-GOV-UNIQUE', 'search_mode' => 'tax']))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('filters.type', 'all')
+                ->where('filters.search_mode', 'tax')
+                ->where('searchFields.1.label', 'Tax declaration')
+                ->where('documents.total', 1)
+                ->where('documents.data.0.id', $match->id));
+    }
+
+    public function test_an_other_search_field_is_coerced_to_all_on_the_tax_type_filter(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->get($this->taxDocumentsIndex(['field' => 'correspondent']))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('filters.field', 'all')
+                ->where('searchFields.1.label', 'Tax declaration'));
     }
 
     /**
@@ -381,7 +550,7 @@ class DocumentSearchTest extends TestCase
         }
 
         $this->actingAs($user)
-            ->get(route('documents.index', ['declaration_date_from' => $from, 'declaration_date_to' => $to]))
+            ->get($this->taxDocumentsIndex(['declaration_date_from' => $from, 'declaration_date_to' => $to]))
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->where('filters.declaration_date_from', $from)
@@ -398,7 +567,7 @@ class DocumentSearchTest extends TestCase
         $this->makeDocument($user, ['registered_owner' => 'Beta Owner', 'declaration_date' => '2024-06-15']);
 
         $this->actingAs($user)
-            ->get(route('documents.index', [
+            ->get($this->taxDocumentsIndex([
                 'q' => 'Alpha', 'field' => 'registered_owner',
                 'declaration_date_from' => '2024-01-01', 'declaration_date_to' => '2024-12-31',
             ]))
@@ -440,7 +609,7 @@ class DocumentSearchTest extends TestCase
         }
 
         $this->actingAs($user)
-            ->get(route('documents.index', ['date_added_from' => $from, 'date_added_to' => $to, 'date_timezone' => $timezone]))
+            ->get($this->taxDocumentsIndex(['date_added_from' => $from, 'date_added_to' => $to, 'date_timezone' => $timezone]))
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->where('filters.date_added_from', $from)
@@ -461,7 +630,7 @@ class DocumentSearchTest extends TestCase
         $this->makeDocument($user, ['registered_owner' => 'Beta Owner', 'declaration_date' => '1990-06-15', 'created_at' => '2024-06-15 04:00:00']);
 
         $this->actingAs($user)
-            ->get(route('documents.index', [
+            ->get($this->taxDocumentsIndex([
                 'q' => 'Alpha', 'field' => 'registered_owner',
                 'declaration_date_from' => '1990-01-01', 'declaration_date_to' => '1990-12-31',
                 'date_added_from' => '2024-06-15', 'date_added_to' => '2024-06-15', 'date_timezone' => 'Asia/Manila',
@@ -484,7 +653,7 @@ class DocumentSearchTest extends TestCase
         $this->makeDocument($user, ['registered_owner' => 'Alpha Owner', 'declaration_date' => '2023-06-15']);
 
         $this->actingAs($user)
-            ->get(route('documents.index', [
+            ->get($this->taxDocumentsIndex([
                 'q' => 'Alpha', 'field' => 'registered_owner',
                 'direction' => 'asc', 'sort' => 'declaration_date',
                 'declaration_date_from' => '2024-01-01', 'declaration_date_to' => '2024-12-31',
@@ -499,7 +668,7 @@ class DocumentSearchTest extends TestCase
                 ->has('documents.data', 24));
 
         $response = $this->actingAs($user)
-            ->get(route('documents.index', [
+            ->get($this->taxDocumentsIndex([
                 'q' => 'Alpha', 'field' => 'registered_owner', 'page' => 2,
                 'direction' => 'asc', 'sort' => 'declaration_date',
                 'declaration_date_from' => '2024-01-01', 'declaration_date_to' => '2024-12-31',
@@ -514,6 +683,7 @@ class DocumentSearchTest extends TestCase
 
         parse_str((string) parse_url($response->inertiaProps('documents.prev_page_url'), PHP_URL_QUERY), $query);
         $this->assertSame([
+            'type' => (string) DocumentType::taxDeclaration()->id,
             'q' => 'Alpha', 'field' => 'registered_owner',
             'direction' => 'asc', 'sort' => 'declaration_date',
             'declaration_date_from' => '2024-01-01', 'declaration_date_to' => '2024-12-31',
@@ -549,7 +719,7 @@ class DocumentSearchTest extends TestCase
         $user = User::factory()->create();
 
         $this->actingAs($user)
-            ->get(route('documents.index', $filters))
+            ->get($this->taxDocumentsIndex($filters))
             ->assertSessionHasErrors([$field => $message]);
     }
 
@@ -562,7 +732,7 @@ class DocumentSearchTest extends TestCase
         ]);
 
         $this->actingAs($user)
-            ->get(route('documents.index'))
+            ->get($this->taxDocumentsIndex())
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->where('documents.data.0.ocrTextExcerpt', 'Tax declaration Owner Name Lot 12')
@@ -580,7 +750,7 @@ class DocumentSearchTest extends TestCase
         ]);
 
         $this->actingAs($user)
-            ->get(route('documents.index'))
+            ->get($this->taxDocumentsIndex())
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->where('documents.data.0.ocrTextExcerpt', str_repeat('a', 600).'...'));
@@ -602,7 +772,7 @@ class DocumentSearchTest extends TestCase
         $this->makeDocument($user, ['ocr_text' => $text]);
 
         $this->actingAs($user)
-            ->get(route('documents.index'))
+            ->get($this->taxDocumentsIndex())
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->where('documents.data.0.ocrTextExcerpt', null));
@@ -627,7 +797,7 @@ class DocumentSearchTest extends TestCase
         $this->makeDocument($user, ['original_filename' => 'tie.pdf', 'created_at' => '2026-02-02 12:00:00']);
 
         $this->actingAs($user)
-            ->get(route('documents.index', ['direction' => $direction]))
+            ->get($this->taxDocumentsIndex(['direction' => $direction]))
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->where('filters.direction', $direction)
@@ -655,7 +825,7 @@ class DocumentSearchTest extends TestCase
         $this->makeDocument($user, ['original_filename' => 'unlinked.pdf']);
 
         $this->actingAs($user)
-            ->get(route('documents.index', ['sort' => 'declaration_date', 'direction' => $direction]))
+            ->get($this->taxDocumentsIndex(['sort' => 'declaration_date', 'direction' => $direction]))
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->where('filters.sort', 'declaration_date')
@@ -684,7 +854,7 @@ class DocumentSearchTest extends TestCase
         $user = User::factory()->create();
 
         $this->actingAs($user)
-            ->get(route('documents.index', $filters))
+            ->get($this->taxDocumentsIndex($filters))
             ->assertSessionHasErrors([$field => $message]);
     }
 
@@ -696,7 +866,7 @@ class DocumentSearchTest extends TestCase
         $second = $this->makeDocument($user, ['tax_declaration_number' => 'TD-ORDER-2']);
 
         $this->actingAs($user)
-            ->get(route('documents.index', ['q' => 'TD-ORDER']))
+            ->get($this->taxDocumentsIndex(['q' => 'TD-ORDER']))
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->where('documents.data.0.id', $second->id)

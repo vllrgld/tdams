@@ -6,6 +6,7 @@ export const commandSearchGroups = [
     'Drawers',
     'Books',
     'Folders',
+    'Lever arch files',
     'Documents',
 ] as const;
 

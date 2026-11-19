@@ -1,7 +1,14 @@
 import { ocr as documentOcr } from '@/routes/documents';
 import { review as reviewOcr } from '@/routes/documents/ocr';
 import { FileCheck2, FileX2 } from 'lucide-react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+    useCallback,
+    useEffect,
+    useRef,
+    useState,
+    type RefObject,
+} from 'react';
+import type { FloatingActionMenuOption } from '@/components/ui/floating-action-menu';
 import { update as correctOcrRegion } from '@/routes/documents/ocr/regions';
 import type { PDFDocumentProxy } from 'pdfjs-dist';
 import { Spinner } from '@/components/ui/spinner';
@@ -14,7 +21,6 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
-import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import type { PdfViewport } from '@/components/pdf/pdf-preview';
 import type { ArchivedDocument } from '@/types/documents';
 import OcrPageLayout from './ocr-page-layout';
@@ -63,6 +69,8 @@ export default function DocumentOcrPanel({
     onSelectRegion,
     onHoverRegion,
     onReviewChange,
+    actionOptions = [],
+    actionTriggerRef,
 }: {
     document: ArchivedDocument;
     comparing?: boolean;
@@ -74,6 +82,8 @@ export default function DocumentOcrPanel({
     onSelectRegion?: (index: number) => void;
     onHoverRegion?: (index: number | null) => void;
     onReviewChange?: (reviewedAt: string | null) => void;
+    actionOptions?: readonly FloatingActionMenuOption[];
+    actionTriggerRef?: RefObject<HTMLButtonElement | null>;
 }) {
     const [payload, setPayload] = useState<OcrPayload | null>(null);
     const [loading, setLoading] = useState(true);
@@ -84,7 +94,8 @@ export default function DocumentOcrPanel({
         reviewed: boolean;
         revision: string;
     } | null>(null);
-    const actionTrigger = useRef<HTMLButtonElement | null>(null);
+    const localActionTrigger = useRef<HTMLButtonElement | null>(null);
+    const actionTrigger = actionTriggerRef ?? localActionTrigger;
     const cancelReviewButton = useRef<HTMLButtonElement | null>(null);
     const reviewRequest = useRef<AbortController | null>(null);
     useEffect(() => () => reviewRequest.current?.abort(), []);
@@ -376,36 +387,34 @@ export default function DocumentOcrPanel({
                     </div>
                 )}
             </div>
-            <ViewerActions label="OCR actions" triggerRef={actionTrigger}>
-                <DropdownMenuItem
-                    closeOnClick
-                    disabled={
-                        loading ||
-                        failed ||
-                        Boolean(message) ||
-                        reviewing ||
-                        Boolean(editing) ||
-                        !payload?.revision
-                    }
-                    onClick={() => {
-                        if (!payload?.revision) return;
-                        setReviewError(undefined);
-                        setReviewConfirmation({
-                            reviewed: !payload.reviewedAt,
-                            revision: payload.revision,
-                        });
-                    }}
-                >
-                    {payload?.reviewedAt ? (
-                        <FileX2 aria-hidden="true" />
-                    ) : (
-                        <FileCheck2 aria-hidden="true" />
-                    )}
-                    {payload?.reviewedAt
-                        ? 'Mark as not reviewed'
-                        : 'Verify OCR'}
-                </DropdownMenuItem>
-            </ViewerActions>
+            <ViewerActions
+                label="Document actions"
+                triggerRef={actionTrigger}
+                options={[
+                    ...actionOptions,
+                    {
+                        label: payload?.reviewedAt
+                            ? 'Mark as not reviewed'
+                            : 'Verify OCR',
+                        Icon: payload?.reviewedAt ? <FileX2 /> : <FileCheck2 />,
+                        disabled:
+                            loading ||
+                            failed ||
+                            Boolean(message) ||
+                            reviewing ||
+                            Boolean(editing) ||
+                            !payload?.revision,
+                        onClick: () => {
+                            if (!payload?.revision) return;
+                            setReviewError(undefined);
+                            setReviewConfirmation({
+                                reviewed: !payload.reviewedAt,
+                                revision: payload.revision,
+                            });
+                        },
+                    },
+                ]}
+            />
             <Dialog
                 open={reviewConfirmation !== null}
                 disablePointerDismissal={reviewing}

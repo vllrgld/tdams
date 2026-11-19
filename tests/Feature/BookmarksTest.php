@@ -4,26 +4,22 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class BookmarksTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_guests_are_redirected_to_the_login_page()
+    public function test_bookmarks_page_is_unavailable_to_guests(): void
     {
-        $response = $this->get(route('bookmarks.index'));
-        $response->assertRedirect(route('login'));
+        $this->get('/bookmarks')->assertNotFound();
     }
 
-    public function test_authenticated_users_can_visit_bookmarks()
+    public function test_bookmarks_page_is_unavailable_to_authenticated_users(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
 
-        $response = $this->get(route('bookmarks.index'));
-        $response->assertOk();
-        $response->assertInertia(fn (Assert $page) => $page->component('bookmarks/index'));
+        $this->get('/bookmarks')->assertNotFound();
     }
 }

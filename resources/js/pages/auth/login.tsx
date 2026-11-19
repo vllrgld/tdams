@@ -40,7 +40,7 @@ export default function Login({ status, canResetPassword }: Props) {
                         >
                             <img
                                 src="/tdams%20no%20logo.png"
-                                alt="TDAMS — Tax Declaration Archive Management System"
+                                alt="Document Archiving and Management System"
                                 className="h-auto w-full max-w-3xl object-contain"
                             />
                         </Link>

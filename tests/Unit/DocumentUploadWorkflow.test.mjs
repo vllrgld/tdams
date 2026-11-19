@@ -5,9 +5,11 @@ import {
     createReviewState,
     mergeMappedFields,
     sectionCanBeChecked,
+    unusedMappedAttachments,
     updateReviewField,
 } from '../../resources/js/pages/documents/lib/metadata.ts';
 import { createUploadSession } from '../../resources/js/pages/documents/lib/upload-session.ts';
+import { documentFileError } from '../../resources/js/pages/documents/lib/upload-file.ts';
 import { pollOcrStatus } from '../../resources/js/pages/documents/lib/ocr-polling.ts';
 
 const sections = [
@@ -35,6 +37,68 @@ const sections = [
         fields: [{ name: 'remarks', label: 'Remarks' }],
     },
 ];
+
+void test('switching verification fields preserves edits and saves only the visible checked fields', () => {
+    const metadataSections = [
+        {
+            id: 'document',
+            title: 'Document',
+            tabLabel: 'Document',
+            fields: [{ name: 'title', label: 'Title' }],
+        },
+    ];
+    let review = createReviewState([...sections, ...metadataSections]);
+    review = updateReviewField(
+        review,
+        sections,
+        'tax_declaration_number',
+        'STAFF-TD',
+    );
+    review = mergeMappedFields(review, metadataSections, {
+        title: 'Mapped title',
+    });
+    review.checked = { document: true };
+
+    assert.deepEqual(checkedFieldPayload(review, metadataSections), {
+        title: 'Mapped title',
+    });
+    assert.equal(review.values.tax_declaration_number, 'STAFF-TD');
+
+    review = mergeMappedFields(review, sections, {
+        tax_declaration_number: 'AI-TD',
+    });
+    review.checked = { declaration: true };
+
+    assert.deepEqual(checkedFieldPayload(review, sections), {
+        tax_declaration_number: 'STAFF-TD',
+    });
+    assert.equal(review.values.title, 'Mapped title');
+});
+
+void test('upload selection accepts supported scans including uppercase extensions at the size limit', () => {
+    for (const name of [
+        'scan.PDF',
+        'scan.jpg',
+        'scan.jpeg',
+        'scan.png',
+        'scan.tif',
+        'scan.tiff',
+    ]) {
+        assert.equal(documentFileError({ name, size: 50 * 1024 * 1024 }), null);
+    }
+});
+
+void test('upload selection rejects unsupported, empty, and oversized files before submission', () => {
+    assert.match(
+        documentFileError({ name: 'scan.docx', size: 100 }),
+        /PDF, JPEG, PNG, or TIFF/,
+    );
+    assert.match(documentFileError({ name: 'scan.pdf', size: 0 }), /empty/);
+    assert.match(
+        documentFileError({ name: 'scan.pdf', size: 50 * 1024 * 1024 + 1 }),
+        /larger than 50 MB/,
+    );
+});
 
 void test('a delayed upload cannot select a document in a reopened session', async () => {
     const session = createUploadSession();
@@ -112,6 +176,27 @@ void test('a delayed save cannot close a new upload dialog', async () => {
     await saving;
 
     assert.equal(dialogOpen, true);
+});
+
+void test('mapped attachments skip listed descriptions and keep only printed pages', () => {
+    assert.deepEqual(
+        unusedMappedAttachments(
+            [{ description: 'Certified true copy of title' }],
+            [
+                { description: 'Certified true copy of title', page: 3 },
+                { description: 'Sketch plan', page: '' },
+                { description: 'Deed of sale', page: 4 },
+                { description: '  deed of sale  ', page: 5 },
+                { description: '   ', page: 1 },
+                'Special power of attorney',
+            ],
+        ),
+        [
+            { description: 'Sketch plan', page: null },
+            { description: 'Deed of sale', page: 4 },
+            { description: 'Special power of attorney', page: null },
+        ],
+    );
 });
 
 void test('mapping preserves corrections and deliberate blanks while refreshing untouched fields', () => {

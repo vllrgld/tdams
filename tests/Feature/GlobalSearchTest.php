@@ -76,7 +76,7 @@ class GlobalSearchTest extends TestCase
             'position' => 1,
         ]);
 
-        $this->actingAs($user)->getJson(route('system.search', ['q' => 'Tax Declaration']))
+        $this->actingAs($user)->getJson(route('system.search', ['q' => 'PGIN']))
             ->assertOk()
             ->assertJsonCount(0, 'books');
     }

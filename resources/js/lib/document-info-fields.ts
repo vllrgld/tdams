@@ -103,6 +103,33 @@ export const documentInfoFields = {
     ],
 } satisfies Record<string, DocumentInfoField[]>;
 
+export const metadataInfoFields = {
+    document: [
+        {
+            name: 'title',
+            label: 'Title',
+            maxLength: 255,
+            fullWidth: true,
+        },
+        {
+            name: 'correspondent',
+            label: 'Correspondent',
+            maxLength: 255,
+            fullWidth: true,
+        },
+        { name: 'letter_date', label: 'Date of letter', type: 'date' },
+    ],
+    remarks: [
+        {
+            name: 'remarks',
+            label: 'Remarks',
+            type: 'textarea',
+            maxLength: 10000,
+            fullWidth: true,
+        },
+    ],
+} satisfies Record<string, DocumentInfoField[]>;
+
 export function documentSectionValues(
     document: ArchivedDocument,
     fields: DocumentInfoField[],

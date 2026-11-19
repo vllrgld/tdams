@@ -1,6 +1,6 @@
 import { update as updateFilingItem } from '@/routes/manage/books';
 import { index as cabinetsIndex } from '@/routes/manage/cabinets';
-import { Head, Link, useForm, usePage } from '@inertiajs/react';
+import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import {
     ArrowUpRight,
     BookMarked,
@@ -25,7 +25,11 @@ import CabinetSearch, {
     CABINET_SEARCH_FIELDS,
     type CabinetSearchField,
 } from '@/components/filing/cabinets/cabinet-search';
-import { DEFAULT_COVER_TITLE } from '@/lib/filing-appearance';
+import {
+    DEFAULT_COVER_TITLE,
+    filingTitle,
+    filingName,
+} from '@/lib/filing-appearance';
 import type { FilingKind, ManagedFilingItem } from '@/types/filing';
 import RotatableFilingItem from '@/components/filing/rotatable-filing-item';
 
@@ -129,7 +133,7 @@ function BookNavigation({
                             className="group/cabinet"
                         >
                             <CollapsibleTrigger
-                                aria-label={`${cabinet.drawers[0]?.books[0]?.kind === 'folder' ? 'Folders' : 'Books'} in ${cabinet.name}`}
+                                aria-label={`${filingTitle(cabinet.drawers[0]?.books[0]?.kind, true)} in ${cabinet.name}`}
                                 className="flex w-full items-center gap-2 bg-slate-50 px-4 py-3 text-left text-sm font-semibold text-slate-900 hover:bg-slate-100 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-blue-900 dark:bg-neutral-950 dark:text-neutral-100 dark:hover:bg-neutral-900 dark:focus-visible:outline-blue-200"
                             >
                                 <ChevronDown
@@ -164,7 +168,7 @@ function BookNavigation({
                                         className="group/drawer pb-2"
                                     >
                                         <CollapsibleTrigger
-                                            aria-label={`${drawer.books[0]?.kind === 'folder' ? 'Folders' : 'Books'} in ${drawer.label}`}
+                                            aria-label={`${filingTitle(drawer.books[0]?.kind, true)} in ${drawer.label}`}
                                             className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-xs font-medium text-slate-600 hover:bg-slate-50 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-blue-900 dark:text-neutral-400 dark:hover:bg-neutral-900 dark:focus-visible:outline-blue-200"
                                         >
                                             <ChevronDown
@@ -246,17 +250,15 @@ function BookNavigation({
 
 export type FilingItemManagementProps = {
     books: ManagedFilingItem[];
-    coverTitle: string;
     kind?: FilingKind;
 };
 
 export default function FilingItemManagement({
     books,
-    coverTitle,
     kind = 'book',
 }: FilingItemManagementProps) {
-    const title = kind === 'folder' ? 'Folders' : 'Books';
-    const plural = kind === 'folder' ? 'folders' : 'books';
+    const title = filingTitle(kind, true);
+    const plural = filingName(kind, true);
     const [searchQuery, setSearchQuery] = useState('');
     const [searchField, setSearchField] = useState<CabinetSearchField>(
         CABINET_SEARCH_FIELDS[0].value,
@@ -278,27 +280,30 @@ export default function FilingItemManagement({
     );
     const selected =
         books.find((book) => book.id === selectedId) ?? books[0] ?? null;
-    const sharedCover = coverTitle || DEFAULT_COVER_TITLE;
+    const selectedCover = selected?.coverTitle || DEFAULT_COVER_TITLE;
     const form = useForm({
         label: selected?.label ?? '',
-        cover_title: sharedCover,
+        cover_title: selectedCover,
     });
     const dirty =
         selected !== null &&
         (form.data.label.trim() !== selected.label ||
-            form.data.cover_title.trim() !== sharedCover);
+            form.data.cover_title.trim() !== selectedCover);
 
     function selectBook(book: ManagedFilingItem) {
         setSelectedId(book.id);
         setOpenCabinetId(book.cabinetId);
-        form.setData('label', book.label);
-        form.clearErrors('label');
+        form.setData({
+            label: book.label,
+            cover_title: book.coverTitle || DEFAULT_COVER_TITLE,
+        });
+        form.clearErrors();
     }
 
     function discardChanges() {
         form.setData({
             label: selected?.label ?? '',
-            cover_title: sharedCover,
+            cover_title: selectedCover,
         });
         form.clearErrors();
     }
@@ -313,9 +318,8 @@ export default function FilingItemManagement({
         form.patch(updateFilingItem.url(Number(selected.id)), {
             preserveScroll: true,
             onSuccess: () => {
-                toast.success(
-                    `${selected.kind === 'folder' ? 'Folder' : 'Book'} updated.`,
-                );
+                router.flushAll();
+                toast.success(`${filingTitle(selected.kind)} updated.`);
             },
         });
     }
@@ -336,13 +340,6 @@ export default function FilingItemManagement({
                                     : 'Manage spine names and cover text for the physical archive.'}
                             </p>
                         </div>
-                        <Button
-                            render={<Link href={cabinetsIndex.url()} />}
-                            variant="outline"
-                            className="w-fit shrink-0 rounded-none border-slate-300 dark:border-neutral-700"
-                        >
-                            Manage cabinets <ArrowUpRight aria-hidden="true" />
-                        </Button>
                     </header>
 
                     {books.length === 0 ? (
@@ -479,11 +476,7 @@ export default function FilingItemManagement({
                                             <form
                                                 onSubmit={submit}
                                                 className="px-5 sm:px-6"
-                                                aria-label={
-                                                    selected.kind === 'folder'
-                                                        ? 'Folder settings'
-                                                        : 'Book settings'
-                                                }
+                                                aria-label={`${filingTitle(selected.kind)} settings`}
                                             >
                                                 <div className="py-6">
                                                     <Label htmlFor="book-name">
@@ -499,7 +492,7 @@ export default function FilingItemManagement({
                                                         {selected.kind ===
                                                         'folder'
                                                             ? 'The name on this folder’s tab and in its drawer.'
-                                                            : 'The name on this book’s spine and in its drawer.'}
+                                                            : 'The name on this filing’s spine and in its drawer.'}
                                                     </p>
                                                     <Input
                                                         id="book-name"
@@ -539,14 +532,15 @@ export default function FilingItemManagement({
                                                         htmlFor="book-cover-title"
                                                         className="font-semibold"
                                                     >
-                                                        Shared cover text
+                                                        Cover text
                                                     </Label>
                                                     <p
                                                         id="book-cover-help"
                                                         className="mt-2 text-xs leading-5 text-slate-600 dark:text-neutral-400"
                                                     >
-                                                        Changes apply to every{' '}
-                                                        {kind} in the archive.
+                                                        {kind === 'folder'
+                                                            ? 'Shown on this folder’s cover in the archive.'
+                                                            : 'Shown on this filing’s cover or spine label in the archive.'}
                                                     </p>
                                                     <Input
                                                         id="book-cover-title"
@@ -635,9 +629,7 @@ export default function FilingItemManagement({
                                                 id="book-preview-heading"
                                                 className="text-sm font-semibold text-slate-900 dark:text-neutral-100"
                                             >
-                                                {selected.kind === 'folder'
-                                                    ? 'Folder preview'
-                                                    : 'Book preview'}
+                                                {`${filingTitle(selected.kind)} preview`}
                                             </h3>
                                             <div className="mt-3 flex justify-center">
                                                 <RotatableFilingItem

@@ -1,5 +1,56 @@
+export type DocumentAttachment = {
+    id: number;
+    description: string;
+    page: number | null;
+};
+
+export type DocumentStatus =
+    | 'under_review'
+    | 'in_progress'
+    | 'approved'
+    | 'disapproved'
+    | 'archived'
+    | 'completed';
+
+export type DocumentWorkflow = {
+    status: DocumentStatus;
+    label: string;
+    canTakeAction: boolean;
+    actionBlock: string | null;
+    canEndorse: boolean;
+    endorsementRequired: boolean;
+    endorsedAt: string | null;
+    routingName: string | null;
+    routingVersion: number;
+    decision: {
+        status: 'approved' | 'disapproved';
+        comments: string | null;
+        actorName: string;
+        officeName: string | null;
+        decidedAt: string;
+    } | null;
+};
+
 export type ArchivedDocument = {
     id: number;
+    status?: DocumentStatus;
+    title: string | null;
+    trackingCode?: string | null;
+    letterDate: string | null;
+    correspondent: string | null;
+    attachments: DocumentAttachment[];
+    documentTypeId: number | null;
+    documentTypeName: string | null;
+    usesTaxFields: boolean;
+    filingPath: 'archive' | 'route';
+    routeName: string | null;
+    routeSteps: string[];
+    officeLocation?: {
+        officeName: string | null;
+        inTransit: boolean;
+        destinationOfficeName: string | null;
+        releasedAt: string | null;
+    };
     taxDeclarationNumber: string | null;
     declarationDate: string | null;
     lotNumber: string | null;

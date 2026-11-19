@@ -5,6 +5,7 @@ import { Head, Link, usePage } from '@inertiajs/react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { X } from 'lucide-react';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { useSetArchiveHeaderTrail } from '@/components/layout/archive-header-context';
 import DocumentViewerDialog from '@/components/documents/viewer/document-viewer-dialog';
@@ -14,7 +15,10 @@ import CabinetSearch, {
     type CabinetSearchField,
 } from '@/components/filing/cabinets/cabinet-search';
 import { FilingItemPortalProvider } from '@/components/filing/shared/filing-item-portal';
-import FilingCabinet from '@/components/filing/cabinets/filing-cabinet';
+import ArchiveCabinet from '@/components/filing/cabinets/archive-cabinet';
+import CabinetViewSwitch, {
+    type CabinetView,
+} from '@/components/filing/cabinets/cabinet-view-switch';
 import FilingItemViewer from '@/components/filing/shared/filing-item-viewer';
 import type { OpenedFilingItem } from '@/components/filing/shared/filing-item-types';
 import { filingCover } from '@/lib/filing-appearance';
@@ -112,6 +116,7 @@ export default function Archive({
         null,
     );
     const [searchQuery, setSearchQuery] = useState('');
+    const [cabinetView, setCabinetView] = useState<CabinetView>('model');
     const [searchField, setSearchField] = useState<CabinetSearchField>(
         CABINET_SEARCH_FIELDS[0].value,
     );
@@ -237,6 +242,35 @@ export default function Archive({
         }
 
         function handleKeyDown(event: KeyboardEvent) {
+            if (
+                event.key === 'Tab' &&
+                cabinetView === 'model' &&
+                !openedItem &&
+                !viewingDocument
+            ) {
+                const controls = [
+                    ...document.querySelectorAll<HTMLElement>(
+                        '[data-archive-drawer-controls] button, [data-procedural-drawer-view] [data-procedural-filing-item]',
+                    ),
+                ].filter((control) => control.tabIndex >= 0);
+                const first = controls[0];
+                const last = controls[controls.length - 1];
+                if (
+                    first &&
+                    last &&
+                    (!controls.includes(
+                        document.activeElement as HTMLElement,
+                    ) ||
+                        (event.shiftKey && document.activeElement === first) ||
+                        (!event.shiftKey && document.activeElement === last))
+                ) {
+                    event.preventDefault();
+                    (event.shiftKey ? last : first).focus({
+                        preventScroll: true,
+                    });
+                }
+                return;
+            }
             if (event.key !== 'Escape') {
                 return;
             }
@@ -257,7 +291,7 @@ export default function Archive({
         window.addEventListener('keydown', handleKeyDown);
 
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [openedItem, viewingDocument, zoomedCabinetId]);
+    }, [cabinetView, openedItem, viewingDocument, zoomedCabinetId]);
 
     function closeOverlayLayer(): void {
         if (viewingDocument) {
@@ -344,6 +378,35 @@ export default function Archive({
                         document.body,
                     )}
 
+                {typeof document !== 'undefined' &&
+                    zoomedCabinetId &&
+                    !openedItem &&
+                    !viewingDocument &&
+                    createPortal(
+                        <div
+                            data-archive-drawer-controls
+                            role="toolbar"
+                            aria-label="Drawer view"
+                            className="fixed top-4 left-1/2 z-50 flex -translate-x-1/2 items-center gap-2"
+                        >
+                            <CabinetViewSwitch
+                                value={cabinetView}
+                                onChange={setCabinetView}
+                            />
+                            <Button
+                                type="button"
+                                variant="secondary"
+                                size="icon"
+                                className="rounded-xl"
+                                aria-label="Back to cabinet"
+                                onClick={closeOverlayLayer}
+                            >
+                                <X aria-hidden="true" />
+                            </Button>
+                        </div>,
+                        document.body,
+                    )}
+
                 <div className="mx-auto flex w-full max-w-[1600px] flex-col gap-6">
                     <header className="flex flex-col justify-between gap-4 border-b border-blue-900 pb-5 sm:flex-row sm:items-end dark:border-blue-200">
                         <div>
@@ -351,20 +414,10 @@ export default function Archive({
                                 Archive
                             </h1>
                             <p className="mt-2 max-w-[65ch] text-sm text-slate-600 dark:text-neutral-400">
-                                Browse the filing cabinets to find a folder or
-                                book and its tax declarations.
+                                Browse the filing cabinets to find your filing
+                                items and their documents.
                             </p>
                         </div>
-                        <Link
-                            href={cabinetsIndex.url()}
-                            className={buttonVariants({
-                                variant: 'outline',
-                                className:
-                                    'w-fit shrink-0 rounded-none border-slate-300 shadow-none dark:border-neutral-700',
-                            })}
-                        >
-                            Manage cabinets
-                        </Link>
                     </header>
 
                     <section
@@ -380,7 +433,7 @@ export default function Archive({
                                             field={searchField}
                                             onQueryChange={setSearchQuery}
                                             onFieldChange={setSearchField}
-                                            placeholderAll="Search cabinets, drawers, folders or books…"
+                                            placeholderAll="Search cabinets, drawers, filing items…"
                                         />
                                     </div>
                                     {isFiltering && (
@@ -393,6 +446,10 @@ export default function Archive({
                                             Clear search
                                         </Button>
                                     )}
+                                    <CabinetViewSwitch
+                                        value={cabinetView}
+                                        onChange={setCabinetView}
+                                    />
                                 </div>
                                 <p
                                     role="status"
@@ -409,8 +466,8 @@ export default function Archive({
                                     {' · '}
                                     {visibleBookTotal}{' '}
                                     {visibleBookTotal === 1
-                                        ? 'folder / book'
-                                        : 'folders / books'}
+                                        ? 'filing item'
+                                        : 'filing items'}
                                 </p>
                             </div>
                         )}
@@ -442,15 +499,15 @@ export default function Archive({
                                     </h2>
                                     <p className="mt-2 max-w-[45ch] text-sm text-slate-600 dark:text-neutral-400">
                                         Try another cabinet name, drawer, or
-                                        folder or book, or clear the search
-                                        above.
+                                        filing item, or clear the search above.
                                     </p>
                                 </div>
                             ) : (
                                 visibleCabinets.map((cabinet) => (
-                                    <FilingCabinet
+                                    <ArchiveCabinet
                                         key={cabinet.id}
                                         cabinet={cabinet}
+                                        view={cabinetView}
                                         zoomed={zoomedCabinetId === cabinet.id}
                                         openDrawerId={
                                             cabinet.drawers.some(
@@ -518,7 +575,7 @@ export default function Archive({
                             <div className="border-t border-slate-200 bg-slate-50 px-4 py-3 sm:px-5 dark:border-neutral-800 dark:bg-neutral-950">
                                 <p className="text-xs text-slate-600 dark:text-neutral-400">
                                     Select a drawer to pull it out, then click
-                                    inside to choose a book.
+                                    inside to choose a filing item.
                                 </p>
                             </div>
                         )}

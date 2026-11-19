@@ -8,7 +8,8 @@ import {
 } from 'react';
 import { createPortal } from 'react-dom';
 import { cn } from '@/lib/utils';
-import { filingCover } from '@/lib/filing-appearance';
+import { filingCover, filingName } from '@/lib/filing-appearance';
+import ClosedLeverArchMesh from '../folders/closed-lever-arch-mesh';
 import type {
     FilingItemCover,
     FilingItemOrigin,
@@ -97,16 +98,15 @@ export default function CabinetDrawer({
     const previousOpen = useRef(open);
     const previousOpenedItemId = useRef(openedItemId);
     const isCloseup = Boolean(onOpenItem);
-    const folders = drawer.books[0]?.kind === 'folder';
-    const itemName = folders ? 'folder' : 'book';
-    const pullHeight = isCloseup ? 64 : Math.min(26, height * 0.42);
+    const itemName = filingName(drawer.books[0]?.kind);
+    const pullHeight = isCloseup ? 64 : Math.min(width * 0.17, height * 0.4);
     const pullPadding = isCloseup ? 5 : 2;
     const pullSlotHeight = Math.max(0, pullHeight - pullPadding * 2) * 0.3;
     const pullGripHeight = Math.max(
         0,
         pullHeight - pullPadding * 2 - pullSlotHeight - 2,
     );
-    const pullTop = Math.min(height * 0.14, isCloseup ? 48 : 18);
+    const pullTop = isCloseup ? 48 : height * 0.33 - pullHeight / 2;
     const documentTotal = drawer.books.reduce(
         (total, book) => total + book.documentCount,
         0,
@@ -307,36 +307,54 @@ export default function CabinetDrawer({
             {visibleBooks.map((book, index) => {
                 const colors = filingCover(book.kind);
                 const folder = book.kind === 'folder';
+                const lever = book.kind === 'lever_arch';
                 const row = Math.floor(index / BOOKS_PER_ROW);
                 const col = index % BOOKS_PER_ROW;
-                const itemHeight = folder
-                    ? Math.min(
-                          // Include the raised rear tab in the preview clearance.
-                          isCloseup ? height * 0.98 : bookHeight / 1.06,
-                          usableWidth / FOLDER_ASPECT_RATIO,
-                      )
-                    : bookHeight;
-                const itemWidth = folder
-                    ? itemHeight * FOLDER_ASPECT_RATIO
-                    : bookWidth;
-                const itemDepth = folder
-                    ? Math.max(2, (usableDepth / MAX_VISIBLE_BOOKS) * 0.28)
-                    : coverDepth;
-                const bookLeft = folder
-                    ? (width - itemWidth) / 2
-                    : innerPad + col * colStride + (colStride - bookWidth) / 2;
+                const leverWidth = Math.min(
+                    (usableWidth - 7 * BOOK_GAP) / 8,
+                    ((usableDepth / 2 - BOOK_GAP) * 75) / 318,
+                    (bookHeight * 75) / 285,
+                );
+                const itemHeight = lever
+                    ? (leverWidth * 285) / 75
+                    : folder
+                      ? Math.min(
+                            // Include the raised rear tab in the preview clearance.
+                            isCloseup ? height * 0.98 : bookHeight / 1.06,
+                            usableWidth / FOLDER_ASPECT_RATIO,
+                        )
+                      : bookHeight;
+                const itemWidth = lever
+                    ? leverWidth
+                    : folder
+                      ? itemHeight * FOLDER_ASPECT_RATIO
+                      : bookWidth;
+                const itemDepth = lever
+                    ? (leverWidth * 318) / 75
+                    : folder
+                      ? Math.max(2, (usableDepth / MAX_VISIBLE_BOOKS) * 0.28)
+                      : coverDepth;
+                const bookLeft = lever
+                    ? innerPad + col * (leverWidth + BOOK_GAP)
+                    : folder
+                      ? (width - itemWidth) / 2
+                      : innerPad +
+                        col * colStride +
+                        (colStride - bookWidth) / 2;
                 const folderTilt =
                     folder && isCloseup ? FOLDER_CLOSEUP_TILT : 0;
                 // Leave room for the leaning rear tab behind the final folder.
                 const folderSlotDepth =
                     usableDepth -
                     Math.sin((folderTilt * Math.PI) / 180) * itemHeight * 1.06;
-                const bookZ = folder
-                    ? -(
-                          innerPad +
-                          (index * folderSlotDepth) / MAX_VISIBLE_BOOKS
-                      )
-                    : -(innerPad + row * (rowDepth + aisle));
+                const bookZ = lever
+                    ? -(innerPad + row * (itemDepth + BOOK_GAP))
+                    : folder
+                      ? -(
+                            innerPad +
+                            (index * folderSlotDepth) / MAX_VISIBLE_BOOKS
+                        )
+                      : -(innerPad + row * (rowDepth + aisle));
                 const previewSelected = open && previewBookId === book.id;
                 const popLift = previewSelected
                     ? -Math.min(40, itemHeight * 0.6)
@@ -350,27 +368,33 @@ export default function CabinetDrawer({
                 const canPop = !lifted && !popsFrozen && (!folder || isCloseup);
                 const poppedUp =
                     previewSelected || (canPop && hoveredId === book.id);
-                const mesh = folder ? (
-                    <ClosedFolderMesh
-                        detail="closed"
-                        coverScale={itemWidth / FOLDER_COVER_WIDTH}
-                        label={book.label}
-                        coverTitle={book.coverTitle}
-                        depth={itemDepth}
-                        showLabel={isCloseup || previewSelected}
-                    />
-                ) : (
-                    <ClosedBookMesh
-                        depth={coverDepth}
-                        label={book.label}
-                        coverTitle={book.coverTitle}
-                        cover={colors}
-                        showTitle={showTitle}
-                        showCover={isCloseup}
-                        headCap={!isCloseup && row === 0}
-                        documentCount={book.documentCount}
-                    />
-                );
+                const mesh =
+                    book.kind === 'lever_arch' ? (
+                        <ClosedLeverArchMesh
+                            label={book.label}
+                            depth={itemDepth}
+                        />
+                    ) : folder ? (
+                        <ClosedFolderMesh
+                            detail="closed"
+                            coverScale={itemWidth / FOLDER_COVER_WIDTH}
+                            label={book.label}
+                            coverTitle={book.coverTitle}
+                            depth={itemDepth}
+                            showLabel={isCloseup || previewSelected}
+                        />
+                    ) : (
+                        <ClosedBookMesh
+                            depth={coverDepth}
+                            label={book.label}
+                            coverTitle={book.coverTitle}
+                            cover={colors}
+                            showTitle={showTitle}
+                            showCover={isCloseup}
+                            headCap={!isCloseup && row === 0}
+                            documentCount={book.documentCount}
+                        />
+                    );
 
                 const openFromSlot = (slot: HTMLElement) => {
                     if (insideEnabled) {
@@ -548,8 +572,12 @@ export default function CabinetDrawer({
                     )}
                     style={{
                         top: pullTop,
-                        width: Math.min(isCloseup ? 144 : 44, width * 0.28),
-                        height: pullHeight - pullGripHeight * 0.25,
+                        width: isCloseup
+                            ? Math.min(144, width * 0.28)
+                            : width * 0.35,
+                        height: isCloseup
+                            ? pullHeight - pullGripHeight * 0.25
+                            : pullHeight,
                     }}
                 >
                     <span
@@ -565,12 +593,16 @@ export default function CabinetDrawer({
                         isCloseup ? 'gap-3 text-lg' : 'gap-1 text-[8px]',
                         'leading-none',
                     )}
-                    style={{ bottom: Math.max(4, height * 0.1) }}
+                    style={{
+                        bottom: Math.max(4, height * (isCloseup ? 0.1 : 0.14)),
+                    }}
                 >
                     <span
                         className={cn(
-                            'cabinet-label-holder truncate font-semibold',
-                            isCloseup ? 'text-lg' : 'text-[8px]',
+                            'cabinet-label-holder truncate',
+                            isCloseup
+                                ? 'text-lg font-semibold'
+                                : 'text-[6px] font-medium',
                             'leading-none',
                         )}
                     >
@@ -579,7 +611,7 @@ export default function CabinetDrawer({
                     <span
                         className={cn(
                             'cabinet-vector-count font-semibold whitespace-nowrap tabular-nums',
-                            isCloseup ? 'text-sm' : 'text-[8px]',
+                            isCloseup ? 'text-sm' : 'sr-only',
                             'leading-none',
                         )}
                     >

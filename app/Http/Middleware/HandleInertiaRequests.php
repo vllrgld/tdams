@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Office;
+use App\Services\Offices\CurrentOffice;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -35,14 +37,36 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $user = $request->user();
+        $office = $user === null ? null : app(CurrentOffice::class)->office();
+
         return [
             ...parent::share($request),
             'name' => config('app.name'),
             'auth' => [
-                'user' => $request->user(),
+                'user' => $user,
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
             'canResetData' => app()->environment(['local', 'testing']),
+            'officeName' => $office?->name,
+            'officeId' => $office?->id,
+            'officePermissions' => [
+                'canManageRouting' => $office->can_manage_routing ?? false,
+                'canRouteDocuments' => $office->can_route_documents ?? false,
+                'canUploadToReceiving' => $office->can_upload_to_receiving ?? false,
+                'canManageDocumentTypes' => $office->can_manage_document_types ?? false,
+            ],
+            'offices' => $user === null
+                ? []
+                : Office::query()
+                    ->orderBy('name')
+                    ->get(['id', 'name'])
+                    ->map(fn (Office $item): array => [
+                        'id' => $item->id,
+                        'name' => $item->name,
+                    ])
+                    ->values()
+                    ->all(),
         ];
     }
 }

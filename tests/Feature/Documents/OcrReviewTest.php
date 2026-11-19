@@ -40,7 +40,7 @@ class OcrReviewTest extends TestCase
         $this->assertSame('Staff metadata', $document->remarks);
         $this->getJson(route('documents.ocr', $document))->assertOk()->assertJsonPath('reviewedAt', now()->toIso8601String());
 
-        $this->get(route('documents.index'))->assertInertia(fn (Assert $page) => $page
+        $this->get($this->taxDocumentsIndex())->assertInertia(fn (Assert $page) => $page
             ->where('documents.data.0.ocrReviewedAt', now()->toIso8601String()));
     }
 
@@ -62,6 +62,8 @@ class OcrReviewTest extends TestCase
             ->assertOk()->assertJsonPath('reviewedAt', null);
         $this->assertNull($document->refresh()->ocr_reviewed_at);
         $this->assertNull($document->ocr_reviewed_by);
+        $audit = $document->audits()->where('action', 'ocr_review_reopened')->sole();
+        $this->assertSame(['before' => true, 'after' => false], $audit->changes['ocr_reviewed']);
     }
 
     public function test_guests_cannot_change_ocr_review(): void

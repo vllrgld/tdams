@@ -4,7 +4,9 @@ namespace App\Services\Documents;
 
 use App\Models\Book;
 use App\Models\Document;
+use App\Models\Office;
 use App\Models\User;
+use App\Services\Offices\CurrentOffice;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -13,10 +15,10 @@ use Throwable;
 
 class UploadDocument
 {
-    public function __construct(private DocumentWriter $writer, private DocumentOcrDispatcher $ocr) {}
+    public function __construct(private DocumentWriter $writer, private DocumentOcrDispatcher $ocr, private CurrentOffice $currentOffice) {}
 
     /** @param array<string, mixed> $fields */
-    public function store(UploadedFile $file, int $bookId, User $user, array $fields): Document
+    public function store(UploadedFile $file, ?int $bookId, User $user, array $fields): Document
     {
         $temporaryPath = $file->getPathname();
 
@@ -44,12 +46,25 @@ class UploadDocument
             }
 
             $document = DB::transaction(function () use ($bookId, $file, $path, $user, $fields): Document {
-                $book = Book::query()->whereKey($bookId)->lockForUpdate()->firstOrFail();
+                $placement = [];
+
+                if (($fields['filing_path'] ?? Document::FILING_ARCHIVE) === Document::FILING_ROUTE) {
+                    $receiving = Office::query()->where('is_receiving', true)->sharedLock()->firstOrFail();
+                    $fields['office_id'] = $receiving->id;
+                    $fields['document_route_id'] = null;
+                }
+
+                if ($bookId !== null) {
+                    $book = Book::query()->forOffice($this->currentOffice->id())->whereKey($bookId)->lockForUpdate()->firstOrFail();
+                    $placement = [
+                        'book_id' => $book->id,
+                        'position' => $book->nextDocumentPosition(),
+                    ];
+                }
 
                 return $this->writer->create([
                     ...$fields,
-                    'book_id' => $book->id,
-                    'position' => $book->nextDocumentPosition(),
+                    ...$placement,
                     'original_filename' => $file->getClientOriginalName(),
                     'storage_path' => $path,
                     'mime_type' => $file->getMimeType() ?? 'application/octet-stream',

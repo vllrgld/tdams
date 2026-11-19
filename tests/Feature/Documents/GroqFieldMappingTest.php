@@ -3,6 +3,7 @@
 namespace Tests\Feature\Documents;
 
 use App\Models\Document;
+use App\Models\DocumentType;
 use App\Models\User;
 use App\Services\Documents\DocumentWriter;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -27,15 +28,11 @@ class GroqFieldMappingTest extends TestCase
 
         config([
             'inertia.ssr.enabled' => false,
-            'services.field_mapping.provider' => 'groq',
             'services.groq.url' => 'https://groq.test/openai/v1',
             'services.groq.key' => 'private-groq-key',
             'services.groq.models' => [self::MODEL],
             'services.groq.timeout' => 180,
             'services.groq.max_tokens' => 4096,
-            'services.bedrock.models' => ['global.amazon.nova-2-lite-v1:0'],
-            'services.bedrock.key' => 'private-bedrock-key',
-            'services.bedrock.region' => 'ap-southeast-2',
         ]);
         Http::preventStrayRequests();
     }
@@ -52,6 +49,7 @@ class GroqFieldMappingTest extends TestCase
             'declaration_date' => 'not-a-date',
             'lot_number' => '',
             'area' => 100.5,
+            'attachments' => [['description' => 'Invented enclosure', 'page' => '1']],
             'unexpected_field' => 'Ignore this',
         ], JSON_THROW_ON_ERROR)))]);
         $user = User::factory()->create();
@@ -69,6 +67,7 @@ class GroqFieldMappingTest extends TestCase
             ->assertJsonPath('fields.declaration_date', null)
             ->assertJsonPath('fields.lot_number', null)
             ->assertJsonPath('fields.area', '100.5')
+            ->assertJsonMissingPath('fields.attachments')
             ->assertJsonMissingPath('fields.unexpected_field');
 
         Http::assertSent(function (Request $request) use ($ocrText): bool {
@@ -90,6 +89,9 @@ class GroqFieldMappingTest extends TestCase
                 && $payload['response_format']['json_schema']['schema']['additionalProperties'] === false
                 && $payload['response_format']['json_schema']['schema']['properties']['registered_owner']['type'] === 'string'
                 && in_array('registered_owner', $payload['response_format']['json_schema']['schema']['required'], true)
+                && ! array_key_exists('attachments', $payload['response_format']['json_schema']['schema']['properties'])
+                && ! in_array('attachments', $payload['response_format']['json_schema']['schema']['required'], true)
+                && ! in_array('title', $payload['response_format']['json_schema']['schema']['required'], true)
                 && $payload['max_completion_tokens'] === 4096
                 && $payload['reasoning_effort'] === 'medium'
                 && $payload['include_reasoning'] === false
@@ -101,16 +103,52 @@ class GroqFieldMappingTest extends TestCase
         $this->assertSame('Staff corrected owner', $document->registered_owner);
     }
 
+    public function test_custom_types_accept_correspondent_only_field_data(): void
+    {
+        Http::fake([self::ENDPOINT => Http::response($this->completion(json_encode([
+            'correspondent' => 'Office of the Governor',
+        ], JSON_THROW_ON_ERROR)))]);
+        $user = User::factory()->create();
+        $type = DocumentType::query()->create([
+            'name' => 'Memorandum',
+            'slug' => 'memorandum',
+            'uses_tax_declaration_fields' => false,
+        ]);
+        $document = $this->document($user, [
+            'document_type_id' => $type->id,
+            'ocr_text' => 'From the Office of the Governor',
+        ]);
+
+        $response = $this->actingAs($user)->postJson(route('documents.map', $document), ['model' => self::MODEL]);
+
+        $response->assertOk()->assertJsonPath('fields.correspondent', 'Office of the Governor');
+        $this->assertSame(['title', 'correspondent', 'letter_date', 'remarks', 'attachments'], array_keys($response->json('fields')));
+        $this->assertNull($response->json('fields.title'));
+        $this->assertNull($response->json('fields.letter_date'));
+        $this->assertNull($response->json('fields.remarks'));
+        $this->assertSame([], $response->json('fields.attachments'));
+
+        Http::assertSent(function (Request $request): bool {
+            $payload = $request->data();
+
+            return $request->url() === self::ENDPOINT
+                && ($payload['response_format']['json_schema']['schema']['required'] ?? null) === ['title', 'correspondent', 'letter_date', 'remarks', 'title_suggestions', 'attachments']
+                && ($payload['response_format']['json_schema']['schema']['properties']['attachments']['type'] ?? null) === 'array'
+                && str_contains($payload['messages'][0]['content'], 'shared document fields');
+        });
+        $this->assertNull($document->refresh()->correspondent_id);
+    }
+
     public function test_pages_and_upload_options_expose_gpt_oss_without_exposing_the_key(): void
     {
         $user = User::factory()->create();
 
         $this->actingAs($user)->get(route('documents.index'))
             ->assertOk()
-            ->assertInertia(fn (Assert $page) => $page->where('mappingModels', [self::MODEL, 'global.amazon.nova-2-lite-v1:0']))
+            ->assertInertia(fn (Assert $page) => $page->where('mappingModels', [self::MODEL]))
             ->assertDontSee('private-groq-key', false);
         $this->getJson(route('documents.upload-options'))
-            ->assertOk()->assertJsonPath('mappingModels', [self::MODEL, 'global.amazon.nova-2-lite-v1:0'])
+            ->assertOk()->assertJsonPath('mappingModels', [self::MODEL])
             ->assertDontSee('private-groq-key', false);
         Http::assertNothingSent();
     }
@@ -125,26 +163,18 @@ class GroqFieldMappingTest extends TestCase
         Http::assertNothingSent();
     }
 
-    public function test_selecting_nova_routes_to_bedrock_when_groq_is_the_default(): void
+    public function test_removed_provider_models_are_rejected_without_an_external_request(): void
     {
-        $endpoint = 'https://bedrock-runtime.ap-southeast-2.amazonaws.com/model/global.amazon.nova-2-lite-v1%3A0/converse';
-        Http::fake([$endpoint => Http::response([
-            'stopReason' => 'tool_use',
-            'output' => ['message' => ['content' => [['toolUse' => [
-                'name' => 'extract_document_fields',
-                'input' => ['tax_declaration_number' => 'TD-NOVA'],
-            ]]]]],
-        ])]);
+        Http::fake();
         $user = User::factory()->create();
         $document = $this->document($user);
 
-        $this->actingAs($user)->postJson(route('documents.map', $document), ['model' => 'global.amazon.nova-2-lite-v1:0'])
-            ->assertOk()->assertJsonPath('fields.tax_declaration_number', 'TD-NOVA');
+        foreach (['global.amazon.nova-2-lite-v1:0', 'gpt-oss:20b'] as $model) {
+            $this->actingAs($user)->postJson(route('documents.map', $document), ['model' => $model])
+                ->assertUnprocessable()->assertJsonValidationErrors('model');
+        }
 
-        Http::assertSent(fn (Request $request): bool => $request->url() === $endpoint
-            && $request->hasHeader('Authorization', 'Bearer private-bedrock-key'));
-        Http::assertSentCount(1);
-        $this->assertNull($document->refresh()->tax_declaration_number);
+        Http::assertNothingSent();
     }
 
     public function test_invalid_configured_models_are_not_exposed_or_requested(): void

@@ -202,7 +202,7 @@ class DocumentUploadTest extends TestCase
         ]);
 
         $this->actingAs($user)
-            ->get(route('documents.index'))
+            ->get($this->taxDocumentsIndex())
             ->assertInertia(fn (Assert $page) => $page
                 ->component('documents/index')
                 ->where('filters.q', '')

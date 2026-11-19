@@ -1,5 +1,25 @@
 import type { ArchivedDocument } from '@/types/documents';
 
+export function documentHeading(document: ArchivedDocument): string {
+    if (document.usesTaxFields) {
+        return document.taxDeclarationNumber || document.originalFilename;
+    }
+
+    return document.title || document.originalFilename;
+}
+
+export function documentSubheading(document: ArchivedDocument): string | null {
+    return document.usesTaxFields
+        ? document.registeredOwner
+        : document.correspondent;
+}
+
+export function documentCardDate(document: ArchivedDocument): string | null {
+    return document.usesTaxFields
+        ? document.declarationDate
+        : document.letterDate ?? document.createdAt;
+}
+
 export function getPropertyLocation(document: ArchivedDocument): string {
     return [
         document.propertyLocationStreet,

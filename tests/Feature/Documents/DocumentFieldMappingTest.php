@@ -19,10 +19,50 @@ class DocumentFieldMappingTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_map_returns_structured_fields_from_ollama(): void
+    #[DataProvider('verificationMappingModes')]
+    public function test_mapping_uses_the_visible_verification_fields_without_saving_or_mapping_a_type(bool $taxFields, string $field, string $otherField): void
+    {
+        Http::preventStrayRequests();
+        Http::fake([
+            'https://groq.test/openai/v1/chat/completions' => Http::response(['choices' => [[
+                'finish_reason' => 'stop',
+                'message' => ['content' => json_encode([
+                    $field => 'Mapped value', 'document_type_id' => 999999,
+                ])],
+            ]]]),
+        ]);
+        $user = User::factory()->create();
+        $document = $this->document($user, [
+            'document_type_id' => null, 'ocr_status' => 'completed', 'ocr_text' => 'Verified OCR content',
+        ]);
+
+        $this->actingAs($user)->postJson(route('documents.map', $document), [
+            'model' => 'openai/gpt-oss-120b', 'tax_fields' => $taxFields,
+        ])->assertOk()->assertJsonPath('fields.'.$field, 'Mapped value')
+            ->assertJsonMissingPath('fields.'.$otherField)
+            ->assertJsonMissingPath('fields.document_type_id');
+
+        $this->assertNull($document->refresh()->document_type_id);
+        Http::assertSent(function ($request) use ($field, $otherField): bool {
+            $properties = $request['response_format']['json_schema']['schema']['properties'];
+
+            return isset($properties[$field]) && ! isset($properties[$otherField]) && ! isset($properties['document_type_id']);
+        });
+    }
+
+    /** @return array<string, array{bool, string, string}> */
+    public static function verificationMappingModes(): array
+    {
+        return [
+            'tax declaration fields' => [true, 'tax_declaration_number', 'title'],
+            'general document fields' => [false, 'title', 'tax_declaration_number'],
+        ];
+    }
+
+    public function test_map_returns_structured_fields_from_groq(): void
     {
         Http::fake([
-            'https://ollama.test/api/chat' => Http::response([
+            'https://groq.test/openai/v1/chat/completions' => Http::response(['choices' => [['finish_reason' => 'stop',
                 'message' => [
                     'content' => json_encode([
                         'tax_declaration_number' => 'TD-9',
@@ -30,7 +70,7 @@ class DocumentFieldMappingTest extends TestCase
                         'declaration_date' => 'not-a-date',
                     ]),
                 ],
-            ]),
+            ]]]),
         ]);
 
         $user = User::factory()->create();
@@ -40,7 +80,7 @@ class DocumentFieldMappingTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)->postJson(route('documents.map', $document), [
-            'model' => 'gpt-oss:20b',
+            'model' => 'openai/gpt-oss-120b',
         ]);
 
         $response->assertOk()
@@ -50,9 +90,9 @@ class DocumentFieldMappingTest extends TestCase
             ->assertJsonPath('fields.lot_number', null);
 
         Http::assertSent(function ($request): bool {
-            return $request->url() === 'https://ollama.test/api/chat'
+            return $request->url() === 'https://groq.test/openai/v1/chat/completions'
                 && $request->hasHeader('Authorization', 'Bearer test-key')
-                && $request['model'] === 'gpt-oss:20b';
+                && $request['model'] === 'openai/gpt-oss-120b';
         });
 
         $document->refresh();
@@ -82,16 +122,16 @@ class DocumentFieldMappingTest extends TestCase
     {
         Http::preventStrayRequests();
         Http::fake([
-            'https://ollama.test/api/chat' => Http::response([
+            'https://groq.test/openai/v1/chat/completions' => Http::response(['choices' => [['finish_reason' => 'stop',
                 'message' => ['content' => json_encode([
                     'tax_declaration_number' => 'TD-TEST-42',
                     'registered_owner' => 'Test Owner',
                     'declaration_date' => '2026-11-05',
                     'boundary_north' => 'Road',
                 ])],
-            ]),
+            ]]]),
         ]);
-        $expected = json_decode(file_get_contents(base_path('tests/Fixtures/Ollama/document-mapping-request.json')), true, flags: JSON_THROW_ON_ERROR);
+        $expected = json_decode(file_get_contents(base_path('tests/Fixtures/Groq/document-mapping-request.json')), true, flags: JSON_THROW_ON_ERROR);
         $user = User::factory()->create();
         $document = $this->document($user, [
             'ocr_status' => 'completed',
@@ -106,7 +146,7 @@ class DocumentFieldMappingTest extends TestCase
             ->assertJsonPath('fields.declaration_date', '2026-11-05')
             ->assertJsonPath('fields.boundary_north', 'Road');
 
-        Http::assertSent(fn ($request): bool => $request->url() === 'https://ollama.test/api/chat' && $request->data() === $expected);
+        Http::assertSent(fn ($request): bool => $request->url() === 'https://groq.test/openai/v1/chat/completions' && $request->data() === $expected);
         $this->assertNull($document->refresh()->tax_declaration_number);
     }
 
@@ -137,14 +177,14 @@ class DocumentFieldMappingTest extends TestCase
     {
         Http::preventStrayRequests();
         Http::fake([
-            'https://ollama.test/api/chat' => Http::response([
+            'https://groq.test/openai/v1/chat/completions' => Http::response(['choices' => [['finish_reason' => 'stop',
                 'message' => ['content' => json_encode(['remarks' => $remarks])],
-            ]),
+            ]]]),
         ]);
         $user = User::factory()->create();
         $document = $this->document($user, ['ocr_status' => 'completed', 'ocr_text' => $remarks]);
 
-        $this->actingAs($user)->postJson(route('documents.map', $document), ['model' => 'gpt-oss:20b'])
+        $this->actingAs($user)->postJson(route('documents.map', $document), ['model' => 'openai/gpt-oss-120b'])
             ->assertOk()->assertJsonPath('fields.remarks', $expected);
 
         Http::assertSentCount(1);
@@ -308,17 +348,14 @@ class DocumentFieldMappingTest extends TestCase
     {
         config([
             'services.groq.models' => ['openai/gpt-oss-120b'],
-            'services.bedrock.models' => ['global.amazon.nova-2-lite-v1:0'],
         ]);
 
         $this->actingAs(User::factory()->create())
             ->get(route('documents.index'))
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
-                ->has('mappingModels', 9)
-                ->where('mappingModels.3', 'gpt-oss:20b')
-                ->where('mappingModels.7', 'openai/gpt-oss-120b')
-                ->where('mappingModels.8', 'global.amazon.nova-2-lite-v1:0'));
+                ->has('mappingModels', 1)
+                ->where('mappingModels.0', 'openai/gpt-oss-120b'));
     }
 
     public function test_review_schema_exposes_field_limits_and_stable_section_identifiers(): void
@@ -327,16 +364,25 @@ class DocumentFieldMappingTest extends TestCase
             ->get(route('documents.index'))
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
-                ->has('fieldSections', 5)
-                ->where('fieldSections.0.id', 'declaration')
-                ->where('fieldSections.0.fields.0.name', 'tax_declaration_number')
-                ->where('fieldSections.0.fields.0.maxLength', 100)
-                ->where('fieldSections.0.fields.1.type', 'date')
-                ->where('fieldSections.1.id', 'property')
-                ->where('fieldSections.2.id', 'owner')
-                ->where('fieldSections.3.id', 'boundaries')
-                ->where('fieldSections.4.id', 'remarks')
-                ->where('fieldSections.4.fields.0.maxLength', 10000));
+                ->has('fieldSections', 6)
+                ->where('fieldSections.0.id', 'document')
+                ->where('fieldSections.0.fields.0.name', 'correspondent')
+                ->where('fieldSections.1.id', 'declaration')
+                ->where('fieldSections.1.fields.0.name', 'tax_declaration_number')
+                ->where('fieldSections.1.fields.0.maxLength', 100)
+                ->where('fieldSections.1.fields.1.type', 'date')
+                ->where('fieldSections.2.id', 'property')
+                ->where('fieldSections.3.id', 'owner')
+                ->where('fieldSections.4.id', 'boundaries')
+                ->where('fieldSections.5.id', 'remarks')
+                ->where('fieldSections.5.fields.0.maxLength', 10000)
+                ->has('metadataFieldSections', 2)
+                ->where('metadataFieldSections.0.id', 'document')
+                ->where('metadataFieldSections.0.fields.0.name', 'title')
+                ->where('metadataFieldSections.0.fields.1.name', 'correspondent')
+                ->where('metadataFieldSections.0.fields.2.name', 'letter_date')
+                ->where('metadataFieldSections.0.fields.2.type', 'date')
+                ->where('metadataFieldSections.1.id', 'remarks'));
     }
 
     /**

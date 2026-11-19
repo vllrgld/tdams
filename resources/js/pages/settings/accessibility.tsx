@@ -57,7 +57,7 @@ export default function Accessibility() {
                 <Heading
                     variant="small"
                     title="Accessibility settings"
-                    description="Choose how books and folders move between the drawer and reading view."
+                    description="Choose how filing items move between the drawer and reading view."
                 />
                 <p className="text-sm text-muted-foreground">
                     Full animation moves the item to and from the drawer. Fade

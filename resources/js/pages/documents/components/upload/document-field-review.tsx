@@ -1,5 +1,5 @@
 import { Tabs } from '@base-ui/react/tabs';
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,26 +11,32 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import { mappingModelLabel } from '../../lib/mapping-models';
 import type { useDocumentUpload } from '@/pages/documents/hooks/use-document-upload';
 import { filled, sectionCanBeChecked } from '../../lib/metadata';
-import { mappingModelLabel } from '../../lib/mapping-models';
 import type {
     DocumentFieldDefinition,
     DocumentFieldSection,
     DocumentFieldValues,
     MetadataField,
+    DocumentTypeOption,
 } from '../../types';
 import DeclarationNumberSearch from '@/components/documents/declaration-number-search';
+import DocumentAttachmentsSection from '@/components/documents/viewer/document-attachments-section';
+import DocumentTitleSuggestions from './document-title-suggestions';
 
 const REMARKS_KEY = 'remarks';
+const ATTACHMENTS_KEY = 'attachments';
 
 export default function DocumentFieldReview({
     workflow,
     mappingModels,
+    documentTypes,
     fieldSections,
 }: {
     workflow: ReturnType<typeof useDocumentUpload>;
     mappingModels: string[];
+    documentTypes: DocumentTypeOption[];
     fieldSections: DocumentFieldSection[];
 }) {
     const {
@@ -49,13 +55,22 @@ export default function DocumentFieldReview({
         setSectionChecked,
         updateValue,
         documentId,
+        usesTaxFields,
+        attachments,
+        saveAttachments,
+        titleSuggestions,
+        setTitleSuggestions,
+        documentTypeId,
+        setDocumentTypeId,
     } = workflow;
+    const [suggestingTitles, setSuggestingTitles] = useState(false);
     const reviewSections = fieldSections.filter(
         (section) => section.id !== 'remarks',
     );
     const remarksField = fieldSections.find(
         (section) => section.id === 'remarks',
     )?.fields[0];
+    const showAttachments = !usesTaxFields && documentId !== null;
     return (
         <Tabs.Root
             value={activeReviewSection}
@@ -64,7 +79,55 @@ export default function DocumentFieldReview({
             }}
             className="flex min-h-96 min-w-0 flex-col gap-3 md:min-h-0"
         >
-            <div className="grid shrink-0 gap-2 sm:grid-cols-[minmax(0,1fr)_auto] md:grid-cols-1 xl:grid-cols-[minmax(0,1fr)_auto]">
+            <div className="grid shrink-0 gap-2 border-b border-slate-200 pb-3 dark:border-neutral-800">
+                <Label htmlFor="document-type">Document type</Label>
+                <Select
+                    disabled={busy}
+                    value={documentTypeId}
+                    onValueChange={(value) => {
+                        if (typeof value === 'string') setDocumentTypeId(value);
+                    }}
+                    items={documentTypes.map((type) => ({
+                        value: String(type.id),
+                        label: type.name,
+                    }))}
+                >
+                    <SelectTrigger
+                        id="document-type"
+                        aria-invalid={Boolean(fieldErrors.document_type_id)}
+                        aria-describedby={
+                            fieldErrors.document_type_id
+                                ? 'document-type-error'
+                                : undefined
+                        }
+                        className="w-full rounded-lg"
+                    >
+                        <SelectValue placeholder="Select document type" />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-lg">
+                        {documentTypes.map((type) => (
+                            <SelectItem
+                                key={type.id}
+                                value={String(type.id)}
+                                className="rounded-md"
+                            >
+                                {type.name}
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+                <InputError
+                    id="document-type-error"
+                    message={fieldErrors.document_type_id}
+                />
+                {documentTypes.length === 0 && (
+                    <p className="text-sm text-muted-foreground">
+                        No document types are available. Ask an authorized
+                        office to add one before saving.
+                    </p>
+                )}
+            </div>
+            <div className="grid shrink-0 gap-2 bg-slate-50/70 p-3 sm:grid-cols-[minmax(0,1fr)_auto] md:grid-cols-1 xl:grid-cols-[minmax(0,1fr)_auto] dark:bg-neutral-950">
                 <div className="grid min-w-0 gap-2">
                     <Label htmlFor="mapping-model">Model</Label>
                     <Select
@@ -80,16 +143,16 @@ export default function DocumentFieldReview({
                     >
                         <SelectTrigger
                             id="mapping-model"
-                            className="w-full rounded-none"
+                            className="w-full rounded-lg"
                         >
                             <SelectValue placeholder="Select a model" />
                         </SelectTrigger>
-                        <SelectContent className="rounded-none">
+                        <SelectContent className="rounded-lg">
                             {mappingModels.map((item) => (
                                 <SelectItem
                                     key={item}
                                     value={item}
-                                    className="rounded-none"
+                                    className="rounded-md"
                                 >
                                     {mappingModelLabel(item)}
                                 </SelectItem>
@@ -103,15 +166,15 @@ export default function DocumentFieldReview({
                         variant="outline"
                         disabled={busy}
                         onClick={checkAll}
-                        className="rounded-none"
+                        className="rounded-lg"
                     >
                         Check all
                     </Button>
                     <Button
                         type="button"
-                        disabled={busy || model === ''}
+                        disabled={busy || suggestingTitles || model === ''}
                         onClick={() => void mapFields()}
-                        className="rounded-none bg-blue-900 text-white hover:bg-blue-800 dark:bg-blue-700 dark:hover:bg-blue-600"
+                        className="rounded-lg bg-blue-900 text-white hover:bg-blue-800 dark:bg-blue-700 dark:hover:bg-blue-600"
                     >
                         {pending === 'map' ? 'Mapping…' : 'Map'}
                     </Button>
@@ -126,14 +189,22 @@ export default function DocumentFieldReview({
                     <Tabs.Tab
                         key={section.id}
                         value={section.id}
-                        className="rounded-none px-2 py-1.5 text-xs font-medium text-slate-600 outline-none hover:bg-slate-100 focus-visible:ring-2 focus-visible:ring-blue-700 data-active:bg-blue-900 data-active:text-white dark:text-neutral-300 dark:hover:bg-neutral-900 dark:data-active:bg-blue-900 dark:data-active:text-white"
+                        className="rounded-lg px-2 py-1.5 text-xs font-medium text-slate-600 outline-none hover:bg-slate-100 focus-visible:ring-2 focus-visible:ring-blue-700 data-active:bg-blue-900 data-active:text-white dark:text-neutral-300 dark:hover:bg-neutral-900 dark:data-active:bg-blue-900 dark:data-active:text-white"
                     >
                         {section.tabLabel}
                     </Tabs.Tab>
                 ))}
+                {showAttachments ? (
+                    <Tabs.Tab
+                        value={ATTACHMENTS_KEY}
+                        className="rounded-lg px-2 py-1.5 text-xs font-medium text-slate-600 outline-none hover:bg-slate-100 focus-visible:ring-2 focus-visible:ring-blue-700 data-active:bg-blue-900 data-active:text-white dark:text-neutral-300 dark:hover:bg-neutral-900 dark:data-active:bg-blue-900 dark:data-active:text-white"
+                    >
+                        Attachments
+                    </Tabs.Tab>
+                ) : null}
                 <Tabs.Tab
                     value={REMARKS_KEY}
-                    className="rounded-none px-2 py-1.5 text-xs font-medium text-slate-600 outline-none hover:bg-slate-100 focus-visible:ring-2 focus-visible:ring-blue-700 data-active:bg-blue-900 data-active:text-white dark:text-neutral-300 dark:hover:bg-neutral-900 dark:data-active:bg-blue-900 dark:data-active:text-white"
+                    className="rounded-lg px-2 py-1.5 text-xs font-medium text-slate-600 outline-none hover:bg-slate-100 focus-visible:ring-2 focus-visible:ring-blue-700 data-active:bg-blue-900 data-active:text-white dark:text-neutral-300 dark:hover:bg-neutral-900 dark:data-active:bg-blue-900 dark:data-active:text-white"
                 >
                     Remarks
                 </Tabs.Tab>
@@ -243,6 +314,26 @@ export default function DocumentFieldReview({
                                             className="rounded-none"
                                         />
                                     )}
+                                    {field.name === 'title' &&
+                                        !usesTaxFields && (
+                                            <DocumentTitleSuggestions
+                                                key={documentId}
+                                                documentId={documentId}
+                                                model={model}
+                                                suggestions={titleSuggestions}
+                                                value={values.title}
+                                                disabled={busy}
+                                                onSuggestionsChange={
+                                                    setTitleSuggestions
+                                                }
+                                                onLoadingChange={
+                                                    setSuggestingTitles
+                                                }
+                                                onSelect={(title) =>
+                                                    updateValue('title', title)
+                                                }
+                                            />
+                                        )}
                                 </FieldRow>
                             ))}
                         {section.id === 'boundaries' && (
@@ -257,6 +348,26 @@ export default function DocumentFieldReview({
                     </div>
                 </Tabs.Panel>
             ))}
+
+            {showAttachments && documentId !== null ? (
+                <Tabs.Panel
+                    value={ATTACHMENTS_KEY}
+                    className="max-h-[48dvh] min-h-0 flex-1 overflow-y-auto pr-1 outline-none md:max-h-none"
+                >
+                    <div className="mb-3 border-b border-slate-200 pb-2 dark:border-neutral-800">
+                        <p className="text-sm font-semibold text-slate-900 dark:text-neutral-100">
+                            Attachments
+                        </p>
+                    </div>
+                    <DocumentAttachmentsSection
+                        documentId={documentId}
+                        attachments={attachments}
+                        active
+                        onSaved={saveAttachments}
+                        embedded
+                    />
+                </Tabs.Panel>
+            ) : null}
 
             <Tabs.Panel
                 value={REMARKS_KEY}

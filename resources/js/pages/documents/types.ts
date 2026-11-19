@@ -1,8 +1,13 @@
-import type { ArchivedDocument } from '@/types/documents';
+import type { ArchivedDocument, DocumentStatus } from '@/types/documents';
+import type { CabinetColor } from '@/lib/cabinet-colors';
 
 export type DocumentViewMode = 'cards' | 'preview' | 'list';
 
 export type DocumentOcrReviewFilter = 'all' | 'reviewed' | 'unreviewed';
+
+export type DocumentStatusFilter = 'all' | DocumentStatus;
+
+export type DocumentSearchMode = 'all' | 'tax';
 
 export type DocumentSortDirection = 'asc' | 'desc';
 
@@ -13,13 +18,35 @@ export type DocumentSortFilters = {
     direction: DocumentSortDirection;
 };
 
+export type DocumentTypeOption = {
+    id: number;
+    name: string;
+    slug: string;
+    usesTaxFields: boolean;
+    documentCount: number;
+};
+
+export type DocumentRouteOption = {
+    id: number;
+    name: string;
+    steps: string[];
+};
+
+export type FilingPath = 'archive' | 'route';
+
 export type DocumentUploadOptions = {
     archive: ArchivePlacementCabinet[];
+    recentArchiveItemIds: string[];
     mappingModels: string[];
+    documentTypes: DocumentTypeOption[];
     fieldSections: DocumentFieldSection[];
+    metadataFieldSections: DocumentFieldSection[];
 };
 
 export type DocumentDateFilters = {
+    date_field: 'letter_date' | 'declaration_date';
+    letter_date_from: string;
+    letter_date_to: string;
     declaration_date_from: string;
     declaration_date_to: string;
     date_added_from: string;
@@ -35,7 +62,7 @@ export type SearchFieldOption = {
 export type ArchivePlacementItem = {
     id: string;
     label: string;
-    kind: 'book' | 'folder';
+    kind: import('@/types/filing').FilingKind;
     coverTitle: string;
 };
 
@@ -48,6 +75,7 @@ export type ArchivePlacementDrawer = {
 export type ArchivePlacementCabinet = {
     id: string;
     name: string;
+    color?: CabinetColor;
     drawers: ArchivePlacementDrawer[];
 };
 
@@ -61,16 +89,22 @@ export type DocumentsPageProps = {
         total: number;
     };
     archive: ArchivePlacementCabinet[];
+    recentArchiveItemIds: string[];
     filters: {
         q: string;
         field: string;
         direction: DocumentSortDirection;
         sort: DocumentSortField;
         ocr_review: DocumentOcrReviewFilter;
+        status: DocumentStatusFilter;
+        search_mode: DocumentSearchMode;
+        type: string;
     } & DocumentDateFilters;
     searchFields: SearchFieldOption[];
     mappingModels: string[];
+    documentTypes: DocumentTypeOption[];
     fieldSections: DocumentFieldSection[];
+    metadataFieldSections: DocumentFieldSection[];
     selectedDocument?: ArchivedDocument | null;
 };
 
@@ -102,11 +136,19 @@ export type DocumentFieldValues = {
     boundary_northwest: string;
     area: string;
     remarks: string;
+    correspondent: string;
+    title: string;
+    letter_date: string;
 };
 
 export type MetadataField = keyof DocumentFieldValues;
 
-export type UploadDocumentPayload = { file: File; book_id: string };
+export type UploadDocumentPayload = {
+    file: File;
+    document_type_id: null;
+    filing_path: FilingPath;
+    book_id?: string;
+};
 
 export type SaveDocumentFieldsPayload = Partial<DocumentFieldValues>;
 
@@ -119,7 +161,13 @@ export type DocumentFieldDefinition = {
 };
 
 export type DocumentFieldSection = {
-    id: 'declaration' | 'property' | 'owner' | 'boundaries' | 'remarks';
+    id:
+        | 'document'
+        | 'declaration'
+        | 'property'
+        | 'owner'
+        | 'boundaries'
+        | 'remarks';
     title: string;
     tabLabel: string;
     fields: DocumentFieldDefinition[];

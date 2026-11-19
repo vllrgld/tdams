@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Database\Factories\DrawerFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -14,6 +15,7 @@ use Illuminate\Support\Collection;
 /**
  * @property int $id
  * @property int $cabinet_id
+ * @property-read Cabinet $cabinet
  * @property string $label
  * @property string|null $range
  * @property int $position
@@ -27,6 +29,12 @@ class Drawer extends Model
 {
     /** @use HasFactory<DrawerFactory> */
     use HasFactory;
+
+    /** @param Builder<static> $query */
+    public function scopeForOffice(Builder $query, ?int $officeId): void
+    {
+        $query->whereHas('cabinet', fn (Builder $cabinets) => $cabinets->where('office_id', $officeId));
+    }
 
     /**
      * @return BelongsTo<Cabinet, $this>

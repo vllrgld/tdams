@@ -30,7 +30,7 @@ class ArchiveResetter
 
             DB::table('tax_declarations')->whereNotNull('previous_declaration_id')->update(['previous_declaration_id' => null]);
 
-            foreach (['declaration_owners', 'documents', 'tax_declarations', 'properties', 'owners', 'books', 'drawers', 'cabinets'] as $table) {
+            foreach (['document_audits', 'declaration_owners', 'documents', 'tax_declarations', 'properties', 'owners', 'books', 'drawers', 'cabinets'] as $table) {
                 DB::table($table)->delete();
             }
 

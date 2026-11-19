@@ -160,4 +160,5 @@ curl --fail --silent --show-error --max-time 15 http://127.0.0.1/up >/dev/null
 
 echo
 echo "DTMS update complete. Open the site and refresh the browser."
-echo "Check command search, Upload, Dates/Sort, and a document thumbnail."
+echo "Check Upload (Archive/Route), date-field filters, office routing, OCR review, and thumbnails."
+echo "Test deletion only with a disposable document; also check: php artisan queue:failed"

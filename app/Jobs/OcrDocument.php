@@ -4,11 +4,13 @@ namespace App\Jobs;
 
 use App\Models\Document;
 use App\Models\OcrSetting;
+use App\Services\Documents\DocumentAuditRecorder;
 use App\Services\Ocr\LocalThumbnailClient;
 use App\Services\Ocr\OcrManager;
 use App\Services\Ocr\OcrPdfOptimizer;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use RuntimeException;
@@ -26,28 +28,28 @@ class OcrDocument implements ShouldQueue
 
     public function __construct(public int $documentId) {}
 
-    public function handle(OcrManager $manager, OcrPdfOptimizer $pdfOptimizer, LocalThumbnailClient $thumbnails): void
+    public function handle(OcrManager $manager, OcrPdfOptimizer $pdfOptimizer, LocalThumbnailClient $thumbnails, DocumentAuditRecorder $audit): void
     {
-        $document = Document::query()->find($this->documentId);
-
-        if ($document === null) {
-            return;
-        }
-
-        $claimed = Document::query()->whereKey($this->documentId)
-            ->whereIn('ocr_status', ['pending', 'failed'])
-            ->update([
+        $document = DB::transaction(function () use ($audit): ?Document {
+            $locked = Document::query()->whereKey($this->documentId)->whereIn('ocr_status', ['pending', 'failed'])->lockForUpdate()->first();
+            if ($locked === null) {
+                return null;
+            }
+            $before = $locked->ocr_status;
+            $locked->forceFill([
                 'ocr_status' => 'processing',
                 'ocr_error' => null,
                 'ocr_reviewed_at' => null,
                 'ocr_reviewed_by' => null,
-            ]);
+            ])->saveQuietly();
+            $audit->record($locked, 'ocr_started', ['ocr_status' => ['before' => $before, 'after' => 'processing']], system: true);
 
-        if ($claimed === 0) {
+            return $locked;
+        }, 3);
+
+        if ($document === null) {
             return;
         }
-
-        $document->refresh();
 
         try {
             $contents = Storage::disk('local')->get($document->storage_path);
@@ -85,8 +87,12 @@ class OcrDocument implements ShouldQueue
                 ]);
             }
 
-            Document::withoutSyncingToSearch(function () use ($document, $result, $pdfPath, $pdfSize): void {
-                $document->forceFill([
+            Document::withoutSyncingToSearch(fn () => DB::transaction(function () use ($document, $result, $pdfPath, $pdfSize, $audit, $setting): void {
+                $locked = Document::query()->whereKey($document->id)->where('ocr_status', 'processing')->lockForUpdate()->first();
+                if ($locked === null) {
+                    return;
+                }
+                $locked->forceFill([
                     'ocr_status' => 'completed',
                     'ocr_text' => $result['text'],
                     'ocr_pages' => $result['pages'],
@@ -96,7 +102,14 @@ class OcrDocument implements ShouldQueue
                     'ocr_error' => null,
                     'ocr_completed_at' => now(),
                 ])->save();
-            });
+                $audit->record($locked, 'ocr_completed', ['ocr_status' => ['before' => 'processing', 'after' => 'completed']], [
+                    'driver' => $setting->driver,
+                    'pageCount' => count($result['pages']),
+                    'previewAvailable' => $pdfPath !== null,
+                ], system: true);
+            }, 3));
+
+            $document->refresh();
 
             try {
                 $document->searchable();
@@ -114,15 +127,23 @@ class OcrDocument implements ShouldQueue
     public function failed(?Throwable $exception): void
     {
         $message = $exception?->getMessage() ?: 'Document OCR failed.';
-        $updated = Document::query()->whereKey($this->documentId)
-            ->whereIn('ocr_status', ['pending', 'processing'])
-            ->update([
+        $updated = DB::transaction(function () use ($message): bool {
+            $locked = Document::query()->whereKey($this->documentId)->whereIn('ocr_status', ['pending', 'processing'])->lockForUpdate()->first();
+            if ($locked === null) {
+                return false;
+            }
+            $before = $locked->ocr_status;
+            $locked->forceFill([
                 'ocr_status' => 'failed',
                 'ocr_error' => mb_substr($message, 0, 500),
                 'ocr_completed_at' => null,
-            ]);
+            ])->saveQuietly();
+            app(DocumentAuditRecorder::class)->record($locked, 'ocr_failed', ['ocr_status' => ['before' => $before, 'after' => 'failed']], system: true);
 
-        if ($updated === 0) {
+            return true;
+        }, 3);
+
+        if (! $updated) {
             return;
         }
 

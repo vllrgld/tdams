@@ -39,7 +39,7 @@
         @viteReactRefresh
         @vite(['resources/css/app.css', 'resources/js/app.tsx', "resources/js/pages/{$page['component']}.tsx"])
         <x-inertia::head>
-            <title>TDAMS · Tax Declaration Archive Management System</title>
+            <title>Document Archiving and Management System</title>
         </x-inertia::head>
     </head>
     <body class="font-sans antialiased">

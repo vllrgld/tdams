@@ -5,6 +5,7 @@ namespace Tests\Feature\Documents;
 use App\Models\Book;
 use App\Models\Cabinet;
 use App\Models\Document;
+use App\Models\DocumentType;
 use App\Models\User;
 use App\Services\Documents\DocumentWriter;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -290,6 +291,41 @@ class DocumentLinkingTest extends TestCase
             ->assertJsonCount(1, 'entries')
             ->assertJsonPath('entries.0.document.id', $document->id)
             ->assertJsonPath('entries.0.taxDeclarationNumber', 'TD-2026-00481');
+    }
+
+    public function test_history_is_not_available_for_non_tax_document_types(): void
+    {
+        $user = User::factory()->create();
+        $document = $this->makeDocument($user, [
+            'document_type_id' => $this->memorandumType()->id,
+            'ocr_text' => 'From the Office of the Governor',
+        ]);
+
+        $this->actingAs($user)
+            ->getJson(route('documents.history', $document))
+            ->assertNotFound();
+    }
+
+    public function test_chain_is_not_available_for_non_tax_document_types(): void
+    {
+        $user = User::factory()->create();
+        $document = $this->makeDocument($user, [
+            'document_type_id' => $this->memorandumType()->id,
+            'ocr_text' => 'From the Office of the Governor',
+        ]);
+
+        $this->actingAs($user)
+            ->getJson(route('documents.chain', $document))
+            ->assertNotFound();
+    }
+
+    private function memorandumType(): DocumentType
+    {
+        return DocumentType::query()->create([
+            'name' => 'Memorandum',
+            'slug' => 'memorandum',
+            'uses_tax_declaration_fields' => false,
+        ]);
     }
 
     private function bookForUpload(): Book

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Database\Factories\BookFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -30,27 +31,23 @@ class Book extends Model
     /** @use HasFactory<BookFactory> */
     use HasFactory;
 
+    /** @param Builder<static> $query */
+    public function scopeForOffice(Builder $query, ?int $officeId): void
+    {
+        $query->whereHas('drawer.cabinet', fn (Builder $cabinets) => $cabinets->where('office_id', $officeId));
+    }
+
     public const MAX_PER_DRAWER = 16;
 
-    public const DEFAULT_COVER_TITLE = 'Tax Declaration';
+    public const DEFAULT_COVER_TITLE = 'PGIN';
 
     /**
      * @var array<string, mixed>
      */
     protected $attributes = [
         'kind' => 'book',
-        'cover_title' => 'Tax Declaration',
+        'cover_title' => 'PGIN',
     ];
-
-    public static function coverTitle(string $kind = 'book'): string
-    {
-        $title = self::query()->where('kind', $kind)->where('cover_title', '!=', '')
-            ->orderBy('id')->value('cover_title');
-
-        return is_string($title) && $title !== ''
-            ? $title
-            : self::DEFAULT_COVER_TITLE;
-    }
 
     /**
      * @return BelongsTo<Drawer, $this>

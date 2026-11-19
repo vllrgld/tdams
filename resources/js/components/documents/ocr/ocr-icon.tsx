@@ -20,7 +20,7 @@ export default function OcrIcon({ className }: { className?: string }) {
                 fill="currentColor"
                 fontSize="8"
                 fontWeight="700"
-                fontFamily="ui-sans-serif, system-ui, sans-serif"
+                fontFamily="inherit"
             >
                 OCR
             </text>

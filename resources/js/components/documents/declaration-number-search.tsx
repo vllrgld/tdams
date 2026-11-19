@@ -1,6 +1,6 @@
 import { declarationNumbers } from '@/routes/documents';
 import { useEffect, useId, useRef, useState } from 'react';
-import { Input } from '@/components/ui/input';
+import { SearchBar } from '@/components/ui/search-bar';
 import { formatDate } from '@/lib/document-formatters';
 import type { DeclarationNumberMatch } from '@/types/documents';
 
@@ -134,7 +134,7 @@ export default function DeclarationNumberSearch({
 
     return (
         <div ref={rootRef} className="relative">
-            <Input
+            <SearchBar
                 aria-describedby={describedBy}
                 id={id}
                 role="combobox"
@@ -193,7 +193,6 @@ export default function DeclarationNumberSearch({
                         setOpen(false);
                     }
                 }}
-                className="rounded-none"
             />
             {open && (
                 <ul

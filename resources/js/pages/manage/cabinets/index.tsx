@@ -1,32 +1,31 @@
 import { store as storeFilingItem } from '@/routes/manage/drawers/books';
 import { index as cabinetsIndex } from '@/routes/manage/cabinets';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, router, useForm } from '@inertiajs/react';
 import { Plus } from 'lucide-react';
 import { useState, type FormEvent } from 'react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import type { CabinetListDrawer, CabinetListItem } from '@/types/filing';
+import { filingTitle } from '@/lib/filing-appearance';
 import AddFilingItemDialog, {
     type FilingItemForm,
 } from './add-filing-item-dialog';
 import AddCabinetDialog from './add-cabinet-dialog';
+import type { CabinetForm } from './add-cabinet-dialog';
 import CabinetRenameTitle from './cabinet-rename-title';
 import DrawerRenameRow from './drawer-rename-row';
 
 export default function Cabinets({
     cabinets,
-    coverTitle,
-    folderCoverTitle,
 }: {
     cabinets: CabinetListItem[];
-    coverTitle: string;
-    folderCoverTitle: string;
 }) {
     const [addOpen, setAddOpen] = useState(false);
     const [addItemDrawer, setAddItemDrawer] =
         useState<CabinetListDrawer | null>(null);
-    const form = useForm({
+    const form = useForm<CabinetForm>({
         name: '',
+        color: 'steel_grey',
         drawers: ['Drawer 1', 'Drawer 2', 'Drawer 3', 'Drawer 4'],
     });
     const itemForm = useForm<FilingItemForm>({
@@ -39,6 +38,7 @@ export default function Cabinets({
 
         form.post(cabinetsIndex.url(), {
             onSuccess: () => {
+                router.flushAll();
                 setAddOpen(false);
                 form.reset();
                 toast.success('Cabinet added.');
@@ -50,7 +50,7 @@ export default function Cabinets({
         const kind = drawer.books[0]?.kind ?? 'book';
         itemForm.setData({
             kind,
-            label: `${kind === 'folder' ? 'Folder' : 'Book'} ${drawer.books.length + 1}`,
+            label: `${filingTitle(kind)} ${drawer.books.length + 1}`,
         });
         itemForm.clearErrors();
         setAddItemDrawer(drawer);
@@ -66,11 +66,10 @@ export default function Cabinets({
         itemForm.post(storeFilingItem.url(Number(addItemDrawer.id)), {
             preserveScroll: true,
             onSuccess: () => {
+                router.flushAll();
                 setAddItemDrawer(null);
                 itemForm.reset();
-                toast.success(
-                    `${itemForm.data.kind === 'folder' ? 'Folder' : 'Book'} added.`,
-                );
+                toast.success(`${filingTitle(itemForm.data.kind)} added.`);
             },
         });
     }
@@ -166,8 +165,6 @@ export default function Cabinets({
             />
             <AddFilingItemDialog
                 form={itemForm}
-                coverTitle={coverTitle}
-                folderCoverTitle={folderCoverTitle}
                 lockedKind={addItemDrawer?.books[0]?.kind}
                 drawerLabel={addItemDrawer?.label ?? ''}
                 open={addItemDrawer !== null}

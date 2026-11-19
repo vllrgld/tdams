@@ -7,11 +7,30 @@ use App\Models\Document;
 use App\Models\Owner;
 use App\Models\Property;
 use App\Models\TaxDeclaration;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Validation\ValidationException;
 
 class DeclarationRecorder
 {
+    public function __construct(private DocumentAuditRecorder $audit) {}
+
+    /** @param array<string, mixed> $fields */
+    public function lockRecords(Document $document, array $fields): void
+    {
+        $declaration = $this->declarationFor($document, $fields);
+        if ($declaration->exists) {
+            $declaration = TaxDeclaration::query()->whereKey($declaration->id)->lockForUpdate()->firstOrFail();
+        }
+        $pin = $this->nullableString($fields['pin'] ?? null);
+        $propertyId = $pin === null ? null : $this->findPropertyByPin($pin)?->id;
+        $ids = array_values(array_filter([$declaration->property_id, $propertyId]));
+        if ($ids !== []) {
+            Property::query()->whereKey($ids)->orderBy('id')->lockForUpdate()->get(['id']);
+        }
+    }
+
     /**
      * @param  array<string, mixed>  $fields
      */
@@ -33,6 +52,10 @@ class DeclarationRecorder
             $declaration = TaxDeclaration::query()->whereKey($declaration->id)->lockForUpdate()->firstOrFail();
         }
 
+        $this->lockRecords($document, $fields);
+        $related = $this->relatedDocuments($document, $declaration, $fields);
+        $before = $related->mapWithKeys(fn (Document $relatedDocument): array => [$relatedDocument->id => $this->audit->fields($relatedDocument)]);
+
         $this->fillDeclaration($declaration, $fields);
         $this->fillProperty($declaration, $fields);
         $declaration->save();
@@ -47,6 +70,34 @@ class DeclarationRecorder
         }
 
         $document->unsetRelation('taxDeclaration');
+
+        foreach ($related as $relatedDocument) {
+            $relatedDocument->refresh()->load(Document::archiveRelations());
+            $changes = $this->audit->changes($before[$relatedDocument->id], $this->audit->fields($relatedDocument));
+            if ($changes !== []) {
+                $this->audit->record($relatedDocument, 'fields_updated', $changes, ['sharedRecord' => true]);
+            }
+        }
+    }
+
+    /**
+     * @param  array<string, mixed>  $fields
+     * @return Collection<int, Document>
+     */
+    private function relatedDocuments(Document $document, TaxDeclaration $declaration, array $fields): Collection
+    {
+        $pin = $this->nullableString($fields['pin'] ?? null);
+        $propertyId = $pin === null ? null : $this->findPropertyByPin($pin)?->id;
+        $propertyIds = array_values(array_filter([$declaration->property_id, $propertyId]));
+        if (! $declaration->exists && $propertyIds === []) {
+            return collect();
+        }
+
+        return Document::query()->whereKeyNot($document->id)
+            ->whereHas('taxDeclaration', function (Builder $query) use ($declaration, $propertyIds): void {
+                $query->whereKey($declaration->id)->orWhereIn('property_id', $propertyIds);
+            })
+            ->with(Document::archiveRelations())->orderBy('id')->get();
     }
 
     /**
@@ -305,6 +356,11 @@ class DeclarationRecorder
         foreach ($followers as $follower) {
             $this->validatePreviousLink($follower, $declaration);
             $follower->update(['previous_declaration_id' => $declaration->id]);
+            foreach ($follower->documents()->get() as $linkedDocument) {
+                $this->audit->record($linkedDocument, 'declaration_linked', [
+                    'previous_declaration' => ['before' => null, 'after' => $declaration->tax_declaration_number],
+                ], ['automatic' => true]);
+            }
         }
     }
 

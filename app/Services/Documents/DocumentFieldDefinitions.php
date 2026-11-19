@@ -163,6 +163,6 @@ class DocumentFieldDefinitions
             ];
         }
 
-        return $review;
+        return [SharedDocumentFields::reviewSection(), ...$review];
     }
 }

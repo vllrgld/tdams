@@ -1,4 +1,4 @@
-import { Link, usePage } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 import type { PropsWithChildren } from 'react';
 import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
@@ -7,8 +7,6 @@ import { useCurrentUrl } from '@/hooks/use-current-url';
 import { cn, toUrl } from '@/lib/utils';
 import { edit as editAppearance } from '@/routes/appearance';
 import { edit as editAccessibility } from '@/routes/accessibility';
-import { edit as editOcr } from '@/routes/ocr';
-import { edit as editData } from '@/routes/data';
 import { edit } from '@/routes/profile';
 import { edit as editSecurity } from '@/routes/security';
 import type { NavItem } from '@/types';
@@ -34,19 +32,10 @@ const sidebarNavItems: NavItem[] = [
         href: editAccessibility(),
         icon: null,
     },
-    {
-        title: 'OCR',
-        href: editOcr(),
-        icon: null,
-    },
 ];
 
 export default function SettingsLayout({ children }: PropsWithChildren) {
     const { isCurrentOrParentUrl } = useCurrentUrl();
-    const { canResetData } = usePage().props;
-    const navItems = canResetData
-        ? [...sidebarNavItems, { title: 'Data', href: editData(), icon: null }]
-        : sidebarNavItems;
 
     return (
         <div className="px-4 py-6">
@@ -61,7 +50,7 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
                         className="flex flex-col space-y-1 space-x-0"
                         aria-label="Settings"
                     >
-                        {navItems.map((item, index) => (
+                        {sidebarNavItems.map((item, index) => (
                             <Button
                                 key={`${toUrl(item.href)}-${index}`}
                                 size="sm"

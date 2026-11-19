@@ -12,6 +12,7 @@ import ClosedFolderMesh, {
     FOLDER_ASPECT_RATIO,
 } from '@/components/filing/folders/closed-folder-mesh';
 import BookCoverFace from './books/book-cover-face';
+import LeverArchPreview from './folders/lever-arch-preview';
 
 const BOOK_W = 260;
 const BOOK_H = 360;
@@ -19,7 +20,23 @@ const BOOK_D = 56;
 const REST = { x: 8, y: -28 };
 const MAX_TILT = 22;
 
-export default function RotatableFilingItem({
+type RotatableFilingItemProps = {
+    label: string;
+    coverTitle: string;
+    compact?: boolean;
+    kind?: FilingKind;
+    upright?: boolean;
+};
+
+export default function RotatableFilingItem(props: RotatableFilingItemProps) {
+    return props.kind === 'lever_arch' ? (
+        <LeverArchPreview {...props} />
+    ) : (
+        <CssRotatableFilingItem {...props} />
+    );
+}
+
+function CssRotatableFilingItem({
     label,
     coverTitle,
     compact = false,

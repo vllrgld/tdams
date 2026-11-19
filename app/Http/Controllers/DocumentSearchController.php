@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Document;
+use App\Services\Offices\CurrentOffice;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class DocumentSearchController extends Controller
 {
-    public function __invoke(Request $request): JsonResponse
+    public function __invoke(Request $request, CurrentOffice $currentOffice): JsonResponse
     {
         $validated = $request->validate([
             'q' => ['sometimes', 'nullable', 'string', 'max:200'],
@@ -19,10 +21,23 @@ class DocumentSearchController extends Controller
             return response()->json(['data' => [], 'hasMore' => false]);
         }
 
-        $matches = Document::query()
-            ->select(['id', 'book_id', 'tax_declaration_id', 'original_filename'])
+        $matches = Document::query();
+        $currentOffice->constrain($matches);
+        $matches = $matches
+            ->select([
+                'id',
+                'book_id',
+                'document_type_id',
+                'correspondent_id',
+                'tax_declaration_id',
+                'title',
+                'original_filename',
+            ])
             ->with([...Document::archiveRelations(), 'book.drawer.cabinet'])
-            ->search($query)
+            ->where(function (Builder $search) use ($query): void {
+                $search->where(fn (Builder $tax) => $tax->search($query))
+                    ->orWhere(fn (Builder $other) => $other->search($query, taxFields: false));
+            })
             ->latest('id')
             ->limit(9)
             ->get();
@@ -35,8 +50,12 @@ class DocumentSearchController extends Controller
 
                 return [
                     'id' => $document->id,
-                    'title' => $document->tax_declaration_number ?: $document->original_filename,
-                    'owner' => $document->registered_owner,
+                    'title' => $document->usesTaxDeclarationFields()
+                        ? ($document->tax_declaration_number ?: $document->original_filename)
+                        : ($document->title ?: $document->original_filename),
+                    'owner' => $document->usesTaxDeclarationFields()
+                        ? $document->registered_owner
+                        : $document->correspondent?->name,
                     'propertyLocation' => implode(', ', array_filter([
                         $document->barangay,
                         $document->municipality,

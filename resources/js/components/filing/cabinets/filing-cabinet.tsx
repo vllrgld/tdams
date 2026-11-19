@@ -4,9 +4,10 @@ import {
     useReducedMotion,
     type Transition,
 } from 'motion/react';
-import { useEffect, useRef, type CSSProperties } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { createPortal } from 'react-dom';
 import { cn } from '@/lib/utils';
+import { filingTitle } from '@/lib/filing-appearance';
 import type {
     FilingItemCover,
     FilingItemOrigin,
@@ -19,18 +20,19 @@ const CLOSEUP_WIDTH = 806;
 const CLOSEUP_HEIGHT = 420;
 const CLOSEUP_DEPTH = 682;
 
-const WIDTH = 180;
-const HEIGHT = 300;
-const FRAME_PADDING = 7;
-const DRAWER_GAP = 2;
-const DRAWER_DEPTH =
-    CLOSEUP_DEPTH * ((WIDTH - FRAME_PADDING * 2) / CLOSEUP_WIDTH);
-const DEPTH = DRAWER_DEPTH + 12;
-const DRAWER_TRAVEL = Math.round(DEPTH * 0.82);
-const PERSPECTIVE = 1000;
-const REST_ROTATE_X = -12;
+const HEIGHT = 360;
+const MM_SCALE = HEIGHT / 1320;
+const WIDTH = 460 * MM_SCALE;
+const DEPTH = 620 * MM_SCALE;
+const FRAME_PADDING = 20 * MM_SCALE;
+const TOP_BAND = 32 * MM_SCALE;
+const BASE_BAND = 45 * MM_SCALE;
+const DRAWER_GAP = 2.8 * MM_SCALE;
+const DRAWER_DEPTH = DEPTH - 8 * MM_SCALE;
+const DRAWER_TRAVEL = 480 * MM_SCALE;
+const PERSPECTIVE = HEIGHT * 8;
 const REST_ROTATE_Y = 24;
-const REST_TRANSFORM = `rotateX(${REST_ROTATE_X}deg) rotateY(${REST_ROTATE_Y}deg)`;
+const REST_TRANSFORM = `rotateY(${REST_ROTATE_Y}deg)`;
 const SLOT_PAD_LEFT = Math.round(
     DEPTH * Math.sin((Math.abs(REST_ROTATE_Y) * Math.PI) / 180),
 );
@@ -38,15 +40,13 @@ const SLOT_PAD_RIGHT = Math.round(
     DRAWER_TRAVEL * Math.sin((Math.abs(REST_ROTATE_Y) * Math.PI) / 180) * 1.2,
 );
 const SLOT_PAD_TOP = 56;
-const SLOT_PAD_BOTTOM =
-    56 +
-    Math.round(
-        DRAWER_TRAVEL *
-            Math.sin((Math.abs(REST_ROTATE_X) * Math.PI) / 180) *
-            1.2,
-    );
-const SLOT_CAPTION = 40;
+const SLOT_PAD_BOTTOM = 32;
 const SLOT_WIDTH = SLOT_PAD_LEFT + WIDTH + SLOT_PAD_RIGHT;
+const SLOT_HEIGHT = SLOT_PAD_TOP + HEIGHT + SLOT_PAD_BOTTOM;
+
+export function filingCabinetFrameSize(): { width: number; height: number } {
+    return { width: SLOT_WIDTH, height: SLOT_HEIGHT };
+}
 
 const CLOSEUP_SCALE_FROM = 0.72;
 const CLOSEUP_SCALE_TO = 0.9;
@@ -135,21 +135,54 @@ export default function FilingCabinet({
 
     const drawerCount = cabinet.drawers.length;
     const cabinetHeight = HEIGHT;
-    const slotHeight =
-        SLOT_PAD_TOP + cabinetHeight + SLOT_PAD_BOTTOM + SLOT_CAPTION;
+    const slotHeight = SLOT_HEIGHT;
     const drawerWidth = WIDTH - FRAME_PADDING * 2;
     const drawerHeight =
         (cabinetHeight -
-            FRAME_PADDING * 2 -
+            TOP_BAND -
+            BASE_BAND -
+            DRAWER_GAP * 2 -
             DRAWER_GAP * Math.max(0, drawerCount - 1)) /
         Math.max(1, drawerCount);
     const drawerTop = (index: number) =>
-        FRAME_PADDING + index * (drawerHeight + DRAWER_GAP);
+        TOP_BAND + DRAWER_GAP + index * (drawerHeight + DRAWER_GAP);
 
     const openIndex = cabinet.drawers.findIndex(
         (drawer) => drawer.id === openDrawerId,
     );
     const openDrawer = openIndex >= 0 ? cabinet.drawers[openIndex] : null;
+    const responsiveCloseup = openDrawer?.books[0]?.kind === 'lever_arch';
+    const [viewport, setViewport] = useState(() => ({
+        width: typeof window === 'undefined' ? 1440 : window.innerWidth,
+        height: typeof window === 'undefined' ? 1000 : window.innerHeight,
+    }));
+    useEffect(() => {
+        if (!zoomed || !responsiveCloseup) return;
+        const update = () =>
+            setViewport({
+                width: window.innerWidth,
+                height: window.innerHeight,
+            });
+        update();
+        window.addEventListener('resize', update);
+        return () => window.removeEventListener('resize', update);
+    }, [zoomed, responsiveCloseup]);
+    const closeupFit = responsiveCloseup
+        ? Math.min(
+              1,
+              (viewport.width - 32) / (CLOSEUP_WIDTH * CLOSEUP_SCALE_TO * 1.2),
+              (viewport.height - 144) /
+                  ((CLOSEUP_HEIGHT * 0.616 + CLOSEUP_DEPTH * 0.789) *
+                      CLOSEUP_SCALE_TO *
+                      1.1),
+          )
+        : 1;
+    const closeupFrom = responsiveCloseup
+        ? closeupPose(CLOSEUP_SCALE_FROM * closeupFit, CLOSEUP_TILT_FROM)
+        : CLOSEUP_FROM;
+    const closeupTo = responsiveCloseup
+        ? closeupPose(CLOSEUP_SCALE_TO * closeupFit, CLOSEUP_TILT_TO)
+        : CLOSEUP_TO;
 
     useEffect(() => {
         if (!zoomed && wasZoomed.current) {
@@ -195,14 +228,6 @@ export default function FilingCabinet({
                 >
                     {cabinet.name}
                 </p>
-                {showLocation && (
-                    <p
-                        className="mt-0.5 truncate text-[10px] text-slate-500 dark:text-neutral-400"
-                        title={cabinet.location}
-                    >
-                        {cabinet.location}
-                    </p>
-                )}
             </div>
             <div
                 className="relative shrink-0 overflow-visible"
@@ -214,6 +239,7 @@ export default function FilingCabinet({
                     paddingLeft: SLOT_PAD_LEFT,
                     paddingRight: SLOT_PAD_RIGHT,
                     perspective: `${PERSPECTIVE}px`,
+                    perspectiveOrigin: `${SLOT_PAD_LEFT + WIDTH / 2}px ${SLOT_PAD_TOP + HEIGHT / 2 - Math.tan((12 * Math.PI) / 180) * PERSPECTIVE}px`,
                 }}
             >
                 <div
@@ -224,6 +250,7 @@ export default function FilingCabinet({
                         transformStyle: 'preserve-3d',
                         transform: REST_TRANSFORM,
                     }}
+                    data-css-cabinet-body
                 >
                     <div
                         aria-hidden="true"
@@ -313,16 +340,16 @@ export default function FilingCabinet({
                         <span
                             className="cabinet-case-cap absolute inset-x-0 top-0"
                             style={{
-                                height: FRAME_PADDING,
+                                height: TOP_BAND,
                                 transform: 'translateZ(3px)',
                             }}
                         >
-                            <span className="cabinet-case-lock absolute top-1/2 right-3 -translate-y-1/2" />
+                            <span className="cabinet-case-lock absolute right-1 bottom-0 -translate-y-1/2" />
                         </span>
                         <span
                             className="cabinet-case-base absolute inset-x-0 bottom-0"
                             style={{
-                                height: FRAME_PADDING,
+                                height: BASE_BAND,
                                 transform: 'translateZ(3px)',
                             }}
                         />
@@ -357,33 +384,15 @@ export default function FilingCabinet({
                 </div>
             </div>
 
-            <div
-                className="flex h-10 flex-col justify-start text-center"
-                aria-live="polite"
-            >
-                {openDrawer ? (
-                    <>
-                        <p className="text-xs text-slate-700 tabular-nums dark:text-neutral-300">
-                            {[
-                                openDrawer.label,
-                                openDrawer.range,
-                                `${openDrawer.books.length} ${openDrawer.books[0]?.kind === 'folder' ? 'folder' : 'book'}${openDrawer.books.length === 1 ? '' : 's'}`,
-                            ]
-                                .filter(Boolean)
-                                .join(' · ')}
-                        </p>
-                        {!zoomed && !preview && (
-                            <button
-                                type="button"
-                                onClick={() => onZoomChange(true)}
-                                className="mx-auto text-xs text-slate-600 underline underline-offset-2 hover:text-blue-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700 dark:text-neutral-300 dark:hover:text-white"
-                            >
-                                View drawer contents
-                            </button>
-                        )}
-                    </>
-                ) : null}
-            </div>
+            {showLocation && (
+                <p
+                    className="pointer-events-none absolute bottom-0 truncate text-center text-[10px] text-slate-500 dark:text-neutral-400"
+                    style={{ width: SLOT_PAD_LEFT + WIDTH }}
+                    title={cabinet.location}
+                >
+                    {cabinet.location}
+                </p>
+            )}
 
             {typeof document !== 'undefined' &&
                 createPortal(
@@ -391,7 +400,11 @@ export default function FilingCabinet({
                         {zoomed && openDrawer && (
                             <motion.div
                                 key={openDrawer.id}
-                                className="pointer-events-none fixed inset-0 z-50 grid place-items-center"
+                                className={cn(
+                                    'pointer-events-none fixed inset-0 z-50 grid place-items-center',
+                                    responsiveCloseup &&
+                                        'grid-cols-[minmax(0,1fr)]',
+                                )}
                                 style={{ perspective: '1200px' }}
                                 initial={reduceMotion ? false : { opacity: 0 }}
                                 animate={{ opacity: 1 }}
@@ -409,13 +422,13 @@ export default function FilingCabinet({
                                     initial={
                                         reduceMotion
                                             ? false
-                                            : { transform: CLOSEUP_FROM }
+                                            : { transform: closeupFrom }
                                     }
-                                    animate={{ transform: CLOSEUP_TO }}
+                                    animate={{ transform: closeupTo }}
                                     exit={
                                         reduceMotion
                                             ? undefined
-                                            : { transform: CLOSEUP_FROM }
+                                            : { transform: closeupFrom }
                                     }
                                     transition={
                                         reduceMotion ? INSTANT : CLOSEUP
@@ -446,34 +459,9 @@ export default function FilingCabinet({
                                         }
                                     />
                                 </motion.div>
-                                <div className="pointer-events-none absolute inset-x-0 top-6 text-center">
-                                    <div className="mx-auto w-fit rounded-md bg-black/75 px-4 py-2">
-                                        <p className="text-sm font-semibold text-white">
-                                            {cabinet.name} · {openDrawer.label}
-                                        </p>
-                                        <p className="text-xs text-neutral-300 tabular-nums">
-                                            {openDrawer.range} ·{' '}
-                                            {openDrawer.books.length}{' '}
-                                            {openDrawer.books[0]?.kind ===
-                                            'folder'
-                                                ? 'folders'
-                                                : 'books'}
-                                        </p>
-                                        {openDrawer.books.length > 0 && (
-                                            <p className="mt-1 text-xs text-neutral-400">
-                                                Click a{' '}
-                                                {openDrawer.books[0]?.kind ===
-                                                'folder'
-                                                    ? 'folder'
-                                                    : 'book'}{' '}
-                                                to open it
-                                            </p>
-                                        )}
-                                    </div>
-                                </div>
                                 <ul
                                     className="sr-only"
-                                    aria-label={`${openDrawer.books[0]?.kind === 'folder' ? 'Folders' : 'Books'} in ${openDrawer.label}`}
+                                    aria-label={`${filingTitle(openDrawer.books[0]?.kind, true)} in ${openDrawer.label}`}
                                 >
                                     {openDrawer.books.map((book) => (
                                         <li key={book.id}>
